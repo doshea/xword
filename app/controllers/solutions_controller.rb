@@ -1,0 +1,3 @@
+class SolutionsController < ApplicationController
+
+end

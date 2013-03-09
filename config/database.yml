@@ -1,0 +1,7 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: xword_development
+  pool: 5
+  username: dylanoshea
+  password:

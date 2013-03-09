@@ -1,0 +1,3 @@
+class ClueInstancesController < ApplicationController
+
+end

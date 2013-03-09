@@ -1,0 +1,23 @@
+%table
+  %thead
+    %tr
+      %th ID
+      %th First
+      %th Last
+      %th Username
+      %th Email
+      %th Admin
+      %th Created
+      %th Updated
+  %tbody
+    - @users.each do |user|
+      %tr
+        %td= user.id
+        %td= user.first_name
+        %td= user.last_name
+        %td= user.username
+        %td= user.email
+        %td= user.is_admin
+        %td= user.created_at
+        %td= user.updated_at
+
