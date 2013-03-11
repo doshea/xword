@@ -16,7 +16,7 @@ class ClueInstance < ActiveRecord::Base
 
   belongs_to :clue, :inverse_of => :clue_instances
   belongs_to :crossword, :inverse_of => :clue_instances
-  belongs_to :word, :through => :clue, :inverse_of => :clue_instances
-  belongs_to :user, :through => :crossword, :inverse_of => :clue_instances
+  delegate :word, :to => :clue, :allow_nil => true
+  delegate :user, :to => :crossword, :allow_nil => true
 
 end

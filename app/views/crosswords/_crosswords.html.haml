@@ -1,0 +1,29 @@
+%table
+  %thead
+    %tr
+      %th ID
+      %th Title
+      %th Creator
+      %th Published
+      %th Date Published
+      %th Description
+      %th Rows
+      %th Columns
+      %th Letters
+      %th Gridnums
+      %th Circles
+  %tbody
+    - @crosswords.each do |crossword|
+      %tr
+        %td= crossword.id
+        %td= link_to crossword.title, crossword
+        %td= link_to crossword.user.username, crossword.user
+        %td= crossword.published
+        %td= crossword.date_published
+        %td= crossword.description
+        %td= crossword.rows
+        %td= crossword.cols
+        %td= crossword.letters
+        %td= crossword.gridnums
+        %td= crossword.circles
+        %td= crossword.letters

@@ -1,0 +1,79 @@
+//Key Constants
+var UP = 38;
+var RIGHT = 39;
+var DOWN = 40;
+var LEFT = 37;
+var COMMAND = 91;
+var ENTER = 13;
+var SPACE = 32;
+var DELETE = 8;
+var TAB = 9;
+
+var selected;
+
+$(function(){
+  selected = $('.cell:not(.void)').first();
+  cell_highlight(selected);
+  $('#crossword').focus();
+
+  $(document).on('keydown', crossword_keypress);
+
+  $('#crossword').on('click', 'td.cell', function(){ cell_highlight($(this)); });
+
+});
+
+function cell_highlight($cell){
+  if($cell.hasClass('cell') && !$cell.hasClass('void')){
+    $('.selected').removeClass('selected');
+    selected = $cell;
+    $cell.addClass('selected');
+  }
+}
+
+function crossword_keypress(e){
+  if(!(e.ctrlKey || e.altKey )){
+    var key = e.which;
+    console.log(key);
+
+    switch (key){
+      case UP:
+        if(selected.cell_above()){
+          cell_highlight(selected.cell_above());
+        };
+        break;
+      case RIGHT:
+        cell_highlight(selected.cell_to_right());
+        break;
+      case DOWN:
+        if(selected.cell_below()){
+          cell_highlight(selected.cell_below());
+        };
+        break;
+      case LEFT:
+        cell_highlight(selected.cell_to_left());
+        break;
+      case 9:
+        selected = null;
+        $('.selected').removeClass('selected');
+        break;
+      case COMMAND:
+        break;
+      case SHIFT:
+        break;
+      default:
+        selected.text(String.fromCharCode(key));
+    }
+  }
+}
+
+//Prevents backspace from going to previous window
+document.onkeydown = suppressBackspace;
+document.onkeypress = suppressBackspace;
+function suppressBackspace(evt) {
+  evt = evt || window.event;
+  var target = evt.target || evt.srcElement;
+  if (evt.keyCode == 8 && !/input|textarea/i.test(target.nodeName)) {
+    selected.text('');
+    return false;
+  }
+}

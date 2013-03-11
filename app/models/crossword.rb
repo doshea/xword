@@ -20,6 +20,10 @@
 class Crossword < ActiveRecord::Base
   attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :gridnums, :circles, :user_id, :comment_ids, :solution_ids, :clue_instance_ids, :clue_ids
 
+  serialize :letters, Array
+  serialize :gridnums, Array
+  serialize :circles, Array
+
   belongs_to :user, :inverse_of => :crosswords
   has_many :comments, :inverse_of => :crossword
   has_many :solutions, :inverse_of => :crossword

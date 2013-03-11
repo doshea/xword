@@ -1,3 +1,0 @@
-class CrosswordController < ApplicationController
-
-end

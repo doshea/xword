@@ -152,6 +152,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   haml
   jquery-rails
+  json
   meta_request
   pg
   pry-debugger

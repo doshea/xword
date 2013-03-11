@@ -8,6 +8,7 @@ gem 'pg'
 gem 'jquery-rails'
 gem 'haml'
 gem 'bcrypt-ruby'
+gem 'json'
 
 # Gems used only for assets and not required
 # in production environments by default.

@@ -1,0 +1,12 @@
+%table#crossword
+  = hidden_field_tag 'rows', @crossword.rows, :disabled => true
+  = hidden_field_tag 'cols', @crossword.cols, :disabled => true
+  - for i in 1..@crossword.rows
+    %tr
+      - for j in 1..@crossword.cols
+        - index = (i -1)*@crossword.cols + j - 1
+        - letter = @crossword.letters[index]
+        - unless letter == '_'
+          %td.cell{:row => i, :col => j}= letter
+        -else
+          %td.cell.void{:row => i, :col => j}

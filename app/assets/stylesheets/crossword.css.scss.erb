@@ -1,0 +1,29 @@
+table#crossword {
+  border-spacing: 0;
+  background-image: url("<%= asset_path 'paper.jpeg' %>");
+
+  tr {
+
+    td.cell {
+      padding: 0;
+      margin: 0;
+      border: solid 0.0625em black;
+      font-size: 1.25em;
+      text-align: center;
+      text-transform: uppercase;
+      width: 1.25em;
+
+      &.void {
+        background-color: black;
+      }
+      &:not(.void){
+        &:hover {
+          cursor: text;
+        }
+      }
+      &.selected {
+        background-color: rgba(255,255,110,0.7);
+      }
+    }
+  }
+}

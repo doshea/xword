@@ -1,0 +1,13 @@
+(function( $ ) {
+  $.fn.get_row = function() {return this.attr('row');};
+  $.fn.get_col = function() {return this.attr('col');};
+
+  $.fn.in_top_row = function() {return $(this).get_row() == 1;};
+  $.fn.in_bottom_row = function() {return this.get_row() == $('#rows').val();};
+  $.fn.in_left_col = function() {return this.get_col() == 1;};
+  $.fn.in_right_col = function() {return this.get_col() == $('#cols').val();};
+
+  $.fn.cell_to_left = function() {return this.prevAll('.cell:not(.void)').first();};
+  $.fn.cell_to_right = function() {return this.nextAll('.cell:not(.void)').first();};
+  $.fn.cell_above = function() {if( this.in_top_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[row='" + (row - 1) + "'][col='"+ col +"']");if(!above.hasClass('void')){return above;} else {return above.cell_above();}}};
+  $.fn.cell_below = function() {if( this.in_bottom_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[row='" + (row + 1) + "'][col='"+ col +"']");if (!below.hasClass('void')){return below;} else {return below.cell_below();}}};})( jQuery );
