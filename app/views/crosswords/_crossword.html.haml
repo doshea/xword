@@ -7,6 +7,20 @@
         - index = (i -1)*@crossword.cols + j - 1
         - letter = @crossword.letters[index]
         - unless letter == '_'
-          %td.cell{:row => i, :col => j}= letter
+          %td.cell{:row => i, :col => j}
+            = letter
+            .cell_num
         -else
           %td.cell.void{:row => i, :col => j}
+.clue_column
+  Across
+  %ol.clues
+    - @clue_instances.where(:is_across => true).each do |ci|
+      %li.clue.across_clue{:clue_num => ci.start_cell}
+        = "#{ci.start_cell}. #{ci.clue.content}"
+.clue_column
+  Down
+  %ol.clues
+    - @clue_instances.where(:is_across => false).each do |ci|
+      %li.clue.down_clue{:clue_num => ci.start_cell}
+        = "#{ci.start_cell}. #{ci.clue.content}"

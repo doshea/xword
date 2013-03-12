@@ -1,7 +1,7 @@
 table#crossword {
   border-spacing: 0;
   background-image: url("<%= asset_path 'paper.jpeg' %>");
-
+  float: left;
   tr {
 
     td.cell {
@@ -11,18 +11,46 @@ table#crossword {
       font-size: 1.25em;
       text-align: center;
       text-transform: uppercase;
-      width: 1.25em;
+      width: 1.5em;
+      height: 1.5em;
+      position: relative;
 
       &.void {
         background-color: black;
       }
       &:not(.void){
-        &:hover {
-          cursor: text;
-        }
+        cursor: text;
       }
       &.selected {
-        background-color: rgba(255,255,110,0.7);
+        background-color: rgba(255,220,110,0.7);
+      }
+      &.selected_word:not(.selected) {
+        background-color: rgba(255,255,170,0.7);
+      }
+
+      .cell_num {
+        position: absolute;
+        top: 0;
+        left: 1px;
+        font-size: 0.4em;
+      }
+    }
+  }
+}
+.clue_column {
+  float: left;
+  .clues {
+    list-style-type: none;
+    max-height: 450px;
+    overflow: scroll;
+    width: 250px;
+
+    .clue {
+      border: 1px solid rgba(255,255,255,0);
+
+      &.selected_clue {
+        background-color: rgba(255, 255, 170, 1);
+        border: 1px solid #999;
       }
     }
   }

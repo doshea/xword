@@ -4,6 +4,7 @@ class CrosswordsController < ApplicationController
   end
   def show
     @crossword = Crossword.find(params[:id])
+    @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
   end
   def new
     @crossword = Crossword.new
