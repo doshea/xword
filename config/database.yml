@@ -5,3 +5,19 @@ development:
   pool: 5
   username: dylanoshea
   password:
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: xword_test
+  pool: 5
+  username: dylanoshea
+  password:
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: xword_production
+  pool: 5
+  username: dylanoshea
+  password:

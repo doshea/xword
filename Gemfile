@@ -19,6 +19,12 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'rspec-rails'
+  gem 'capybara'
+  gem 'launchy'
+  gem 'database_cleaner'
+
+
   gem 'pry-rails'
   gem 'pry-debugger'
   gem 'pry-stack_explorer'
@@ -27,9 +33,6 @@ group :development, :test do
 
   gem 'quiet_assets'
   gem 'better_errors'
-  # BetterErrors.editor = :sublime if defined? BetterErrors  (initializer)
-  # http://localhost:3000/__better_errors (reports last exception for debugging)
   gem 'binding_of_caller'
   gem 'meta_request'
-  # Add RailsPanel extension in the Chrome Web Store
 end
