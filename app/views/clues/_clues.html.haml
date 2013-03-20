@@ -1,0 +1,18 @@
+%table
+  %thead
+    %tr
+      %th ID
+      %th Content
+      %th Word
+      %th Difficulty
+      %th Creator
+  %tbody
+    - @clues.each do |clue|
+      %tr
+        %td= clue.id
+        %td= clue.content
+        %td= clue.word.content if clue.word
+        %td= clue.difficulty
+        %td
+          = link_to clue.user.username, clue.user
+

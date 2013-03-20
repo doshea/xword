@@ -10,6 +10,10 @@ gem 'haml'
 gem 'bcrypt-ruby'
 gem 'json'
 
+#gem 'carrierwave'
+#gem 'rmagick'
+#gem 'fog'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -19,11 +23,13 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'factory_girl_rails'
   gem 'rspec-rails'
   gem 'capybara'
   gem 'launchy'
   gem 'database_cleaner'
-
+  gem 'guard-rspec'
+  gem 'rb-fsevent'
 
   gem 'pry-rails'
   gem 'pry-debugger'

@@ -1,0 +1,46 @@
+%li.has-dropdown
+  %a{:href => '#', :id => 'profile_tease'}
+    = image_tag @current_user.image
+    = @current_user.username
+
+  %ul.dropdown
+    %li
+      %label Dropdown Level 1 Label
+    %li.has-dropdown
+      %a{:href => "#"} Dropdown Level 1a
+      %ul.dropdown
+        %li
+          %a{:href => "#"} Dropdown Level 2a
+        %li
+          %a{:href => "#"} Dropdown Level 2b
+        %li.has-dropdown
+          %a{:href => "#"} Dropdown Level 2c
+          %ul.dropdown
+            %li
+              %a{:href => "#"} Dropdown Level 3a
+            %li
+              %a{:href => "#"} Dropdown Level 3b
+            %li
+              %a{:href => "#"} Dropdown Level 3c
+        %li
+          %a{:href => "#"} Dropdown Level 2d
+        %li
+          %a{:href => "#"} Dropdown Level 2e
+        %li
+          %a{:href => "#"} Dropdown Level 2f
+    %li
+      %a{:href => "#"} Dropdown Level 1b
+    %li
+      %a{:href => "#"} Dropdown Level 1c
+    - if is_admin?
+      %li.divider
+      %li
+        %label Admin
+      %li.has-dropdown
+        %a{:href => users_path} Users
+      %li.has-dropdown
+        %a{:href => crosswords_path} Crosswords
+      %li.has-dropdown
+        %a{:href => clues_path} Clues
+      %li.has-dropdown
+        %a{:href => words_path} Words

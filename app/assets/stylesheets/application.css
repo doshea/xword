@@ -1,6 +1,9 @@
 /*
  *= require_self
+ *= require reset
  *= require normalize
+ *= require foundation.min
  *= require global
+ *= require layouts
  *= require crossword
  */

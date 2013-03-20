@@ -11,6 +11,7 @@
 #  password_digest :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  image           :text             default("http://www.spotivate.com/static/web/img/default_user_img.jpg")
 #
 
 class User < ActiveRecord::Base
@@ -23,4 +24,10 @@ class User < ActiveRecord::Base
   has_many :clues, :inverse_of => :user
   has_many :clue_instances, :through => :crosswords, :inverse_of => :user
 
+  def clue_count
+    self.clues.count
+  end
+  def crossword_count
+    self.crosswords.count
+  end
 end

@@ -1,0 +1,10 @@
+.row
+  .large-3.columns
+    = form_tag '/login' do
+      = label_tag :username
+      = text_field_tag :username, nil, :autofocus => true
+      = label_tag :password
+      = password_field_tag :password
+      = link_to('Cancel', '#', :'data-clear-form' => true, :class => 'button tiny radius alert')
+      = submit_tag 'Start Flirting', :class => 'button tiny radius success'
+  .large-9.columns
