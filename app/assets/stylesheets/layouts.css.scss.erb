@@ -1,5 +1,85 @@
 @import 'dimensions';
 
-.top-bar .row {
-  max-width: $header-width;
+.top-bar {
+  input[type='text'], input[type='password']{
+    line-height: 1em;
+  }
+  .row {
+    max-width: $header-width;
+  }
+  #login_button {
+    text-align: center;
+    & > .dropdown {
+      width: 200%;
+      border: 1px solid #333;
+      right: -2px;
+      padding-bottom: 0.5em;
+      background: white;
+
+      -webkit-border-bottom-left-radius: 0.5em;
+      -webkit-border-bottom-right-radius: 0.5em;
+
+      -moz-border-radius-bottomleft: 0.5em;
+      -moz-border-radius-bottomright: 0.5em;
+
+      border-bottom-left-radius: 0.5em;
+      border-bottom-right-radius: 0.5em;
+    }
+    .button {
+      top: 0;
+      margin-top: 1em;
+    }
+    input[type='text'], input[type='password'] {
+      text-align: center;
+    }
+  }
+  #user_menu {
+
+    #profile_tease {
+      img {
+        max-height: 60%;
+        vertical-align: middle;
+      }
+    }
+    & > .dropdown {
+      top: 98%;
+      right: -2px;
+    }
+  }
+  #top_search {
+    input[type='text'] {
+      border-radius: 1em;
+      text-align: left;
+    }
+    i {
+      position: absolute;
+      top: 0.6em;
+      right: 0.6em;
+      // backwards magnifying glass
+      -webkit-transform:scaleX(-1);
+      -moz-transform:scaleX(-1);
+      -ms-transform:scaleX(-1);
+      -o-transform:scaleX(-1);
+      transform:scaleX(-1);
+    }
+  }
+}
+
+.title-area {
+
+  .name {
+
+    h1 {
+      height: inherit;
+
+      a {
+        height: inherit;
+
+        #header_icon {
+          height: 90%;
+          margin: 5% 0;
+        }
+      }
+    }
+  }
 }

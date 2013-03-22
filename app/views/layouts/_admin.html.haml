@@ -1,0 +1,34 @@
+%li.divider
+%li.has-dropdown
+  %a Admin
+  %ul.dropdown
+    %li.has-dropdown
+      = link_to 'Users', users_path
+      %ul.dropdown
+        %li
+          = link_to 'See All', users_path
+    %li.has-dropdown
+      = link_to 'Crosswords', crosswords_path
+      %ul.dropdown
+        %li
+          = link_to 'See All', crosswords_path
+    %li.has-dropdown
+      = link_to 'Clues', clues_path
+      %ul.dropdown
+        %li
+          = link_to 'See All', clues_path
+    %li.has-dropdown
+      = link_to 'Words', words_path
+      %ul.dropdown
+        %li
+          = link_to 'See All', words_path
+    %li.has-dropdown
+      = link_to 'Clue Instances', clue_instances_path
+      %ul.dropdown
+        %li
+          = link_to 'See All', clue_instances_path
+    %li.has-dropdown
+      = link_to 'Comments', comments_path
+      %ul.dropdown
+        %li
+          = link_to 'See All', comments_path

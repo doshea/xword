@@ -1,3 +1,31 @@
 * {
   font-family: "HelveticaNeue", arial, sans-serif;
 }
+.light-shadow {
+  -moz-box-shadow: 3px 3px 3px grey;
+  -ms-box-shadow: 3px 3px 3px grey;
+  -webkit-box-shadow: 3px 3px 3px grey;
+  box-shadow: 3px 3px 3px grey;
+}
+.dark-shadow {
+  -moz-box-shadow: 3px 3px 3px black;
+  -ms-box-shadow: 3px 3px 3px black;
+  -webkit-box-shadow: 3px 3px 3px black;
+  box-shadow: 3px 3px 3px black;
+}
+html {
+  background: url(<%= asset_path('wood_table.jpg') %>) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100%;
+}
+body {
+  background: none;
+}
+#body {
+  & > .row {
+    background-color: white;
+  }
+}

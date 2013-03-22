@@ -31,8 +31,27 @@ class Crossword < ActiveRecord::Base
   has_many :clues, :through => :clue_instances, :inverse_of => :crosswords
   has_and_belongs_to_many :words
 
-  def is_void?(row, col)
-    self.letters[(row-1)*(self.cols)+(col-1)] == '_'
+  def rc_to_index(row, col)
+    (row-1)*(self.cols)+(col-1)
   end
+
+  def index_to_row(index)
+    (index / self.cols) + 1
+  end
+
+  def index_to_col(index)
+    (index % self.rows) + 1
+  end
+
+  def index_to_rc(index)
+    row = (index / self.cols) + 1
+    col = (index % self.rows) + 1
+    [row, col]
+  end
+
+  def is_void?(row, col)
+    self.letters[rc_to_index(row,col)] == '_'
+  end
+
 
 end

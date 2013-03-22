@@ -11,7 +11,7 @@
       %th Updated
   %tbody
     - @users.each do |user|
-      %tr
+      = content_tag_for(:tr, user) do
         %td= user.id
         %td= user.first_name
         %td= user.last_name

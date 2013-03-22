@@ -14,7 +14,7 @@
       %th Circles
   %tbody
     - @crosswords.each do |crossword|
-      %tr
+      = content_tag_for(:tr, crossword) do
         %td= crossword.id
         %td= link_to crossword.title, crossword
         %td= link_to crossword.user.username, crossword.user

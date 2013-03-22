@@ -6,13 +6,16 @@
       %th Word
       %th Difficulty
       %th Creator
+      %th
+      %th
   %tbody
     - @clues.each do |clue|
-      %tr
+      = content_tag_for(:tr, clue) do
         %td= clue.id
         %td= clue.content
         %td= clue.word.content if clue.word
         %td= clue.difficulty
         %td
           = link_to clue.user.username, clue.user
-
+        %td Edit
+        %td Delete

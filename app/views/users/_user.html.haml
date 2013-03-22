@@ -19,14 +19,5 @@
   .large-4.columns
     %ul
       - @user.crosswords.each do |cw|
-        %a{:href => '/crosswords/'+cw.id.to_s}
-          %li
-            = cw.title
-            / Generate an SVG image of the crossword puzzle
-            %svg
-              %rect{:fill => "white", :height => 5*cw.rows+2, :width => 5*cw.cols+2, :stroke => "black", ':stroke-width'=> 1}
-              - (1..cw.rows).each do |row|
-                - (1..cw.cols).each do |col|
-                  -if cw.is_void?(row, col)
-                    %rect{:fill =>  "black", :height => 5, :width => 5, :x => (col-1)*5+1, :y => (row-1)*5+1}
+        = render :partial => 'crosswords/mini_pic_canvas', :locals => {:cw => cw}
 .row

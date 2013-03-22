@@ -1,0 +1,10 @@
+.row#small_login
+  .large-8.large-offset-2.columns
+    = form_tag '/login' do
+      = label_tag :username
+      = text_field_tag :username, nil, :autofocus => true
+      = label_tag :password
+      = password_field_tag :password
+      / = button_to 'Cancel', '/login', :method => 'delete', :remote => true, :'data-clear-form' => true, :class => 'button tiny radius alert'
+      = submit_tag 'Log In', :class => 'button expand radius success', :disable_with => 'logging in...'
+  .large-2.columns

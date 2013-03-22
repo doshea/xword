@@ -10,16 +10,18 @@ gem 'haml'
 gem 'bcrypt-ruby'
 gem 'json'
 
-#gem 'carrierwave'
-#gem 'rmagick'
-#gem 'fog'
+gem 'carrierwave'
+gem 'fog'
+gem 'rmagick'
+gem 'remotipart'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
+  gem 'foundation-icons-sass-rails'
 end
 
 group :development, :test do

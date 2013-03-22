@@ -11,7 +11,7 @@
 #  password_digest :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  image           :text             default("http://www.spotivate.com/static/web/img/default_user_img.jpg")
+#  image           :text             default("https://s3.amazonaws.com/crossword-cafe/default_user_img.jpg")
 #
 
 require 'spec_helper'
