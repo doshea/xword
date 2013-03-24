@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_logged_in
-    redirect_to(root_path) if @current_user.nil?
+    redirect_to(account_required_path) if @current_user.nil?
   end
   def ensure_admin
     redirect_to(unauthorized_path) if (@current_user.nil? || !@current_user.is_admin)

@@ -1,9 +1,9 @@
 Xword::Application.routes.draw do
   root :to => 'pages#home'
 
-  resources :users, :only => [:index, :new, :create, :show] do
+  resources :users, :only => [:index, :new, :create, :show, :update] do
     collection do
-      get 'account'
+      get :account
     end
   end
 
@@ -18,5 +18,6 @@ Xword::Application.routes.draw do
   delete '/login' => 'sessions#destroy'
 
   get '/unauthorized' => 'pages#unauthorized'
+  get '/account_required' => 'pages#account_required'
 
 end

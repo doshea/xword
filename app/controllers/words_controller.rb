@@ -1,4 +1,6 @@
 class WordsController < ApplicationController
+  before_filter :ensure_admin, :only => [:index]
+
   def index
     @words = Word.all
   end

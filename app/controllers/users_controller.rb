@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :ensure_admin, :only => [:index]
+  before_filter :ensure_logged_in, :only => [:account]
 
   def index
     @users = User.order(:created_at)
@@ -11,6 +12,21 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+  end
+
+  def create
+    user = User.new(params[:user])
+    if user.save
+      session[:user_id] = user.id
+      redirect_to root_path
+    else
+      render :new
+    end
+  end
+
+  def update
+    @current_user.update_attributes(params[:user])
+    render :account
   end
 
   def account

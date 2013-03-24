@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130319180003) do
+ActiveRecord::Schema.define(:version => 20130324081255) do
 
   create_table "clue_instances", :force => true do |t|
     t.integer  "start_cell"
@@ -72,13 +72,14 @@ ActiveRecord::Schema.define(:version => 20130319180003) do
   create_table "users", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "username",                                                                                    :null => false
-    t.string   "email",                                                                                       :null => false
+    t.string   "username",                           :null => false
+    t.string   "email",                              :null => false
     t.boolean  "is_admin",        :default => false
     t.string   "password_digest"
-    t.datetime "created_at",                                                                                  :null => false
-    t.datetime "updated_at",                                                                                  :null => false
-    t.text     "image",           :default => "https://s3.amazonaws.com/crossword-cafe/default_user_img.jpg"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.text     "image"
+    t.string   "location"
   end
 
   create_table "words", :force => true do |t|

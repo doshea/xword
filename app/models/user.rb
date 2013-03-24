@@ -11,12 +11,14 @@
 #  password_digest :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  image           :text             default("https://s3.amazonaws.com/crossword-cafe/default_user_img.jpg")
+#  image           :text
 #
 
 class User < ActiveRecord::Base
   has_secure_password
-  attr_accessible :first_name, :last_name, :username, :email, :password, :password_confirmation, :crossword_ids, :comment_ids, :solution_ids, :clue_ids, :clue_instance_ids
+  attr_accessible :first_name, :last_name, :username, :email, :password, :password_confirmation, :crossword_ids, :comment_ids, :solution_ids, :clue_ids, :clue_instance_ids, :remote_image_url, :image
+
+  mount_uploader :image, AccountPicUploader
 
   has_many :crosswords, :inverse_of => :user
   has_many :comments, :inverse_of => :user

@@ -1,4 +1,5 @@
 class CrosswordsController < ApplicationController
+  before_filter :ensure_admin, :only => [:index]
   def index
     @crosswords = Crossword.order(:created_at)
   end

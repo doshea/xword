@@ -10,6 +10,7 @@ gem 'haml'
 gem 'bcrypt-ruby'
 gem 'json'
 
+# AWS image upload gems
 gem 'carrierwave'
 gem 'fog'
 gem 'rmagick'
@@ -25,6 +26,7 @@ group :assets do
 end
 
 group :development, :test do
+  #testing gems
   gem 'factory_girl_rails'
   gem 'rspec-rails'
   gem 'capybara'

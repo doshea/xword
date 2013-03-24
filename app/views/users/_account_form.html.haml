@@ -1,0 +1,33 @@
+.row
+  .large-7.columns
+    = form_for user, :html => {:multipart => true}, :remote => true do |f|
+      %fieldset
+        %legend
+          User Info
+        = f.label :image, 'Profile Image'
+        .row
+          .large-5.columns
+            = image_tag user.image
+          .large-7.columns
+            %p
+              Upload an image from your computer
+            = f.file_field :image
+            %p
+              or from the internetz
+            = text_field_tag "user[remote_image_url]", nil, :placeholder => "http://www.example.com/willshortz"
+        = f.label :first_name
+        = f.text_field :first_name, :placeholder => 'Will'
+        = f.label :last_name
+        = f.text_field :last_name, :placeholder => 'Shortz'
+        = f.label :location
+        = f.text_field :location, :placeholder => 'Lost in thought'
+        = f.submit 'Update Account', :class => 'button success'
+    = form_tag root_path do
+      %fieldset
+        %legend
+          Puzzle Settings
+    = form_tag root_path do
+      %fieldset
+        %legend
+          Email Settings
+  .large-4.large-offset-1.columns
