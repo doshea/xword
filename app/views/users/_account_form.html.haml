@@ -3,8 +3,7 @@
     = form_for user, :html => {:multipart => true}, :remote => true do |f|
       %fieldset
         %legend
-          User Info
-        = f.label :image, 'Profile Image'
+          Profile Picture
         .row
           .large-5.columns
             = image_tag user.image
@@ -15,6 +14,9 @@
             %p
               or from the internetz
             = text_field_tag "user[remote_image_url]", nil, :placeholder => "http://www.example.com/willshortz"
+      %fieldset
+        %legend
+          Personal Info
         = f.label :first_name
         = f.text_field :first_name, :placeholder => 'Will'
         = f.label :last_name

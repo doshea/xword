@@ -16,6 +16,9 @@ gem 'fog'
 gem 'rmagick'
 gem 'remotipart'
 
+#Slighty Fuzzy search. Probably needs to be replaced with Solr.
+gem 'pg_search'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

@@ -10,9 +10,16 @@ class CrosswordsController < ApplicationController
   def new
     @crossword = Crossword.new
   end
-  def edit
-  end
   def create
+    @crossword = Crossword.new(params[:crossword])
+    if @crossword.save
+      redirect_to edit_crossword_path(@crossword)
+    else
+      render :new
+    end
+  end
+  def edit
+    @crossword = Crossword.find(params[:id])
   end
   def update
   end

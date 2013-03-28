@@ -130,6 +130,9 @@ GEM
     net-ssh (2.6.6)
     nokogiri (1.5.9)
     pg (0.14.1)
+    pg_search (0.5.7)
+      activerecord (>= 3)
+      activesupport (>= 3)
     polyglot (0.3.3)
     pry (0.9.12)
       coderay (~> 1.0.5)
@@ -244,6 +247,7 @@ DEPENDENCIES
   launchy
   meta_request
   pg
+  pg_search
   pry-debugger
   pry-rails
   pry-stack_explorer

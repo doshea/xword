@@ -1,1 +1,13 @@
-= render :partial => 'new_form'
+.row.row-topper
+  %h4
+    New Puzzle
+.row
+  .large-8.columns
+    = render :partial => 'new_form'
+  .large-4.columns
+    %fieldset#preview
+      %legend
+        Preview
+      .row
+        .large-12.columns
+          = render :partial => 'mini_pic_canvas', :locals => {:cw => @crossword}

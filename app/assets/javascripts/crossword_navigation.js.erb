@@ -66,6 +66,7 @@ function word_highlight(){
   });
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
   corresponding_clue(select_start).addClass('selected_clue');
+  scroll_to_selected();
 
 }
 
@@ -82,6 +83,20 @@ function corresponding_clue($cell){
   return $("" + dir +"[clue_num=" + num + "]");
 }
 
+//
+function scroll_to_selected(){
+  var $sel_clue = $('.selected_clue');
+  var $clues = $sel_clue.closest('ol');
+  var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height()/2 + $sel_clue.height()/2;
+  // console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
+  $clues.stop().animate({scrollTop: top}, 'fast')
+}
+
+function scroll_to_selected2($parent, selector){
+  var $child = $parent.children(selector);
+  var top = $parent.scrollTop() + $child.position().top - $parent.height()/2 + $child.height()/2;
+  $parent.stop().animate({scrollTop: top}, 'fast')
+}
 
 function selected_word(){
   return $('.selected_word').text();

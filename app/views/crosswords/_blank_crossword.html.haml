@@ -1,0 +1,23 @@
+%table#crossword{:'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols}
+  - for r in 1..@crossword.rows
+    %tr{:'data-row' => r}
+      - for c in 1..@crossword.cols
+        - index = (r -1)*@crossword.cols + c - 1
+        - letter = @crossword.letters[index]
+        - unless letter == '_'
+          %td.cell{:'data-row' => r, :'data-col' => c}
+            .cell_num
+        -else
+          %td.cell.void{:'data-row' => r, :'data-col' => c}
+.clue_column
+  Across
+  %ol.clues
+    - @clue_instances.where(:is_across => true).each do |ci|
+      %li.clue.across_clue{:clue_num => ci.start_cell}
+        = "#{ci.start_cell}. #{ci.clue.content}"
+.clue_column
+  Down
+  %ol.clues
+    - @clue_instances.where(:is_across => false).each do |ci|
+      %li.clue.down_clue{:clue_num => ci.start_cell}
+        = "#{ci.start_cell}. #{ci.clue.content}"

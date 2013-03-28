@@ -1,0 +1,62 @@
+.row.row-topper
+  %h4
+    Search Results
+.row
+  .large-12.columns
+    - if @users.any?
+      %table
+        %thead
+          %tr
+            %th
+              First
+            %th
+              Last
+            %th
+              Username
+        %tbody
+          - @users.each do |user|
+            %tr
+              %td
+                = user.first_name
+              %td
+                = user.last_name
+              %td
+                = user.username
+    - if @crosswords.any?
+      %table
+        %thead
+          %tr
+            %th
+              Title
+            %th
+              Rows
+            %th
+              Columns
+        %tbody
+          - @crosswords.each do |crossword|
+            %tr
+              %td
+                = crossword.title
+              %td
+                = crossword.rows
+              %td
+                = crossword.cols
+    - if @words.any?
+      %table
+        %thead
+          %tr
+            %th
+              Word
+            %th
+              Clues
+            %th
+              Used in
+        %tbody
+          - @words.each do |word|
+            %tr
+              %td
+                = word.content
+              %td
+                = word.clues.count
+              %td
+                = word.crosswords.count

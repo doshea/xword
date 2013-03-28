@@ -13,6 +13,10 @@
   -webkit-box-shadow: 3px 3px 3px black;
   box-shadow: 3px 3px 3px black;
 }
+.borderless {
+  border: none !important;
+}
+
 html {
   background: url(<%= asset_path('wood_table.jpg') %>) no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -23,10 +27,25 @@ html {
 }
 body {
   background: none;
+  min-height: 100%;
 }
 #body {
   margin-top: 1em;
   & > .row {
     background-color: white;
+  }
+  & > .row-topper {
+    min-height: 1.5em;
+    background: black;
+    text-align: center;
+    -webkit-border-radius: 1em 1em 0 0;
+    -moz-border-radius: 1em 1em 0 0;
+    border-radius: 1em 1em 0 0;
+    margin-top: 2em;
+
+    p, h1, h2, h3, h4, h5, h6 {
+      color: white;
+    }
+
   }
 }

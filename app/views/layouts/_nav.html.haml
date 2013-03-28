@@ -18,11 +18,32 @@
       / Right Nav Section
       %ul.right
         %li.has-form
-          %form#top_search
+          = form_tag search_path, :method => 'get', :id => 'top_search' do
             .row.collapse
               .small-12.columns
-                %input{:type => "text", :class => 'round'}
+                = text_field_tag 'query', nil, :class => 'round'
                 %i.general.foundicon-search
+        %li.divider
+        %li.has-dropdown
+          %a{:href => '#'}
+            Create
+          %ul.dropdown
+            %li.divider
+            %li
+              = link_to 'New', new_crossword_path
+            %li
+              = link_to 'Unpublished', '#'
+            %li
+              = link_to 'Published', '#'
+
+        %li.divider
+        %li.has-dropdown
+          %a{:href => '#'}
+            Solve
+          %ul.dropdown
+            %li.divider
+            %li
+              = link_to 'Random Puzzle', '#'
         %li.divider
         - if is_logged_in?
           = render :partial => 'layouts/user_dropdown'

@@ -19,5 +19,8 @@
   .large-4.columns
     %ul
       - @user.crosswords.each do |cw|
-        = render :partial => 'crosswords/mini_pic_canvas', :locals => {:cw => cw}
+        %li
+          = link_to cw.title, cw
+          = link_to cw do
+            = render :partial => 'crosswords/mini_pic_canvas', :locals => {:cw => cw}
 .row

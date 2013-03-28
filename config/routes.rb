@@ -7,11 +7,12 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :crosswords, :only => [:index, :new, :show]
+  resources :crosswords, :only => [:index, :new, :show, :create, :edit]
   resources :clues, :only => [:index, :show]
   resources :words, :only => [:index, :show]
   resources :comments, :only => [:index]
   resources :clue_instances, :only => [:index]
+  resources :solutions, :only => [:index]
 
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
@@ -19,5 +20,6 @@ Xword::Application.routes.draw do
 
   get '/unauthorized' => 'pages#unauthorized'
   get '/account_required' => 'pages#account_required'
+  get '/search' => 'pages#search'
 
 end

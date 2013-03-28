@@ -1,9 +1,18 @@
 %div
 = form_for @crossword do |f|
-  =f.label :title
-  =f.text_field :title
-  =f.label :rows
-  =f.number_field :rows
-  =f.label :cols
-  =f.number_field :cols
-  =f.submit
+  %fieldset.borderless
+    %row
+      .large-6.columns
+        =f.label :title
+        =text_field_tag 'crossword[title]', nil, :placeholder => 'Untitled'
+      .large-3.columns
+        =f.label :rows
+        =f.number_field :rows
+      .large-3.columns
+        =f.label :cols
+        =f.number_field :cols
+    %row
+      .large-12.columns
+        =f.label :description
+        =f.text_area :description
+        =f.submit nil, :class => 'button success'

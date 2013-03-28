@@ -18,6 +18,13 @@ class User < ActiveRecord::Base
   has_secure_password
   attr_accessible :first_name, :last_name, :username, :email, :password, :password_confirmation, :crossword_ids, :comment_ids, :solution_ids, :clue_ids, :clue_instance_ids, :remote_image_url, :image
 
+  include PgSearch
+  pg_search_scope :starts_with,
+                  :against => [:first_name, :last_name, :username],
+                  :using => {
+                    :tsearch => {:prefix => true}
+                  }
+
   mount_uploader :image, AccountPicUploader
 
   has_many :crosswords, :inverse_of => :user

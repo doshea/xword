@@ -1,1 +1,14 @@
-= render :partial => 'crossword'
+.row
+  .large-12.columns
+    %h3= @crossword.title
+    %h5
+      by
+      = @crossword.user.username
+
+.row
+  .large-12.columns
+    = render :partial => 'blank_crossword'
+.row
+  .large-12.columns
+    %p
+      %em= @crossword.description

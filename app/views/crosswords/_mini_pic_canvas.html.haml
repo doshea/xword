@@ -1,19 +1,16 @@
-%li
-  =link_to cw.title, cw
-  = link_to cw do
-    %canvas{:id => 'crossword_' + cw.id.to_s, :width => 5*cw.cols, :height => 5*cw.rows, :style => 'border: 1px solid black'}
-      %script
-        var c = document.getElementById("crossword_#{cw.id}");
-        var ctx=c.getContext("2d");
-        - (1..cw.rows).each do |row|
-          ctx.fillStyle="000000";
-          - (1..cw.cols).each do |col|
-            ctx.fillStyle="000000";
-            -if cw.is_void?(row, col)
-              ctx.fillRect(#{(col-1)*5},#{(row-1)*5},5,5);
-            -if col != cw.cols
-              ctx.fillStyle="444444";
-              ctx.fillRect(#{col}*5,0,1,#{cw.rows}*5);
-          -if row != cw.rows
-            ctx.fillStyle="444444";
-            ctx.fillRect(0,#{row}*5,#{cw.cols}*5,1);
+%canvas{:id => 'crossword_' + cw.id.to_s, :width => 5*cw.cols, :height => 5*cw.rows, :style => 'border: 1px solid black'}
+  %script
+    var c = document.getElementById("crossword_#{cw.id}");
+    var ctx=c.getContext("2d");
+    - (1..cw.rows).each do |row|
+      ctx.fillStyle="000000";
+      - (1..cw.cols).each do |col|
+        ctx.fillStyle="000000";
+        -if cw.is_void?(row, col)
+          ctx.fillRect(#{(col-1)*5},#{(row-1)*5},5,5);
+        -if col != cw.cols
+          ctx.fillStyle="444444";
+          ctx.fillRect(#{col}*5,0,1,#{cw.rows}*5);
+      -if row != cw.rows
+        ctx.fillStyle="444444";
+        ctx.fillRect(0,#{row}*5,#{cw.cols}*5,1);
