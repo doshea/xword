@@ -1,6 +1,10 @@
-User.delete_all
+Clue.delete_all
+ClueInstance.delete_all
 Comment.delete_all
 Crossword.delete_all
+Solution.delete_all
+User.delete_all
+Word.delete_all
 
 #Makes an admin User
 u1 = User.create(:first_name => 'Dylan', :last_name => 'O\'Shea', :username => 'doshea', :email => 'dylan.j.oshea@gmail.com', :password => 'temp123', :password_confirmation => 'temp123')
@@ -10,8 +14,9 @@ u1.save
 #Makes other users
 u2 = User.create(:first_name => 'Andrew', :last_name => 'Locke', :username => 'alocke', :email => 'locke.andrew@gmail.com', :password => 'temp123', :password_confirmation => 'temp123')
 
+#Makes a crossword with its full letters`
 cro1 = Crossword.create(:title => 'Interstellar Travel', :description => 'My cool puzzle', :rows => 15, :cols => 15)
-cro1.letters = ['O','N','I','O','N','_','_','A','F','T','_','C','S','T','_','P','A','N','G','E','_','D','N','A','S','_','L','O','S','T','A','T','O','R','S','_','E','D','N','A','_','O','U','R','S','L','O','N','E','S','T','A','R','C','O','U','N','T','R','Y','_','_','_','S','Y','D','N','E','Y','_','M','E','H','_','_','A','B','S','_','_','S','S','W','_','B','A','S','A','L','_','N','O','O','S','E','_','_','S','A','R','_','_','S','O','B','T','R','U','E','L','I','E','_','W','A','R','M','I','C','E','E','A','T','_','_','T','A','E','_','_','B','E','A','K','S','_','T','H','A','I','S','_','M','A','S','_','_','N','E','O','_','_','H','R','S','_','I','B','E','R','I','A','_','_','_','B','L','A','C','K','S','T','A','R','N','A','T','I','O','N','M','A','N','A','_','T','E','R','O','_','M','O','O','D','Y','I','C','O','N','_','E','C','G','S','_','I','N','T','E','S','_','K','I','E','_','T','H','O','_','_','T','E','A','S','E'];
+cro1.letters = ['ONION__AFT_CST_PANGE_DNAS_LOSTATORS_EDNA_OURSLONESTARCOUNTRY___SYDNEY_MEH__ABS__SSW_BASAL_NOOSE__SAR__SOBTRUELIE_WARMICEEAT__TAE__BEAKS_THAIS_MAS__NEO__HRS_IBERIA___BLACKSTARNATIONMANA_TERO_MOODYICON_ECGS_INTES_KIE_THO__TEASE'];
 
 cro2 = Crossword.create(:title => 'Rage Cage', :description => 'A puzzle for my friends', :rows => 15, :cols => 15)
 u1.crosswords << cro2
@@ -23,7 +28,7 @@ u2.comments << com1 << com2
 cro2.comments << com1 << com2
 
 #Trying to add serialized fields
-cro3 = Crossword.create(:title => 'Over the Rainbow', :description => 'My other puzzle', :rows => 15, :cols => 15, :letters => ['a','b','c','d'], :gridnums => [0,0,1,0,0,0,2,0,0,0,3])
+cro3 = Crossword.create(:title => 'Over the Rainbow', :description => 'My other puzzle', :rows => 15, :cols => 15, :letters => ['abcd'], :gridnums => [0,0,1,0,0,0,2,0,0,0,3])
 u2.crosswords << cro3
 
 

@@ -27,10 +27,6 @@ class Crossword < ActiveRecord::Base
                     :tsearch => {:prefix => true}
                   }
 
-  serialize :letters, Array
-  serialize :gridnums, Array
-  serialize :circles, Array
-
   belongs_to :user, :inverse_of => :crosswords
   has_many :comments, :inverse_of => :crossword
   has_many :solutions, :inverse_of => :crossword
@@ -54,6 +50,10 @@ class Crossword < ActiveRecord::Base
     row = (index / self.cols) + 1
     col = (index % self.rows) + 1
     [row, col]
+  end
+
+  def letters_a
+    self.letters.split('')
   end
 
   def is_void?(row, col)
