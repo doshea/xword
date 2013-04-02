@@ -1,0 +1,18 @@
+%table
+  %thead
+    %tr
+      %th
+        Title
+      %th
+        Rows
+      %th
+        Columns
+  %tbody
+    - @crosswords.each do |crossword|
+      %tr
+        %td
+          = crossword.title
+        %td
+          = crossword.rows
+        %td
+          = crossword.cols

@@ -1,0 +1,18 @@
+%table
+  %thead
+    %tr
+      %th
+        Word
+      %th
+        Clues
+      %th
+        Used in
+  %tbody
+    - @words.each do |word|
+      %tr
+        %td
+          = word.content
+        %td
+          = word.clues.count
+        %td
+          = word.crosswords.count
