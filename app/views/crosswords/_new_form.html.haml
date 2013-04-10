@@ -2,13 +2,13 @@
 = form_for @crossword do |f|
   %fieldset.borderless
     %row
-      .large-6.columns
+      .large-8.columns
         =f.label :title
         =text_field_tag 'crossword[title]', nil, :placeholder => 'Untitled'
-      .large-3.columns
+      .large-2.columns
         =f.label :rows
         =f.number_field :rows
-      .large-3.columns
+      .large-2.columns
         =f.label :cols
         =f.number_field :cols
     %row

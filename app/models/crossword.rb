@@ -57,7 +57,7 @@ class Crossword < ActiveRecord::Base
   end
 
   def is_void?(row, col)
-    self.letters[rc_to_index(row,col)] == '_'
+    self.letters.present? ? self.letters[rc_to_index(row,col)] == '_' : nil
   end
 
 

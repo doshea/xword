@@ -28,7 +28,7 @@ u2.comments << com1 << com2
 cro2.comments << com1 << com2
 
 #Trying to add serialized fields
-cro3 = Crossword.create(:title => 'Over the Rainbow', :description => 'My other puzzle', :rows => 15, :cols => 15, :letters => ['abcd'], :gridnums => [0,0,1,0,0,0,2,0,0,0,3])
+cro3 = Crossword.create(:title => 'Over the Rainbow', :description => 'My other puzzle', :rows => 15, :cols => 15, :letters => ['abcd'], :gridnums => ['00100020003'])
 u2.crosswords << cro3
 
 

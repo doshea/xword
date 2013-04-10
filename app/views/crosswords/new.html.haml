@@ -2,12 +2,12 @@
   %h4
     New Puzzle
 .row
-  .large-8.columns
+  .large-7.columns
     = render :partial => 'new_form'
-  .large-4.columns
+  .large-5.columns
     %fieldset#preview
       %legend
         Preview
       .row
         .large-12.columns
-          = render :partial => 'mini_pic_canvas', :locals => {:cw => @crossword}
+          = render :partial => 'mini_pic_canvas2', :locals => {:rows => @crossword.rows, :cols => @crossword.cols}
