@@ -7,115 +7,283 @@ User.delete_all
 Word.delete_all
 
 #Makes an admin User
-u1 = User.create(:first_name => 'Dylan', :last_name => 'O\'Shea', :username => 'doshea', :email => 'dylan.j.oshea@gmail.com', :password => 'temp123', :password_confirmation => 'temp123')
+u1 = User.create(first_name: 'Dylan', last_name: 'O\'Shea', username: 'doshea', email: 'dylan.j.oshea@gmail.com', password: 'temp123', password_confirmation: 'temp123')
 u1.is_admin = true
 u1.save
 
 #Makes other users
-u2 = User.create(:first_name => 'Andrew', :last_name => 'Locke', :username => 'alocke', :email => 'locke.andrew@gmail.com', :password => 'temp123', :password_confirmation => 'temp123')
+u2 = User.create(first_name: 'Andrew', last_name: 'Locke', username: 'alocke', email: 'locke.andrew@gmail.com', password: 'temp123', password_confirmation: 'temp123')
 
 #Makes a crossword with its full letters`
-cro1 = Crossword.create(:title => 'Interstellar Travel', :description => 'My cool puzzle', :rows => 15, :cols => 15)
+cro1 = Crossword.create(title: 'Interstellar Travel', description: 'My cool puzzle', rows: 15, cols: 15)
 cro1.letters = 'ONION__AFT_CST_PANGE_DNAS_LOSTATORS_EDNA_OURSLONESTARCOUNTRY___SYDNEY_MEH__ABS__SSW_BASAL_NOOSE__SAR__SOBTRUELIE_WARMICEEAT__TAE__BEAKS_THAIS_MAS__NEO__HRS_IBERIA___BLACKSTARNATIONMANA_TERO_MOODYICON_ECGS_INTES_KIE_THO__TEASE'
 cro1.save
 
-cro2 = Crossword.create(:title => 'Rage Cage', :description => 'A puzzle for my friends', :rows => 15, :cols => 15)
+cro2 = Crossword.create(title: 'Rage Cage', description: 'A puzzle for my friends', rows: 15, cols: 15)
 u1.crosswords << cro2
 u2.crosswords << cro1
 
-com1 = Comment.create(:content => "Hi, I'm Andrew. This is the first comment...")
-com2 = Comment.create(:content => "...and this is the second comment.")
+com1 = Comment.create(content: "Hi, I'm Andrew. This is the first comment...")
+com2 = Comment.create(content: "...and this is the second comment.")
 u2.comments << com1 << com2
 cro2.comments << com1 << com2
 
 #Trying to add serialized fields
-cro3 = Crossword.create(:title => 'Over the Rainbow', :description => 'My other puzzle', :rows => 15, :cols => 15, :letters => 'abcd', :gridnums => '00100020003')
+cro3 = Crossword.create(title: 'Over the Rainbow', description: 'My other puzzle', rows: 15, cols: 15, letters: 'abcd', gridnums: '00100020003')
 u2.crosswords << cro3
 
 #creates clues
 cro1_clues = [
-  c01a = Clue.create(:content => 'Has layers, like 4-down, perhaps'),
-  c06a = Clue.create(:content => 'Towards the stern'),
-  c09a = Clue.create(:content => 'Concern of Chicago TV watchers'),
-  c12a = Clue.create(:content => 'West African machete'),
-  c13a = Clue.create(:content => 'Building blocks of uniqueness'),
-  c14a = Clue.create(:content => 'Hit 6-season TV series by JJ Abrams'),
-  c16a = Clue.create(:content => 'Suffix with alig- (pl.)'),
-  c17a = Clue.create(:content => 'Costume designer in <em>The Incredibles</em>'),
-  c18a = Clue.create(:content => 'Not yours anymore'),
-  c19a = Clue.create(:content => 'Liberia, slangily'),
-  c22a = Clue.create(:content => 'Host of the 2000 Summer Olympics'),
-  c23a = Clue.create(:content => '[<em>\'\'Not interested\'\'</em>]'),
-  c24a = Clue.create(:content => 'Stomach muscles'),
-  c27a = Clue.create(:content => 'Heading from Salt Lake to Los Angeles, say'),
-  c28a = Clue.create(:content => 'Bottom layer'),
-  c30a = Clue.create(:content => 'Final collar in the Wild West?'),
-  c33a = Clue.create(:content => 'Team that searches for lost sailors, abr.'),
-  c35a = Clue.create(:content => 'Weep hysterically'),
-  c37a = Clue.create(:content => 'Oxymoron #1'),
-  c40a = Clue.create(:content => 'Oxymoron #2'),
-  c43a = Clue.create(:content => 'Take in food'),
-  c44a = Clue.create(:content => '___-Bo'),
-  c46a = Clue.create(:content => 'Darwin focus in the Galapagos'),
-  c47a = Clue.create(:content => '10-Downs who you will meet if you continue on 26-Down\'s path'),
-  c50a = Clue.create(:content => 'See 71-Across'),
-  c53a = Clue.create(:content => 'Prefix with conservative or classical'),
-  c54a = Clue.create(:content => 'Ken Griffey Jr. stat.'),
-  c55a = Clue.create(:content => 'Spain and Portugal, collectively'),
-  c58a = Clue.create(:content => 'Ghana, slangily'),
-  c64a = Clue.create(:content => 'Magical power'),
-  c65a = Clue.create(:content => 'Installation and maintenance prefix'),
-  c66a = Clue.create(:content => 'Temperamental'),
-  c67a = Clue.create(:content => 'Madonna or Michael Jackson'),
-  c68a = Clue.create(:content => 'Electronic displays of heartbeats'),
-  c69a = Clue.create(:content => 'Guts, abr.'),
-  c70a = Clue.create(:content => 'When doubled, a New Zealand plant used for baskets'),
-  c71a = Clue.create(:content => 'With 50-Across, the name between 6- and 29-Down'),
-  c72a = Clue.create(:content => 'Poke fun at'),
+  c01a = Clue.create(content: 'Has layers, like 4-down, perhaps'),
+  c06a = Clue.create(content: 'Towards the stern'),
+  c09a = Clue.create(content: 'Concern of Chicago TV watchers'),
+  c12a = Clue.create(content: 'West African machete'),
+  c13a = Clue.create(content: 'Building blocks of uniqueness'),
+  c14a = Clue.create(content: 'Hit 6-season TV series by JJ Abrams'),
+  c16a = Clue.create(content: 'Suffix with alig- (pl.)'),
+  c17a = Clue.create(content: 'Costume designer in <em>The Incredibles</em>'),
+  c18a = Clue.create(content: 'Not yours anymore'),
+  c19a = Clue.create(content: 'Liberia, slangily'),
+  c22a = Clue.create(content: 'Host of the 2000 Summer Olympics'),
+  c23a = Clue.create(content: '[<em>\'\'Not interested\'\'</em>]'),
+  c24a = Clue.create(content: 'Stomach muscles'),
+  c27a = Clue.create(content: 'Heading from Salt Lake to Los Angeles, say'),
+  c28a = Clue.create(content: 'Bottom layer'),
+  c30a = Clue.create(content: 'Final collar in the Wild West?'),
+  c33a = Clue.create(content: 'Team that searches for lost sailors, abr.'),
+  c35a = Clue.create(content: 'Weep hysterically'),
+  c37a = Clue.create(content: 'Oxymoron #1'),
+  c40a = Clue.create(content: 'Oxymoron #2'),
+  c43a = Clue.create(content: 'Take in food'),
+  c44a = Clue.create(content: '___-Bo'),
+  c46a = Clue.create(content: 'Darwin focus in the Galapagos'),
+  c47a = Clue.create(content: '10-Downs who you will meet if you continue on 26-Down\'s path'),
+  c50a = Clue.create(content: 'See 71-Across'),
+  c53a = Clue.create(content: 'Prefix with conservative or classical'),
+  c54a = Clue.create(content: 'Ken Griffey Jr. stat.'),
+  c55a = Clue.create(content: 'Spain and Portugal, collectively'),
+  c58a = Clue.create(content: 'Ghana, slangily'),
+  c64a = Clue.create(content: 'Magical power'),
+  c65a = Clue.create(content: 'Installation and maintenance prefix'),
+  c66a = Clue.create(content: 'Temperamental'),
+  c67a = Clue.create(content: 'Madonna or Michael Jackson'),
+  c68a = Clue.create(content: 'Electronic displays of heartbeats'),
+  c69a = Clue.create(content: 'Guts, abr.'),
+  c70a = Clue.create(content: 'When doubled, a New Zealand plant used for baskets'),
+  c71a = Clue.create(content: 'With 50-Across, the name between 6- and 29-Down'),
+  c72a = Clue.create(content: 'Poke fun at'),
 
-  c01d = Clue.create(:content => 'Semi-transparent gem'),
-  c02d = Clue.create(:content => 'Upper hemisphere grp. established in 1949'),
-  c03d = Clue.create(:content => 'Privy to'),
-  c04d = Clue.create(:content => 'Shrek, among others'),
-  c05d = Clue.create(:content => 'Nickname for Loch and 29-Down'),
-  c06d = Clue.create(:content => 'Jackson and 29-Down, among others'),
-  c07d = Clue.create(:content => 'Ornate'),
-  c08d = Clue.create(:content => 'With -Chuang, city in Eastern China'),
-  c09d = Clue.create(:content => 'Carbon copies'),
-  c10d = Clue.create(:content => 'One from Burma to Malaysia'),
-  c11d = Clue.create(:content => 'Train route across No. Mongolia and Rus.'),
-  c13d = Clue.create(:content => 'Heads of academic departments'),
-  c15d = Clue.create(:content => 'Suffix with ar- to describe many coffee shop faithful'),
-  c20d = Clue.create(:content => 'They\'re worth six in the N.F.L.'),
-  c21d = Clue.create(:content => 'Thurman of <em>Kill Bill</em>'),
-  c24d = Clue.create(:content => 'First step in a poker game'),
-  c25d = Clue.create(:content => 'Kazakhstani ambassador of movies'),
-  c26d = Clue.create(:content => 'On the Cambodian side of Vietnam\'s biggest city'),
-  c28d = Clue.create(:content => 'Women\'s underwear'),
-  c29d = Clue.create(:content => 'See 5-Down'),
-  c31d = Clue.create(:content => 'U-turn from N.W.'),
-  c32d = Clue.create(:content => '__ Dorado'),
-  c34d = Clue.create(:content => '<em>\'\'That\'s so cute!\'\'</em>'),
-  c36d = Clue.create(:content => 'Kiss, in Madrid'),
-  c38d = Clue.create(:content => '<em>\'\'___ a long story...\'\'</em>'),
-  c39d = Clue.create(:content => '\'\'__ Sports, It\'s in The Game\'\''),
-  c41d = Clue.create(:content => '_&_ - Blues and Jazz genre'),
-  c42d = Clue.create(:content => 'Windows operating system in 2000'),
-  c45d = Clue.create(:content => 'U.S. policy towards Cuba, e.g.'),
-  c48d = Clue.create(:content => 'Mysterious'),
-  c49d = Clue.create(:content => 'Suffix with basil'),
-  c51d = Clue.create(:content => 'Things related to aviation'),
-  c52d = Clue.create(:content => 'Many hospital wrks.'),
-  c55d = Clue.create(:content => 'Apple products, more generally'),
-  c56d = Clue.create(:content => 'What one would say after getting tagged, say'),
-  c57d = Clue.create(:content => 'Make amends, with \'\'for\'\''),
-  c58d = Clue.create(:content => 'Key stat. for athletes'),
-  c59d = Clue.create(:content => 'Be without'),
-  c60d = Clue.create(:content => '\'Let it stand\''),
-  c61d = Clue.create(:content => 'Smallest bit'),
-  c62d = Clue.create(:content => 'Lyrical poems'),
-  c63d = Clue.create(:content => 'Where the bell-man may have trouble getting to work (these days)?')
+  c01d = Clue.create(content: 'Semi-transparent gem'),
+  c02d = Clue.create(content: 'Upper hemisphere grp. established in 1949'),
+  c03d = Clue.create(content: 'Privy to'),
+  c04d = Clue.create(content: 'Shrek, among others'),
+  c05d = Clue.create(content: 'Nickname for Loch and 29-Down'),
+  c06d = Clue.create(content: 'Jackson and 29-Down, among others'),
+  c07d = Clue.create(content: 'Ornate'),
+  c08d = Clue.create(content: 'With -Chuang, city in Eastern China'),
+  c09d = Clue.create(content: 'Carbon copies'),
+  c10d = Clue.create(content: 'One from Burma to Malaysia'),
+  c11d = Clue.create(content: 'Train route across No. Mongolia and Rus.'),
+  c13d = Clue.create(content: 'Heads of academic departments'),
+  c15d = Clue.create(content: 'Suffix with ar- to describe many coffee shop faithful'),
+  c20d = Clue.create(content: 'They\'re worth six in the N.F.L.'),
+  c21d = Clue.create(content: 'Thurman of <em>Kill Bill</em>'),
+  c24d = Clue.create(content: 'First step in a poker game'),
+  c25d = Clue.create(content: 'Kazakhstani ambassador of movies'),
+  c26d = Clue.create(content: 'On the Cambodian side of Vietnam\'s biggest city'),
+  c28d = Clue.create(content: 'Women\'s underwear'),
+  c29d = Clue.create(content: 'See 5-Down'),
+  c31d = Clue.create(content: 'U-turn from N.W.'),
+  c32d = Clue.create(content: '__ Dorado'),
+  c34d = Clue.create(content: '<em>\'\'That\'s so cute!\'\'</em>'),
+  c36d = Clue.create(content: 'Kiss, in Madrid'),
+  c38d = Clue.create(content: '<em>\'\'___ a long story...\'\'</em>'),
+  c39d = Clue.create(content: '\'\'__ Sports, It\'s in The Game\'\''),
+  c41d = Clue.create(content: '_&_ - Blues and Jazz genre'),
+  c42d = Clue.create(content: 'Windows operating system in 2000'),
+  c45d = Clue.create(content: 'U.S. policy towards Cuba, e.g.'),
+  c48d = Clue.create(content: 'Mysterious'),
+  c49d = Clue.create(content: 'Suffix with basil'),
+  c51d = Clue.create(content: 'Things related to aviation'),
+  c52d = Clue.create(content: 'Many hospital wrks.'),
+  c55d = Clue.create(content: 'Apple products, more generally'),
+  c56d = Clue.create(content: 'What one would say after getting tagged, say'),
+  c57d = Clue.create(content: 'Make amends, with \'\'for\'\''),
+  c58d = Clue.create(content: 'Key stat. for athletes'),
+  c59d = Clue.create(content: 'Be without'),
+  c60d = Clue.create(content: '\'Let it stand\''),
+  c61d = Clue.create(content: 'Smallest bit'),
+  c62d = Clue.create(content: 'Lyrical poems'),
+  c63d = Clue.create(content: 'Where the bell-man may have trouble getting to work (these days)?')
 ]
+
+# creates words
+cro1_words = [
+  w01a = Word.create(content: 'ONION'),
+  w06a = Word.create(content: 'AFT'),
+  w09a = Word.create(content: 'CST'),
+  w12a = Word.create(content: 'PANGE'),
+  w13a = Word.create(content: 'DNAS'),
+  w14a = Word.create(content: 'LOST'),
+  w16a = Word.create(content: 'ATORS'),
+  w17a = Word.create(content: 'EDNA'),
+  w18a = Word.create(content: 'OURS'),
+  w19a = Word.create(content: 'LONESTARCOUNTRY'),
+  w22a = Word.create(content: 'SYDNEY'),
+  w23a = Word.create(content: 'MEH'),
+  w24a = Word.create(content: 'ABS'),
+  w27a = Word.create(content: 'SSW'),
+  w28a = Word.create(content: 'BASAL'),
+  w30a = Word.create(content: 'NOOSE'),
+  w33a = Word.create(content: 'SAR'),
+  w35a = Word.create(content: 'SOB'),
+  w37a = Word.create(content: 'TRUELIE'),
+  w40a = Word.create(content: 'WARMICE'),
+  w43a = Word.create(content: 'EAT'),
+  w44a = Word.create(content: 'TAE'),
+  w46a = Word.create(content: 'BREAKS'),
+  w47a = Word.create(content: 'THAIS'),
+  w50a = Word.create(content: 'MAS'),
+  w53a = Word.create(content: 'NEO'),
+  w54a = Word.create(content: 'HRS'),
+  w55a = Word.create(content: 'IBERIA'),
+  w58a = Word.create(content: 'BLACKSTARNATION'),
+  w64a = Word.create(content: 'MANA'),
+  w65a = Word.create(content: 'TERO'),
+  w66a = Word.create(content: 'MOODY'),
+  w67a = Word.create(content: 'ICON'),
+  w68a = Word.create(content: 'ECGS'),
+  w69a = Word.create(content: 'INTES'),
+  w70a = Word.create(content: 'KIE'),
+  w71a = Word.create(content: 'THO'),
+  w72a = Word.create(content: 'TEASE'),
+
+  w01d = Word.create(content: 'OPAL'),
+  w02d = Word.create(content: 'NATO'),
+  w03d = Word.create(content: 'INON'),
+  w04d = Word.create(content: 'OGRES'),
+  w05d = Word.create(content: 'NESSY'),
+  w06d = Word.create(content: 'ANDREWS'),
+  w07d = Word.create(content: 'FANCY'),
+  w08d = Word.create(content: 'TSAO'),
+  w09d = Word.create(content: 'CLONES'),
+  w10d = Word.create(content: 'SOUTHASIAN'),
+  w11d = Word.create(content: 'TSSR'),
+  w13d = Word.create(content: 'DEANS'),
+  w15d = Word.create(content: 'TSY'),
+  w20d = Word.create(content: 'TDS'),
+  w21d = Word.create(content: 'UMA'),
+  w24d = Word.create(content: 'ANTE'),
+  w25d = Word.create(content: 'BORAT'),
+  w26d = Word.create(content: 'SOUTHHANOI'),
+  w28d = Word.create(content: 'BRA'),
+  w29d = Word.create(content: 'LOCKE'),
+  w31d = Word.create(content: 'SE'),
+  w32d = Word.create(content: 'EL'),
+  w34d = Word.create(content: 'AW'),
+  w36d = Word.create(content: 'BESO'),
+  w38d = Word.create(content: 'ITS'),
+  w39d = Word.create(content: 'EA'),
+  w41d = Word.create(content: 'RB'),
+  w42d = Word.create(content: 'ME'),
+  w45d = Word.create(content: 'EMBARGO'),
+  w48d = Word.create(content: 'ARCANE'),
+  w49d = Word.create(content: 'ISK'),
+  w51d = Word.create(content: 'AEROS'),
+  w52d = Word.create(content: 'SRN'),
+  w55d = Word.create(content: 'ITECH'),
+  w56d = Word.create(content: 'IAMIT'),
+  w57d = Word.create(content: 'ATONE'),
+  w58d = Word.create(content: 'BMI'),
+  w59d = Word.create(content: 'LACK'),
+  w60d = Word.create(content: 'STET'),
+  w61d = Word.create(content: 'IOTA'),
+  w62d = Word.create(content: 'ODES'),
+  w63d = Word.create(content: 'NYSE')
+]
+
+#associates the clues with their words
+w01a.clues << c01a
+w06a.clues << c06a
+w09a.clues << c09a
+w12a.clues << c12a
+w13a.clues << c13a
+w14a.clues << c14a
+w16a.clues << c16a
+w17a.clues << c17a
+w18a.clues << c18a
+w19a.clues << c19a
+w22a.clues << c22a
+w23a.clues << c23a
+w24a.clues << c24a
+w27a.clues << c27a
+w28a.clues << c28a
+w30a.clues << c30a
+w33a.clues << c33a
+w35a.clues << c35a
+w37a.clues << c37a
+w40a.clues << c40a
+w43a.clues << c43a
+w44a.clues << c44a
+w46a.clues << c46a
+w47a.clues << c47a
+w50a.clues << c50a
+w53a.clues << c53a
+w54a.clues << c54a
+w55a.clues << c55a
+w58a.clues << c58a
+w64a.clues << c64a
+w65a.clues << c65a
+w66a.clues << c66a
+w67a.clues << c67a
+w68a.clues << c68a
+w69a.clues << c69a
+w70a.clues << c70a
+w71a.clues << c71a
+w72a.clues << c72a
+
+w01d.clues << c01d
+w02d.clues << c02d
+w03d.clues << c03d
+w04d.clues << c04d
+w05d.clues << c05d
+w06d.clues << c06d
+w07d.clues << c07d
+w08d.clues << c08d
+w09d.clues << c09d
+w10d.clues << c10d
+w11d.clues << c11d
+w13d.clues << c13d
+w15d.clues << c15d
+w20d.clues << c20d
+w21d.clues << c21d
+w24d.clues << c24d
+w25d.clues << c25d
+w26d.clues << c26d
+w28d.clues << c28d
+w29d.clues << c29d
+w31d.clues << c31d
+w32d.clues << c32d
+w34d.clues << c34d
+w36d.clues << c36d
+w38d.clues << c38d
+w39d.clues << c39d
+w41d.clues << c41d
+w42d.clues << c42d
+w45d.clues << c45d
+w48d.clues << c48d
+w49d.clues << c49d
+w51d.clues << c51d
+w52d.clues << c52d
+w55d.clues << c55d
+w56d.clues << c56d
+w57d.clues << c57d
+w58d.clues << c58d
+w59d.clues << c59d
+w60d.clues << c60d
+w61d.clues << c61d
+w62d.clues << c62d
+w63d.clues << c63d
 
 # creates clue instances
 cro1_cis = [
