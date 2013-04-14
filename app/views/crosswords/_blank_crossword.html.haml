@@ -10,14 +10,15 @@
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
 .clue_column
-  Across
-  %ol.clues
+  %h6 Across
+  %ol.clues#across
     - @clue_instances.where(:is_across => true).each do |ci|
       %li.clue.across_clue{:clue_num => ci.start_cell}
         = "#{ci.start_cell}. #{ci.clue.content}"
 .clue_column
-  Down
-  %ol.clues
+  %h6 Down
+  %ol.clues#down
     - @clue_instances.where(:is_across => false).each do |ci|
       %li.clue.down_clue{:clue_num => ci.start_cell}
         = "#{ci.start_cell}. #{ci.clue.content}"
+#puzzle_controls

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130324081255) do
+ActiveRecord::Schema.define(:version => 20130414052306) do
 
   create_table "clue_instances", :force => true do |t|
     t.integer  "start_cell"
@@ -47,8 +47,8 @@ ActiveRecord::Schema.define(:version => 20130324081255) do
     t.text     "description"
     t.integer  "rows",           :default => 15,         :null => false
     t.integer  "cols",           :default => 15,         :null => false
-    t.text     "letters"
-    t.text     "gridnums"
+    t.text     "letters",        :default => "",         :null => false
+    t.text     "gridnums",       :default => "",         :null => false
     t.text     "circles"
     t.integer  "user_id"
     t.datetime "created_at",                             :null => false
@@ -61,12 +61,12 @@ ActiveRecord::Schema.define(:version => 20130324081255) do
   end
 
   create_table "solutions", :force => true do |t|
-    t.text     "letters"
-    t.boolean  "is_complete"
+    t.text     "letters",      :default => "",    :null => false
+    t.boolean  "is_complete",  :default => false, :null => false
     t.integer  "user_id"
     t.integer  "crossword_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "users", :force => true do |t|

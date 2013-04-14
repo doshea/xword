@@ -3,8 +3,8 @@
 # Table name: solutions
 #
 #  id           :integer          not null, primary key
-#  letters      :text
-#  is_complete  :boolean
+#  letters      :text             default("")
+#  is_complete  :boolean          default(FALSE)
 #  user_id      :integer
 #  crossword_id :integer
 #  created_at   :datetime         not null

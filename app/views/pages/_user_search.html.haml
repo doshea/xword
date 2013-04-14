@@ -1,18 +1,8 @@
-%table
-  %thead
-    %tr
-      %th
-        First
-      %th
-        Last
-      %th
-        Username
-  %tbody
-    - @users.each do |user|
-      %tr
-        %td
-          = user.first_name
-        %td
-          = user.last_name
-        %td
-          = user.username
+%h6= "#{pluralize(@users.count, 'user')}  found"
+- @users_sliced.each do |slice|
+  .row
+    -slice.each do |user|
+      = link_to user do
+        .large-2.columns.result-user
+          = image_tag user.image.search
+          %p.name= user.display_name

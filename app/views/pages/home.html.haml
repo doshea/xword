@@ -1,3 +1,4 @@
 .row
   .large-12.columns
-    %h1 Home!
+    %h1
+      = "Welcome back, #{@current_user.display_first_name}!"

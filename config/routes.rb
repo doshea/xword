@@ -1,5 +1,6 @@
 Xword::Application.routes.draw do
   root :to => 'pages#home'
+  get '/welcome' => 'pages#welcome'
 
   resources :users, :only => [:index, :new, :create, :show, :update] do
     collection do

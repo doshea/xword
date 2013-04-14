@@ -43,7 +43,7 @@
           %ul.dropdown
             %li.divider
             %li
-              = link_to 'Random Puzzle', '#'
+              = link_to 'Random Puzzle', @current_user.rand_unowned_puzzle
         %li.divider
         - if is_logged_in?
           = render :partial => 'layouts/user_dropdown'

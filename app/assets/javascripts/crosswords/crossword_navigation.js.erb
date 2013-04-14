@@ -27,6 +27,7 @@ $(function(){
   $(document).on('keydown', crossword_keypress);
 
   $('#crossword').on('click', 'td.cell', function(){ cell_highlight($(this)); });
+  $('.clue_column').on('click', '.clue', function(){ highlight_clue_cell($(this)); });
 
 });
 
@@ -42,6 +43,7 @@ function number_cells(){
 function number_cell($cell){
   if(!$cell.has_above() || !$cell.has_left()){
     $cell.children('.cell_num').text(counter);
+    $cell.attr('data-cell', counter); //no idea why this won't work when I use the .data() method...
     counter += 1;
   }
 }
@@ -54,6 +56,12 @@ function cell_highlight($cell){
     $cell.addClass('selected');
     word_highlight();
   }
+}
+
+function highlight_clue_cell($clue){
+  var $cell = $(".cell[data-cell='" + $clue.attr('clue_num') + "']").first();
+  select_across = $clue.closest('.clues').attr('id') == 'across'
+  cell_highlight($cell);
 }
 
 //highlights the word for a given cell

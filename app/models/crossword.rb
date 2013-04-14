@@ -20,6 +20,9 @@
 class Crossword < ActiveRecord::Base
   attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :gridnums, :circles, :user_id, :comment_ids, :solution_ids, :clue_instance_ids, :clue_ids
 
+  scope :published, where(:published => true)
+  scope :unpublished, where(:published => false)
+
   include PgSearch
   pg_search_scope :starts_with,
                   :against => :title,

@@ -1,11 +1,14 @@
 .row.row-topper
   %h4
     Search Results
-.row
+.row#search-results
   .large-12.columns
-    - if @users.any?
-      = render partial: 'user_search'
     - if @crosswords.any?
       = render partial: 'crossword_search'
+      %hr
+    - if @users.any?
+      = render partial: 'user_search'
+      %hr
     - if @words.any?
       = render partial: 'word_search'
+      %hr

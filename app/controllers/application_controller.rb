@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   private
   def authenticate
-    @current_user = User.find(session[:user_id]) if session[:user_id].present?
+    @current_user = session[:user_id].present? ? User.find(session[:user_id]) : nil
   end
 
   def ensure_logged_in

@@ -40,13 +40,21 @@ table#crossword {
     }
   }
 }
+
 .clue_column {
   float: left;
+  background: lightgrey;
+  border: 1px solid lightgrey;
+  h6 {
+    text-align: center;
+  }
   .clues {
     list-style-type: none;
     max-height: 450px;
     overflow: scroll;
     width: 250px;
+    overflow-x: hidden;
+    background: white;
 
     .clue {
       border: 1px solid rgba(255,255,255,0);

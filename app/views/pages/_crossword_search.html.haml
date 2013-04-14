@@ -1,18 +1,14 @@
-%table
-  %thead
-    %tr
-      %th
-        Title
-      %th
-        Rows
-      %th
-        Columns
-  %tbody
-    - @crosswords.each do |crossword|
-      %tr
-        %td
-          = crossword.title
-        %td
-          = crossword.rows
-        %td
-          = crossword.cols
+%h6= "#{pluralize(@crosswords.count, 'crossword')} found"
+- @crosswords_sliced.each do |slice|
+  .row
+    - slice.each do |crossword|
+      = link_to crossword do
+        .large-3.columns.result-crossword
+          .row
+            .large-4.columns.minipic
+              = render partial: 'crosswords/mini_pic_canvas', locals: {cw: crossword}
+            .large-8.columns.metadata
+              %p.title= crossword.title
+              %p.byline= "by #{crossword.user.display_name}"
+              %p.dimensions
+                = "#{crossword.rows} x #{crossword.cols}"

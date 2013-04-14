@@ -48,6 +48,9 @@ class AccountPicUploader < CarrierWave::Uploader::Base
   version :thumb do
     process :resize_to_fill => [27, 27]
   end
+  version :search do
+    process :resize_to_fill => [120, 120]
+  end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
