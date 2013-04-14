@@ -16,4 +16,15 @@ class Solution < ActiveRecord::Base
 
   belongs_to :user, :inverse_of => :solutions
   belongs_to :crossword, :inverse_of => :solutions
+
+  before_save :check_completion
+
+  def check_completion
+    self.solution_complete = (self.letters == self.crossword.letters)
+    true
+  end
+
+  scope :complete, where(:solution_complete => true)
+  scope :incomplete, where(:solution_complete => false)
+  scope :order_recent, order('updated_at DESC')
 end
