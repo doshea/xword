@@ -3,8 +3,8 @@
 # Table name: solutions
 #
 #  id           :integer          not null, primary key
-#  letters      :text             default("")
-#  is_complete  :boolean          default(FALSE)
+#  letters      :text             default(""), not null
+#  is_complete  :boolean          default(FALSE), not null
 #  user_id      :integer
 #  crossword_id :integer
 #  created_at   :datetime         not null
@@ -20,7 +20,7 @@ class Solution < ActiveRecord::Base
   before_save :check_completion
 
   def check_completion
-    self.solution_complete = (self.letters == self.crossword.letters)
+    self.is_complete = (self.letters == self.crossword.letters)
     true
   end
 

@@ -7,12 +7,12 @@ User.delete_all
 Word.delete_all
 
 #Makes an admin User
-u1 = User.create(first_name: 'Dylan', last_name: 'O\'Shea', username: 'doshea', email: 'dylan.j.oshea@gmail.com', password: 'temp123', password_confirmation: 'temp123')
+u1 = User.create(first_name: 'Dylan', last_name: 'O\'Shea', username: 'doshea', email: 'dylan.j.oshea@gmail.com', password: 'qwerty', password_confirmation: 'qwerty')
 u1.is_admin = true
 u1.save
 
 #Makes other users
-u2 = User.create(first_name: 'Andrew', last_name: 'Locke', username: 'alocke', email: 'locke.andrew@gmail.com', password: 'temp123', password_confirmation: 'temp123')
+u2 = User.create(first_name: 'Andrew', last_name: 'Locke', username: 'alocke', email: 'locke.andrew@gmail.com', password: 'qwerty', password_confirmation: 'qwerty')
 
 #Makes a crossword with its full letters`
 cro1 = Crossword.create(title: 'Interstellar Travel', description: 'My cool puzzle', rows: 15, cols: 15)

@@ -16,6 +16,7 @@
   $.fn.cell_to_right = function() {return this.nextAll('.cell:not(.void)').first();};
   $.fn.cell_above = function() {if( this.in_top_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");if(!above.hasClass('void')){return above;} else {return above.cell_above();}}};
   $.fn.cell_below = function() {if( this.in_bottom_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");if (!below.hasClass('void')){return below;} else {return below.cell_below();}}};
+  $.fn.next_cell = function(){ return select_across ? this.cell_to_right() : this.cell_below(); }
 
   $.fn.get_down_word_cells = function() {return this.get_down_start_cell().down_word_from_start();};
   $.fn.get_down_start_cell = function() {if( !this.has_above() ){return this;} else {return this.cell_above().get_down_start_cell();}};
@@ -27,6 +28,13 @@
   $.fn.across_word_from_start = function() {if( !this.has_right() ){return [this];} else {return [this].concat(this.cell_to_right().across_word_from_start());}};
   $.fn.get_across_word = function(){return $.map( this.get_across_word_cells(), function(el, i){return el.text();}).join('');};
 
+  $.fn.get_letter = function(){var letter = this.children('.letter').text(); return letter.length > 0 ? letter : ' '}
+  $.fn.set_letter = function(letter){this.children('.letter').text(letter);}
 
+  $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
+  $.fn.set_number = function(number){this.children('.cell_num').text(number);}
+
+  $.fn.is_last_letter = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
+  $.fn.next_empty_cell = function(){ if(this.is_last_letter()){ return this; } else { var next = this.next_cell(); var next_letter = next.get_letter(); return ((next_letter == '') || (next_letter == ' ')) ? next : next.next_empty_cell();}}
 
 })( jQuery );

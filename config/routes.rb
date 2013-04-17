@@ -13,7 +13,7 @@ Xword::Application.routes.draw do
   resources :words, :only => [:index, :show]
   resources :comments, :only => [:index]
   resources :clue_instances, :only => [:index]
-  resources :solutions, :only => [:index]
+  resources :solutions, :only => [:index, :update]
 
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'

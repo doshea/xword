@@ -1,4 +1,4 @@
-%table#crossword{:'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols}
+%table#crossword{:'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols, :'data-auth-token' => form_authenticity_token}
   - for r in 1..@crossword.rows
     %tr{:'data-row' => r}
       - for c in 1..@crossword.cols
@@ -6,6 +6,7 @@
         - letter = @crossword.letters[index]
         - unless letter == '_'
           %td.cell{:'data-row' => r, :'data-col' => c}
+            .letter= @solution.letters[index]
             .cell_num
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
@@ -21,4 +22,3 @@
     - @clue_instances.where(:is_across => false).each do |ci|
       %li.clue.down_clue{:clue_num => ci.start_cell}
         = "#{ci.start_cell}. #{ci.clue.content}"
-#puzzle_controls

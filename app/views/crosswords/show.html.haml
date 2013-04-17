@@ -1,16 +1,22 @@
 = javascript_include_tag 'crosswords/solve'
+:javascript
+  app.solution_id = "#{@solution.id}"
 
-.row
+.row#credit_area
   .large-12.columns
-    %h3= @crossword.title
-    %h5
-      by
-      = @crossword.user.username
+    %h3
+      = @crossword.title
+      %span#creator_credit= "by #{@crossword.user.username}"
+    #puzzle_controls
+      %span#save_status.smaller No changes yet
+      %span#save_clock.smaller
+      = link_to_function 'Save Solution', 'app.save_solution()', class: 'button tiny secondary rounded'
 
-.row
-  .large-12.columns#solve-area
+
+.row#solve_area
+  .large-12.columns
     = render :partial => 'blank_crossword'
-.row
+.row#meta_area
   .large-12.columns
     %p
       %em= @crossword.description

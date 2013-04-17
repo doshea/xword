@@ -4,5 +4,6 @@
 //= require underscore-min
 //= require foundation.min
 //= require custom.modernizr
-//= require global.js
+//= require moment.min
+//= require global
 //

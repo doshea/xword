@@ -1,8 +1,36 @@
 @import 'dimensions';
+#credit_area, #solve_area, #meta_area {
+  background-image: url("<%= asset_path 'paper.jpeg' %>");
+}
+
+#credit_area {
+  -webkit-border-top-left-radius: 0.3em;
+  -webkit-border-top-right-radius: 0.3em;
+  -moz-border-radius-topleft: 0.3em;
+  -moz-border-radius-topright: 0.3em;
+  border-top-left-radius: 0.3em;
+  border-top-right-radius: 0.3em;
+  #creator_credit {
+    font-size: large;
+    font-weight: normal;
+  }
+  #puzzle_controls {
+    position: absolute;
+    right: 0.5em;
+    top: 0.5em;
+  }
+}
+#meta_area {
+  -webkit-border-bottom-left-radius: 0.3em;
+  -webkit-border-bottom-right-radius: 0.3em;
+  -moz-border-radius-bottomleft: 0.3em;
+  -moz-border-radius-bottomright: 0.3em;
+  border-bottom-left-radius: 0.3em;
+  border-bottom-right-radius: 0.3em;
+}
 
 table#crossword {
   border-spacing: 0;
-  background-image: url("<%= asset_path 'paper.jpeg' %>");
   float: left;
   tr {
 
@@ -29,7 +57,9 @@ table#crossword {
       &.selected_word:not(.selected) {
         background-color: rgba(255,255,170,0.7);
       }
-
+      .letter {
+        line-height: 140%;
+      }
       .cell_num {
         position: absolute;
         top: 0;
@@ -55,6 +85,7 @@ table#crossword {
     width: 250px;
     overflow-x: hidden;
     background: white;
+    font-size: smaller;
 
     .clue {
       border: 1px solid rgba(255,255,255,0);

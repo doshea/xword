@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
   def display_first_name
     self.first_name.present? ? self.first_name : self.username
   end
-  def rand_unowned_puzzle
-    Crossword.where('user_id != ?', self.id).order("RANDOM()").first
+  def self.rand_unowned_puzzle
+    @current_user.present? ? Crossword.where('user_id != ?', @current_user.id).order("RANDOM()").first : Crossword.order("RANDOM()").first
   end
 end

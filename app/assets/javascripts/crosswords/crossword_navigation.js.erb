@@ -1,4 +1,4 @@
-//Key Constants for keyboard commands
+//Key Constants for keyboard controls
 var UP = 38;
 var RIGHT = 39;
 var DOWN = 40;
@@ -31,6 +31,7 @@ $(function(){
 
 });
 
+//Intelligently sets the numbers of each cell in the crossword by calling the number_cell function
 function number_cells(){
   counter = 1;
   var $cells = $('.cell:not(.void)');
@@ -40,9 +41,10 @@ function number_cells(){
   counter = 1;
 }
 
+//Numbers cells if they are the lefmost or topmost cell in a word
 function number_cell($cell){
   if(!$cell.has_above() || !$cell.has_left()){
-    $cell.children('.cell_num').text(counter);
+    $cell.set_number(counter);
     $cell.attr('data-cell', counter); //no idea why this won't work when I use the .data() method...
     counter += 1;
   }
@@ -78,6 +80,7 @@ function word_highlight(){
 
 }
 
+//Unhighlights all cells and clues
 function unhighlight_all(){
   selected = null;
   $('.selected').removeClass('selected');
@@ -85,9 +88,10 @@ function unhighlight_all(){
   $('.selected_clue').removeClass('selected_clue');
 }
 
+//Takes a cell as a parameter and returns its corresponding clue
 function corresponding_clue($cell){
   var dir = select_across ? '.across_clue' : '.down_clue';
-  var num = $cell.children('.cell_num').text();
+  var num = $cell.get_number();
   return $("" + dir +"[clue_num=" + num + "]");
 }
 
@@ -107,7 +111,11 @@ function scroll_to_selected2($parent, selector){
 }
 
 function selected_word(){
-  return $('.selected_word').text();
+  var letters = '';
+  $.each($('.selected_word'), function(index, value){
+    letters += $(value).get_letter();
+  });
+  return letters;
 }
 
 //Keyboard Function triggered by
@@ -149,10 +157,20 @@ function crossword_keypress(e){
         break;
       default:
         if(selected){
-          selected.text(String.fromCharCode(key));
+          selected.set_letter(String.fromCharCode(key));
+          cell_highlight(selected.next_empty_cell());
         }
     }
   }
+}
+
+function get_letters(){
+  var letters = '';
+  var $cells = $('.cell');
+  $.each($cells, function(index, value){
+    letters += $(value).hasClass('void') ? '_'  : $(value).get_letter() ;
+  });
+  return letters;
 }
 
 //Prevents backspace from going to previous window, prevents arrow keys and space from moving around page
@@ -162,7 +180,7 @@ function suppressBackspaceAndNav(evt) {
   evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
-    selected.text('');
+    selected.children('.letter').text('');
     return false;
   }
   if ($.inArray(evt.keyCode, PAGE_NAV_KEYS) && !/input|textarea/i.test(target.nodeName)) {
