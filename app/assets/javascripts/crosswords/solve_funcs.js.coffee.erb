@@ -1,0 +1,34 @@
+window.app =
+  solution_id: null
+  save_timer: null
+  clock_updater: null
+  last_save: null
+
+  ready: ->
+    app.save_timer = window.setInterval(app.save_solution, 60000)
+    # window.setTimeout (->
+    app.clock_updater = window.setInterval(app.update_clock, 10000)
+    # ), 1000
+
+  save_solution: ->
+    console.log('Solution saved!')
+    token = $('#crossword').data('auth-token')
+    letters = get_letters();
+    settings =
+      dataType: 'script'
+      type: 'PUT'
+      url: "/solutions/#{app.solution_id}"
+      data: {authenticity_token: token, letters: letters}
+    $.ajax(settings)
+
+  log_save: ->
+    app.last_save = moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
+
+  update_clock: ->
+    if app.last_save
+      console.log('Updated clock text')
+      $('#save_status').text('Saved ')
+      $('#save_clock').text(moment(app.last_save).fromNow())
+
+$(document).ready(app.ready)
+
