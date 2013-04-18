@@ -120,7 +120,7 @@ function selected_word(){
 
 //Keyboard Function triggered by
 function crossword_keypress(e){
-  if(!(e.ctrlKey || e.altKey )){
+  if(!(e.ctrlKey || e.altKey || e.metaKey )){
     var key = e.which;
 
     switch (key){
@@ -147,9 +147,9 @@ function crossword_keypress(e){
       case TAB:
         unhighlight_all();
         break;
-      case COMMAND:
-        break;
       case SHIFT:
+        break;
+      case DELETE:
         break;
       case SPACE:
         select_across = !select_across;
@@ -184,11 +184,16 @@ function suppressBackspaceAndNav(evt) {
   evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
-    selected.delete_letter('');
+    console.log('sup');
+    selected.delete_letter();
     app.update_unsaved();
     return false;
   }
-  if ($.inArray(evt.keyCode, PAGE_NAV_KEYS) && !/input|textarea/i.test(target.nodeName)) {
+  if ( _.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName) ) {
     return false;
   }
+
+  // if ($.inArray(evt.keyCode, PAGE_NAV_KEYS) && !/input|textarea/i.test(target.nodeName)) {
+  //   return false;
+  // }
 }
