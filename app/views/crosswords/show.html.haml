@@ -1,12 +1,13 @@
 = javascript_include_tag 'crosswords/solve'
+= stylesheet_link_tag "crossword"
 :javascript
-  app.solution_id = "#{@solution.id}"
+  app.solution_id = "#{@solution.id if @solution}"
 
 .row#credit_area
   .large-12.columns
     %h3
       = @crossword.title
-      %span#creator_credit= "by #{@crossword.user.username}"
+      %span#creator_credit= "by #{ @crossword.user.present? ? @crossword.user.username : '[deleted]' }"
     #puzzle_controls
       %span#save_status.smaller No changes yet
       %span#save_clock.smaller
@@ -20,3 +21,65 @@
   .large-12.columns
     %p
       %em= @crossword.description
+    #comments
+      / Feed Entry
+      .row
+        .large-2.columns.small-3
+          %img{:src => "http://placehold.it/80x80&text=[img]"}/
+        .large-10.columns
+          %p
+            %strong Some Person said:
+            Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.
+          %ul.inline-list
+            %li
+              %a{:href => ""} Reply
+            %li
+              %a{:href => ""} Share
+          %h6 2 Comments
+          .row
+            .large-2.columns.small-3
+              %img{:src => "http://placehold.it/50x50&text=[img]"}/
+            .large-10.columns
+              %p Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit
+          .row
+            .large-2.columns.small-3
+              %img{:src => "http://placehold.it/50x50&text=[img]"}/
+            .large-10.columns
+              %p Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit
+      / End Feed Entry
+      %hr/
+      / Feed Entry
+      .row
+        .large-2.columns.small-3
+          %img{:src => "http://placehold.it/80x80&text=[img]"}/
+        .large-10.columns
+          %p
+            %strong Some Person said:
+            Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.
+          %ul.inline-list
+            %li
+              %a{:href => ""} Reply
+            %li
+              %a{:href => ""} Share
+      / End Feed Entry
+      %hr/
+      / Feed Entry
+      .row
+        .large-2.columns.small-3
+          %img{:src => "http://placehold.it/80x80&text=[img]"}/
+        .large-10.columns
+          %p
+            %strong Some Person said:
+            Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.
+          %ul.inline-list
+            %li
+              %a{:href => ""} Reply
+            %li
+              %a{:href => ""} Share
+          %h6 2 Comments
+          .row
+            .large-2.columns.small-3
+              %img{:src => "http://placehold.it/50x50&text=[img]"}/
+            .large-10.columns
+              %p Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit
+      / End Feed Entry

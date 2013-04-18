@@ -13,11 +13,20 @@
 #  updated_at      :datetime         not null
 #  image           :text
 #  location        :string(255)
+#  auth_token      :string(255)
 #
 
 class User < ActiveRecord::Base
   has_secure_password
-  attr_accessible :first_name, :last_name, :username, :email, :password, :password_confirmation, :crossword_ids, :comment_ids, :solution_ids, :clue_ids, :clue_instance_ids, :remote_image_url, :image, :location
+  attr_accessible :first_name, :last_name, :username, :email, :password, :password_confirmation, :crossword_ids, :comment_ids, :solution_ids, :clue_ids, :clue_instance_ids, :remote_image_url, :image, :location, :auth_token
+
+  has_many :crosswords, :inverse_of => :user
+  has_many :comments, :inverse_of => :user
+  has_many :solutions, :inverse_of => :user
+  has_many :clues, :inverse_of => :user
+  has_many :clue_instances, :through => :crosswords, :inverse_of => :user
+
+  before_create { generate_token(:auth_token) }
 
   include PgSearch
   pg_search_scope :starts_with,
@@ -27,12 +36,6 @@ class User < ActiveRecord::Base
                   }
 
   mount_uploader :image, AccountPicUploader
-
-  has_many :crosswords, :inverse_of => :user
-  has_many :comments, :inverse_of => :user
-  has_many :solutions, :inverse_of => :user
-  has_many :clues, :inverse_of => :user
-  has_many :clue_instances, :through => :crosswords, :inverse_of => :user
 
   MIN_PASSWORD_LENGTH = 5
   MAX_PASSWORD_LENGTH = 16
@@ -63,6 +66,12 @@ class User < ActiveRecord::Base
   validates :last_name,
     :presence => true,
     :length => { :minimum => MIN_NAME_LENGTH, :message => ": Should be at least #{MIN_NAME_LENGTH} characters"}
+
+    def generate_token(column)
+      begin
+        self[column] = SecureRandom.urlsafe_base64
+      end while User.exists?(column => self[column]) #may need a colon
+    end
 
   def clue_count
     self.clues.count

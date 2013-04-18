@@ -30,6 +30,7 @@
 
   $.fn.get_letter = function(){var letter = this.children('.letter').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_letter = function(letter){this.children('.letter').text(letter);}
+  $.fn.delete_letter = function(letter){this.children('.letter').empty();}
 
   $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}

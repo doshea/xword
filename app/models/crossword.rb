@@ -31,9 +31,9 @@ class Crossword < ActiveRecord::Base
     }
 
   belongs_to :user, :inverse_of => :crosswords
-  has_many :comments, :inverse_of => :crossword, :dependent => :destroy
-  has_many :solutions, :inverse_of => :crossword, :dependent => :destroy
-  has_many :clue_instances, :inverse_of => :crossword, :dependent => :destroy
+  has_many :comments, :inverse_of => :crossword, :dependent => :delete_all
+  has_many :solutions, :inverse_of => :crossword, :dependent => :delete_all
+  has_many :clue_instances, :inverse_of => :crossword, :dependent => :delete_all
   has_many :clues, :through => :clue_instances, :inverse_of => :crosswords
   has_and_belongs_to_many :words
 

@@ -22,5 +22,6 @@ Xword::Application.routes.draw do
   get '/unauthorized' => 'pages#unauthorized'
   get '/account_required' => 'pages#account_required'
   get '/search' => 'pages#search'
+  get '/about' => 'pages#about'
 
 end

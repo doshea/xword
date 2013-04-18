@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130414052306) do
+ActiveRecord::Schema.define(:version => 20130418051050) do
 
   create_table "clue_instances", :force => true do |t|
     t.integer  "start_cell"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20130414052306) do
     t.datetime "updated_at",                         :null => false
     t.text     "image"
     t.string   "location"
+    t.string   "auth_token"
   end
 
   create_table "words", :force => true do |t|

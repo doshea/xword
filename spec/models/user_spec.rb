@@ -13,6 +13,7 @@
 #  updated_at      :datetime         not null
 #  image           :text
 #  location        :string(255)
+#  auth_token      :string(255)
 #
 
 require 'spec_helper'

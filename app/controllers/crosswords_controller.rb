@@ -7,11 +7,11 @@ class CrosswordsController < ApplicationController
   def show
     @crossword = Crossword.find(params[:id])
     if @crossword
-      @solution = Solution.find_or_create_by_crossword_id_and_user_id(@crossword.id, @current_user.id)
+      @solution = Solution.find_or_create_by_crossword_id_and_user_id(@crossword.id, @current_user.id) if @current_user
+      @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
     else
       #redirect to 404 page
     end
-    @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
   end
   def new
     @crossword = Crossword.new

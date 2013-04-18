@@ -1,9 +1,16 @@
 @import 'dimensions';
+
+#body > .row {
+  padding: 0.5em 1em;
+  max-width: $row-width+2em;
+}
+
 #credit_area, #solve_area, #meta_area {
   background-image: url("<%= asset_path 'paper.jpeg' %>");
 }
 
 #credit_area {
+  margin-top: 2.5em;
   -webkit-border-top-left-radius: 0.3em;
   -webkit-border-top-right-radius: 0.3em;
   -moz-border-radius-topleft: 0.3em;

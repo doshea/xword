@@ -157,7 +157,11 @@ function crossword_keypress(e){
         break;
       default:
         if(selected){
-          selected.set_letter(String.fromCharCode(key));
+          var letter = String.fromCharCode(key);
+          if(letter != selected.get_letter()){
+            selected.set_letter(String.fromCharCode(key));
+            app.update_unsaved();
+          }
           cell_highlight(selected.next_empty_cell());
         }
     }
@@ -180,7 +184,8 @@ function suppressBackspaceAndNav(evt) {
   evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
-    selected.children('.letter').text('');
+    selected.delete_letter('');
+    app.update_unsaved();
     return false;
   }
   if ($.inArray(evt.keyCode, PAGE_NAV_KEYS) && !/input|textarea/i.test(target.nodeName)) {

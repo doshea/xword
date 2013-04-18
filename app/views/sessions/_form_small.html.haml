@@ -2,9 +2,10 @@
   .large-8.large-offset-2.columns
     = form_tag '/login' do
       = label_tag :username
-      = text_field_tag :username, nil, :autofocus => true
+      = text_field_tag :username, nil, autofocus: true
       = label_tag :password
       = password_field_tag :password
-      / = button_to 'Cancel', '/login', :method => 'delete', :remote => true, :'data-clear-form' => true, :class => 'button tiny radius alert'
-      = submit_tag 'Log In', :class => 'button expand radius success', :disable_with => 'logging in...'
+      = label_tag :remember_me
+      = check_box_tag :remember_me, 1, params[:remember_me] #find out what the second two arguments do
+      = submit_tag 'Log In', class: 'button expand radius success', disable_with: 'logging in...'
   .large-2.columns

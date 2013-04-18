@@ -6,7 +6,7 @@
         - letter = @crossword.letters[index]
         - unless letter == '_'
           %td.cell{:'data-row' => r, :'data-col' => c}
-            .letter= @solution.letters[index]
+            .letter= @solution.letters[index] if @solution
             .cell_num
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}

@@ -3,15 +3,15 @@ window.app =
   save_timer: null
   clock_updater: null
   last_save: null
+  unsaved_changes: false
 
   ready: ->
-    app.save_timer = window.setInterval(app.save_solution, 60000)
-    # window.setTimeout (->
+    window.setInterval (->
+      app.save_solution  if app.unsaved_changes
+    ), 60000
     app.clock_updater = window.setInterval(app.update_clock, 10000)
-    # ), 1000
 
   save_solution: ->
-    console.log('Solution saved!')
     token = $('#crossword').data('auth-token')
     letters = get_letters();
     settings =
@@ -29,6 +29,11 @@ window.app =
       console.log('Updated clock text')
       $('#save_status').text('Saved ')
       $('#save_clock').text(moment(app.last_save).fromNow())
+
+  update_unsaved: ->
+    app.unsaved_changes = true
+    $('#save_status').text('Unsaved changes')
+    $('#save_clock').empty()
 
 $(document).ready(app.ready)
 

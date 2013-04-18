@@ -5,5 +5,6 @@
 //= require foundation.min
 //= require custom.modernizr
 //= require moment.min
+//= require sugar.min
 //= require global
 //
