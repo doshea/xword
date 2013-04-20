@@ -87,15 +87,18 @@ table#crossword {
   }
   .clues {
     list-style-type: none;
-    max-height: 450px;
+    max-height: 400px;
     overflow: scroll;
     width: 250px;
     overflow-x: hidden;
     background: white;
     font-size: smaller;
+    padding: 0.1em 0.25em;
 
     .clue {
       border: 1px solid rgba(255,255,255,0);
+      padding: 0 0.25em 0 1.25em;
+      text-indent: -1.25em;
 
       &.selected_clue {
         background-color: rgba(255, 255, 170, 1);
