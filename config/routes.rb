@@ -11,7 +11,7 @@ Xword::Application.routes.draw do
   resources :crosswords, :only => [:index, :new, :show, :create, :edit]
   resources :clues, :only => [:index, :show]
   resources :words, :only => [:index, :show]
-  resources :comments, :only => [:index]
+  resources :comments, :only => [:index, :create]
   resources :clue_instances, :only => [:index]
   resources :solutions, :only => [:index, :update]
 

@@ -3,9 +3,9 @@
   $.fn.get_col = function() {return this.data('col');};
 
   $.fn.in_top_row = function() {return $(this).get_row() == 1;};
-  $.fn.in_bottom_row = function() {return this.get_row() == $('#rows').val();};
+  $.fn.in_bottom_row = function() {return this.get_row() == $('#crossword').data('rows');};
   $.fn.in_left_col = function() {return this.get_col() == 1;};
-  $.fn.in_right_col = function() {return this.get_col() == $('#cols').val();};
+  $.fn.in_right_col = function() {return this.get_col() == $('#crossword').data('cols');};
 
   $.fn.has_above = function(){if(this.in_top_row()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");return !above.hasClass('void');}};
   $.fn.has_below = function(){if(this.in_bottom_row()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");return !below.hasClass('void');}};
@@ -36,6 +36,19 @@
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
 
   $.fn.is_last_letter = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
-  $.fn.next_empty_cell = function(){ if(this.is_last_letter()){ return this; } else { var next = this.next_cell(); var next_letter = next.get_letter(); return ((next_letter == '') || (next_letter == ' ')) ? next : next.next_empty_cell();}}
+  $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' '));}
+  $.fn.next_empty_cell = function(){
+    if(this.is_last_letter()){
+      if(this.is_empty_cell()){
+        return this;
+      } else {
+        highlight_next_word();
+        return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
+      }
+    } else {
+      var next = this.next_cell();
+      return (next.is_empty_cell() ? next : next.next_empty_cell());
+    }
+  }
 
 })( jQuery );

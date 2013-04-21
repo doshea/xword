@@ -66,6 +66,11 @@ function highlight_clue_cell($clue){
   cell_highlight($cell);
 }
 
+function highlight_next_word(){
+  var clue = $('.clue.selected_clue');
+  highlight_clue_cell(clue.next());
+}
+
 //highlights the word for a given cell
 function word_highlight(){
   $('.selected_word').removeClass('selected_word');
@@ -77,7 +82,6 @@ function word_highlight(){
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
   corresponding_clue(select_start).addClass('selected_clue');
   scroll_to_selected();
-
 }
 
 //Unhighlights all cells and clues
