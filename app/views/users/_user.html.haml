@@ -22,5 +22,5 @@
         %li
           = link_to cw.title, cw
           = link_to cw do
-            = render :partial => 'crosswords/mini_pic_canvas', :locals => {:cw => cw}
+            = render partial: 'crosswords/mini_pic_canvas', :locals => {:cw => cw}
 .row

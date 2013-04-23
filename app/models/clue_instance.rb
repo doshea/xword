@@ -14,9 +14,9 @@
 class ClueInstance < ActiveRecord::Base
   attr_accessible :start_cell, :is_across, :clue_id, :crossword_id, :word_id, :user_id
 
-  belongs_to :clue, :inverse_of => :clue_instances
-  belongs_to :crossword, :inverse_of => :clue_instances
-  delegate :word, :to => :clue, :allow_nil => true
-  delegate :user, :to => :crossword, :allow_nil => true
+  belongs_to :clue, inverse_of: :clue_instances
+  belongs_to :crossword, inverse_of: :clue_instances
+  delegate :word, to: :clue, allow_nil: true
+  delegate :user, to: :crossword, allow_nil: true
 
 end

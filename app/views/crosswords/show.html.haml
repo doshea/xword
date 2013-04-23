@@ -3,6 +3,15 @@
 :javascript
   app.solution_id = "#{@solution.id if @solution}"
 
+- if @current_user == @crossword.user
+  .row.note
+    %p.center
+      You are the creator of this puzzle.
+      %br
+      = link_to('Edit Puzzle', edit_crossword_path(@crossword))
+      or
+      = link_to('Publish Puzzle', publish_crossword_path(@crossword))
+
 .row#credit_area
   .large-12.columns
     %h3
@@ -16,7 +25,7 @@
 
 .row#solve_area
   .large-12.columns
-    = render :partial => 'blank_crossword'
+    = render partial: 'solve_crossword'
 .row#meta_area
   .large-12.columns
     .row

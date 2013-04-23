@@ -4,6 +4,7 @@ class CrosswordsController < ApplicationController
   def index
     @crosswords = Crossword.order(:created_at)
   end
+
   def show
     @crossword = Crossword.find(params[:id])
     if @crossword
@@ -13,9 +14,11 @@ class CrosswordsController < ApplicationController
       #redirect to 404 page
     end
   end
+
   def new
     @crossword = Crossword.new
   end
+
   def create
     @crossword = Crossword.new(params[:crossword])
     @crossword.user = @current_user
@@ -25,15 +28,15 @@ class CrosswordsController < ApplicationController
       render :new
     end
   end
-  def edit
 
+  def edit
     redirect_to(unauthorized_path) if !(@current_user.is_admin || @current_user == @crossword.user)
   end
+
   def update
-
   end
-  def destroy
 
+  def destroy
   end
 
   private

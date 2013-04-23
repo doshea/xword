@@ -1,7 +1,7 @@
 @import 'dimensions';
 
 #body > .row {
-  padding: 0.5em 1em;
+  padding: 0.5em 1em 0 1em;
   max-width: $row-width+2em;
 }
 
@@ -11,15 +11,19 @@
 
 #credit_area {
   margin-top: 2.5em;
+  margin-bottom: 0;
   -webkit-border-top-left-radius: 0.3em;
   -webkit-border-top-right-radius: 0.3em;
   -moz-border-radius-topleft: 0.3em;
   -moz-border-radius-topright: 0.3em;
   border-top-left-radius: 0.3em;
   border-top-right-radius: 0.3em;
-  #creator_credit {
-    font-size: large;
-    font-weight: normal;
+  h3 {
+    margin-bottom: 0.2em;
+    #creator_credit {
+      font-size: large;
+      font-weight: normal;
+    }
   }
   #puzzle_controls {
     position: absolute;
@@ -74,6 +78,13 @@ table#crossword {
         font-size: 0.4em;
         line-height: 1em;
       }
+      .cell_flag {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        opacity: 0;
+      }
     }
   }
 }
@@ -82,12 +93,14 @@ table#crossword {
   float: left;
   background: lightgrey;
   border: 1px solid lightgrey;
+  margin-left: 0.4em;
+  margin-right: 0;
   h6 {
     text-align: center;
   }
   .clues {
     list-style-type: none;
-    max-height: 400px;
+    max-height: 350px;
     overflow: scroll;
     width: 250px;
     overflow-x: hidden;
@@ -97,13 +110,46 @@ table#crossword {
 
     .clue {
       border: 1px solid rgba(255,255,255,0);
-      padding: 0 0.25em 0 1.25em;
-      text-indent: -1.25em;
+      padding: 0 0.25em 0 2em;
+      text-indent: -1.7em;
+      cursor: pointer;
 
       &.selected_clue {
         background-color: rgba(255, 255, 170, 1);
         border: 1px solid #999;
       }
+    }
+  }
+}
+
+#solve_controls {
+  position: relative;
+  overflow: auto;
+  margin-left: 0.6em;
+  margin: 0.2em;
+  float: left;
+  width: 32em;
+  padding: 0;
+  text-align: center;
+  button {
+    display: inline-block;
+    height: inherit;
+    width: 32%;
+    margin: 0;
+    &.alert {
+      background-color: rgb(230, 184, 184);
+      border-color: rgb(194, 136, 136);
+      color: #333;
+    }
+    &.warning {
+      background-color: rgb(230, 230, 184);
+      border-color: rgb(194, 194, 136);
+      color: #333;
+    }
+    &.success {
+      background-color: rgb(184, 230, 184);
+      border-color: rgb(136, 194, 136);
+      color: #333;
     }
   }
 }

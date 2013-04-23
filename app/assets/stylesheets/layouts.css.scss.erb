@@ -94,11 +94,42 @@
 }
 
 footer#footer {
+  position: relative;
   background-color: gray;
-  margin-top: 3em;
-  height: 6em;
+  margin-top: 4em;
+  padding-top: 0.75em;
   width: 100%;
-  position: absolute;
-  bottom: -6em;
   // background: texturetastic grey, wild olivia, Light Sketch, cross scratches, white plaster, light aluminum, wine cork, cardboard flat, paper 2, leather 1, natural paper, dark wall, light toast, cream paper;
+  .row {
+    a {
+      color: #333;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s;
+
+      &:hover {
+        color: #2795b6;
+      }
+    }
+    .subheader {
+      margin-bottom: 0;
+      position: absolute;
+      right: 1em;
+      bottom: 0.2em;
+    }
+    #social_links {
+      i {
+        color: #333;
+        font-size: 1.5em;
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        -o-transition: all 0.3s;
+        transition: all 0.3s;
+        &:hover {
+          color: #2795b6;
+        }
+      }
+    }
+  }
 }

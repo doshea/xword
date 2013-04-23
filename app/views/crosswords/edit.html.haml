@@ -1,4 +1,7 @@
 =javascript_include_tag 'crosswords/edit'
+= stylesheet_link_tag "crossword"
+:javascript
+  app.solution_id = "#{@solution.id if @solution}"
 
 .row
   .large-12.columns

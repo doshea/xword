@@ -68,7 +68,12 @@ function highlight_clue_cell($clue){
 
 function highlight_next_word(){
   var clue = $('.clue.selected_clue');
-  highlight_clue_cell(clue.next());
+  var next_clue = clue.next();
+  if(next_clue.hasClass('clue')){
+    highlight_clue_cell(next_clue);
+  } else {
+
+  }
 }
 
 //highlights the word for a given cell
@@ -106,12 +111,6 @@ function scroll_to_selected(){
   var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height()/2 + $sel_clue.height()/2;
   // console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
   $clues.stop().animate({scrollTop: top}, 'fast')
-}
-
-function scroll_to_selected2($parent, selector){
-  var $child = $parent.children(selector);
-  var top = $parent.scrollTop() + $child.position().top - $parent.height()/2 + $child.height()/2;
-  $parent.stop().animate({scrollTop: top}, 'fast')
 }
 
 function selected_word(){
@@ -196,8 +195,4 @@ function suppressBackspaceAndNav(evt) {
   if ( _.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName) ) {
     return false;
   }
-
-  // if ($.inArray(evt.keyCode, PAGE_NAV_KEYS) && !/input|textarea/i.test(target.nodeName)) {
-  //   return false;
-  // }
 }

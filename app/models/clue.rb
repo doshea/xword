@@ -13,10 +13,15 @@
 
 class Clue < ActiveRecord::Base
   attr_accessible :content, :difficulty, :user_id, :word_id, :clue_instance_ids, :crossword_ids
+  before_save :strip_tags
 
-  has_many :clue_instances, :inverse_of => :clue
-  belongs_to :word, :inverse_of => :clues
-  belongs_to :user, :inverse_of => :clues
-  has_many :crosswords, :through => :clue_instances, :inverse_of => :clues
+  has_many :clue_instances, inverse_of: :clue
+  belongs_to :word, inverse_of: :clues
+  belongs_to :user, inverse_of: :clues
+  has_many :crosswords, through: :clue_instances, inverse_of: :clues
 
+  private
+  def strip_tags
+    self.content = ActionController::Base.helpers.strip_tags(self.content)
+  end
 end

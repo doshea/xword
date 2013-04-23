@@ -20,14 +20,14 @@
 class Crossword < ActiveRecord::Base
   attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :gridnums, :circles, :user_id, :comment_ids, :solution_ids, :clue_instance_ids, :clue_ids
 
-  scope :published, where(:published => true)
-  scope :unpublished, where(:published => false)
+  scope :published, where(published: true)
+  scope :unpublished, where(published: false)
 
   include PgSearch
   pg_search_scope :starts_with,
-    :against => :title,
-    :using => {
-      :tsearch => {:prefix => true}
+    against: :title,
+    using: {
+      tsearch:  {:prefix => true}
     }
 
   belongs_to :user, :inverse_of => :crosswords
@@ -83,5 +83,18 @@ class Crossword < ActiveRecord::Base
     self.letters.present? ? self.letters[rc_to_index(row,col)] == '_' : nil
   end
 
+  def check_solution(solution_letters)
+    self.letters == solution_letters
+  end
+
+  def return_mismatches(solution_letters)
+    counter = 1
+    mismatch_array = []
+    self.letters.split('').each do |letter|
+      mismatch_array << counter if letter != solution_letters[counter-1]
+      counter += 1
+    end
+    mismatch_array
+  end
 
 end

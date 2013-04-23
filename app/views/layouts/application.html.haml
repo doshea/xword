@@ -8,6 +8,6 @@
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
-    %header#nav= render :partial => 'layouts/nav'
-    #body= render :partial => 'layouts/body'
-    %footer#footer= render :partial => 'layouts/footer'
+    %header#nav= render partial: 'layouts/nav'
+    #body= render partial: 'layouts/body'
+    %footer#footer= render partial: 'layouts/footer'
