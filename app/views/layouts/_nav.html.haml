@@ -18,11 +18,12 @@
       / Right Nav Section
       %ul.right
         %li.has-form
-          = form_tag search_path, :method => 'get', :id => 'top_search' do
+          = form_tag search_path, method: 'get', id: 'top_search', class: 'relative' do
             .row.collapse
               .small-12.columns
-                = text_field_tag 'query', nil, :class => 'round'
+                = text_field_tag 'query', nil, class: 'round', autocomplete: 'off'
                 %i.general.foundicon-search
+            %ol#live_results
         %li.divider
         %li.has-dropdown
           %a{:href => '#'}
@@ -38,7 +39,7 @@
 
         %li.divider
         %li.has-dropdown
-          %a{:href => '#'}
+          %a{href: '#'}
             Solve
           %ul.dropdown
             %li.divider

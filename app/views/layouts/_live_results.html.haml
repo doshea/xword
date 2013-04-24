@@ -1,0 +1,22 @@
+- if @users.any?
+  %h6 Users
+  - @users.each do |user|
+    = link_to user do
+      %li
+        = user.display_name
+- if @crosswords.any?
+  -if @users.any?
+    %hr
+  %h6 Crosswords
+  - @crosswords.each do |crossword|
+    = link_to crossword do
+      %li
+        = crossword.title
+- if @words.any?
+  -if @crosswords.any? || @users.any?
+    %hr
+  %h6 Words
+  - @words.each do |word|
+    = link_to word do
+      %li
+        = word.content

@@ -38,7 +38,7 @@
           = '--'
           = link_to @crossword.user.display_name, @crossword.user
     %hr
-    #comments
+    %section#comments
       %h3 Comments
       / Feed Entry
       - @crossword.comments.each do |comment|
