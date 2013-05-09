@@ -62,17 +62,18 @@ function cell_highlight($cell){
 
 function highlight_clue_cell($clue){
   var $cell = $(".cell[data-cell='" + $clue.attr('clue_num') + "']").first();
-  select_across = $clue.closest('.clues').attr('id') == 'across'
+  select_across = $clue.closest('.clues').attr('id') == 'across';
   cell_highlight($cell);
 }
 
 function highlight_next_word(){
   var clue = $('.clue.selected_clue');
-  var next_clue = clue.next();
+  var next_clue = clue.next().first();
   if(next_clue.hasClass('clue')){
+    console.log( solve_app.debug_mode ?  'next_clue has class clue': '' );
     highlight_clue_cell(next_clue);
   } else {
-
+    highlight_clue_cell(clue.parent().parent().siblings('.clue_column').first().children().children().first());
   }
 }
 
@@ -110,7 +111,7 @@ function scroll_to_selected(){
   var $clues = $sel_clue.closest('ol');
   var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height()/2 + $sel_clue.height()/2;
   // console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
-  $clues.stop().animate({scrollTop: top}, 'fast')
+  $clues.stop().animate({scrollTop: top}, 'fast');
 }
 
 function selected_word(){
@@ -140,7 +141,7 @@ function crossword_keypress(e){
       case DOWN:
         if(selected && selected.cell_below()){
           cell_highlight(selected.cell_below());
-        };
+        }
         break;
       case LEFT:
         if(selected && selected.cell_to_left()){
@@ -160,11 +161,13 @@ function crossword_keypress(e){
         break;
       default:
         if(selected){
+          console.log( solve_app.debug_mode ?  'Typing letter': '' );
           var letter = String.fromCharCode(key);
           if(letter != selected.get_letter()){
             selected.set_letter(String.fromCharCode(key));
-            app.update_unsaved();
+            solve_app.update_unsaved();
           }
+          console.log( solve_app.debug_mode ?  'highlighting cell': '' );
           cell_highlight(selected.next_empty_cell());
         }
     }
@@ -187,9 +190,8 @@ function suppressBackspaceAndNav(evt) {
   evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
-    console.log('sup');
     selected.delete_letter();
-    app.update_unsaved();
+    solve_app.update_unsaved();
     return false;
   }
   if ( _.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName) ) {

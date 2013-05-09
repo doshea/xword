@@ -13,6 +13,7 @@ class SessionsController < ApplicationController
         cookies[:auth_token] = user.auth_token
       end
       # (params[:remember_me] ? cookies.permanent[:auth_token] : cookies[:auth_token] ) = user.auth_token #replaces previous line's functionality
+      gflash success: {value: true, title: 'Login', time: 1400}
       redirect_to root_path
     else
       flash[:notice] = "Invalid email/password combination"
@@ -23,6 +24,7 @@ class SessionsController < ApplicationController
   def destroy
     # session[:user_id] = nil
     cookies.delete(:auth_token)
-    redirect_to root_url, :notice => "Logged out!"
+    gflash success: {value: true, title: 'Logout', time: 2000}
+    redirect_to root_url
   end
 end

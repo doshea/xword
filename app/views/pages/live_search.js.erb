@@ -1,4 +1,4 @@
-<% if @users.any? || @crosswords.any? || @words.any? %>
+<% if @result_count > 0 %>
   $('#live_results').empty().append("<%=j render partial: 'layouts/live_results' %>");
   $('#live_results').show();
 <% else %>

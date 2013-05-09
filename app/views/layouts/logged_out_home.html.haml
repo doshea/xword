@@ -1,13 +1,19 @@
 !!!
 %html
   %head
-    %meta{:charset => "utf-8"}/
-    %meta{:content => "width=device-width", :name => "viewport"}/
-    %title Crossword Café
-    = stylesheet_link_tag    "application", :media => "all"
+    %meta{charset: "utf-8"}/
+    %meta{content: "width=device-width", name: "viewport"}/
+    %title Welcome!
+    = stylesheet_link_tag    "application", media: "all"
+    = stylesheet_link_tag    "welcome"
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
-    #nav= render partial: 'layouts/nav'
-    #body= render partial: 'layouts/body'
-    #footer= render partial: 'layouts/footer'
+    = gflash
+    %header#nav
+      = render partial: 'layouts/nav'
+    #body
+      = render partial: 'layouts/body'
+      = render partial: 'layouts/chalkboard'
+    %footer#footer
+      = render partial: 'layouts/footer'

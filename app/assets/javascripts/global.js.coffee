@@ -12,7 +12,7 @@ window.global =
     settings =
       dataType: 'script'
       type: 'GET'
-      url: "/search"
+      url: "/live_search"
       data: {query: query}
     $.ajax(settings)
 

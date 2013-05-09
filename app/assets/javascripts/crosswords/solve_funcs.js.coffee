@@ -1,4 +1,4 @@
-window.app =
+window.solve_app =
   solution_id: null
   save_timer: null
   clock_updater: null
@@ -7,63 +7,63 @@ window.app =
   debug_mode: false
 
   ready: ->
-    app.save_timer = window.setInterval(->
-      app.save_solution() if app.unsaved_changes
+    solve_app.save_timer = window.setInterval(->
+      solve_app.save_solution() if solve_app.unsaved_changes
     , 5000)
-    app.clock_updater = window.setInterval(app.update_clock, 10000)
-    $('#show_incorrect').on('click', app.show_incorrect)
-    $('#check_correctness').on('click', app.check_correctness)
-    $('#submit_solution').on('click', app.submit_solution)
+    solve_app.clock_updater = window.setInterval(solve_app.update_clock, 10000)
+    $('#show_incorrect').on('click', solve_app.show_incorrect)
+    $('#check_correctness').on('click', solve_app.check_correctness)
+    $('#submit_solution').on('click', solve_app.submit_solution)
 
   save_solution: ->
-    console.log('Saved') if app.debug_mode
+    console.log('Saved') if solve_app.debug_mode
     token = $('#crossword').data('auth-token')
     letters = get_letters();
     settings =
       dataType: 'script'
       type: 'PUT'
-      url: "/solutions/#{app.solution_id}"
+      url: "/solutions/#{solve_app.solution_id}"
       data: {authenticity_token: token, letters: letters}
     $.ajax(settings)
 
   log_save: ->
-    app.last_save = moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
-    app.unsaved_changes = false
+    solve_app.last_save = moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
+    solve_app.unsaved_changes = false
 
   update_clock: ->
-    if app.last_save
-      console.log('Updated clock text') if app.debug_mode
+    if solve_app.last_save
+      console.log('Updated clock text') if solve_app.debug_mode
       $('#save_status').text('Saved ')
-      $('#save_clock').text(moment(app.last_save).fromNow())
+      $('#save_clock').text(moment(solve_app.last_save).fromNow())
 
   update_unsaved: ->
-    app.unsaved_changes = true
+    solve_app.unsaved_changes = true
     $('#save_status').text('Unsaved changes')
     $('#save_clock').empty()
 
   show_incorrect: (e) ->
     e.preventDefault()
-    console.log('showing incorrect...') if app.debug_mode
-    app.save_solution()
+    console.log('showing incorrect...') if solve_app.debug_mode
+    solve_app.save_solution()
     letters = get_letters();
     settings =
       dataType: 'script'
       type: 'POST'
-      url: "/solutions/#{app.solution_id}/get_incorrect"
+      url: "/solutions/#{solve_app.solution_id}/get_incorrect"
       data: {letters: letters}
     $.ajax(settings)
 
   check_correctness: (e) ->
     e.preventDefault()
-    console.log('checking correctness...') if app.debug_mode
-    app.save_solution()
+    console.log('checking correctness...') if solve_app.debug_mode
+    solve_app.save_solution()
     letters = get_letters();
     settings =
       dataType: 'script'
       type: 'POST'
-      url: "/solutions/#{app.solution_id}/check_correctness"
+      url: "/solutions/#{solve_app.solution_id}/check_correctness"
       data: {letters: letters}
     $.ajax(settings)
 
-$(document).ready(app.ready)
+$(document).ready(solve_app.ready)
 

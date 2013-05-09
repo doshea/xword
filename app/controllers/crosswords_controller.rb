@@ -30,13 +30,19 @@ class CrosswordsController < ApplicationController
   end
 
   def edit
-    redirect_to(unauthorized_path) if !(@current_user.is_admin || @current_user == @crossword.user)
+    ensure_owner_or_admin
   end
 
   def update
   end
 
   def destroy
+    ensure_owner_or_admin
+  end
+
+  def publish
+    ensure_owner_or_admin
+    @crossword.update_attributes(published: true)
   end
 
   private

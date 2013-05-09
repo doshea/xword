@@ -1,0 +1,13 @@
+#logged-out-welcome-container
+  #welcomeBoard
+  = form_tag login_path do
+    %p
+    = text_field_tag :username, params[:username], :placeholder => "username", :class => "chalkboardInput subtle-input"
+    %p
+      = password_field_tag :password , nil,  :class => "chalkboardInput subtle-input", :placeholder => "password"
+    = submit_tag "LOG IN" , :class => "chalkboardButton"
+  %span or
+  %br/
+  %br/
+  %br/
+  = link_to "SIGN UP".html_safe, new_user_path, :class => "chalkboardButton"

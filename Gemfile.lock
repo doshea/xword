@@ -93,6 +93,7 @@ GEM
     foundation-icons-sass-rails (2.0.0)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
+    gritter (1.0.3)
     guard (1.6.2)
       listen (>= 0.6.0)
       lumberjack (>= 1.0.2)
@@ -240,6 +241,7 @@ DEPENDENCIES
   factory_girl_rails
   fog
   foundation-icons-sass-rails
+  gritter
   guard-rspec
   haml
   jquery-rails

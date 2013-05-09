@@ -28,9 +28,9 @@
   $.fn.across_word_from_start = function() {if( !this.has_right() ){return [this];} else {return [this].concat(this.cell_to_right().across_word_from_start());}};
   $.fn.get_across_word = function(){return $.map( this.get_across_word_cells(), function(el, i){return el.text();}).join('');};
 
-  $.fn.get_letter = function(){var letter = this.children('.letter').text(); return letter.length > 0 ? letter : ' '}
-  $.fn.set_letter = function(letter){this.children('.letter').text(letter);}
-  $.fn.delete_letter = function(letter){this.children('.letter').empty();}
+  $.fn.get_letter = function(){var letter = this.children('.letter').first().text(); return letter.length > 0 ? letter : ' '}
+  $.fn.set_letter = function(letter){this.children('.letter').first().text(letter);}
+  $.fn.delete_letter = function(letter){this.children('.letter').first().empty();}
 
   $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
@@ -39,11 +39,16 @@
   $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' '));}
   $.fn.next_empty_cell = function(){
     if(this.is_last_letter()){
+      console.log(selected);
       if(this.is_empty_cell()){
+        console.log( solve_app.debug_mode ?  'Is empty cell': '' );
         return this;
       } else {
+        console.log( solve_app.debug_mode ?  'highlighting next word': '' );
         highlight_next_word();
-        return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
+        if($('.selected').get_number() != 1){
+          return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
+        }
       }
     } else {
       var next = this.next_cell();
