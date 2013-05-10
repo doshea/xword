@@ -14,8 +14,9 @@
 
 class Comment < ActiveRecord::Base
   attr_accessible :content, :flagged, :user_id, :crossword_id
-  belongs_to :user, :inverse_of => :comments
-  belongs_to :crossword, :inverse_of => :comments
+
+  belongs_to :user, inverse_of: :comments
+  belongs_to :crossword, inverse_of: :comments
   has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id'
   belongs_to :base_comment, class_name: 'Comment'
 end

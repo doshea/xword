@@ -27,35 +27,35 @@ class Crossword < ActiveRecord::Base
   pg_search_scope :starts_with,
     against: :title,
     using: {
-      tsearch:  {:prefix => true}
+      tsearch:  {prefix: true}
     }
 
-  belongs_to :user, :inverse_of => :crosswords
-  has_many :comments, :inverse_of => :crossword, :dependent => :delete_all
-  has_many :solutions, :inverse_of => :crossword, :dependent => :delete_all
-  has_many :clue_instances, :inverse_of => :crossword, :dependent => :delete_all
-  has_many :clues, :through => :clue_instances, :inverse_of => :crosswords
+  belongs_to :user, inverse_of: :crosswords
+  has_many :comments, inverse_of: :crossword, dependent: :delete_all
+  has_many :solutions, inverse_of: :crossword, dependent: :delete_all
+  has_many :clue_instances, inverse_of: :crossword, dependent: :delete_all
+  has_many :clues, through: :clue_instances, inverse_of: :crosswords
   has_and_belongs_to_many :words
 
   MIN_DIMENSION = 4
   MAX_DIMENSION = 30
 
   validates :rows,
-    :presence => true,
-    :numericality => { :only_integer => true , :message => ': Must be an integer'},
-    :inclusion => {:in => MIN_DIMENSION..MAX_DIMENSION, :message => ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
+    presence: true,
+    numericality: { only_integer: true , message: ': Must be an integer'},
+    inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
   validates :cols,
-    :presence => true,
-    :numericality => { :only_integer => true , :message => ': Must be an integer'},
-    :inclusion => {:in => MIN_DIMENSION..MAX_DIMENSION, :message => ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
+    presence: true,
+    numericality: { only_integer: true , message: ': Must be an integer'},
+    inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
   MIN_TITLE_LENGTH = 3
   MAX_TITLE_LENGTH = 35
 
   validates :title,
-    :presence => true,
-    :length => { :minimum => MIN_TITLE_LENGTH, :maximum => MAX_TITLE_LENGTH, :message => ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
+    presence: true,
+    length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH, message: ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
 
   def rc_to_index(row, col)
     (row-1)*(self.cols)+(col-1)

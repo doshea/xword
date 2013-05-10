@@ -13,13 +13,13 @@ class Word < ActiveRecord::Base
 
   include PgSearch
   pg_search_scope :starts_with,
-                  :against => :content,
-                  :using => {
-                    :tsearch => {:prefix => true}
+                  against: :content,
+                  using: {
+                    tsearch: {prefix: true}
                   }
 
-  has_many :clues, :inverse_of => :word
-  has_many :clue_instances, :through => :clues, :inverse_of => :word
+  has_many :clues, inverse_of: :word
+  has_many :clue_instances, through: :clues, inverse_of: :word
   has_and_belongs_to_many :crosswords
 end
 

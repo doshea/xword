@@ -14,8 +14,8 @@
 class Solution < ActiveRecord::Base
   attr_accessible :letters, :is_complete, :user_id, :crossword_id
 
-  belongs_to :user, :inverse_of => :solutions
-  belongs_to :crossword, :inverse_of => :solutions
+  belongs_to :user, inverse_of: :solutions
+  belongs_to :crossword, inverse_of: :solutions
 
   before_save :check_completion
 
@@ -24,7 +24,7 @@ class Solution < ActiveRecord::Base
     true
   end
 
-  scope :complete, where(:solution_complete => true)
-  scope :incomplete, where(:solution_complete => false)
+  scope :complete, where(solution_complete: true)
+  scope :incomplete, where(solution_complete: false)
   scope :order_recent, order('updated_at DESC')
 end
