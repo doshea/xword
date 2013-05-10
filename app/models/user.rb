@@ -61,10 +61,10 @@ class User < ActiveRecord::Base
 
   MIN_NAME_LENGTH = 2
   validates :first_name,
-    :presence => true,
+    :allow_blank => true,
     :length => { :minimum => MIN_NAME_LENGTH, :message => ": Should be at least #{MIN_NAME_LENGTH} characters"}
   validates :last_name,
-    :presence => true,
+    :allow_blank => true,
     :length => { :minimum => MIN_NAME_LENGTH, :message => ": Should be at least #{MIN_NAME_LENGTH} characters"}
 
     def generate_token(column)
