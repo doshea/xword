@@ -22,5 +22,6 @@ en:
     sessions:
       create:
         success: "You're logged in!"
+        error: "That username/password combination does not match our records. Please try again."
       destroy:
         success: "You successfully logged out. Come back soon!"

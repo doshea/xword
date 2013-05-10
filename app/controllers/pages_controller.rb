@@ -34,5 +34,6 @@ class PagesController < ApplicationController
   end
   def welcome
     redirect_to(root_path) if @current_user.present?
+    @user = User.new
   end
 end

@@ -1,3 +1,5 @@
+$input-include-glowing-effect: false;
+
 html {
   background: url("<%= asset_path 'welcome/couchCafe.jpg' %>") no-repeat center center;
   -webkit-background-size: cover;
@@ -21,45 +23,83 @@ body {
 footer#footer {
   margin: 0;
 }
-#logged-out-welcome-container {
+#chalkboard {
+  background: url("<%= asset_path 'welcome/chalkboardBlack.png' %>") no-repeat;
+  margin: 5em auto;
   width: 23.3em;
   height: 29.5em;
-  margin: 5em auto;
-  background: url("<%= asset_path 'welcome/chalkboardBlack.png' %>") no-repeat;
   -webkit-box-shadow: 0.5em 0.625em 1.8em #000;
   -moz-box-shadow: 0.5em 0.625em 1.8em #000;
   box-shadow: 0.5em 0.625em 1.8em #000;
-  padding-top: 3em;
   color: lightgrey;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
-
-#welcomeBoard {
-  margin: 0em auto 2em auto;
-  display: block;
-  background: url("<%= asset_path 'welcome/welcomeBoard.png' %>") no-repeat;
-  height: 4em;
-  width: 11.6em;
+.slider {
+  position: relative;
+  height: 100%;
 }
+#logged-out-signup-container {
+  width: 23.3em;
+  height: inherit;
+  position: relative;
+  top: -29.3em;
+  left: 23.3em;
+  padding-top: 3em;
+}
+#logged-out-welcome-container {
+  width: 23.3em;
+  height: inherit;
+  padding-top: 3em;
 
+  #welcomeBoard {
+    margin: 0em auto 2em auto;
+    display: block;
+    background: url("<%= asset_path 'welcome/welcomeBoard.png' %>") no-repeat;
+    height: 4em;
+    width: 11.6em;
+  }
+  form {
+    #remember_box {
+      margin: 0.5em 0 1em;
+      label[for=remember_me] {
+        cursor: default;
+        display: inline-block;
+        color: #ADB1B1 !important;
+        font-size: inherit;
+        font-family: inherit;
+        vertical-align: middle;
+      }
+      #remember_me {
+        font-size: 16px;
+        cursor: pointer;
+      }
+    }
+  }
+}
 input.chalkboardInput {
   border: none;
-  border-bottom: 1px #f5f5f5 dotted !important;
+  border-bottom: 1px #a5a5a5 dotted;
   color: white;
   width: auto;
   margin: 0;
   -webkit-box-shadow: none;
   box-shadow: none;
   display: inline-block;
+  &:focus {
+    color: inherit;
+    background-color: inherit;
+    border-bottom: 1px #f5f5f5 dotted;
+  }
 }
-
 input.subtle-input {
   background: none;
   text-align: center;
   font-size: inherit;
 }
 .chalkboardButton {
-  margin: 0em auto 2em auto;
+  margin: 1em auto 0em;
   padding: 0.6em 0;
   color: #f5f5f5 !important;
   border: 1px outset;

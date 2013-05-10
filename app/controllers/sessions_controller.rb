@@ -1,8 +1,4 @@
 class SessionsController < ApplicationController
-
-  def new
-  end
-
   def create
     user = User.find_by_username(params[:username])
     if user.present? && user.authenticate(params[:password])
@@ -16,8 +12,8 @@ class SessionsController < ApplicationController
       gflash success: {value: true, title: 'Login', time: 1400}
       redirect_to root_path
     else
-      flash[:notice] = "Invalid email/password combination"
-      render "new"
+      gflash error: {value: true, title: 'Login Failed', time: 5000}
+      redirect_to welcome_path
     end
   end
 

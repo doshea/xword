@@ -1,0 +1,17 @@
+window.welcome =
+  ready: ->
+    $('#signup1').on('click', welcome.slide_left)
+    $('#signup2').on('click', welcome.slide_right)
+
+  slide_left: (e)->
+    e.preventDefault()
+    $('.slider').animate({'marginLeft' : "-=23.3em"})
+
+  slide_right: (e)->
+    e.preventDefault()
+    $('.slider').animate({'marginLeft' : "+=23.3em"})
+
+
+
+
+$(document).ready(welcome.ready)
