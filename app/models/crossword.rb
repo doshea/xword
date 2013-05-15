@@ -20,6 +20,8 @@
 class Crossword < ActiveRecord::Base
   attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :gridnums, :circles, :user_id, :comment_ids, :solution_ids, :clue_instance_ids, :clue_ids
 
+  before_create :populate_letters_and_grid
+
   scope :published, where(published: true)
   scope :unpublished, where(published: false)
 
@@ -83,6 +85,10 @@ class Crossword < ActiveRecord::Base
     self.letters.present? ? self.letters[rc_to_index(row,col)] == '_' : nil
   end
 
+  def published?
+    self.published
+  end
+
   def check_solution(solution_letters)
     self.letters == solution_letters
   end
@@ -97,4 +103,23 @@ class Crossword < ActiveRecord::Base
     mismatch_array
   end
 
+  def populate_letters_and_grid
+    #populates blank letters
+    total_cells = self.rows*self.cols
+    self.letters = ' '*total_cells
+
+    #populates the top row and left column of the empty puzzle with filled grid numbers
+    counter = 1
+    grid_array = []
+    (1..self.rows).to_a.each do |row|
+      grid_array.push(counter)
+      counter += 1
+    end
+    (1...self.rows).to_a.each do |row|
+      #adds zeros (blank grid numbers)
+      grid_array += [counter] + [0]*(self.cols-1)
+      counter += 1
+    end
+    self.gridnums = grid_array
+  end
 end

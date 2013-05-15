@@ -31,6 +31,11 @@ class CrosswordsController < ApplicationController
 
   def edit
     ensure_owner_or_admin
+    if @crossword.published?
+      redirect_to @crossword
+    else
+      @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
+    end
   end
 
   def update

@@ -1,7 +1,8 @@
 $input-include-glowing-effect: false;
 
 html {
-  background: url("<%= asset_path 'welcome/couchCafe.jpg' %>") no-repeat center center;
+  background-color: gray;
+  background: url("<%= asset_path 'welcome/couchCafe.jpg' %>") no-repeat center center gray;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -47,6 +48,23 @@ footer#footer {
   top: -29.3em;
   left: 23.3em;
   padding-top: 3em;
+  form {
+    #remember_box {
+      margin: 0.5em 0 1em;
+      label {
+        cursor: default;
+        display: inline-block;
+        color: #ADB1B1;
+        font-size: inherit;
+        font-family: inherit;
+        vertical-align: middle;
+      }
+      #remember_me {
+        font-size: 16px;
+        cursor: pointer;
+      }
+    }
+  }
 }
 #logged-out-welcome-container {
   width: 23.3em;
@@ -59,23 +77,6 @@ footer#footer {
     background: url("<%= asset_path 'welcome/welcomeBoard.png' %>") no-repeat;
     height: 4em;
     width: 11.6em;
-  }
-  form {
-    #remember_box {
-      margin: 0.5em 0 1em;
-      label[for=remember_me] {
-        cursor: default;
-        display: inline-block;
-        color: #ADB1B1 !important;
-        font-size: inherit;
-        font-family: inherit;
-        vertical-align: middle;
-      }
-      #remember_me {
-        font-size: 16px;
-        cursor: pointer;
-      }
-    }
   }
 }
 input.chalkboardInput {
@@ -109,6 +110,21 @@ input.subtle-input {
   background: rgba(255,255,255,0.2);
   font-size: inherit;
   width: 10em;
-  font-weight: bold;
   cursor: pointer;
+  position: relative;
+
+  &:hover {
+    background: #4f4f4f;
+  }
+
+  i {
+    vertical-align: middle;
+    position: absolute;
+    &.foundicon-left-arrow {
+      left: 1em;
+    }
+    &.foundicon-right-arrow {
+      right: 1em;
+    }
+  }
 }

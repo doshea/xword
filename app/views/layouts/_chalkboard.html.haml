@@ -9,7 +9,9 @@
         = f.password_field :password_confirmation, :placeholder => "password confirm", :class => "chalkboardInput subtle-input", required: true
         = f.submit "Sign up", :class => 'chalkboardButton'
       %span or
-      = link_to "Log in", '#', class: "chalkboardButton", id: "signup1"
+      = link_to "#", :class => "chalkboardButton button", :id => "signup1" do
+        Log In
+        %i.general.foundicon-right-arrow
 
     #logged-out-signup-container
       = form_tag login_path do
@@ -18,6 +20,8 @@
         #remember_box
           = check_box_tag :remember_me, 1, params[:remember_me] #find out what the second two arguments do
           = label_tag :remember_me, 'remember me'
-        = submit_tag "LOG IN" , :class => "chalkboardButton"
+        = submit_tag "Log in" , :class => "chalkboardButton"
       %span or
-      = link_to "SIGN UP", '#', class: "chalkboardButton", id: "signup2"
+      = link_to '#', class: "chalkboardButton button", id: "signup2" do
+        %i.general.foundicon-left-arrow
+        Sign Up
