@@ -17,6 +17,10 @@ wood_table.jpg: wood_table-4c78f4680e6934edc890d98bda318961.jpg
 wood_table/index.jpg: wood_table-4c78f4680e6934edc890d98bda318961.jpg
 application.js: application-c8400ce02ff117e601428bc319c4fb7d.js
 application/index.js: application-c8400ce02ff117e601428bc319c4fb7d.js
+crosswords/edit.js: crosswords/edit-28dba995c2b592925f09aaf380c510d7.js
+crosswords/edit/index.js: crosswords/edit-28dba995c2b592925f09aaf380c510d7.js
+crosswords/solve.js: crosswords/solve-169447a62c1ba0e88922e7adbdde9c58.js
+crosswords/solve/index.js: crosswords/solve-169447a62c1ba0e88922e7adbdde9c58.js
 welcome.js: welcome-c3eb239e51b14c41589b38ee7a83d5d7.js
 welcome/index.js: welcome-c3eb239e51b14c41589b38ee7a83d5d7.js
 application.css: application-b3a5bb83d5715be4a425e9972fdb4147.css
