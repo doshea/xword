@@ -17,8 +17,12 @@ wood_table.jpg: wood_table-4c78f4680e6934edc890d98bda318961.jpg
 wood_table/index.jpg: wood_table-4c78f4680e6934edc890d98bda318961.jpg
 application.js: application-c8400ce02ff117e601428bc319c4fb7d.js
 application/index.js: application-c8400ce02ff117e601428bc319c4fb7d.js
+welcome.js: welcome-c3eb239e51b14c41589b38ee7a83d5d7.js
+welcome/index.js: welcome-c3eb239e51b14c41589b38ee7a83d5d7.js
 application.css: application-b3a5bb83d5715be4a425e9972fdb4147.css
 application/index.css: application-b3a5bb83d5715be4a425e9972fdb4147.css
+welcome.css: welcome-d9b8c88f4c32b325e2a32a30cca0cd56.css
+welcome/index.css: welcome-d9b8c88f4c32b325e2a32a30cca0cd56.css
 accessibility_foundicons.eot: accessibility_foundicons-de4ded15ef67a810e56439914e291834.eot
 accessibility_foundicons/index.eot: accessibility_foundicons-de4ded15ef67a810e56439914e291834.eot
 accessibility_foundicons.svg: accessibility_foundicons-fd4fd4ddc2dc113b398af0c57c8c3db2.svg
