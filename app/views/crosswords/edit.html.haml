@@ -2,10 +2,14 @@
 = stylesheet_link_tag "crossword"
 
 .row#credit_area
-  .large-12.columns
-    %h3
-      = @crossword.title
-      %span#creator_credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
+  .large-9.columns
+    %h3.large
+      .row
+        .large-10.columns
+          = text_field_tag 'title', @crossword.title
+        .large-2.columns
+          %span#creator_credit by Me
+  .large-3.columns
     #puzzle_controls
       %span#save_status.smaller No changes yet
       %span#save_clock.smaller

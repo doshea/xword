@@ -1,4 +1,20 @@
 .row
   .large-12.columns
-    %h1
+    %h2
       = "Welcome back, #{@current_user.display_first_name}!"
+    %hr
+    %h4 Your puzzles
+    %h5
+      Published
+    %ul
+      - @current_user.crosswords.published.each do |crossword|
+        = link_to crossword do
+          = render partial: 'crosswords/mini_pic_canvas', locals: {cw: crossword}
+          = crossword.title
+    %h5
+      Unpublished
+    %ul
+      - @current_user.crosswords.unpublished.each do |crossword|
+        = link_to edit_crossword_path(crossword) do
+          = render partial: 'crosswords/mini_pic_canvas', locals: {cw: crossword}
+          = crossword.title
