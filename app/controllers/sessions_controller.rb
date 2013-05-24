@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    # session[:user_id] = nil
+    session[:user_id] = nil
     cookies.delete(:auth_token)
     gflash success: {value: true, title: 'Logout', time: 2000}
     redirect_to root_url
