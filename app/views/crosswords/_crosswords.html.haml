@@ -10,7 +10,6 @@
       %th Rows
       %th Columns
       %th Letters
-      %th Gridnums
       %th Circles
   %tbody
     - @crosswords.each do |crossword|
@@ -24,6 +23,5 @@
         %td= crossword.rows
         %td= crossword.cols
         %td= crossword.letters
-        %td= crossword.gridnums
         %td= crossword.circles
         %td= crossword.letters

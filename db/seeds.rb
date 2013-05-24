@@ -31,7 +31,7 @@ cro1.comments << com1
 com1.replies << com2
 
 #Trying to add serialized fields
-cro3 = Crossword.create(title: 'Over the Rainbow', description: 'My other puzzle', rows: 15, cols: 15, letters: 'abcd', gridnums: '00100020003')
+cro3 = Crossword.create(title: 'Over the Rainbow', description: 'My other puzzle', rows: 15, cols: 15, letters: 'abcd')
 u2.crosswords << cro3
 
 #creates clues

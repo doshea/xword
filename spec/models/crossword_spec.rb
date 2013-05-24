@@ -10,11 +10,12 @@
 #  rows           :integer          default(15), not null
 #  cols           :integer          default(15), not null
 #  letters        :text             default(""), not null
-#  gridnums       :text             default(""), not null
 #  circles        :text
 #  user_id        :integer
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  across_nums    :text             default(""), not null
+#  down_nums      :text             default(""), not null
 #
 
 require 'spec_helper'

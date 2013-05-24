@@ -20,7 +20,6 @@ class UsersController < ApplicationController
       session[:user_id] = user.id
       redirect_to root_path
     else
-      binding.pry
       redirect_to root_path
       # render :new
     end
