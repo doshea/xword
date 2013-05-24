@@ -52,7 +52,7 @@ class User < ActiveRecord::Base
     length: { maximum: MAX_EMAIL_LENGTH, message: ": That's just too long. Your email shouldn't be above #{MAX_EMAIL_LENGTH} characters" },
     format: { with: VALID_EMAIL_REGEX, message: ": Only real email addresses, please" }
 
-  MAX_USERNAME_LENGTH = 12
+  MAX_USERNAME_LENGTH = 16
   MIN_USERNAME_LENGTH = 4
   validates :username,
     presence: true,
