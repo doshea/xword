@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
     confirmation: true,
     length: { minimum: MIN_PASSWORD_LENGTH, maximum: MAX_PASSWORD_LENGTH, message: ": Should be #{MIN_PASSWORD_LENGTH}-#{MAX_PASSWORD_LENGTH} characters" }
 
-  MAX_EMAIL_LENGTH = 25
+  MAX_EMAIL_LENGTH = 35
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email,
     presence: true,
