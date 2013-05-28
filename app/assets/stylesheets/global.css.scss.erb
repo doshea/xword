@@ -41,26 +41,33 @@ body {
   & > .row {
     background-color: white;
   }
-  & > .row-topper {
+  & > .row-bookend {
     min-height: 1.5em;
     background: black;
     text-align: center;
+    p, h1, h2, h3, h4, h5, h6 {
+      color: white;
+    }
+  }
+  & > .row-topper {
     -webkit-border-radius: 1em 1em 0 0;
     -moz-border-radius: 1em 1em 0 0;
     border-radius: 1em 1em 0 0;
     margin-top: 2em;
+  }
+  & > .row-stopper {
+    -webkit-border-radius: 0 0 1em 1em;
+    -moz-border-radius: 0 0 1em 1em;
+    border-radius: 0 0 1em 1em;
+  }
+}
 
-    p, h1, h2, h3, h4, h5, h6 {
-      color: white;
-    }
 
-  }
-  .smaller {
-    font-size: smaller;
-  }
-  .center {
-    text-align: center;
-  }
+.smaller {
+  font-size: smaller;
+}
+.center {
+  text-align: center;
 }
 input:focus::-webkit-input-placeholder
 {

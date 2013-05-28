@@ -1,0 +1,8 @@
+- if object.errors.any?
+  %h6
+    %small= "There are #{pluralize(object.errors.count, 'error')} on this form"
+  %ul
+    - object.errors.full_messages.each do |msg|
+      %li
+        %h6
+          %small= msg

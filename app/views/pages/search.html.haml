@@ -1,5 +1,5 @@
-.row.row-topper
-  %h4
+.row.row-topper.row-bookend
+  %h5
     Search Results
 .row#search-results
   .large-12.columns
@@ -12,3 +12,4 @@
     - if @words.any?
       = render partial: 'word_search'
       %hr
+.row.row-stopper.row-bookend
