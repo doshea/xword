@@ -41,6 +41,7 @@ class Crossword < ActiveRecord::Base
   has_many :solutions, inverse_of: :crossword, dependent: :delete_all
   has_many :clue_instances, inverse_of: :crossword, dependent: :delete_all
   has_many :clues, through: :clue_instances, inverse_of: :crosswords
+  has_many :cells, inverse_of: :crossword, dependent: :delete_all
   has_and_belongs_to_many :words
 
   MIN_DIMENSION = 4
@@ -121,6 +122,20 @@ class Crossword < ActiveRecord::Base
   # def populate_down_grid
   #   self.down_nums = ('1'+('0'*(self.cols-1) ))*self.rows
   # end
+
+  def populate_cells
+    index = 1
+    row = 1
+    while row <= self.rows
+      col = 1
+      while col <= self.cols
+        self.cells << Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
+        index += 1
+        col += 1
+      end
+      row += 1
+    end
+  end
 
   def populate_grid
     #populates the top row and left column of the empty puzzle with filled grid numbers

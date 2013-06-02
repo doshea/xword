@@ -1,3 +1,4 @@
+Cell.delete_all
 Clue.delete_all
 ClueInstance.delete_all
 Comment.delete_all

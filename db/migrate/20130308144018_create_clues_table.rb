@@ -1,4 +1,4 @@
-class AddCluesTable < ActiveRecord::Migration
+class CreateCluesTable < ActiveRecord::Migration
   def change
     create_table :clues do |t|
       t.text :content

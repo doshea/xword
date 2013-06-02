@@ -14,15 +14,21 @@
 ActiveRecord::Schema.define(:version => 20130523043749) do
 
   create_table "cells", :force => true do |t|
-    t.integer  "row",                               :null => false
-    t.integer  "col",                               :null => false
-    t.integer  "index",                             :null => false
-    t.boolean  "is_void",        :default => false, :null => false
+    t.integer  "row",                                :null => false
+    t.integer  "col",                                :null => false
+    t.integer  "index",                              :null => false
+    t.boolean  "is_void",         :default => false, :null => false
     t.integer  "across_clue_id"
     t.integer  "down_clue_id"
     t.integer  "crossword_id"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.boolean  "is_across_start", :default => false, :null => false
+    t.boolean  "is_down_start",   :default => false, :null => false
+    t.integer  "left_cell_id"
+    t.integer  "right_cell_id"
+    t.integer  "above_cell_id"
+    t.integer  "below_cell_id"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
   end
 
   create_table "clue_instances", :force => true do |t|
@@ -48,9 +54,9 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
     t.boolean  "flagged",         :default => false
     t.integer  "user_id"
     t.integer  "crossword_id"
+    t.integer  "base_comment_id"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
-    t.integer  "base_comment_id"
   end
 
   create_table "crosswords", :force => true do |t|
@@ -62,11 +68,11 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
     t.integer  "cols",           :default => 15,         :null => false
     t.text     "letters",        :default => "",         :null => false
     t.text     "circles"
+    t.text     "across_nums",    :default => "",         :null => false
+    t.text     "down_nums",      :default => "",         :null => false
     t.integer  "user_id"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
-    t.text     "across_nums",    :default => "",         :null => false
-    t.text     "down_nums",      :default => "",         :null => false
   end
 
   create_table "crosswords_words", :id => false, :force => true do |t|
@@ -90,11 +96,11 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
     t.string   "email",                              :null => false
     t.boolean  "is_admin",        :default => false
     t.string   "password_digest"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
     t.text     "image"
     t.string   "location"
     t.string   "auth_token"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
   end
 
   create_table "words", :force => true do |t|

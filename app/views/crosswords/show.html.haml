@@ -1,7 +1,7 @@
 = javascript_include_tag 'solve'
 = stylesheet_link_tag "crossword"
 :javascript
-  app.solution_id = "#{@solution.id if @solution}"
+  solve_app.solution_id = "#{@solution.id if @solution}"
 
 - if @current_user == @crossword.user
   .row.note

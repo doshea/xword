@@ -1,4 +1,4 @@
-class AddClueInstancesTable < ActiveRecord::Migration
+class CreateClueInstancesTable < ActiveRecord::Migration
   def change
     create_table :clue_instances do |t|
       t.integer :start_cell

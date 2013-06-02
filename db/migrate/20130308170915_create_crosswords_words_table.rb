@@ -1,4 +1,4 @@
-class AddCrosswordsWordsTable < ActiveRecord::Migration
+class CreateCrosswordsWordsTable < ActiveRecord::Migration
   def change
     create_table :crosswords_words, :id => false do |t|
       t.belongs_to :crossword
