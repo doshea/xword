@@ -129,6 +129,7 @@ GEM
     net-scp (1.1.0)
       net-ssh (>= 2.6.5)
     net-ssh (2.6.6)
+    newrelic_rpm (3.6.3.106)
     nokogiri (1.5.9)
     pg (0.14.1)
     pg_search (0.5.7)
@@ -248,6 +249,7 @@ DEPENDENCIES
   json
   launchy
   meta_request
+  newrelic_rpm
   pg
   pg_search
   pry-debugger
