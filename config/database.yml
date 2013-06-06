@@ -16,7 +16,7 @@ test:
   username: dylanoshea
   password:
 
-test:
+production:
   adapter: postgresql
   encoding: unicode
   database: xword_production

@@ -1,4 +1,4 @@
-%table#crossword{:'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols}
+%table#crossword{:'data-id' => @crossword.id, :'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols, :'data-auth-token' => form_authenticity_token}
   - for r in 1..@crossword.rows
     %tr{:'data-row' => r}
       - for c in 1..@crossword.cols
@@ -13,12 +13,12 @@
 .clue_column
   Across
   %ol.clues
-    - @clue_instances.where(is_across: true).each do |ci|
+    - @crossword.across_start_cells.each do |across_start|
       %li.clue.across_clue{clue_num: ci.start_cell}
         = "#{ci.start_cell}. #{ci.clue.content}"
 .clue_column
   Down
   %ol.clues
-    - @clue_instances.where(is_across: false).each do |ci|
+    - @crossword.down_start_cells.each do |down_start|
       %li.clue.down_clue{clue_num: ci.start_cell}
         = "#{ci.start_cell}. #{ci.clue.content}"

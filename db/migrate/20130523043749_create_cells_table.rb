@@ -4,16 +4,15 @@ class CreateCellsTable < ActiveRecord::Migration
       t.integer :row, null: false
       t.integer :col, null: false
       t.integer :index, null:false
+      t.integer :cell_num
       t.boolean :is_void, null: false, default: false
-      t.integer :across_clue_id
-      t.integer :down_clue_id
-      t.integer :crossword_id
       t.boolean :is_across_start, null: false, default: false
       t.boolean :is_down_start, null: false, default: false
-      t.integer :left_cell_id
-      t.integer :right_cell_id
-      t.integer :above_cell_id
-      t.integer :below_cell_id
+      t.belongs_to :crossword
+      t.belongs_to :across_clue
+      t.belongs_to :down_clue
+      t.belongs_to :left_cell
+      t.belongs_to :above_cell
       t.timestamps
     end
   end

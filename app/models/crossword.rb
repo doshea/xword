@@ -24,7 +24,8 @@ class Crossword < ActiveRecord::Base
   serialize :across_nums
   serialize :down_nums
 
-  before_create :populate_letters, :populate_grid
+  before_create :populate_letters, :populate_grid, :populate_cells
+  after_create :link_cells
 
   scope :published, where(published: true)
   scope :unpublished, where(published: false)
@@ -113,27 +114,33 @@ class Crossword < ActiveRecord::Base
     self.letters = ' '*(self.rows*self.cols)
   end
 
-  # def populate_across_grid
-  #   temp_across = ('1'*self.cols)
-  #   temp_across += ('0'*(self.cols*(self.rows-1)))
-  #   self.across_nums = temp_across
-  # end
-
-  # def populate_down_grid
-  #   self.down_nums = ('1'+('0'*(self.cols-1) ))*self.rows
-  # end
-
   def populate_cells
     index = 1
+    cell_num = 1
     row = 1
     while row <= self.rows
       col = 1
       while col <= self.cols
-        self.cells << Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
+        if (row == 1 || col == 1)
+          temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1, cell_num: cell_num)
+          cell_num += 1
+        else
+          temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
+        end
+        self.cells << temp_cell
         index += 1
         col += 1
       end
       row += 1
+    end
+  end
+
+  def link_cells
+    counter = 1
+      self.cells.each do |cell|
+        puts counter
+        cell.assign_bordering_cells!
+        counter += 1
     end
   end
 
@@ -161,4 +168,13 @@ class Crossword < ActiveRecord::Base
     self.across_nums = across_array
     self.down_nums = down_array
   end
+
+  def across_start_cells
+    self.cells.where('is_across_start = ?', true)
+  end
+
+  def down_start_cells
+    self.cells.where('is_across_start = ?', true)
+  end
+
 end

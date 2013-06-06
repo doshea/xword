@@ -5,7 +5,7 @@ class CreateCommentsTable < ActiveRecord::Migration
       t.boolean :flagged, :default => false
       t.belongs_to :user
       t.belongs_to :crossword
-      t.integer :base_comment_id
+      t.belongs_to :base_comment
       t.timestamps
     end
   end
