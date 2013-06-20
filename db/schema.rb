@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130523043749) do
+ActiveRecord::Schema.define(:version => 20130609182222) do
 
   create_table "cells", :force => true do |t|
     t.integer  "row",                                :null => false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
     t.integer  "above_cell_id"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
+    t.string   "letter"
   end
 
   create_table "clue_instances", :force => true do |t|

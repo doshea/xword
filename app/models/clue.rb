@@ -20,6 +20,9 @@ class Clue < ActiveRecord::Base
   belongs_to :user, inverse_of: :clues
   has_many :crosswords, through: :clue_instances, inverse_of: :clues
 
+  validates :content, presence: true, length: {maximum: 100}
+  validates :difficulty, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5}
+
   private
   def strip_tags
     self.content = ActionController::Base.helpers.strip_tags(self.content)

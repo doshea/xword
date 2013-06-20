@@ -4,12 +4,12 @@
 .row#search-results
   .large-12.columns
     - if @crosswords.any?
-      = render partial: 'crossword_search'
+      = render partial: 'pages/partials/crossword_search'
       %hr
     - if @users.any?
-      = render partial: 'user_search'
+      = render partial: 'pages/partials/user_search'
       %hr
     - if @words.any?
-      = render partial: 'word_search'
+      = render partial: 'pages/partials/word_search'
       %hr
 .row.row-stopper.row-bookend

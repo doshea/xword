@@ -14,5 +14,9 @@
 require 'spec_helper'
 
 describe Clue do
+    describe '.new' do
+    it 'creates an instance of User' do
 
+    end
+  end
 end

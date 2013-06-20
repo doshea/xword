@@ -17,11 +17,10 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      session[:user_id] = user.id
+      session[:user_id] = user.id unless session[:user_id]
       redirect_to root_path
     else
       render template: 'layouts/logged_out_home'
-      # render :new
     end
   end
 

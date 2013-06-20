@@ -1,0 +1,7 @@
+%li
+  = link_to('Register', new_user_path)
+%li.divider.hide-for-small
+%li.active.has-dropdown#login_button
+  = link_to 'Login', nil, :remote => true
+  .dropdown.dark-shadow
+    = render partial: 'sessions/partials/form_small'

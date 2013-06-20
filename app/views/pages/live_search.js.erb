@@ -1,5 +1,5 @@
 <% if @result_count > 0 %>
-  $('#live_results').empty().append("<%=j render partial: 'layouts/live_results' %>");
+  $('#live_results').empty().append("<%=j render partial: 'layouts/partials/live_results' %>");
   $('#live_results').show();
 <% else %>
   $('#live_results').hide().empty();

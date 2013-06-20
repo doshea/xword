@@ -3,11 +3,11 @@
     New Puzzle
 .row
   .large-7.columns
-    = render partial: 'new_form'
+    = render partial: 'crosswords/partials/new_form'
   .large-5.columns
     %fieldset#preview
       %legend
         Preview
       .row
         .large-12.columns
-          = render partial: 'mini_pic_canvas2', :locals => {:rows => @crossword.rows, :cols => @crossword.cols}
+          = render partial: 'crosswords/partials/mini_pic_canvas2', :locals => {:rows => @crossword.rows, :cols => @crossword.cols}

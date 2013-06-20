@@ -25,7 +25,7 @@ class Crossword < ActiveRecord::Base
   serialize :down_nums
 
   before_create :populate_letters, :populate_grid, :populate_cells
-  after_create :link_cells
+  # after_create :link_cells
 
   scope :published, where(published: true)
   scope :unpublished, where(published: false)
@@ -107,6 +107,25 @@ class Crossword < ActiveRecord::Base
       counter += 1
     end
     mismatch_array
+  end
+
+  def number_cells
+    counter = 1
+    #order by index
+    self.cells.each do |cell|
+      cell.is_down_start!
+      cell.is_across_start!
+    end
+    self.cells.order('index ASC').each do |cell|
+      if cell.should_be_numbered?
+        cell.cell_num = counter
+        counter += 1
+      else
+        cell.cell_num = nil
+      end
+      cell.save
+    end
+
   end
 
   #populates blank letters

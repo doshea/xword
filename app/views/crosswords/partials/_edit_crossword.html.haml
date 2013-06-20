@@ -1,0 +1,21 @@
+%table#crossword{:'data-id' => @crossword.id, :'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols, :'data-auth-token' => form_authenticity_token}
+  - for r in 1..@crossword.rows
+    %tr{:'data-row' => r}
+      - @crossword.cells.where("row = ?", r).order("col ASC").each do |cell|
+        - unless cell.is_void?
+          = render(partial: 'cells/partials/cell', :locals => {:cell => cell})
+        - else
+          = render(partial: 'cells/partials/void_cell', locals: {cell: cell})
+
+/ .clue_column
+/   Across
+/   %ol.clues
+/     - @crossword.across_start_cells.each do |across_start|
+/       %li.clue.across_clue{clue_num: ci.start_cell}
+/         = "#{ci.start_cell}. #{ci.clue.content}"
+/ .clue_column
+/   Down
+/   %ol.clues
+/     - @crossword.down_start_cells.each do |down_start|
+/       %li.clue.down_clue{clue_num: ci.start_cell}
+/         = "#{ci.start_cell}. #{ci.clue.content}"

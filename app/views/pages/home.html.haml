@@ -10,13 +10,13 @@
     %ul
       - @current_user.crosswords.published.each do |crossword|
         = link_to crossword do
-          = render partial: 'crosswords/mini_pic_canvas', locals: {cw: crossword}
+          = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: crossword}
           = crossword.title
     %h5
       Unpublished
     %ul
       - @current_user.crosswords.unpublished.each do |crossword|
         = link_to edit_crossword_path(crossword) do
-          = render partial: 'crosswords/mini_pic_canvas', locals: {cw: crossword}
+          = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: crossword}
           = crossword.title
 .row.row-stopper.row-bookend

@@ -1,0 +1,53 @@
+%nav.top-bar.dark-shadow
+  .row
+    %ul.title-area
+      / Title Area
+      %li.name
+        %h1
+          = link_to image_tag("header_icon.png", :height => "35%", :alt => "Crossword Café | Home", :id => 'header_icon'), root_url
+      / Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone
+      %li.toggle-topbar.menu-icon
+        %a{:href => "#"}
+          %span Menu
+    %section.top-bar-section
+      / Left Nav Section
+      %ul.left
+        - if is_admin?
+          =render partial: 'layouts/partials/admin'
+        %li.divider
+      / Right Nav Section
+      %ul.right
+        %li.has-form
+          = form_tag search_path, method: 'get', id: 'top_search', class: 'relative' do
+            .row.collapse
+              .small-12.columns
+                = text_field_tag 'query', nil, class: 'round', autocomplete: 'off'
+                %i.general.foundicon-search
+            %ol#live_results
+        %li.divider
+        %li.has-dropdown
+          %a{:href => '#'}
+            Create
+          %ul.dropdown
+            %li.divider
+            %li
+              = link_to 'New', new_crossword_path
+            %li
+              = link_to 'Unpublished', '#'
+            %li
+              = link_to 'Published', '#'
+
+        %li.divider
+        %li.has-dropdown
+          %a{href: '#'}
+            Solve
+          %ul.dropdown
+            %li.divider
+            %li
+              = link_to 'Random Puzzle', User.rand_unowned_puzzle
+        %li.divider
+        - if is_logged_in?
+          = render partial: 'layouts/partials/user_dropdown'
+        -else
+          = render partial: 'layouts/partials/anonymous'
+        %li.divider

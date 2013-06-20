@@ -1,0 +1,20 @@
+%table
+  %thead
+    %tr
+      %th ID
+      %th Crossword
+      %th Cell
+      %th Across
+      %th Word
+      %th Clue
+      %th User
+  %tbody
+    - @clue_instances.each do |clue_instance|
+      = content_tag_for(:tr, clue_instance) do
+        %td= clue_instance.id
+        %td= link_to clue_instance.crossword.title, clue_instance.crossword
+        %td= clue_instance.start_cell
+        %td= clue_instance.is_across
+        %td= link_to(clue_instance.word.content, clue_instance.word) if clue_instance.word
+        %td= link_to(clue_instance.clue.content, clue_instance.clue) if clue_instance.clue
+        %td= link_to(clue_instance.user.username, clue_instance.user) if clue_instance.user

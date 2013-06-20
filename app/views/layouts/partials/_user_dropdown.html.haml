@@ -1,0 +1,14 @@
+%li.has-dropdown#user_menu
+  %a#profile_tease
+    = image_tag @current_user.image.thumb
+    = @current_user.username
+
+  %ul.dropdown
+    %li.divider
+    %li
+      = link_to 'Account', account_users_path
+    %li
+      = link_to 'Public Profile', @current_user
+    %li.divider
+    %li
+      = link_to 'Log out', logout_path, :method => 'delete'

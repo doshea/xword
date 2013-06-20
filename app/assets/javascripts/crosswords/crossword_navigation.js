@@ -19,7 +19,7 @@ var counter = 1;
 
 //Document load events and event triggers
 $(function(){
-  number_cells();
+  // number_cells();
   selected = $('.cell:not(.void)').first();
   cell_highlight(selected);
   $('#crossword').focus();
@@ -47,6 +47,9 @@ function number_cell($cell){
     $cell.set_number(counter);
     $cell.attr('data-cell', counter); //no idea why this won't work when I use the .data() method...
     counter += 1;
+  } else if($cell.get_number() != ' '){
+    $cell.set_number('');
+    $cell.removeAttr('data-cell');
   }
 }
 

@@ -1,10 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'rails'
+
 gem 'newrelic_rpm'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
 gem 'pg'
 gem 'jquery-rails'
 gem 'haml'

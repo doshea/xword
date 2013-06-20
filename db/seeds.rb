@@ -459,3 +459,8 @@ c63d.clue_instances << ci63d
 # associates clue instances with their crossword
 cro1.clue_instances = cro1_cis
 cro1.save
+
+
+Crossword.all.each do |cw|
+  cw.link_cells
+end

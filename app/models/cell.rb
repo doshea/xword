@@ -6,21 +6,22 @@
 #  row             :integer          not null
 #  col             :integer          not null
 #  index           :integer          not null
+#  cell_num        :integer
 #  is_void         :boolean          default(FALSE), not null
-#  across_clue_id  :integer
-#  down_clue_id    :integer
-#  crossword_id    :integer
 #  is_across_start :boolean          default(FALSE), not null
 #  is_down_start   :boolean          default(FALSE), not null
+#  crossword_id    :integer
+#  across_clue_id  :integer
+#  down_clue_id    :integer
 #  left_cell_id    :integer
 #  above_cell_id   :integer
-#  cell_num        :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  letter          :string(255)
 #
 
 class Cell < ActiveRecord::Base
-  attr_accessible :row, :col, :index, :is_void, :across_clue_id, :down_clue_id, :crossword_id, :is_across_start, :is_down_start, :left_cell_id, :above_cell_id, :cell_num
+  attr_accessible :row, :col, :index, :is_void, :across_clue_id, :down_clue_id, :crossword_id, :is_across_start, :is_down_start, :left_cell_id, :above_cell_id, :cell_num, :letter
 
   belongs_to :across_clue, polymorphic: true, inverse_of: :cells
   belongs_to :down_clue, polymorphic: true, inverse_of: :cells
@@ -39,6 +40,10 @@ class Cell < ActiveRecord::Base
 
   def to_s
     "#{self.id}. Cell at [#{self.row}, #{self.col}], #{self.index.ordinalize} cell in Crossword #{self.crossword.id}#{" with cell number #{self.cell_num}" if self.cell_num}. #{"Is across start. " if self.is_across_start}#{"Is down start. " if self.is_down_start}"
+  end
+
+  def is_void?
+    self.is_void
   end
 
   def is_across_start?
@@ -61,6 +66,10 @@ class Cell < ActiveRecord::Base
     self.save
   end
 
+  def should_be_numbered?
+    self.is_across_start || self.is_down_start
+  end
+
   def assign_bordering_cells!
     puts "Assign bordering cells for cell in row #{self.row}, column #{self.col}"
     self.left_cell = self.crossword.cells.find_by_row_and_col(self.row, self.col-1) unless (self.col == 1)
@@ -68,4 +77,20 @@ class Cell < ActiveRecord::Base
     self.save
   end
 
+  def get_mirror_cell
+    cw = self.crossword
+    opposing_row = cw.rows-self.row+1
+    opposing_col = cw.cols-self.col+1
+    cw_id = cw.id
+    Cell.find_by_row_and_col_and_crossword_id(opposing_row, opposing_col, cw_id)
+  end
+
+  def ensure_mirrored
+    mirror_cell = get_mirror_cell
+    if self.is_void != mirror_cell.is_void?
+      mirror_cell.is_void = self.is_void?
+      mirror_cell.save
+    end
+    mirror_cell
+  end
 end
