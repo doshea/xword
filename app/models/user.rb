@@ -45,12 +45,11 @@ class User < ActiveRecord::Base
     length: { minimum: MIN_PASSWORD_LENGTH, maximum: MAX_PASSWORD_LENGTH, message: ": Should be #{MIN_PASSWORD_LENGTH}-#{MAX_PASSWORD_LENGTH} characters" },
     on: :create
 
-    validates :password,
+  validates :password,
     confirmation: true,
     length: { minimum: MIN_PASSWORD_LENGTH, maximum: MAX_PASSWORD_LENGTH, message: ": Should be #{MIN_PASSWORD_LENGTH}-#{MAX_PASSWORD_LENGTH} characters" },
     allow_blank: true,
     on: :update
-
 
 
   MAX_EMAIL_LENGTH = 35
