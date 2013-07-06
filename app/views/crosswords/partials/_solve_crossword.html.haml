@@ -11,20 +11,23 @@
             .cell_flag
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
+
 .clue_column
   %h6 Across
   %ol.clues#across
-    - @clue_instances.where(:is_across => true).each do |ci|
-      %li.clue.across_clue{:clue_num => ci.start_cell}
-        = "#{ci.start_cell}. "
-        = ci.clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe
+    - @crossword.across_start_cells.each do |cell|
+      %li.clue.across-clue{:'data-cell-id' => cell.id}
+        = "#{cell.cell_num}. "
+        = cell.across_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if cell.across_clue.content
+
 .clue_column
   %h6 Down
   %ol.clues#down
-    - @clue_instances.where(:is_across => false).each do |ci|
-      %li.clue.down_clue{:clue_num => ci.start_cell}
-        = "#{ci.start_cell}. "
-        = ci.clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe
+    - @crossword.down_start_cells.each do |cell|
+      %li.clue.down-clue{:'data-cell-id' => cell.id}
+        = "#{cell.cell_num}. "
+        = cell.down_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if cell.down_clue.content
+
 #solve_controls
   %button.button.alert.small#show_incorrect Show Incorrect
   %button.button.warning.small#check_correctness Check Correctness

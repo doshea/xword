@@ -250,6 +250,7 @@ DEPENDENCIES
   launchy
   meta_request
   newrelic_rpm
+  nokogiri
   pg
   pg_search
   pry-debugger

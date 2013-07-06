@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(:version => 20130609182222) do
     t.integer  "index",                              :null => false
     t.integer  "cell_num"
     t.boolean  "is_void",         :default => false, :null => false
-    t.boolean  "is_across_start", :default => false, :null => false
-    t.boolean  "is_down_start",   :default => false, :null => false
+    t.boolean  "is_across_start", :default => false
+    t.boolean  "is_down_start",   :default => false
     t.integer  "crossword_id"
     t.integer  "across_clue_id"
     t.integer  "down_clue_id"
@@ -41,12 +41,12 @@ ActiveRecord::Schema.define(:version => 20130609182222) do
   end
 
   create_table "clues", :force => true do |t|
-    t.text     "content"
-    t.integer  "difficulty"
+    t.text     "content",    :default => "ENTER CLUE"
+    t.integer  "difficulty", :default => 1
     t.integer  "user_id"
     t.integer  "word_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
   end
 
   create_table "comments", :force => true do |t|

@@ -1,6 +1,6 @@
 class CrosswordsController < ApplicationController
   before_filter :ensure_admin, only: [:index]
-  before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy]
+  before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish]
   def index
     @crosswords = Crossword.order(:created_at)
   end
@@ -10,6 +10,7 @@ class CrosswordsController < ApplicationController
     if @crossword
       @solution = Solution.find_or_create_by_crossword_id_and_user_id(@crossword.id, @current_user.id) if @current_user
       @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
+      @cells = @crossword.cells.asc_indices
     else
       #redirect to 404 page
     end
@@ -30,11 +31,14 @@ class CrosswordsController < ApplicationController
   end
 
   def edit
-    ensure_owner_or_admin
     if @crossword.published?
       redirect_to @crossword
     else
-      @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
+      @cells = @crossword.cells.asc_indices
+      @across_cells = @crossword.across_start_cells.asc_indices
+      @down_cells = @crossword.down_start_cells.asc_indices
+      @across_clues = @crossword.across_clues
+      @down_clues = @crossword.down_clues
     end
   end
 
@@ -42,12 +46,10 @@ class CrosswordsController < ApplicationController
   end
 
   def destroy
-    ensure_owner_or_admin
   end
 
   def publish
-    ensure_owner_or_admin
-    @crossword.update_attributes(published: true)
+    @crossword.publish
   end
 
   private

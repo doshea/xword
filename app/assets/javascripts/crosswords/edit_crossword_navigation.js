@@ -1,16 +1,4 @@
-//Key Constants for keyboard controls
-var UP = 38;
-var RIGHT = 39;
-var DOWN = 40;
-var LEFT = 37;
-var COMMAND = 91;
-var ENTER = 13;
-var SPACE = 32;
-var DELETE = 8;
-var SHIFT = 16;
-var TAB = 9;
-var BACKSPACE = 8;
-var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];
+
 
 //Global variables for crossword control
 var selected;
@@ -216,3 +204,17 @@ function suppressBackspaceAndNav(evt) {
     return false;
   }
 }
+
+//Key Constants for keyboard controls
+var UP = 38;
+var RIGHT = 39;
+var DOWN = 40;
+var LEFT = 37;
+var COMMAND = 91;
+var ENTER = 13;
+var SPACE = 32;
+var DELETE = 8;
+var SHIFT = 16;
+var TAB = 9;
+var BACKSPACE = 8;
+var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];

@@ -1,3 +1,8 @@
+puts "\nBEGINNING SEED"
+puts "-------------"
+seed_start_time = Time.now
+
+puts "Deleting previous records."
 Cell.delete_all
 Clue.delete_all
 ClueInstance.delete_all
@@ -6,7 +11,9 @@ Crossword.delete_all
 Solution.delete_all
 User.delete_all
 Word.delete_all
+puts "Old records deleted."
 
+print "\nSeeding Users..."
 #Makes an admin User
 u1 = User.create(first_name: 'Dylan', last_name: 'O\'Shea', username: 'doshea', email: 'dylan.j.oshea@gmail.com', password: 'qwerty', password_confirmation: 'qwerty', remote_image_url: 'https://sphotos-b.xx.fbcdn.net/hphotos-snc7/482731_10151844821024062_1363197576_n.jpg')
 u1.is_admin = true
@@ -14,26 +21,18 @@ u1.save
 
 #Makes other users
 u2 = User.create(first_name: 'Andrew', last_name: 'Locke', username: 'alocke', email: 'locke.andrew@gmail.com', password: 'qwerty', password_confirmation: 'qwerty', remote_image_url: 'http://imgur.com/zM7KTDd.jpg')
+puts ' complete!'
 
+print "\nSeeding incomplete crosswords..."
+cro2 = Crossword.create(title: 'Rage Cage', description: 'A puzzle for my friends', rows: 15, cols: 15)
+cro3 = Crossword.create(title: 'Over the Rainbow', description: 'My other puzzle', rows: 15, cols: 15, letters: 'abcd')
+puts " complete!"
+
+print "\nSeeding complete crossword..."
 #Makes a crossword with its full letters`
-cro1 = Crossword.create(title: 'Interstellar Travel', description: 'My cool puzzle', rows: 15, cols: 15)
+cro1 = Crossword.create(title: 'Interstellar Travel', description: 'My cool puzzle', rows: 15, cols: 15, published: true)
 cro1.letters = 'ONION__AFT_CST_PANGE_DNAS_LOSTATORS_EDNA_OURSLONESTARCOUNTRY___SYDNEY_MEH__ABS__SSW_BASAL_NOOSE__SAR__SOBTRUELIE_WARMICEEAT__TAE__BEAKS_THAIS_MAS__NEO__HRS_IBERIA___BLACKSTARNATIONMANA_TERO_MOODYICON_ECGS_INTES_KIE_THO__TEASE'
 cro1.save
-
-cro2 = Crossword.create(title: 'Rage Cage', description: 'A puzzle for my friends', rows: 15, cols: 15)
-u1.crosswords << cro2
-u2.crosswords << cro1
-
-com1 = Comment.create(content: "Had a great time working on this puzzle -- how did you come up with the theme?")
-com2 = Comment.create(content: "A whole lotta trial and error haha")
-u1.comments << com1
-u2.comments << com2
-cro1.comments << com1
-com1.replies << com2
-
-#Trying to add serialized fields
-cro3 = Crossword.create(title: 'Over the Rainbow', description: 'My other puzzle', rows: 15, cols: 15, letters: 'abcd')
-u2.crosswords << cro3
 
 #creates clues
 cro1_clues = [
@@ -457,10 +456,35 @@ c62d.clue_instances << ci62d
 c63d.clue_instances << ci63d
 
 # associates clue instances with their crossword
-cro1.clue_instances = cro1_cis
-cro1.save
+cro1.clue_instances << cro1_cis
+puts " complete!"
+
+print "\nOwning crosswords..."
+u1.crosswords << cro2
+u2.crosswords << cro1
+u2.crosswords << cro3
+puts " complete!"
 
 
+print "\nSeeding comments and replies..."
+com1 = Comment.create(content: "Had a great time working on this puzzle -- how did you come up with the theme?")
+com2 = Comment.create(content: "A whole lotta trial and error haha")
+u1.comments << com1
+u2.comments << com2
+cro1.comments << com1
+com1.replies << com2
+puts " complete!"
+
+print "\nLinking cells in complete puzzle..."
 Crossword.all.each do |cw|
   cw.link_cells
 end
+puts " complete!"
+
+print "\nPublishing complete puzzle..."
+# cro1.publish!
+puts " complete!"
+
+puts "\n-------------"
+puts "SEED COMPLETE"
+puts "\nSeeding took ~ #{distance_of_time_in_words_to_now(seed_start_time, true)}" #this line required an import of the DateHelper in the Rakefile

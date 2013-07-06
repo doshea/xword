@@ -6,8 +6,8 @@ class CreateCellsTable < ActiveRecord::Migration
       t.integer :index, null:false
       t.integer :cell_num
       t.boolean :is_void, null: false, default: false
-      t.boolean :is_across_start, null: false, default: false
-      t.boolean :is_down_start, null: false, default: false
+      t.boolean :is_across_start, default: false
+      t.boolean :is_down_start, default: false
       t.belongs_to :crossword
       t.belongs_to :across_clue
       t.belongs_to :down_clue

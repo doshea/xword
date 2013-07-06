@@ -95,6 +95,18 @@ class Crossword < ActiveRecord::Base
     self.published
   end
 
+  def publish!
+    if self.update_attribute(:published, true)
+    #remove extraneous clues
+      self.cells.each do |cell|
+        cell.delete_extraneous_cells!
+      end
+      true
+    else
+      false
+    end
+  end
+
   def check_solution(solution_letters)
     self.letters == solution_letters
   end
@@ -113,8 +125,7 @@ class Crossword < ActiveRecord::Base
     counter = 1
     #order by index
     self.cells.each do |cell|
-      cell.is_down_start!
-      cell.is_across_start!
+      cell.update_starts!
     end
     self.cells.order('index ASC').each do |cell|
       if cell.should_be_numbered?
@@ -147,19 +158,24 @@ class Crossword < ActiveRecord::Base
           temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
         end
         self.cells << temp_cell
+        # p "Populating (#{row},#{col}) with a across: #{temp_cell.is_across_start} , down: #{temp_cell.is_down_start} cell"
         index += 1
         col += 1
       end
       row += 1
     end
+    # p self.cells
   end
 
   def link_cells
     counter = 1
-      self.cells.each do |cell|
-        puts counter
+      self.reload.cells.each do |cell|
+        # puts counter
         cell.assign_bordering_cells!
         counter += 1
+    end
+    if self.reload.published
+      self.publish!
     end
   end
 
@@ -189,11 +205,18 @@ class Crossword < ActiveRecord::Base
   end
 
   def across_start_cells
-    self.cells.where('is_across_start = ?', true)
+    self.cells.across_start_cells
   end
 
   def down_start_cells
-    self.cells.where('is_across_start = ?', true)
+    self.cells.down_start_cells
+  end
+
+  def across_clues
+    Clue.joins('INNER JOIN cells ON cells.across_clue_id = clues.id').where('cells.crossword_id = ?', self.id).order('cells.index ASC')
+  end
+  def down_clues
+    Clue.joins('INNER JOIN cells ON cells.down_clue_id = clues.id').where('cells.crossword_id = ?', self.id).order('cells.index ASC')
   end
 
 end

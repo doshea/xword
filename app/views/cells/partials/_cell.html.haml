@@ -1,4 +1,4 @@
-%td.cell{:'data-row' => cell.row, :'data-col' => cell.col, :'data-index' => cell.index, :'data-num' => cell.cell_num, :'data-id' => cell.id}
+= content_tag_for(:td, cell, :'data-row' => cell.row, :'data-col' => cell.col, :'data-index' => cell.index, :'data-num' => cell.cell_num, :'data-id' => cell.id, class: cell.is_void? ? 'void' : '') do
   .letter
     = cell.crossword.letters[index] if @solution
   .cell_num
