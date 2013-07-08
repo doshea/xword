@@ -16,21 +16,23 @@
 #  auth_token      :string(255)
 #
 
+require 'spec_methods'
+
 FactoryGirl.define do
 
   factory :min_user, class: User do
-    email 'min_user@gmail.com'
+    email Faker::Internet.email
     username 'min_user'
     password 'abcde'
     password_confirmation 'abcde'
   end
   factory :user, class: User do
-    first_name 'bob'
-    last_name 'bobson'
-    username 'bobbb'
-    email 'bob@gmail.com'
-    password 'abcde'
-    password_confirmation 'abcde'
+    first_name Faker::Name.first_name
+    last_name Faker::Name.last_name
+    username Faker::Internet.user_name
+    email Faker::Internet.email
+    password Faker::Lorem.characters(5)
+    password_confirmation { "#{password}" }
     location 'Bobville'
   end
   factory :admin, class: User do
@@ -40,6 +42,30 @@ FactoryGirl.define do
     is_admin true
     password 'abcde'
     password_confirmation 'abcde'
+  end
+  factory :invalid_user_nil, class: User do
+    email nil
+    username nil
+    password nil
+    password_confirmation nil
+
+  end
+  factory :invalid_user_min, class: User do
+    first_name { random_char*1 }
+    last_name { random_char*1 }
+    email { random_char * 4}
+    username { random_char*3 }
+    password { random_char*4 }
+    password_confirmation { random_char*4 }
+
+  end
+  factory :invalid_user_max, class: User do
+    first_name { random_char*19 }
+    last_name { random_char*25 }
+    email { random_char * 41}
+    username { random_char*17 }
+    password { random_char*17 }
+    password_confirmation { random_char*17 }
   end
 
 end

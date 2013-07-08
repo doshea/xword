@@ -34,12 +34,6 @@ end
 
 group :development, :test do
   #testing gems
-  gem 'factory_girl_rails'
-  gem 'rspec-rails'
-  gem 'capybara'
-  gem 'launchy'
-  gem 'database_cleaner'
-  gem 'guard-rspec'
   gem 'rb-fsevent'
 
   gem 'pry-rails'
@@ -51,6 +45,17 @@ group :development, :test do
   gem 'quiet_assets'
   gem 'binding_of_caller'
   gem 'meta_request'
+end
+
+group :test do
+  gem 'factory_girl_rails'
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
+  gem 'capybara'
+  gem 'launchy'
+  gem 'database_cleaner'
+  gem 'guard-rspec'
+  gem 'faker'
 end
 
 group :development do

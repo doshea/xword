@@ -19,21 +19,50 @@
 require 'spec_helper'
 
 describe User do
-  describe '.new' do
-    it 'creates an instance of User' do
-      user = FactoryGirl.create(:user)
-      expect(user).to be_an_instance_of(User)
+  describe '#new' do
+    describe 'validations' do
+        let!(:user) { create(:user)}
+        it {should validate_uniqueness_of(:email)}
+        it {should validate_uniqueness_of(:username)}
+        it {should validate_presence_of(:email)}
+        it {should validate_presence_of(:username)}
+
+      context 'with valid attributes' do
+        subject { user }
+        it {should be_an_instance_of User}
+        it {should be_valid}
+        it {should allow_value(subject.first_name).for(:first_name)}
+        it {should allow_value(subject.last_name).for(:last_name)}
+        it {should allow_value(subject.email).for(:email)}
+        it {should allow_value(subject.username).for(:username)}
+        it {should allow_value(subject.password).for(:password)}
+        it {should allow_value(subject.password_confirmation).for(:password_confirmation)}
+      end
+      context 'with invalid nil attributes' do
+        let(:invalid_user) { build :invalid_user_nil}
+        it {should_not allow_value(invalid_user.email).for(:email)}
+        it {should_not allow_value(invalid_user.username).for(:username)}
+        it {should_not allow_value(invalid_user.password).for(:password)}
+      end
+      context 'with invalid sub-minimal attributes' do
+        let(:invalid_user) { build :invalid_user_min}
+        it {should_not allow_value(invalid_user.first_name).for(:first_name)}
+        it {should_not allow_value(invalid_user.last_name).for(:last_name)}
+        it {should_not allow_value(invalid_user.email).for(:email)}
+        it {should_not allow_value(invalid_user.username).for(:username)}
+        it {should_not allow_value(invalid_user.password).for(:password)}
+      end
+      context 'with invalid super-maximal attributes' do
+        let(:invalid_user) { build :invalid_user_max}
+        it {should_not allow_value(invalid_user.first_name).for(:first_name)}
+        it {should_not allow_value(invalid_user.last_name).for(:last_name)}
+        it {should_not allow_value(invalid_user.email).for(:email)}
+        it {should_not allow_value(invalid_user.username).for(:username)}
+        it {should_not allow_value(invalid_user.password).for(:password)}
+      end
     end
-    it 'has first_name, last_name, username, email and password' do
-      user = FactoryGirl.create(:user)
-      expect(user.first_name).to eq 'bob'
-      expect(user.last_name).to eq 'bobson'
-      expect(user.email).to eq 'bob@gmail.com'
-      expect(user.username).to eq 'bobbb'
-      expect(user.password).to eq 'abcde'
-      expect(user.password_confirmation).to eq 'abcde'
-      expect(user.location).to eq 'Bobville'
+    describe 'associations' do
+
     end
   end
-
 end
