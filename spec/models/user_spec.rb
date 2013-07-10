@@ -19,7 +19,7 @@
 require 'spec_helper'
 
 describe User do
-  describe '#new' do
+  describe '.new' do
     describe 'validations' do
         let!(:user) { create(:user)}
         it {should validate_uniqueness_of(:email)}
@@ -62,7 +62,9 @@ describe User do
       end
     end
     describe 'associations' do
-
+      it {should have_many :crosswords}
+      it {should have_many :comments}
+      it {should have_many :clues}
     end
   end
 end

@@ -19,4 +19,11 @@
 #
 
 FactoryGirl.define do
+  factory :unpublished_crossword do
+    published false
+  end
+
+  factory :published_crossword do
+    published true
+  end
 end

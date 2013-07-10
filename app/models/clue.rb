@@ -22,7 +22,9 @@ class Clue < ActiveRecord::Base
 
   belongs_to :word, inverse_of: :clues
   belongs_to :user, inverse_of: :clues
-  has_many :crosswords, through: :clue_instances, inverse_of: :clues
+  # has_many :crosswords, through: :clue_instances, inverse_of: :clues
+  has_many :crosswords, through: :across_cells, inverse_of: :across_clues
+  has_many :crosswords, through: :down_cells, inverse_of: :down_clues
 
   validates :content, presence: true, length: {maximum: 100}
   validates :difficulty, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5}

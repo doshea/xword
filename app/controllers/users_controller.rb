@@ -25,8 +25,15 @@ class UsersController < ApplicationController
   end
 
   def update
-    @current_user.update_attributes(params[:user])
-    render :account
+    @user = User.find(params[:id])
+    if @user.update_attributes(params[:user])
+      respond_to do |format|
+        format.html { render :account }
+        format.js
+      end
+    else
+      #HANDLE THE FAILURE CASE
+    end
   end
 
   def account
