@@ -15,7 +15,7 @@ puts "Old records deleted."
 
 print "\nSeeding Users..."
 #Makes an admin User
-u1 = User.create(first_name: 'Dylan', last_name: 'O\'Shea', username: 'doshea', email: 'dylan.j.oshea@gmail.com', password: 'qwerty', password_confirmation: 'qwerty', remote_image_url: 'https://sphotos-b.xx.fbcdn.net/hphotos-snc7/482731_10151844821024062_1363197576_n.jpg')
+u1 = User.create(first_name: 'Dylan', last_name: 'O\'Shea', username: 'doshea', email: 'dylan.j.oshea@gmail.com', password: 'qwerty', password_confirmation: 'qwerty', remote_image_url: 'http://zooborns.typepad.com/photos/uncategorized/2008/10/13/red_panda_close_up.jpg')
 u1.is_admin = true
 u1.save
 
