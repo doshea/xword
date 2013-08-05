@@ -99,8 +99,7 @@ class Cell < ActiveRecord::Base
   def ensure_mirrored
     mirror_cell = get_mirror_cell
     if self.is_void != mirror_cell.is_void?
-      mirror_cell.is_void = self.is_void?
-      mirror_cell.save
+      mirror_cell.toggle_void
     end
     mirror_cell
   end

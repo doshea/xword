@@ -11,7 +11,7 @@
   %ol.clues
     - @cells.zip(@across_clues).each do |cell, clue|
       = content_tag_for(:li, clue, :'data-cell-id' => cell.id, class: "across-clue #{'hidden' unless cell.is_across_start?}") do
-        = "#{cell.cell_num}. "
+        %span.clue-num
         = text_field_tag nil, clue.content
 
 .clue_column
@@ -19,5 +19,5 @@
   %ol.clues
     - @cells.zip(@down_clues).each do |cell, clue|
       = content_tag_for(:li, clue, :'data-cell-id' => cell.id, class: "down-clue #{'hidden' unless cell.is_down_start?}") do
-        = "#{cell.cell_num}. "
+        %span.clue-num
         = text_field_tag nil, clue.content

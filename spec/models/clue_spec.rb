@@ -14,16 +14,27 @@
 require 'spec_helper'
 
 describe Clue do
-  describe '.new' do
-    it 'creates an instance of User' do
+  subject(:clue) { create(:clue) }
+  it 'creates an instance of Clue' do
 
-    end
   end
-  describe 'associations' do
+  context 'associations' do
     it {should belong_to :user}
     it {should have_many :across_cells}
     it {should have_many :down_cells}
     it {should have_many(:crosswords).through(:across_cells)}
     it {should have_many(:crosswords).through(:down_cells)}
+  end
+  context 'attributes' do
+
+  end
+  context 'validations' do
+
+  end
+  context 'instance methods' do
+
+  end
+  context 'class methods' do
+
   end
 end

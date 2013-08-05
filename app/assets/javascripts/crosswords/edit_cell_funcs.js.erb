@@ -41,10 +41,10 @@
     if(this.is_last_letter()){
       console.log(selected);
       if(this.is_empty_cell()){
-        console.log( solve_app.debug_mode ?  'Is empty cell': '' );
+        console.log( edit_app.debug_mode ?  'Is empty cell': '' );
         return this;
       } else {
-        console.log( solve_app.debug_mode ?  'highlighting next word': '' );
+        console.log( edit_app.debug_mode ?  'highlighting next word': '' );
         highlight_next_word();
         if($('.selected').get_number() != 1){
           return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
@@ -54,6 +54,19 @@
       var next = this.next_cell();
       return (next.is_empty_cell() ? next : next.next_empty_cell());
     }
+  }
+  $.fn.corresponding_clue = function(){
+    var dir = select_across ? '.across-clue' : '.down-clue';
+    return $("" + dir + "[data-cell-id=" + this.data('id') + "]");
+  }
+  $.fn.corresponding_clues = function(){
+    return $(".clue[data-cell-id=" + this.data('id') + "]");
+  }
+  $.fn.get_mirror_cell = function(){
+    var $cells = $('.cell')
+    var cell_count = $cells.length;
+    var this_index = $.inArray(this[0], $cells);
+    return $($cells[cell_count-this_index-1]);
   }
 
 })( jQuery );

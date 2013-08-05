@@ -1,5 +1,3 @@
-
-
 //Global variables for crossword control
 var selected;
 var select_across = true;
@@ -40,6 +38,7 @@ function number_cell($cell) {
   if (!$cell.has_above() || !$cell.has_left()) {
     $cell.set_number(counter);
     $cell.attr('data-cell', counter); //no idea why this won't work when I use the .data() method...
+    $cell.corresponding_clues().children('.clue-num').text(''+ counter + '. ')
     counter += 1;
   } else if ($cell.get_number() != ' ') {
     $cell.set_number('');
@@ -68,7 +67,7 @@ function highlight_next_word() {
   var clue = $('.clue.selected_clue');
   var next_clue = clue.next().first();
   if (next_clue.hasClass('clue')) {
-    console.log(solve_app.debug_mode ? 'next_clue has class clue' : '');
+    console.log(edit_app.debug_mode ? 'next_clue has class clue' : '');
     highlight_clue_cell(next_clue);
   } else {
     highlight_clue_cell(clue.parent().parent().siblings('.clue_column').first().children().children().first());
@@ -85,7 +84,7 @@ function word_highlight() {
     value.addClass('selected_word');
   });
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
-  corresponding_clue(select_start).addClass('selected_clue');
+  select_start.corresponding_clue().addClass('selected_clue');
   scroll_to_selected();
 }
 
@@ -97,16 +96,6 @@ function unhighlight_all() {
   $('.selected_word').removeClass('selected_word');
   $('.selected_clue').removeClass('selected_clue');
 }
-
-//Takes a cell as a parameter and returns its corresponding clue
-
-function corresponding_clue($cell) {
-  var dir = select_across ? '.across-clue' : '.down-clue';
-  var num = $cell.get_number();
-  return $("" + dir + "[clue_num=" + num + "]");
-}
-
-//
 
 function scroll_to_selected() {
   var $sel_clue = $('.selected_clue');
@@ -166,13 +155,13 @@ function crossword_keypress(e) {
         break;
       default:
         if (selected) {
-          console.log(solve_app.debug_mode ? 'Typing letter' : '');
+          console.log(edit_app.debug_mode ? 'Typing letter' : '');
           var letter = String.fromCharCode(key);
           if (letter != selected.get_letter()) {
             selected.set_letter(String.fromCharCode(key));
-            solve_app.update_unsaved();
+            edit_app.update_unsaved();
           }
-          console.log(solve_app.debug_mode ? 'highlighting cell' : '');
+          console.log(edit_app.debug_mode ? 'highlighting cell' : '');
           cell_highlight(selected.next_empty_cell());
         }
     }
@@ -197,7 +186,7 @@ function suppressBackspaceAndNav(evt) {
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
     selected.delete_letter();
-    solve_app.update_unsaved();
+    edit_app.update_unsaved();
     return false;
   }
   if (_.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
