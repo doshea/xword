@@ -36,7 +36,7 @@
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
 
   $.fn.is_last_letter = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
-  $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' '));}
+  $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};
   $.fn.next_empty_cell = function(){
     if(this.is_last_letter()){
       console.log(selected);
@@ -118,6 +118,14 @@
       number_cells();
     }
 
+  }
+  $.fn.highlight = function() {
+    if (this.hasClass('cell') && !this.hasClass('void')) {
+      unhighlight_all();
+      selected = this;
+      this.addClass('selected');
+      word_highlight();
+    }
   }
 
 })( jQuery );
