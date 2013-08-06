@@ -68,5 +68,50 @@
     var this_index = $.inArray(this[0], $cells);
     return $($cells[cell_count-this_index-1]);
   }
+  $.fn.toggle_void = function(recursive){
+
+    this.toggleClass('void');
+    if(this.hasClass('void')){
+      if(this.cell_below()){
+        this.cell_below().corresponding_clues().filter('.down-clue').show();
+      }
+      if(this.cell_to_right()){
+        this.cell_to_right().corresponding_clues().filter('.across-clue').show();
+      }
+    }
+    else {
+      if(this.cell_below()){
+        this.cell_below().corresponding_clues().filter('.down-clue').hide();
+      }
+      if(this.cell_to_right()){
+        this.cell_to_right().corresponding_clues().filter('.across-clue').hide();
+      }
+      if(!this.cell_above()){
+        this.corresponding_clues().filter('.down-clue').show();
+      }
+      if(!this.cell_to_left()){
+        this.corresponding_clues().filter('.across-clue').show();
+      }
+    }
+
+    token = $('#crossword').data('auth-token');
+    cell_id = this.data('id');
+    settings = {
+      dataType: 'script',
+      type: 'PUT',
+      url: '/cells/'+ cell_id +'/toggle_void',
+      data: {authenticity_token: token},
+      error: function(){
+        alert('Error toggling void!');
+      }
+    }
+    $.ajax(settings);
+
+    if(recursive){
+      this.get_mirror_cell().toggle_void(false);
+      number_cells();
+    }
+
+  }
 
 })( jQuery );
