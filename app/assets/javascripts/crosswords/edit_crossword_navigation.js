@@ -58,16 +58,18 @@ function cell_highlight($cell) {
 }
 
 function highlight_clue_cell($clue) {
-  var $cell = $(".cell[data-cell='" + $clue.attr('clue_num') + "']").first();
+  var $cell = $(".cell[data-id='" + $clue.data('cell-id') + "']").first();
   select_across = $clue.closest('.clues').attr('id') == 'across';
+  console.log(select_across);
   cell_highlight($cell);
 }
 
 function highlight_next_word() {
   var clue = $('.clue.selected_clue');
-  var next_clue = clue.next().first();
+  var next_clue = clue.nextAll(':not(.hidden)').first();
   if (next_clue.hasClass('clue')) {
     console.log(edit_app.debug_mode ? 'next_clue has class clue' : '');
+    console.log('sup');
     highlight_clue_cell(next_clue);
   } else {
     highlight_clue_cell(clue.parent().parent().siblings('.clue_column').first().children().children().first());

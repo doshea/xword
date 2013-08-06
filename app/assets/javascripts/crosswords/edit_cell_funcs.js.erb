@@ -70,16 +70,20 @@
   }
   $.fn.toggle_void = function(recursive){
 
+    //Makes this cell void
     this.toggleClass('void');
+
+    //if this cell was made void, hides its clues and shows any clues below and right
     if(this.hasClass('void')){
+      this.corresponding_clues().hide();
       if(this.cell_below()){
         this.cell_below().corresponding_clues().filter('.down-clue').show();
       }
       if(this.cell_to_right()){
         this.cell_to_right().corresponding_clues().filter('.across-clue').show();
       }
-    }
-    else {
+    } else {
+      //Otherwise, hides clues below and right and possibly shows this cell's clues
       if(this.cell_below()){
         this.cell_below().corresponding_clues().filter('.down-clue').hide();
       }
@@ -94,6 +98,7 @@
       }
     }
 
+    //Sends request to database to toggle void on the back end
     token = $('#crossword').data('auth-token');
     cell_id = this.data('id');
     settings = {
@@ -107,6 +112,7 @@
     }
     $.ajax(settings);
 
+    //Does all the same for the mirror of this cell
     if(recursive){
       this.get_mirror_cell().toggle_void(false);
       number_cells();
