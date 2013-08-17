@@ -19,7 +19,7 @@ Xword::Application.routes.draw do
   resources :comments, only: [:index, :create]
   resources :clue_instances, only: [:index]
 
-  resources :cells, :only => [:index] do
+  resources :cells, :only => [:index, :update] do
     member do
       put :toggle_void
     end

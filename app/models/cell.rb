@@ -109,7 +109,6 @@ class Cell < ActiveRecord::Base
       self.letter = nil if self.reload.is_void
       self.update_starts!
       self.right_cell.update_starts! if self.right_cell
-      puts "helloASJDGSAJHKDGASJKHDGASJKHGDJKHASGDKJHASGDHJKAGSKJHDGKAKJHSGDHJKGJHASGJKHAS" if self.right_cell
       self.below_cell.update_starts! if self.below_cell
     end
   end

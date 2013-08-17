@@ -149,6 +149,24 @@ function crossword_keypress(e) {
           if (letter != selected.get_letter()) {
             selected.set_letter(String.fromCharCode(key));
             edit_app.update_unsaved();
+            var token = $('#crossword').data('auth-token');
+            var cell_id = selected.data('id');
+
+            var settings = {
+              dataType: 'script',
+              type: 'PUT',
+              url: '/cells/'+ cell_id,
+              data: {
+                authenticity_token: token,
+                cell: {
+                  letter: letter
+                }
+              },
+              error: function(){
+                alert('Error toggling void!');
+              }
+            }
+            $.ajax(settings);
           }
           if(edit_app.debug_mode){console.log('highlighting cell')}
           if(selected.next_empty_cell){

@@ -30,7 +30,28 @@
 
   $.fn.get_letter = function(){var letter = this.children('.letter').first().text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_letter = function(letter){this.children('.letter').first().text(letter);}
-  $.fn.delete_letter = function(letter){this.children('.letter').first().empty();}
+  $.fn.delete_letter = function(letter){
+    this.children('.letter').first().empty();
+
+    var token = $('#crossword').data('auth-token');
+    var cell_id = this.data('id');
+
+    var settings = {
+      dataType: 'script',
+      type: 'PUT',
+      url: '/cells/'+ cell_id,
+      data: {
+        authenticity_token: token,
+        cell: {
+          letter: ''
+        }
+      },
+      error: function(){
+        alert('Error toggling void!');
+      }
+    }
+    $.ajax(settings);
+  }
 
   $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
@@ -99,9 +120,9 @@
     }
 
     //Sends request to database to toggle void on the back end
-    token = $('#crossword').data('auth-token');
-    cell_id = this.data('id');
-    settings = {
+    var token = $('#crossword').data('auth-token');
+    var cell_id = this.data('id');
+    var settings = {
       dataType: 'script',
       type: 'PUT',
       url: '/cells/'+ cell_id +'/toggle_void',
@@ -112,9 +133,10 @@
     }
     $.ajax(settings);
 
-    //Does all the same for the mirror of this cell
-    if(recursive){
-      this.get_mirror_cell().toggle_void(false);
+    var mirror_cell = this.get_mirror_cell();
+    //Does all the same for the mirror of this cell unless this cell is its own mirror
+    if(recursive && (this[0] != mirror_cell[0])){
+      mirror_cell.toggle_void(false);
       number_cells();
       if (this.hasClass('void')){
         this.next_cell().highlight();
