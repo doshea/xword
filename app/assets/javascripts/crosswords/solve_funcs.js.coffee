@@ -33,13 +33,13 @@ window.solve_app =
   update_clock: ->
     if solve_app.last_save
       console.log('Updated clock text') if solve_app.debug_mode
-      $('#save_status').text('Saved ')
-      $('#save_clock').text(moment(solve_app.last_save).fromNow())
+      $('#save-status').text('Saved ')
+      $('#save-clock').text(moment(solve_app.last_save).fromNow())
 
   update_unsaved: ->
     solve_app.unsaved_changes = true
-    $('#save_status').text('Unsaved changes')
-    $('#save_clock').empty()
+    $('#save-status').text('Unsaved changes')
+    $('#save-clock').empty()
 
   show_incorrect: (e) ->
     e.preventDefault()

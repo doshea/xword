@@ -96,14 +96,6 @@ class Cell < ActiveRecord::Base
     Cell.find_by_row_and_col_and_crossword_id(opposing_row, opposing_col, cw_id)
   end
 
-  def ensure_mirrored
-    mirror_cell = get_mirror_cell
-    if self.is_void != mirror_cell.is_void?
-      mirror_cell.toggle_void
-    end
-    mirror_cell
-  end
-
   def delete_extraneous_cells!
       self.update_starts!
       self.across_clue.destroy if (self.is_void? || !self.is_across_start)
@@ -117,10 +109,8 @@ class Cell < ActiveRecord::Base
       self.letter = nil if self.reload.is_void
       self.update_starts!
       self.right_cell.update_starts! if self.right_cell
+      puts "helloASJDGSAJHKDGASJKHDGASJKHGDJKHASGDKJHASGDHJKAGSKJHDGKAKJHSGDHJKGJHASGJKHAS" if self.right_cell
       self.below_cell.update_starts! if self.below_cell
-      mirror_cell = self.ensure_mirrored
-      # self.crossword.number_cells
-      mirror_cell
     end
   end
 end

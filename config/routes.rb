@@ -8,12 +8,13 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :crosswords, only: [:index, :new, :show, :create, :edit] do
+  resources :crosswords do
     member do
       get :publish
     end
   end
-  resources :clues, only: [:index, :show]
+  resources :clues, only: [:index, :show, :update]
+
   resources :words, only: [:index, :show]
   resources :comments, only: [:index, :create]
   resources :clue_instances, only: [:index]

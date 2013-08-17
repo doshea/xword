@@ -13,21 +13,21 @@
         or
         = link_to('Publish Puzzle', publish_crossword_path(@crossword), confirm: "Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.")
 
-.row#credit_area
+.row#credit-area
   .large-12.columns
     %h3
       = @crossword.title
-      %span#creator_credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
-    #puzzle_controls
-      %span#save_status.smaller No changes yet
-      %span#save_clock.smaller
+      %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
+    #puzzle-controls
+      %span#save-status.smaller No changes yet
+      %span#save-clock.smaller
       = link_to_function 'Save Solution', 'solve_app.save_solution()', class: 'button tiny secondary rounded'
 
 
-.row#solve_area
+.row#solve-area
   .large-12.columns
     = render partial: 'crosswords/partials/solve_crossword'
-.row#meta_area
+.row#meta-area
   .large-12.columns
     .row
       .large-2.columns

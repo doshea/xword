@@ -4,6 +4,9 @@ class CellsController < ApplicationController
   end
   def toggle_void
     @cell = Cell.find(params[:id])
-    @mirror_cell = @cell.toggle_void
+    @cell.toggle_void
+    @mirror_cell = @cell.get_mirror_cell
+
+    render nothing: true
   end
 end

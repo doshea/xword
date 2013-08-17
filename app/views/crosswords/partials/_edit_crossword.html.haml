@@ -6,7 +6,7 @@
       - @cells[row_start..row_end].each do |cell|
         = render(partial: 'cells/partials/edit_cell', :locals => {:cell => cell})
 
-.clue_column
+.clue-column
   Across
   %ol.clues#across
     - @cells.zip(@across_clues).each do |cell, clue|
@@ -14,7 +14,7 @@
         %span.clue-num
         = text_field_tag nil, clue.content
 
-.clue_column
+.clue-column
   Down
   %ol.clues#down
     - @cells.zip(@down_clues).each do |cell, clue|

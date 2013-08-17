@@ -5,11 +5,11 @@
   max-width: $row-width+2em;
 }
 
-#credit_area, #solve_area, #meta_area {
+#credit-area, #solve-area, #meta-area {
   background-image: url("<%= asset_path 'paper.jpeg' %>");
 }
 
-#credit_area {
+#credit-area {
   margin-top: 2.5em;
   margin-bottom: 0;
   -webkit-border-top-left-radius: 0.3em;
@@ -20,18 +20,28 @@
   border-top-right-radius: 0.3em;
   h3 {
     margin-bottom: 0.2em;
-    #creator_credit {
+    #creator-credit {
       font-size: large;
       font-weight: normal;
     }
+    i {
+      position: absolute;
+      top: 0;
+      right: 1em;
+      padding: 0.3em 0.5em 0.3em 0;
+      color: white;
+      &.foundicon-remove {
+        color: red;
+      }
+    }
   }
-  #puzzle_controls {
+  #puzzle-controls {
     position: absolute;
     right: 0.5em;
     top: 0.5em;
   }
 }
-#meta_area {
+#meta-area {
   -webkit-border-bottom-left-radius: 0.3em;
   -webkit-border-bottom-right-radius: 0.3em;
   -moz-border-radius-bottomleft: 0.3em;
@@ -65,7 +75,7 @@ table#crossword {
       &.selected {
         background-color: rgba(255,220,110,0.7);
       }
-      &.selected_word:not(.selected) {
+      &.selected-word:not(.selected) {
         background-color: rgba(255,255,170,0.7);
       }
       .letter {
@@ -78,7 +88,7 @@ table#crossword {
         font-size: 0.4em;
         line-height: 1em;
       }
-      .cell_flag {
+      .cell-flag {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -89,7 +99,7 @@ table#crossword {
   }
 }
 
-.clue_column {
+.clue-column {
   float: left;
   background: lightgrey;
   border: 1px solid lightgrey;
@@ -114,7 +124,7 @@ table#crossword {
       text-indent: -1.7em;
       cursor: pointer;
 
-      &.selected_clue {
+      &.selected-clue {
         background-color: rgba(255, 255, 170, 1);
         border: 1px solid #999;
       }
@@ -131,7 +141,7 @@ table#crossword {
   }
 }
 
-#solve_controls {
+#solve-controls {
   position: relative;
   overflow: auto;
   margin-left: 0.6em;

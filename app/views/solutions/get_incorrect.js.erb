@@ -2,5 +2,5 @@
 _.each(<%= @mismatches %>, function(index){
   $($(".cell")[index-1]).addClass('mismatch');
 })
-$('.mismatch .cell_flag').stop().css('background', 'rgb(255, 120, 120)').animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
+$('.mismatch .cell-flag').stop().css('background', 'rgb(255, 120, 120)').animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
 $('.mismatch').removeClass('mismatch');

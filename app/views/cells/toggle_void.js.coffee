@@ -1,1 +1,1 @@
-console.log('Void toggled.')
+console.log('This should not trigger at the moment because the controller is rendering nothing.')

@@ -1,25 +1,25 @@
 = javascript_include_tag 'edit'
 = stylesheet_link_tag "crossword"
 
-.row#credit_area
+.row#credit-area
   .large-9.columns
     %h3.large
       .row
         .large-10.columns
           = text_field_tag 'title', @crossword.title
         .large-2.columns
-          %span#creator_credit by Me
+          %span#creator-credit by Me
   .large-3.columns
-    #puzzle_controls
-      %span#save_status.smaller No changes yet
-      %span#save_clock.smaller
+    #puzzle-controls
+      %span#save-status.smaller No changes yet
+      %span#save-clock.smaller
       = link_to_function 'Save Solution', 'app.save_solution()', class: 'button tiny secondary rounded'
 
 
-.row#solve_area
+.row#solve-area
   .large-12.columns
     = render partial: 'crosswords/partials/edit_crossword'
-.row#meta_area
+.row#meta-area
   .large-12.columns
     %p
       = label_tag :description

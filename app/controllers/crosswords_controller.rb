@@ -24,6 +24,7 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.new(params[:crossword])
     @crossword.user = @current_user
     if @crossword.save
+      @crossword.link_cells
       redirect_to edit_crossword_path(@crossword)
     else
       render :new
@@ -43,9 +44,14 @@ class CrosswordsController < ApplicationController
   end
 
   def update
+    crossword = Crossword.find(params[:id])
+    crossword.update_attributes(params[:crossword])
+    render nothing: true
   end
 
   def destroy
+    @crossword = Crossword.find(params[:id])
+    @crossword.delete
   end
 
   def publish

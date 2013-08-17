@@ -29,7 +29,7 @@ $(function() {
   $('#crossword').on('click', 'td.cell', function() {
     cell_highlight($(this));
   });
-  $('.clue_column').on('click', '.clue', function() {
+  $('.clue-column').on('click', '.clue', function() {
     highlight_clue_cell($(this));
   });
 
@@ -77,27 +77,27 @@ function highlight_clue_cell($clue) {
 }
 
 function highlight_next_word() {
-  var clue = $('.clue.selected_clue');
+  var clue = $('.clue.selected-clue');
   var next_clue = clue.next().first();
   if (next_clue.hasClass('clue')) {
     console.log(solve_app.debug_mode ? 'next_clue has class clue' : '');
     highlight_clue_cell(next_clue);
   } else {
-    highlight_clue_cell(clue.parent().parent().siblings('.clue_column').first().children().children().first());
+    highlight_clue_cell(clue.parent().parent().siblings('.clue-column').first().children().children().first());
   }
 }
 
 //highlights the word for a given cell
 
 function word_highlight() {
-  $('.selected_word').removeClass('selected_word');
+  $('.selected-word').removeClass('selected-word');
   var $cell = $('.selected');
   var selected_word_letters = select_across ? $cell.get_across_word_cells() : $cell.get_down_word_cells();
   $.each(selected_word_letters, function(index, value) {
-    value.addClass('selected_word');
+    value.addClass('selected-word');
   });
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
-  corresponding_clue(select_start).addClass('selected_clue');
+  corresponding_clue(select_start).addClass('selected-clue');
   scroll_to_selected();
 }
 
@@ -106,8 +106,8 @@ function word_highlight() {
 function unhighlight_all() {
   selected = null;
   $('.selected').removeClass('selected');
-  $('.selected_word').removeClass('selected_word');
-  $('.selected_clue').removeClass('selected_clue');
+  $('.selected-word').removeClass('selected-word');
+  $('.selected-clue').removeClass('selected-clue');
 }
 
 //Takes a cell as a parameter and returns its corresponding clue
@@ -121,7 +121,7 @@ function corresponding_clue($cell) {
 //
 
 function scroll_to_selected() {
-  var $sel_clue = $('.selected_clue');
+  var $sel_clue = $('.selected-clue');
   var $clues = $sel_clue.closest('ol');
   var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height() / 2 + $sel_clue.height() / 2;
   // console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
@@ -132,7 +132,7 @@ function scroll_to_selected() {
 
 function selected_word() {
   var letters = '';
-  $.each($('.selected_word'), function(index, value) {
+  $.each($('.selected-word'), function(index, value) {
     letters += $(value).get_letter();
   });
   return letters;

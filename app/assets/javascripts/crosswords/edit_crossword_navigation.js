@@ -8,14 +8,16 @@ $(function() {
   // number_cells();
   selected = $('.cell:not(.void)').first();
   selected.highlight();
-  $('#crossword').focus();
+  selected.focus();
 
   $(document).on('keydown', crossword_keypress);
 
-  $('#crossword').on('click', 'td.cell', function() {
+  $('.cell').on('click', function(e) {
+    e.stopPropagation();
     $(this).highlight();
   });
-  $('.clue_column').on('click', '.clue', function() {
+  $('.clue').on('click', function(e) {
+    e.stopPropagation();
     highlight_clue_cell($(this));
   });
 });
@@ -48,33 +50,31 @@ function number_cell($cell) {
 function highlight_clue_cell($clue) {
   var $cell = $(".cell[data-id='" + $clue.data('cell-id') + "']").first();
   select_across = $clue.closest('.clues').attr('id') == 'across';
-  console.log(select_across);
   $cell.highlight();
 }
 
 function highlight_next_word() {
-  var clue = $('.clue.selected_clue');
+  var clue = $('.clue.selected-clue');
   var next_clue = clue.nextAll(':not(.hidden)').first();
   if (next_clue.hasClass('clue')) {
     console.log(edit_app.debug_mode ? 'next_clue has class clue' : '');
-    console.log('sup');
     highlight_clue_cell(next_clue);
   } else {
-    highlight_clue_cell(clue.parent().parent().siblings('.clue_column').first().children().children().first());
+    highlight_clue_cell(clue.parent().parent().siblings('.clue-column').first().children().children().first());
   }
 }
 
 //highlights the word for a given cell
 
 function word_highlight() {
-  $('.selected_word').removeClass('selected_word');
+  $('.selected-word').removeClass('selected-word');
   var $cell = $('.selected');
   var selected_word_letters = select_across ? $cell.get_across_word_cells() : $cell.get_down_word_cells();
   $.each(selected_word_letters, function(index, value) {
-    value.addClass('selected_word');
+    value.addClass('selected-word');
   });
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
-  select_start.corresponding_clue().addClass('selected_clue');
+  select_start.corresponding_clue().addClass('selected-clue');
   scroll_to_selected();
 }
 
@@ -82,13 +82,13 @@ function word_highlight() {
 function unhighlight_all() {
   selected = null;
   $('.selected').removeClass('selected');
-  $('.selected_word').removeClass('selected_word');
-  $('.selected_clue').removeClass('selected_clue');
+  $('.selected-word').removeClass('selected-word');
+  $('.selected-clue').removeClass('selected-clue');
 }
 
 //Scrolls to selected clue
 function scroll_to_selected() {
-  var $sel_clue = $('.selected_clue');
+  var $sel_clue = $('.selected-clue');
   var $clues = $sel_clue.closest('ol');
   var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height() / 2 + $sel_clue.height() / 2;
   // console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
@@ -99,7 +99,7 @@ function scroll_to_selected() {
 
 function selected_word() {
   var letters = '';
-  $.each($('.selected_word'), function(index, value) {
+  $.each($('.selected-word'), function(index, value) {
     letters += $(value).get_letter();
   });
   return letters;
@@ -107,7 +107,7 @@ function selected_word() {
 
 //Keyboard Function triggered by
 function crossword_keypress(e) {
-  if (!(e.ctrlKey || e.altKey || e.metaKey)) {
+  if (!(e.ctrlKey || e.altKey || e.metaKey) && (selected && ($(':focus').length == 0))) {
     var key = e.which;
 
     switch (key) {
@@ -144,13 +144,13 @@ function crossword_keypress(e) {
         break;
       default:
         if (selected) {
-          console.log(edit_app.debug_mode ? 'Typing letter' : '');
+          if(edit_app.debug_mode){console.log('Typing letter')}
           var letter = String.fromCharCode(key);
           if (letter != selected.get_letter()) {
             selected.set_letter(String.fromCharCode(key));
             edit_app.update_unsaved();
           }
-          console.log(edit_app.debug_mode ? 'highlighting cell' : '');
+          if(edit_app.debug_mode){console.log('highlighting cell')}
           if(selected.next_empty_cell){
             selected.next_empty_cell().highlight();
           }
@@ -168,20 +168,31 @@ function get_letters() {
   return letters;
 }
 
+function remove_selections(){
+  if(selected){
+    selected.removeClass('selected');
+    selected = null;
+    $('.selected-word').removeClass('selected-word');
+    $('.selected-clue').removeClass('selected-clue');
+  }
+}
+
 //Prevents backspace from going to previous window, prevents arrow keys and space from moving around page
 document.onkeydown = suppressBackspaceAndNav;
 document.onkeypress = suppressBackspaceAndNav;
 
 function suppressBackspaceAndNav(evt) {
-  evt = evt || window.event;
-  var target = evt.target || evt.srcElement;
-  if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
-    selected.delete_letter();
-    edit_app.update_unsaved();
-    return false;
-  }
-  if (_.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
-    return false;
+  if(selected){
+    evt = evt || window.event;
+    var target = evt.target || evt.srcElement;
+    if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
+      selected.delete_letter();
+      edit_app.update_unsaved();
+      return false;
+    }
+    if (_.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
+      return false;
+    }
   }
 }
 

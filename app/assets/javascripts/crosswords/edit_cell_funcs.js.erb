@@ -116,6 +116,11 @@
     if(recursive){
       this.get_mirror_cell().toggle_void(false);
       number_cells();
+      if (this.hasClass('void')){
+        this.next_cell().highlight();
+      } else {
+        this.highlight();
+      }
     }
 
   }

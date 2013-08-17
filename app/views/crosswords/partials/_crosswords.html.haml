@@ -1,6 +1,7 @@
 %table
   %thead
     %tr
+      %th
       %th ID
       %th Title
       %th Creator
@@ -14,6 +15,9 @@
   %tbody
     - @crosswords.each do |crossword|
       = content_tag_for(:tr, crossword) do
+        %td
+          = link_to crossword, method: :delete, remote: true, confirm: "Are you sure you want to delete #{crossword.title} by #{crossword.user.username}" do
+            %i.general.foundicon-trash
         %td= crossword.id
         %td= link_to crossword.title, crossword
         %td= link_to crossword.user.username, crossword.user

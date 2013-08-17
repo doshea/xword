@@ -8,11 +8,11 @@
           %td.cell{:'data-row' => r, :'data-col' => c}
             .letter= @solution.letters[index] if @solution
             .cell_num
-            .cell_flag
+            .cell-flag
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
 
-.clue_column
+.clue-column
   %h6 Across
   %ol.clues#across
     - @crossword.across_start_cells.each do |cell|
@@ -20,7 +20,7 @@
         = "#{cell.cell_num}. "
         = cell.across_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if cell.across_clue.content
 
-.clue_column
+.clue-column
   %h6 Down
   %ol.clues#down
     - @crossword.down_start_cells.each do |cell|
@@ -28,7 +28,7 @@
         = "#{cell.cell_num}. "
         = cell.down_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if cell.down_clue.content
 
-#solve_controls
+#solve-controls
   %button.button.alert.small#show_incorrect Show Incorrect
   %button.button.warning.small#check_correctness Check Correctness
   %button.button.success.small#submit_solution Submit Solution
