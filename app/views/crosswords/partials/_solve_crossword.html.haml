@@ -16,17 +16,13 @@
   %h6 Across
   %ol.clues#across
     - @crossword.across_start_cells.each do |cell|
-      %li.clue.across-clue{:'data-cell-id' => cell.id}
-        = "#{cell.cell_num}. "
-        = cell.across_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if cell.across_clue.content
+      = render(partial: 'clues/partials/clue', locals: {cell: cell, edit: false, across: true})
 
 .clue-column
   %h6 Down
   %ol.clues#down
     - @crossword.down_start_cells.each do |cell|
-      %li.clue.down-clue{:'data-cell-id' => cell.id}
-        = "#{cell.cell_num}. "
-        = cell.down_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if cell.down_clue.content
+      = render(partial: 'clues/partials/clue', locals: {cell: cell, edit: false, across: false})
 
 #solve-controls
   %button.button.alert.small#show_incorrect Show Incorrect

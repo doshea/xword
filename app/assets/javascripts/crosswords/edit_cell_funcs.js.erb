@@ -1,4 +1,7 @@
 (function( $ ) {
+  $.fn.corresponding_clue = function(){var dir = select_across ? '.across-clue' : '.down-clue'; return $("" + dir + "[data-cell-id=" + this.data('id') + "]");}
+  $.fn.corresponding_clues = function(){return $(".clue[data-cell-id=" + this.data('id') + "]");}
+
   $.fn.delete_letter = function(letter){
     this.children('.letter').first().empty();
 

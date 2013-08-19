@@ -5,15 +5,15 @@ var counter = 1;
 
 //Document load events and event triggers
 $(function() {
-  // number_cells();
+  number_cells();
   selected = $('.cell:not(.void)').first();
-  cell_highlight(selected);
+  selected.highlight();
   $('#crossword').focus();
 
   $(document).on('keydown', crossword_keypress);
 
   $('#crossword').on('click', 'td.cell', function() {
-    cell_highlight($(this));
+    $(this).highlight();
   });
   $('.clue-column').on('click', '.clue', function() {
     highlight_clue_cell($(this));
@@ -22,7 +22,6 @@ $(function() {
 });
 
 //Intelligently sets the numbers of each cell in the crossword by calling the number_cell function
-
 function number_cells() {
   counter = 1;
   var $cells = $('.cell:not(.void)');
@@ -45,21 +44,10 @@ function number_cell($cell) {
   }
 }
 
-//selects the given cell and the word in which it appears
-
-function cell_highlight($cell) {
-  if ($cell.hasClass('cell') && !$cell.hasClass('void')) {
-    unhighlight_all();
-    selected = $cell;
-    $cell.addClass('selected');
-    word_highlight();
-  }
-}
-
 function highlight_clue_cell($clue) {
   var $cell = $(".cell[data-cell='" + $clue.attr('clue_num') + "']").first();
   select_across = $clue.closest('.clues').attr('id') == 'across';
-  cell_highlight($cell);
+  $cell.highlight();
 }
 
 function highlight_next_word() {
@@ -83,6 +71,7 @@ function word_highlight() {
     value.addClass('selected-word');
   });
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
+  console.log(select_start);
   corresponding_clue(select_start).addClass('selected-clue');
   scroll_to_selected();
 }
@@ -133,22 +122,22 @@ function crossword_keypress(e) {
     switch (key) {
       case UP:
         if (selected && selected.cell_above()) {
-          cell_highlight(selected.cell_above());
+          selected.cell_above().highlight();
         }
         break;
       case RIGHT:
         if (selected && selected.cell_to_right()) {
-          cell_highlight(selected.cell_to_right());
+          selected.cell_to_right().highlight();
         }
         break;
       case DOWN:
         if (selected && selected.cell_below()) {
-          cell_highlight(selected.cell_below());
+          selected.cell_below().highlight();
         }
         break;
       case LEFT:
         if (selected && selected.cell_to_left()) {
-          cell_highlight(selected.cell_to_left());
+          selected.cell_to_left().highlight();
         }
         break;
       case TAB:
@@ -160,7 +149,7 @@ function crossword_keypress(e) {
         break;
       case SPACE:
         select_across = !select_across;
-        cell_highlight($('.selected'));
+        $('.selected').highlight();
         break;
       default:
         if (selected) {
@@ -171,7 +160,7 @@ function crossword_keypress(e) {
             solve_app.update_unsaved();
           }
           console.log(solve_app.debug_mode ? 'highlighting cell' : '');
-          cell_highlight(selected.next_empty_cell());
+          selected.next_empty_cell().highlight();
         }
     }
   }

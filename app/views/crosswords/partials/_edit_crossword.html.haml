@@ -4,7 +4,7 @@
       - row_start = (r-1)*@crossword.cols
       - row_end = row_start + @crossword.cols-1
       - @cells[row_start..row_end].each do |cell|
-        = render(partial: 'cells/partials/cell', :locals => {:cell => cell, :edit => true})
+        = render(partial: 'cells/partials/cell', locals: {cell: cell, edit: true})
 
 .clue-column
   Across
