@@ -1,17 +1,3 @@
-//Key Constants for keyboard controls
-var UP = 38;
-var RIGHT = 39;
-var DOWN = 40;
-var LEFT = 37;
-var COMMAND = 91;
-var ENTER = 13;
-var SPACE = 32;
-var DELETE = 8;
-var SHIFT = 16;
-var TAB = 9;
-var BACKSPACE = 8;
-var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];
-
 //Global variables for crossword control
 var selected;
 var select_across = true;
@@ -194,8 +180,8 @@ function crossword_keypress(e) {
 function get_letters() {
   var letters = '';
   var $cells = $('.cell');
-  $.each($cells, function(index, value) {
-    letters += $(value).hasClass('void') ? '_' : $(value).get_letter();
+  $.each($cells, function(index, cell) {
+    letters += $(cell).hasClass('void') ? '_' : $(cell).get_letter();
   });
   return letters;
 }
@@ -216,3 +202,17 @@ function suppressBackspaceAndNav(evt) {
     return false;
   }
 }
+
+//Key Constants for keyboard controls
+var UP = 38;
+var RIGHT = 39;
+var DOWN = 40;
+var LEFT = 37;
+var COMMAND = 91;
+var ENTER = 13;
+var SPACE = 32;
+var DELETE = 8;
+var SHIFT = 16;
+var TAB = 9;
+var BACKSPACE = 8;
+var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];

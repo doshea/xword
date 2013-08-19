@@ -1,6 +1,6 @@
-= content_tag_for(:td, cell, :'data-row' => cell.row, :'data-col' => cell.col, :'data-index' => cell.index, :'data-num' => cell.cell_num, :'data-id' => cell.id, class: cell.is_void? ? 'void' : '') do
+%td.cell{:'data-row' => cell.row, :'data-col' => cell.col, :'data-index' => cell.index, :'data-id' => edit ? cell.id : false, class: cell.is_void? ? 'void' : '', :'data-num' => edit ? false : cell.cell_num}
   .letter
-    = cell.crossword.letters[index] if @solution
+    = edit ? cell.letter : (@solution.letters[index] if @solution)
   .cell_num
-    = cell.cell_num
+    = cell.cell_num unless edit
   .cell-flag
