@@ -1,4 +1,9 @@
-%li.clue{:'data-cell-num' => cell.cell_num, class: across ? 'across-clue' : 'down-clue'}
-  = "#{cell.cell_num}. "
-  - directional_clue = across ? cell.across_clue : cell.down_clue
-  = directional_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if directional_clue.content
+- is_directional_start = across ? cell.is_across_start? : cell.is_down_start?
+%li.clue{:'data-cell-num' => edit ? false : cell.cell_num, :'data-cell-id' => edit ? cell.id : false, class: "#{across ? 'across-clue' : 'down-clue'} #{'hidden' unless is_directional_start}"}
+  - if edit
+    %span.clue-num
+    = text_field_tag nil, clue.content
+  - else
+    - directional_clue = across ? cell.across_clue : cell.down_clue
+    = "#{cell.cell_num}. "
+    = directional_clue.content.gsub(%r{ (\*) (\S|\S.*?\S) \1 }x, %{<em>\\2</em>}).html_safe if directional_clue.content

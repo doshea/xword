@@ -6,18 +6,8 @@
       - @cells[row_start..row_end].each do |cell|
         = render(partial: 'cells/partials/cell', locals: {cell: cell, edit: true})
 
-.clue-column
-  Across
-  %ol.clues#across
-    - @cells.zip(@across_clues).each do |cell, clue|
-      = content_tag_for(:li, clue, :'data-cell-id' => cell.id, class: "across-clue #{'hidden' unless cell.is_across_start?}") do
-        %span.clue-num
-        = text_field_tag nil, clue.content
-
-.clue-column
-  Down
-  %ol.clues#down
-    - @cells.zip(@down_clues).each do |cell, clue|
-      = content_tag_for(:li, clue, :'data-cell-id' => cell.id, class: "down-clue #{'hidden' unless cell.is_down_start?}") do
-        %span.clue-num
-        = text_field_tag nil, clue.content
+- edit = true
+/ Across Clues
+= render(partial: 'clues/partials/clue_column', locals: {across: true, edit: edit})
+/ Down Clues
+= render(partial: 'clues/partials/clue_column', locals: {across: false, edit: edit})

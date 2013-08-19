@@ -1,0 +1,11 @@
+.clue-column
+  %h6= across ? 'Across' : 'Down'
+  %ol.clues{id: across ? 'across' : 'down'}
+    - if edit
+      - directional_clues = across ? @across_clues : @down_clues
+      - @cells.zip(@across_clues).each do |cell, clue|
+        = render(partial: 'clues/partials/clue', locals: {cell: cell, clue: clue, edit: true, across: across})
+    - else
+      - directional_cells = across ? @crossword.across_start_cells : @crossword.down_start_cells
+      - directional_cells.each do |cell|
+        = render(partial: 'clues/partials/clue', locals: {cell: cell, edit: false, across: across})
