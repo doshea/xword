@@ -24,3 +24,8 @@
     %p
       = label_tag :description
       = text_area_tag :description, @crossword.description
+
+/ At the bottom of your page but inside of the body tag
+%ol.joyride-list{:"data-joyride" => true}
+  %li{'data-id' => "credit-area", :"data-text" => "Next"}
+    %p Hello and welcome to the Joyride documentation page.

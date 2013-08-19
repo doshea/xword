@@ -2,8 +2,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require underscore-min
-//= require foundation.min
-//= require custom.modernizr
+//= require vendor/custom.modernizr
+//= require foundation
 //= require moment.min
 //= require sugar.min
 //= require gritter

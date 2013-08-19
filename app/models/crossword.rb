@@ -219,4 +219,21 @@ class Crossword < ActiveRecord::Base
     Clue.joins('INNER JOIN cells ON cells.down_clue_id = clues.id').where('cells.crossword_id = ?', self.id).order('cells.index ASC')
   end
 
+  def set_letters(letter_string)
+    if letter_string.length == (self.rows * self.cols) &&  letter_string.length == self.cells.count
+      self.cells.asc_indices.each_with_index do |cell, index|
+        letter = letter_string[index]
+        unless [' ', '_'].include? letter
+          cell.letter = letter
+          cell.is_not_void!
+        else
+          cell.is_void!
+        end
+        cell.save
+      end
+    else
+      raise "String length does not equal dimensions or cell count"
+    end
+  end
+
 end

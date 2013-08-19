@@ -102,6 +102,27 @@ class Cell < ActiveRecord::Base
       self.down_clue.destroy if (self.is_void? || !self.is_down_start)
   end
 
+  def is_void!
+    unless self.is_void
+      if self.update_attribute(:is_void, true)
+        self.letter = nil
+        self.update_starts!
+        self.right_cell.update_starts! if self.right_cell
+        self.below_cell.update_starts! if self.below_cell
+      end
+    end
+  end
+
+  def is_not_void!
+    if self.is_void
+      if self.update_attribute(:is_void, false)
+        self.update_starts!
+        self.right_cell.update_starts! if self.right_cell
+        self.below_cell.update_starts! if self.below_cell
+      end
+    end
+  end
+
   #
   def toggle_void
     void_status = self.is_void

@@ -1,0 +1,67 @@
+(function( $ ) {
+  $.fn.delete_letter = function(letter){this.children('.letter').first().empty();}
+
+  $.fn.next_empty_cell = function(){
+    if(this.is_last_letter()){
+      console.log(selected);
+      if(this.is_empty_cell()){
+        console.log( solve_app.debug_mode ?  'Is empty cell': '' );
+        return this;
+      } else {
+        console.log( solve_app.debug_mode ?  'highlighting next word': '' );
+        highlight_next_word();
+        if($('.selected').get_number() != 1){
+          return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
+        }
+      }
+    } else {
+      var next = this.next_cell();
+      return (next.is_empty_cell() ? next : next.next_empty_cell());
+    }
+  }
+
+})( jQuery );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -30,6 +30,7 @@ group :assets do
   gem 'coffee-rails'
   gem 'uglifier'
   gem 'foundation-icons-sass-rails'
+  gem 'zurb-foundation'
 end
 
 group :development, :test do

@@ -2,10 +2,11 @@
  *= require_self
  *= require reset
  *= require normalize
- *= require foundation.min
+ * require foundation.min
  *= require global
  *= require layouts
  *= require search
  *= require gritter
  */
+@import 'foundation';
 @import 'foundation-icons';

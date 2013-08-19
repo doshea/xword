@@ -28,32 +28,24 @@
   $.fn.across_word_from_start = function() {if( !this.has_right() ){return [this];} else {return [this].concat(this.cell_to_right().across_word_from_start());}};
   $.fn.get_across_word = function(){return $.map( this.get_across_word_cells(), function(el, i){return el.text();}).join('');};
 
-  $.fn.get_letter = function(){var letter = this.children('.letter').first().text(); return letter.length > 0 ? letter : ' '}
-  $.fn.set_letter = function(letter){this.children('.letter').first().text(letter);}
-  $.fn.delete_letter = function(letter){this.children('.letter').first().empty();}
-
   $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
 
+  $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '}
+  $.fn.set_letter = function(letter){this.children('.letter').first().text(letter);}
+
+  $.fn.corresponding_clue = function(){var dir = select_across ? '.across-clue' : '.down-clue'; return $("" + dir + "[data-cell-id=" + this.data('id') + "]");}
+  $.fn.corresponding_clues = function(){return $(".clue[data-cell-id=" + this.data('id') + "]");}
+
   $.fn.is_last_letter = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
-  $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' '));}
-  $.fn.next_empty_cell = function(){
-    if(this.is_last_letter()){
-      console.log(selected);
-      if(this.is_empty_cell()){
-        console.log( solve_app.debug_mode ?  'Is empty cell': '' );
-        return this;
-      } else {
-        console.log( solve_app.debug_mode ?  'highlighting next word': '' );
-        highlight_next_word();
-        if($('.selected').get_number() != 1){
-          return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
-        }
-      }
-    } else {
-      var next = this.next_cell();
-      return (next.is_empty_cell() ? next : next.next_empty_cell());
+  $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};
+
+  $.fn.highlight = function() {
+    if (this.hasClass('cell') && !this.hasClass('void')) {
+      unhighlight_all();
+      selected = this;
+      this.addClass('selected');
+      word_highlight();
     }
   }
-
 })( jQuery );
