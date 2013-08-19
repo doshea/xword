@@ -1,7 +1,4 @@
 class CellsController < ApplicationController
-  def index
-    @cells = Cell.all
-  end
   def update
     @cell = Cell.find(params[:id])
     @cell.update_attributes(params[:cell])
