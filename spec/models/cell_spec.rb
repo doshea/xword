@@ -23,7 +23,28 @@
 require 'spec_helper'
 
 describe Cell do
+  subject(:cell) { create(:cell) }
 
+  it 'exists' do
+    expect(cell).to_not be_nil
+  end
 
+  context 'attributes' do
+
+  end
+
+  context 'validations' do
+
+  end
+
+  context 'associations' do
+    it { should belong_to(:across_clue) }
+    it { should belong_to(:down_clue) }
+    it { should belong_to(:crossword) }
+    it { should belong_to(:left_cell) }
+    it { should have_one(:right_cell) }
+    it { should belong_to(:above_cell) }
+    it { should have_one(:below_cell) }
+  end
 
 end

@@ -26,33 +26,14 @@ FactoryGirl.define do
   factory :cell, class: Cell  do
     row {rand(30) + 1}
     col {rand(30) + 1}
-    index { (row -1) * 30 + col - 1}
+    index {(row - 1) * 30 + col - 1}
+    is_void false
 
     factory :void_cell do
       is_void true
       letter nil
     end
 
-    factory :non_void_cell
-      is_void false
-      letter {random_char*4}
-
-      factory :across_start_cell do
-        is_across_start true
-        cell_num {rand(150)+1}
-      end
-
-      factory :down_start_cell do
-        is_down_start true
-        cell_num {rand(150)+1}
-      end
-
-      factory :both_start_cell do
-        is_across_start true
-        is_down_start true
-        cell_num {rand(150)+1}
-      end
-    end
 
   end
 end

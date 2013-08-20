@@ -45,6 +45,8 @@ class Cell < ActiveRecord::Base
   delegate :down_word, to: :down_clue, allow_nil: true
   delegate :user, to: :crossword, allow_nil: true
 
+  validates_presence_of :row, :col, :index
+
   def populate_clues
     self.across_clue = Clue.create!(content: 'ENTER CLUE')
     self.down_clue = Clue.create!(content: 'ENTER CLUE')
