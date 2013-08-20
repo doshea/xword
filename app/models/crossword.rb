@@ -4,27 +4,21 @@
 #
 #  id             :integer          not null, primary key
 #  title          :string(255)      default("Untitled"), not null
-#  published      :boolean          default(FALSE)
-#  date_published :datetime
+#  letters        :text             default(""), not null
 #  description    :text
 #  rows           :integer          default(15), not null
 #  cols           :integer          default(15), not null
-#  letters        :text             default(""), not null
-#  circles        :text
+#  published      :boolean          default(FALSE)
+#  date_published :datetime
 #  user_id        :integer
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  across_nums    :text             default(""), not null
-#  down_nums      :text             default(""), not null
 #
 
 class Crossword < ActiveRecord::Base
-  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :circles, :user_id, :comment_ids, :solution_ids, :clue_ids
+  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids
 
-  serialize :across_nums
-  serialize :down_nums
-
-  before_create :populate_letters, :populate_grid, :populate_cells
+  before_create :populate_letters, :populate_cells
   # after_create :link_cells
 
   scope :published, where(published: true)
@@ -177,31 +171,6 @@ class Crossword < ActiveRecord::Base
     #   self.number_cells
     #   self.publish!
     # end
-  end
-
-  def populate_grid
-    #populates the top row and left column of the empty puzzle with filled grid numbers
-    counter = 1
-    down_array = []
-    across_array = ([counter]+[0]*(self.cols-1))
-
-    #handle the top row of downs
-    (1..self.cols).to_a.each do |col|
-      down_array.push(counter)
-      counter += 1
-    end
-    #add the other cells to the down array
-    down_array += ([0]*(self.cols*(self.rows-1)))
-
-    #handle the left column of acrosses (exluding the alread-handled top row)
-    (2..self.rows).to_a.each do |row|
-      #adds zeros (blank grid numbers)
-      across_array += ([counter]+([0]*(self.cols-1)))
-      counter += 1
-    end
-
-    self.across_nums = across_array
-    self.down_nums = down_array
   end
 
   def across_start_cells

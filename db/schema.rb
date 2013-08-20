@@ -11,9 +11,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130609182222) do
+ActiveRecord::Schema.define(:version => 20130523043749) do
 
   create_table "cells", :force => true do |t|
+    t.string   "letter"
     t.integer  "row",                                :null => false
     t.integer  "col",                                :null => false
     t.integer  "index",                              :null => false
@@ -28,7 +29,6 @@ ActiveRecord::Schema.define(:version => 20130609182222) do
     t.integer  "above_cell_id"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
-    t.string   "letter"
   end
 
   create_table "clues", :force => true do |t|
@@ -52,15 +52,12 @@ ActiveRecord::Schema.define(:version => 20130609182222) do
 
   create_table "crosswords", :force => true do |t|
     t.string   "title",          :default => "Untitled", :null => false
-    t.boolean  "published",      :default => false
-    t.datetime "date_published"
+    t.text     "letters",        :default => "",         :null => false
     t.text     "description"
     t.integer  "rows",           :default => 15,         :null => false
     t.integer  "cols",           :default => 15,         :null => false
-    t.text     "letters",        :default => "",         :null => false
-    t.text     "circles"
-    t.text     "across_nums",    :default => "",         :null => false
-    t.text     "down_nums",      :default => "",         :null => false
+    t.boolean  "published",      :default => false
+    t.datetime "date_published"
     t.integer  "user_id"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
@@ -85,10 +82,10 @@ ActiveRecord::Schema.define(:version => 20130609182222) do
     t.string   "last_name"
     t.string   "username",                           :null => false
     t.string   "email",                              :null => false
-    t.boolean  "is_admin",        :default => false
-    t.string   "password_digest"
     t.text     "image"
     t.string   "location"
+    t.boolean  "is_admin",        :default => false
+    t.string   "password_digest"
     t.string   "auth_token"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
