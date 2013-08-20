@@ -19,7 +19,7 @@
 #
 
 class Crossword < ActiveRecord::Base
-  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :circles, :user_id, :comment_ids, :solution_ids, :clue_instance_ids, :clue_ids
+  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :circles, :user_id, :comment_ids, :solution_ids, :clue_ids
 
   serialize :across_nums
   serialize :down_nums
@@ -40,8 +40,6 @@ class Crossword < ActiveRecord::Base
   belongs_to :user, inverse_of: :crosswords
   has_many :comments, inverse_of: :crossword, dependent: :delete_all
   has_many :solutions, inverse_of: :crossword, dependent: :delete_all
-  has_many :clue_instances, inverse_of: :crossword, dependent: :delete_all
-  has_many :clues, through: :clue_instances, inverse_of: :crosswords
   has_many :cells, inverse_of: :crossword, dependent: :delete_all
   has_and_belongs_to_many :words
 
@@ -121,6 +119,7 @@ class Crossword < ActiveRecord::Base
     mismatch_array
   end
 
+  # This can be made more efficient by only updating if the values are different
   def number_cells
     counter = 1
     #order by index
@@ -174,9 +173,10 @@ class Crossword < ActiveRecord::Base
         cell.assign_bordering_cells!
         counter += 1
     end
-    if self.reload.published
-      self.publish!
-    end
+    # if self.reload.published
+    #   self.number_cells
+    #   self.publish!
+    # end
   end
 
   def populate_grid
@@ -234,6 +234,31 @@ class Crossword < ActiveRecord::Base
     else
       raise "String length does not equal dimensions or cell count"
     end
+  end
+
+  def set_clue(across, cell_num, content)
+    cell = self.cells.find_by_cell_num(cell_num)
+    clue = across ? cell.across_clue : cell.down_clue
+    clue.update_attribute(:content, content)
+  end
+
+  def build_seed(pseudonym)
+    output = "\n#Generated seed for \"#{self.title}\" crossword\n"
+    #Basic
+    output += "#{pseudonym} = Crossword.create(title: '#{self.title}', description: '#{self.description}', rows: #{self.rows}, cols: #{self.cols})\n"
+    #Letters
+    output += "#{pseudonym}.set_letters('#{self.letters}')\n\n"
+    output += "#Across clues for #{pseudonym}\n"
+    #Clues
+    self.across_start_cells.asc_indices.each do |cell|
+      output += "#{pseudonym}.set_clue(true, #{cell.cell_num}, '#{cell.across_clue.content.gsub("\\","\\\\\\\\").gsub("'","\\\\'")}')\n"
+    end
+    output += "\n#Down clues for #{pseudonym}\n"
+    self.down_start_cells.asc_indices.each do |cell|
+      output += "#{pseudonym}.set_clue(true, #{cell.cell_num}, '#{cell.down_clue.content.gsub("\\","\\\\\\\\").gsub("'","\\\\'")}')\n"
+    end
+    output += "\n"
+    puts output
   end
 
 end

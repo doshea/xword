@@ -9,7 +9,6 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     if @crossword
       @solution = Solution.find_or_create_by_crossword_id_and_user_id(@crossword.id, @current_user.id) if @current_user
-      @clue_instances = @crossword.clue_instances.order('is_across DESC').order('start_cell ASC')
       @cells = @crossword.cells.asc_indices
     else
       #redirect to 404 page

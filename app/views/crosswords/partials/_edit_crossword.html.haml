@@ -6,6 +6,7 @@
       - @cells[row_start..row_end].each do |cell|
         = render(partial: 'cells/partials/cell', locals: {cell: cell, edit: true})
 
+/ Edit Clue Columns
 - edit = true
 / Across Clues
 = render(partial: 'clues/partials/clue_column', locals: {across: true, edit: edit})

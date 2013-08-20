@@ -31,15 +31,6 @@ ActiveRecord::Schema.define(:version => 20130609182222) do
     t.string   "letter"
   end
 
-  create_table "clue_instances", :force => true do |t|
-    t.integer  "start_cell"
-    t.boolean  "is_across"
-    t.integer  "clue_id"
-    t.integer  "crossword_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-  end
-
   create_table "clues", :force => true do |t|
     t.text     "content",    :default => "ENTER CLUE"
     t.integer  "difficulty", :default => 1

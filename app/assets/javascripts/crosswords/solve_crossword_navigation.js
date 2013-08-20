@@ -45,7 +45,7 @@ function number_cell($cell) {
 }
 
 function highlight_clue_cell($clue) {
-  var $cell = $(".cell[data-cell='" + $clue.attr('clue_num') + "']").first();
+  var $cell = $(".cell[data-cell='" + $clue.attr('data-cell-num') + "']").first();
   select_across = $clue.closest('.clues').attr('id') == 'across';
   $cell.highlight();
 }
@@ -71,7 +71,6 @@ function word_highlight() {
     value.addClass('selected-word');
   });
   var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
-  console.log(select_start);
   corresponding_clue(select_start).addClass('selected-clue');
   scroll_to_selected();
 }
@@ -90,7 +89,7 @@ function unhighlight_all() {
 function corresponding_clue($cell) {
   var dir = select_across ? '.across-clue' : '.down-clue';
   var num = $cell.get_number();
-  return $("" + dir + "[clue_num=" + num + "]");
+  return $("" + dir + "[data-cell-num=" + num + "]");
 }
 
 //

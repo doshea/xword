@@ -1,5 +1,5 @@
 - is_directional_start = across ? cell.is_across_start? : cell.is_down_start?
-%li.clue{:'data-cell-num' => edit ? false : cell.cell_num, :'data-cell-id' => edit ? cell.id : false, class: "#{across ? 'across-clue' : 'down-clue'} #{'hidden' unless is_directional_start}"}
+%li.clue{:'data-cell-num' => edit ? false : cell.cell_num, :'data-cell-id' => edit ? cell.id : false, :'data-id' => edit ? clue.id : false ,class: "#{across ? 'across-clue' : 'down-clue'} #{'hidden' unless is_directional_start}"}
   - if edit
     %span.clue-num
     = text_field_tag nil, clue.content

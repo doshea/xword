@@ -46,8 +46,8 @@ class Cell < ActiveRecord::Base
   delegate :user, to: :crossword, allow_nil: true
 
   def populate_clues
-    self.across_clue = Clue.create(content: 'ENTER CLUE')
-    self.down_clue = Clue.create(content: 'ENTER CLUE')
+    self.across_clue = Clue.create!(content: 'ENTER CLUE')
+    self.down_clue = Clue.create!(content: 'ENTER CLUE')
     self.save
   end
 

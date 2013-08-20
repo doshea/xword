@@ -17,7 +17,6 @@ Xword::Application.routes.draw do
 
   resources :words, only: [:index, :show]
   resources :comments, only: [:index, :create]
-  resources :clue_instances, only: [:index]
 
   resources :cells, :only => [:update] do
     member do

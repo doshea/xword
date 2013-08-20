@@ -18,7 +18,7 @@ window.edit_app =
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> remove_selections())
 
   update_clue: (e) ->
-    id = $(this).parent().attr('id').substr(5)
+    id = $(this).parent().data('id')
     token = $('#crossword').data('auth-token')
 
     settings =
