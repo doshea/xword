@@ -34,6 +34,25 @@ FactoryGirl.define do
       letter nil
     end
 
+    factory :non_void_cell do
+      letter {random_char*4}
+
+      factory :across_start_cell do
+        is_across_start true
+        cell_num {rand(150)+1}
+      end
+
+      factory :down_start_cell do
+        is_down_start true
+        cell_num {rand(150)+1}
+      end
+
+      factory :both_start_cell do
+        is_across_start true
+        is_down_start true
+        cell_num {rand(150)+1}
+      end
+    end
 
   end
 end

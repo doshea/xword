@@ -4,7 +4,7 @@
     %row
       .large-8.columns
         =f.label :title
-        =text_field_tag 'crossword[title]', nil, :placeholder => 'Untitled'
+        =text_field_tag 'crossword[title]', nil, placeholder: 'Untitled'
       .large-2.columns
         =f.label :rows
         =f.number_field :rows
@@ -15,4 +15,4 @@
       .large-12.columns
         =f.label :description
         =f.text_area :description
-        =f.submit nil, :class => 'button success'
+        =f.submit nil, class: 'button success'

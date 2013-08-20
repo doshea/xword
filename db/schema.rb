@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
     t.integer  "index",                              :null => false
     t.integer  "cell_num"
     t.boolean  "is_void",         :default => false, :null => false
-    t.boolean  "is_across_start", :default => false
-    t.boolean  "is_down_start",   :default => false
+    t.boolean  "is_across_start", :default => false, :null => false
+    t.boolean  "is_down_start",   :default => false, :null => false
     t.integer  "crossword_id"
     t.integer  "across_clue_id"
     t.integer  "down_clue_id"
@@ -41,8 +41,8 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
   end
 
   create_table "comments", :force => true do |t|
-    t.text     "content"
-    t.boolean  "flagged",         :default => false
+    t.text     "content",                            :null => false
+    t.boolean  "flagged",         :default => false, :null => false
     t.integer  "user_id"
     t.integer  "crossword_id"
     t.integer  "base_comment_id"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(:version => 20130523043749) do
     t.text     "description"
     t.integer  "rows",           :default => 15,         :null => false
     t.integer  "cols",           :default => 15,         :null => false
-    t.boolean  "published",      :default => false
+    t.boolean  "published",      :default => false,      :null => false
     t.datetime "date_published"
     t.integer  "user_id"
     t.datetime "created_at",                             :null => false

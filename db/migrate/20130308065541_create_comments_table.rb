@@ -1,8 +1,8 @@
 class CreateCommentsTable < ActiveRecord::Migration
   def change
     create_table :comments do |t|
-      t.text :content
-      t.boolean :flagged, :default => false
+      t.text :content, null: false
+      t.boolean :flagged, null: false, default: false
 
       t.belongs_to :user
       t.belongs_to :crossword

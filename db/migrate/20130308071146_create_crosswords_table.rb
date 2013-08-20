@@ -8,7 +8,7 @@ class CreateCrosswordsTable < ActiveRecord::Migration
       t.integer :rows, null: false, default: 15
       t.integer :cols, null: false, default: 15
 
-      t.boolean :published, default: false
+      t.boolean :published, null: false, default: false
       t.datetime :date_published
 
       t.belongs_to :user

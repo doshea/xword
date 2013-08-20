@@ -1,4 +1,4 @@
-%canvas{:id => 'crossword_' + cw.id.to_s, :width => 5*cw.cols, :height => 5*cw.rows, :style => 'border: 1px solid black'}
+%canvas{id: 'crossword_' + cw.id.to_s, width: 5*cw.cols, height: 5*cw.rows, style: 'border: 1px solid black'}
   %script
     var c = document.getElementById("crossword_#{cw.id}");
     var ctx=c.getContext("2d");
