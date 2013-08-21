@@ -8,7 +8,7 @@
 #  description    :text
 #  rows           :integer          default(15), not null
 #  cols           :integer          default(15), not null
-#  published      :boolean          default(FALSE)
+#  published      :boolean          default(FALSE), not null
 #  date_published :datetime
 #  user_id        :integer
 #  created_at     :datetime         not null

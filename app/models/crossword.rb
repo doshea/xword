@@ -8,7 +8,7 @@
 #  description    :text
 #  rows           :integer          default(15), not null
 #  cols           :integer          default(15), not null
-#  published      :boolean          default(FALSE)
+#  published      :boolean          default(FALSE), not null
 #  date_published :datetime
 #  user_id        :integer
 #  created_at     :datetime         not null
@@ -24,6 +24,7 @@ class Crossword < ActiveRecord::Base
   scope :published, where(published: true)
   scope :unpublished, where(published: false)
 
+  # Searchable by title using pg_search gem
   include PgSearch
   pg_search_scope :starts_with,
     against: :title,
@@ -37,6 +38,7 @@ class Crossword < ActiveRecord::Base
   has_many :cells, inverse_of: :crossword, dependent: :delete_all
   has_and_belongs_to_many :words
 
+  # A crossword must be between 4x4 and 30x30 and its title must be 3-35 characters long
   MIN_DIMENSION = 4
   MAX_DIMENSION = 30
 
@@ -56,6 +58,8 @@ class Crossword < ActiveRecord::Base
   validates :title,
     presence: true,
     length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH, message: ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
+
+  #INSTANCE METHODS
 
   def rc_to_index(row, col)
     (row-1)*(self.cols)+(col-1)
@@ -79,12 +83,8 @@ class Crossword < ActiveRecord::Base
     self.letters.split('')
   end
 
-  def is_void?(row, col)
-    self.letters.present? ? self.letters[rc_to_index(row,col)] == '_' : nil
-  end
-
-  def published?
-    self.published
+  def is_void_at?(row, col)
+    self.letters.present? ? ([' ','_'].include? self.letters[self.rc_to_index(row,col)]) : nil
   end
 
   def publish!
@@ -203,6 +203,15 @@ class Crossword < ActiveRecord::Base
     else
       raise "String length does not equal dimensions or cell count"
     end
+  end
+
+  def update_letters
+    output = ''
+    self.cells.asc_indices.each do |cell|
+      output += cell.letter ? cell.letter : '_'
+    end
+    self.letters = output
+    self.save
   end
 
   def set_clue(across, cell_num, content)

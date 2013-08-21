@@ -3,10 +3,10 @@
     / Title Area
     %li.name
       %h1
-        = link_to image_tag("header_icon.png", :height => "35%", :alt => "Crossword Café | Home", :id => 'header_icon'), root_url
+        = link_to image_tag("header_icon.png", height: "35%", alt: "Crossword Café | Home", id: 'header_icon'), root_url
     / Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone
     %li.toggle-topbar.menu-icon
-      %a{:href => "#"}
+      = link_to '#' do
         %span Menu
   %section.top-bar-section
     / Left Nav Section
@@ -25,8 +25,7 @@
           %ol#live_results
       %li.divider
       %li.has-dropdown
-        %a{:href => '#'}
-          Create
+        = link_to 'Create', '#'
         %ul.dropdown
           %li.divider
           %li
@@ -38,8 +37,7 @@
 
       %li.divider
       %li.has-dropdown
-        %a{href: '#'}
-          Solve
+        = link_to 'Solve', '#'
         %ul.dropdown
           %li.divider
           %li

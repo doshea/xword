@@ -2,22 +2,22 @@
   .slider
     #logged-out-welcome-container
       #welcomeBoard
-      = render(:partial => 'shared/form_errors', :locals => {:object => @user})
+      = render(partial: 'shared/form_errors', locals: {object: @user})
       = form_for @user do |f|
-        = f.text_field :username, :placeholder => "username", :class => "chalkboardInput subtle-input", required: true
-        = f.email_field :email, :placeholder => "email", :class => "chalkboardInput subtle-input", required: true
-        = f.password_field :password, :placeholder => "password", :class => "chalkboardInput subtle-input", required: true
-        = f.password_field :password_confirmation, :placeholder => "password confirm", :class => "chalkboardInput subtle-input", required: true
-        = f.submit "Sign up", :class => 'chalkboardButton'
+        = f.text_field :username, placeholder: "username", class: "chalkboardInput subtle-input", required: true
+        = f.email_field :email, placeholder: "email", class: "chalkboardInput subtle-input", required: true
+        = f.password_field :password, placeholder: "password", class: "chalkboardInput subtle-input", required: true
+        = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboardInput subtle-input", required: true
+        = f.submit "Sign up", class: 'chalkboardButton'
       %span or
-      = link_to "#", :class => "chalkboardButton button", :id => "signup1" do
+      = link_to "#", class: "chalkboardButton button", id: "signup1" do
         Log In
         %i.general.foundicon-right-arrow
 
     #logged-out-signup-container
       = form_tag login_path do
-        = text_field_tag :username, params[:username], :placeholder => "username", :class => "chalkboardInput subtle-input", required: true
-        = password_field_tag :password , nil,  :class => "chalkboardInput subtle-input", :placeholder => "password", required: true
+        = text_field_tag :username, params[:username], placeholder: "username", class: "chalkboardInput subtle-input", required: true
+        = password_field_tag :password , nil,  class: "chalkboardInput subtle-input", placeholder: "password", required: true
         #remember_box
           = check_box_tag :remember_me, 1, params[:remember_me] #find out what the second two arguments do
           = label_tag :remember_me, 'remember me'
