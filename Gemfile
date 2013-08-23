@@ -4,6 +4,8 @@ gem 'rails'
 
 gem 'newrelic_rpm'
 
+gem 'httparty'
+
 gem 'nokogiri'
 gem 'pg'
 gem 'jquery-rails'

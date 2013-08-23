@@ -22,6 +22,8 @@ u1.save
 u2 = User.create(first_name: 'Andrew', last_name: 'Locke', username: 'alocke', email: 'locke.andrew@gmail.com', password: 'qwerty', password_confirmation: 'qwerty', remote_image_url: 'http://imgur.com/zM7KTDd.jpg')
 puts ' complete!'
 
+nytimes = User.create(first_name: 'NYTimes', last_name: 'Crossword', username: 'nytimes', email: 'dylan.jc.oshea@gmail.com', password: 'qwerty', password_confirmation: 'qwerty', remote_image_url: 'http://a607.phobos.apple.com/us/r1000/081/Purple/v4/d8/8e/0b/d88e0ba0-6b83-ccbe-9a83-01f395a52940/mzl.odyharra.png')
+
 print "\nSeeding incomplete crosswords..."
 cro3 = Crossword.create(title: 'Over the Rainbow', description: 'My other puzzle', rows: 15, cols: 15, letters: 'abcd')
 puts " complete!"

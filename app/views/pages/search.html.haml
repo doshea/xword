@@ -1,7 +1,7 @@
 .row.row-topper.row-bookend
   %h5
     Search Results
-.row#search-results
+.row#search-results.puzzle-tabs
   .large-12.columns
     - if @crosswords.any?
       = render partial: 'pages/partials/crossword_search'

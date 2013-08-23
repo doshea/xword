@@ -1,22 +1,24 @@
 .row.row-topper.row-bookend
 .row
-  .large-12.columns
+  .large-12.columns.puzzle-tabs
     %h2
       = "Welcome back, #{@current_user.display_first_name}!"
+    %hr
+    %h4 Latest puzzles
+    %ul
+      - Crossword.where('user_id != ?', @current_user.id).each do |crossword|
+        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
     %h4 Your puzzles
     %h5
       Published
     %ul
       - @current_user.crosswords.published.each do |crossword|
-        = link_to crossword do
-          = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: crossword}
-          = crossword.title
+        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %h5
       Unpublished
     %ul
       - @current_user.crosswords.unpublished.each do |crossword|
-        = link_to edit_crossword_path(crossword) do
-          = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: crossword}
-          = crossword.title
+        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+  %hr
 .row.row-stopper.row-bookend

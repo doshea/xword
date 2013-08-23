@@ -239,4 +239,27 @@ class Crossword < ActiveRecord::Base
     puts output
   end
 
+  #INSTANCE METHODS
+  def self.add_latest_nyt
+    latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
+    latest_letters = latest['grid'].join('').gsub('.','_')
+    binding.pry
+
+    new_nytimes_crossword = Crossword.create(
+                                                    title: latest['title'],
+                                                    rows: latest['size']['rows'],
+                                                    cols: latest['size']['cols'],
+                                                    letters: latest_letters
+                                                    )
+
+    new_nytimes_crossword.link_cells
+    new_nytimes_crossword.set_letters(latest_letters)
+    new_nytimes_crossword.number_cells
+
+    nytimes = User.find_by_username('nytimes')
+
+    nytimes.crosswords << new_nytimes_crossword
+
+  end
+
 end

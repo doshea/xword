@@ -108,6 +108,9 @@ GEM
     haml (4.0.1)
       tilt
     hike (1.2.1)
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     i18n (0.6.1)
     journey (1.0.4)
     jquery-rails (2.2.1)
@@ -128,6 +131,7 @@ GEM
     method_source (0.8.1)
     mime-types (1.21)
     multi_json (1.7.1)
+    multi_xml (0.5.4)
     net-scp (1.1.0)
       net-ssh (>= 2.6.5)
     net-ssh (2.6.6)
@@ -252,6 +256,7 @@ DEPENDENCIES
   gritter
   guard-rspec
   haml
+  httparty
   jquery-rails
   json
   launchy
