@@ -5,8 +5,9 @@ class AccountPicUploader < CarrierWave::Uploader::Base
   include CarrierWave::RMagick
 
   # Include the Sprockets helpers for Rails 3.1+ asset pipeline compatibility:
-  include Sprockets::Helpers::RailsHelper
-  include Sprockets::Helpers::IsolatedHelper
+  # include Sprockets::Helpers::RailsHelper
+  # include Sprockets::Helpers::IsolatedHelper
+  include Sprockets::Rails::Helper
 
   # Choose what kind of storage to use for this uploader:
   storage :fog
@@ -27,19 +28,19 @@ class AccountPicUploader < CarrierWave::Uploader::Base
   end
 
   version :thumb do
-    process resize_to_fill: [27, 27]
+    process :resize_to_fill => [27, 27]
   end
   version :reply_size do
-    process resize_to_fill: [55, 55]
+    process :resize_to_fill => [55, 55]
   end
   version :comment_size do
-    process resize_to_fill: [80, 80]
+    process :resize_to_fill => [80, 80]
   end
   version :creator_pic do
-    process resize_to_fill: [95, 95]
+    process :resize_to_fill => [95, 95]
   end
   version :search do
-    process resize_to_fill: [120, 120]
+    process :resize_to_fill => [120, 120]
   end
 
 end

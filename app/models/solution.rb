@@ -9,6 +9,8 @@
 #  crossword_id :integer
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  team         :boolean          default(FALSE), not null
+#  key          :string(255)
 #
 
 class Solution < ActiveRecord::Base
@@ -24,7 +26,16 @@ class Solution < ActiveRecord::Base
     true
   end
 
-  scope :complete, where(solution_complete: true)
-  scope :incomplete, where(solution_complete: false)
-  scope :order_recent, order('updated_at DESC')
+  def self.generate_unique_key
+    valid = false
+    while !valid do
+      new_key = (0..5).map{(65+rand(26) + rand(2)*32).chr}.join
+      valid = Solution.where(key: new_key).empty?
+    end
+    new_key
+  end
+
+  scope :complete, -> {where(solution_complete: true)}
+  scope :incomplete, -> {where(solution_complete: false)}
+  scope :order_recent, -> {order(updated_at: :desc)}
 end

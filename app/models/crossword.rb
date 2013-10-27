@@ -21,8 +21,9 @@ class Crossword < ActiveRecord::Base
   before_create :populate_letters, :populate_cells
   # after_create :link_cells
 
-  scope :published, where(published: true)
-  scope :unpublished, where(published: false)
+  scope :published, -> {where(published: true)}
+  scope :unpublished, -> {where(published: false)}
+  scope :unowned, lambda{ |user| where('user_id != ?', user.id)}
 
   # Searchable by title using pg_search gem
   include PgSearch
@@ -243,16 +244,15 @@ class Crossword < ActiveRecord::Base
   def self.add_latest_nyt
     latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
     latest_letters = latest['grid'].join('').gsub('.','_')
-    binding.pry
 
     new_nytimes_crossword = Crossword.create(
                                                     title: latest['title'],
                                                     rows: latest['size']['rows'],
-                                                    cols: latest['size']['cols'],
-                                                    letters: latest_letters
+                                                    cols: latest['size']['cols']
                                                     )
 
     new_nytimes_crossword.link_cells
+    new_nytimes_crossword.letters = latest_letters
     new_nytimes_crossword.set_letters(latest_letters)
     new_nytimes_crossword.number_cells
 
@@ -260,6 +260,22 @@ class Crossword < ActiveRecord::Base
 
     nytimes.crosswords << new_nytimes_crossword
 
+    #adds the clues
+    across_clues = latest['clues']['across']
+    down_clues = latest['clues']['down']
+
+    across_clues.each do |across_clue|
+      split_clue = across_clue.split('. ', 2)
+      new_nytimes_crossword.set_clue(true, split_clue[0].to_i, split_clue[1])
+    end
+
+    down_clues.each do |down_clue|
+      split_clue = down_clue.split('. ', 2)
+      new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
+    end
+
+    puts latest_letters
+    puts new_nytimes_crossword.letters
   end
 
 end

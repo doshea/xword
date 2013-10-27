@@ -32,7 +32,7 @@
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
 
   $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '}
-  $.fn.set_letter = function(letter){this.children('.letter').first().text(letter);}
+  $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter); if(team_app && original){team_app.send_team_cell(this, letter)}}
 
   $.fn.is_last_letter = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
   $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};
@@ -45,4 +45,44 @@
       word_highlight();
     }
   }
+
+  $.fn.next_empty_cell = function(){
+    if(this.is_last_letter()){
+      console.log(selected);
+      if(this.is_empty_cell()){
+        return this;
+      } else {
+        highlight_next_word();
+        if($('.selected').get_number() != 1){
+          return $('.selected').is_empty_cell() ? $('.selected') : $('.selected').next_empty_cell();
+        }
+      }
+    } else {
+      var next = this.next_cell();
+      return (next.is_empty_cell() ? next : next.next_empty_cell());
+    }
+  }
 })( jQuery );
+
+//Intelligently sets the numbers of each cell in the crossword by calling the number_cell function
+function number_cells() {
+  counter = 1;
+  var $cells = $('.cell:not(.void)');
+  $.each($cells, function(index, value) {
+    number_cell($(value));
+  });
+  counter = 1;
+}
+
+//Numbers cells if they are the lefmost or topmost cell in a word
+
+function number_cell($cell) {
+  if (!$cell.has_above() || !$cell.has_left()) {
+    $cell.set_number(counter);
+    $cell.attr('data-cell', counter); //no idea why this won't work when I use the .data() method...
+    counter += 1;
+  } else if ($cell.get_number() != ' ') {
+    $cell.set_number('');
+    $cell.removeAttr('data-cell');
+  }
+}

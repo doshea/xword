@@ -35,7 +35,7 @@ window.edit_app =
   update_title: (e) ->
     unless $('#title-status').length > 0
       spinbox = $('<i id="title-status">')
-      spinbox.addClass('general foundicon-checkmark')
+      spinbox.addClass('fi-checkmark')
       spinbox.insertAfter('#title')
 
     edit_app.spin_title()
@@ -53,11 +53,11 @@ window.edit_app =
         authenticity_token: token
       success: ->
         $('.spinner').remove()
-        $('#title-status').addClass('foundicon-checkmark').removeClass('foundicon-remove').css('color', 'black')
+        $('#title-status').addClass('fi-check').removeClass('fi-x').css('color', 'black')
         $('#title-status').fadeOut(1000, -> $(this).remove())
       error: ->
         $('.spinner').remove()
-        $('#title-status').addClass('foundicon-remove').removeClass('foundicon-checkmark')
+        $('#title-status').addClass('fi-x').removeClass('fi-check')
         $('#title-status').fadeOut(3000, -> $(this).remove())
     $.ajax(settings)
 

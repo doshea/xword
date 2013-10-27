@@ -1,0 +1,26 @@
+window.team_app =
+  solver_id: Math.random().toString(36).substr(2, 5)
+  myAudio: new Audio('<%= audio_path('chuck.mp3') %>')
+
+  receive_team_cell: (data)->
+    unless team_app.solver_id == data.solver_id
+      $cell = $(".cell[data-row=#{data.row}][data-col=#{data.col}]")
+      team_app.myAudio.play()
+      if data.letter == ''
+        $cell.delete_letter(false)
+        solve_app.update_unsaved();
+      else
+        $cell.set_letter(data.letter, false)
+        solve_app.update_unsaved();
+
+  send_team_cell: ($cell, letter) ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'PATCH'
+      url: "/solutions/#{solve_app.solution_id}/team_update"
+      data: {authenticity_token: token, letter: letter, col: $cell.data('col'), row: $cell.data('row'), channel: channel, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+$ ->
+  listening_channel = pusher.subscribe(channel)
+  listening_channel.bind('change_cell', team_app.receive_team_cell)

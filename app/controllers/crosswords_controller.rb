@@ -8,7 +8,7 @@ class CrosswordsController < ApplicationController
   def show
     @crossword = Crossword.find(params[:id])
     if @crossword
-      @solution = Solution.find_or_create_by_crossword_id_and_user_id(@crossword.id, @current_user.id) if @current_user
+      @solution = Solution.find_or_create_by_crossword_id_and_user_id_and_team(@crossword.id, @current_user.id, false) if @current_user
       @cells = @crossword.cells.asc_indices
     else
       #redirect to 404 page
@@ -55,6 +55,34 @@ class CrosswordsController < ApplicationController
 
   def publish
     @crossword.publish
+  end
+
+  def create_team
+    @crossword = Crossword.find(params[:id])
+    if @crossword && @current_user
+      @solution = Solution.new(
+        crossword_id: @crossword.id,
+        user_id: @current_user.id
+      )
+      @solution.key = Solution.generate_unique_key
+      @solution.team = true
+      @solution.save
+      redirect_to team_crossword_path(@crossword, @solution.key)
+    else
+      # Redirecto to some error page
+    end
+  end
+
+  def team
+    @crossword = Crossword.find(params[:id])
+    @solution = Solution.find_by_crossword_id_and_key(params[:id], params[:key])
+    if @crossword && @solution
+      @team = true
+      @cells = @crossword.cells.asc_indices
+      render :show
+    else
+      #some sort of error
+    end
   end
 
   private

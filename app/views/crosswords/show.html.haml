@@ -1,5 +1,15 @@
+- if @team
+  = javascript_include_tag "http://js.pusher.com/2.1/pusher.min.js"
+  :javascript
+    var pusher = new Pusher("#{Pusher.key}");
+    var channel = "#{@crossword.id}_#{@solution.key}";
+
 = javascript_include_tag 'solve'
 = stylesheet_link_tag "crossword"
+
+- if @team
+  = javascript_include_tag 'crosswords/team_funcs'
+
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"
 
@@ -21,7 +31,11 @@
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
-      = link_to_function 'Save Solution', 'solve_app.save_solution()', class: 'button tiny secondary rounded'
+      %a#solve-save.button.tiny.secondary.rounded{href: '#', :'data-tooltip' => true, title: 'Save Solution'}
+        %i.fi-save
+      = link_to create_team_crossword_path(@crossword), method: 'post', class: 'button tiny secondary rounded', id: 'solve-share', 'date-tooltip' => true, title: 'Solve collaboratively' do
+        %i.fi-torsos-all
+        Team
 
 
 .row#solve-area

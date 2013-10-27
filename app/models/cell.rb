@@ -25,10 +25,10 @@ class Cell < ActiveRecord::Base
 
   after_create :populate_clues
 
-  scope :across_start_cells, where('is_across_start = ?', true)
-  scope :down_start_cells, where('is_down_start = ?', true)
-  scope :asc_indices, order('index ASC')
-  scope :desc_indices, order('index DESC')
+  scope :across_start_cells, -> {where(is_across_start: true)}
+  scope :down_start_cells, -> { where(is_down_start: true)}
+  scope :asc_indices, -> {order(index: :asc)}
+  scope :desc_indices, -> {order(index: :desc)}
 
   belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells
   belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells

@@ -1,4 +1,4 @@
-Xword::Application.routes.draw do
+Xword4::Application.routes.draw do
   root to: 'pages#home'
   get '/welcome' => 'pages#welcome'
 
@@ -11,23 +11,26 @@ Xword::Application.routes.draw do
   resources :crosswords do
     member do
       get :publish
+      post 'team' => 'crosswords#create_team', as: 'create_team'
+      get 'team/:key' => 'crosswords#team', as: 'team'
     end
   end
-  resources :clues, only: [:index, :show, :update]
 
+  resources :clues, only: [:index, :show, :update]
   resources :words, only: [:index, :show]
   resources :comments, only: [:index, :create]
 
-  resources :cells, :only => [:update] do
+  resources :cells, only: [:update] do
     member do
       put :toggle_void
     end
   end
 
-  resources :solutions, :only => [:index, :update] do
+  resources :solutions, only: [:index, :update] do
     member do
       post :get_incorrect
       post :check_correctness
+      patch :team_update
     end
   end
 

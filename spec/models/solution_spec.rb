@@ -9,6 +9,8 @@
 #  crossword_id :integer
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  team         :boolean          default(FALSE), not null
+#  key          :string(255)
 #
 
 require 'spec_helper'

@@ -20,44 +20,8 @@
 #  updated_at      :datetime         not null
 #
 
-require 'spec_methods'
-
 FactoryGirl.define do
-  factory :cell  do
-    row {rand(30) + 1}
-    col {rand(30) + 1}
-    index {(row - 1) * 30 + col - 1}
-
-    factory :void_cell do
-      is_void true
-      letter nil
-    end
-
-    factory :nonvoid_cell do
-      letter {random_char}
-      is_void false
-
-      factory :random_nonvoid_cell do
-        is_across_start {[true, false].sample}
-        is_down_start {[true, false].sample}
-      end
-
-      factory :across_start_cell do
-        is_across_start true
-        cell_num {rand(150)+1}
-      end
-
-      factory :down_start_cell do
-        is_down_start true
-        cell_num {rand(150)+1}
-      end
-
-      factory :both_start_cell do
-        is_across_start true
-        is_down_start true
-        cell_num {rand(150)+1}
-      end
-    end
+  factory :cell do
 
   end
 end

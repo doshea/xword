@@ -14,8 +14,10 @@ window.solve_app =
     $('#show_incorrect').on('click', solve_app.show_incorrect)
     $('#check_correctness').on('click', solve_app.check_correctness)
     $('#submit_solution').on('click', solve_app.submit_solution)
+    $('#solve-save').on('click', solve_app.save_solution)
 
-  save_solution: ->
+  save_solution: (e) ->
+    e.preventDefault() if e
     console.log('Saved') if solve_app.debug_mode
     token = $('#crossword').data('auth-token')
     letters = get_letters();
