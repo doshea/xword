@@ -75,3 +75,7 @@ group :development do
   #causes problem in conjunction with rspec test
   gem 'better_errors'
 end
+
+group :production do
+  gem 'rails_12factor'
+end
