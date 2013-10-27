@@ -25,6 +25,7 @@ class PagesController < ApplicationController
     @words = Word.starts_with(query).limit(max_results)
 
     split_ways = (@users.any? ? 1 : 0) + (@crosswords.any? ? 1 : 0) + (@words.any? ? 1 : 0)
+    split_ways += 1 if split_ways == 0
     split_results = max_results / split_ways
     @users = @users.limit(split_results)
     @crosswords = @crosswords.limit(split_results)

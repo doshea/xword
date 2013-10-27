@@ -57,7 +57,6 @@ window.team_app =
       $(this).remove()
 
 $ ->
-  console.log(team_app.display_name)
   $('#myModal').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)
   listening_channel.bind('change_cell', team_app.receive_team_cell)
