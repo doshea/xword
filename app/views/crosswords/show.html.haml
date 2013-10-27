@@ -3,12 +3,32 @@
   :javascript
     var pusher = new Pusher("#{Pusher.key}");
     var channel = "#{@crossword.id}_#{@solution.key}";
+    var username = null;
+  - if @current_user
+    :javascript
+      username = "#{@current_user.first_name || @current_user.username}"
+
 
 = javascript_include_tag 'solve'
 = stylesheet_link_tag "crossword"
 
 - if @team
   = javascript_include_tag 'crosswords/team_funcs'
+
+- if @current_user && @solution.user_id == @current_user.id
+  #myModal.reveal-modal
+    %h2
+      Crosswords: More Fun as a Team
+      %i.fi-torsos-all
+    %p.lead
+      Solve puzzles with your friends in
+      %strong real-time
+      \-- just send them the link to this puzzle!
+    %input.lead{value: request.original_url, style: 'margin-left: 2em; width: 40%; cursor: pointer', readonly: 'readonly', onclick: '$(this).select();'}
+    %i.lead.fi-link{style: 'font-size: large; padding: 0.2em 0.3em;'}
+    %p.lead
+    %p Now to find some friends...
+    %a.close-reveal-modal ×
 
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"
@@ -33,9 +53,16 @@
       %span#save-clock.smaller
       %a#solve-save.button.tiny.secondary.rounded{href: '#', :'data-tooltip' => true, title: 'Save Solution'}
         %i.fi-save
-      = link_to create_team_crossword_path(@crossword), method: 'post', class: 'button tiny secondary rounded', id: 'solve-share', 'date-tooltip' => true, title: 'Solve collaboratively' do
-        %i.fi-torsos-all
-        Team
+      - puts @team
+      - if @team
+        %div.button.tiny.secondary.rounded
+          %i.fi-torsos-all
+          Team
+          #teammates
+      - else
+        = link_to create_team_crossword_path(@crossword), method: 'post', class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively' do
+          %i.fi-torsos-all
+          Team
 
 
 .row#solve-area

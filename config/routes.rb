@@ -31,6 +31,8 @@ Xword4::Application.routes.draw do
       post :get_incorrect
       post :check_correctness
       patch :team_update
+      post :join_team
+      post :leave_team
     end
   end
 

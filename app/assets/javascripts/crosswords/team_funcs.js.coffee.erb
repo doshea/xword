@@ -1,11 +1,20 @@
 window.team_app =
   solver_id: Math.random().toString(36).substr(2, 5)
+  solver_red: (Math.random()*266).floor()
+  solver_green: (Math.random()*266).floor()
+  solver_blue: (Math.random()*266).floor()
+  last_audio: null
   myAudio: new Audio('<%= audio_path('chuck.mp3') %>')
+  display_name: username;
 
   receive_team_cell: (data)->
     unless team_app.solver_id == data.solver_id
       $cell = $(".cell[data-row=#{data.row}][data-col=#{data.col}]")
-      team_app.myAudio.play()
+      now = Date.now()
+      unless (team_app.last_audio && (now-team_app.last_audio < 4000))
+        team_app.last_audio = now
+        team_app.myAudio.play()
+      $cell.children('.cell-flag').stop().css('background', "rgb(#{data.red}, #{data.green}, #{data.blue})").animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
       if data.letter == ''
         $cell.delete_letter(false)
         solve_app.update_unsaved();
@@ -13,14 +22,51 @@ window.team_app =
         $cell.set_letter(data.letter, false)
         solve_app.update_unsaved();
 
+
   send_team_cell: ($cell, letter) ->
     token = $('#crossword').data('auth-token')
     settings =
       type: 'PATCH'
       url: "/solutions/#{solve_app.solution_id}/team_update"
-      data: {authenticity_token: token, letter: letter, col: $cell.data('col'), row: $cell.data('row'), channel: channel, solver_id: team_app.solver_id}
+      data: {authenticity_token: token, letter: letter, col: $cell.data('col'), row: $cell.data('row'), channel: channel, solver_id: team_app.solver_id, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue}
     $.ajax(settings)
 
+  join_team: ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/join_team"
+      data: {authenticity_token: token, channel: channel, display_name: team_app.display_name, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+  leave_team: ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/leave_team"
+      data: {authenticity_token: token, channel: channel, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+  welcome_teammate: (data) ->
+    teammate = $('<div>')
+    teammate.addClass('teammate-box has-tip').css('background',  "rgb(#{data.red}, #{data.green}, #{data.blue})").attr('data-tooltip', true).attr('title', data.display_name).attr('solver_id', data.solver_id)
+    $('#teammates').append(teammate)
+
+  farewell_teammate: (data) ->
+    $("#teammates .teammate-box[solver_id=#{data.solver_id}]").fadeOut 1000, ->
+      $(this).remove()
+
 $ ->
+  console.log(team_app.display_name)
+  $('#myModal').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)
   listening_channel.bind('change_cell', team_app.receive_team_cell)
+  unless team_app.display_name
+    team_app.display_name = "anon_#{team_app.solver_id}"
+  team_app.join_team()
+  listening_channel.bind('join_puzzle', team_app.welcome_teammate)
+  listening_channel.bind('leave_puzzle', team_app.farewell_teammate)
+
+  $(window).on('unload', team_app.leave_team)
+
+
