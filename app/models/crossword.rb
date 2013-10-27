@@ -241,19 +241,23 @@ class Crossword < ActiveRecord::Base
   end
 
   #INSTANCE METHODS
-  def self.add_latest_nyt
+  def self.add_latest_nyt_puzzle
     latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
-    latest_letters = latest['grid'].join('').gsub('.','_')
+    Crossword.add_nyt_puzzle(latest)
+  end
+
+  def self.add_nyt_puzzle(pz)
+    pz_letters = pz['grid'].join('').gsub('.','_')
 
     new_nytimes_crossword = Crossword.create(
-                                                    title: latest['title'],
-                                                    rows: latest['size']['rows'],
-                                                    cols: latest['size']['cols']
+                                                    title: pz['title'],
+                                                    rows: pz['size']['rows'],
+                                                    cols: pz['size']['cols']
                                                     )
 
     new_nytimes_crossword.link_cells
-    new_nytimes_crossword.letters = latest_letters
-    new_nytimes_crossword.set_letters(latest_letters)
+    new_nytimes_crossword.letters = pz_letters
+    new_nytimes_crossword.set_letters(pz_letters)
     new_nytimes_crossword.number_cells
 
     nytimes = User.find_by_username('nytimes')
@@ -261,8 +265,8 @@ class Crossword < ActiveRecord::Base
     nytimes.crosswords << new_nytimes_crossword
 
     #adds the clues
-    across_clues = latest['clues']['across']
-    down_clues = latest['clues']['down']
+    across_clues = pz['clues']['across']
+    down_clues = pz['clues']['down']
 
     across_clues.each do |across_clue|
       split_clue = across_clue.split('. ', 2)
@@ -274,8 +278,15 @@ class Crossword < ActiveRecord::Base
       new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
     end
 
-    puts latest_letters
+    puts pz_letters
     puts new_nytimes_crossword.letters
+  end
+
+  def self.read_list
+    puzzle_array = JSON.parse(IO.read('lib/assets/nytimes.json'))
+    puzzle_array.each do |pz|
+      Crossword.add_nyt_puzzle(pz)
+    end
   end
 
 end

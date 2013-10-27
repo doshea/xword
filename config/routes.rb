@@ -33,6 +33,7 @@ Xword4::Application.routes.draw do
       patch :team_update
       post :join_team
       post :leave_team
+      post :roll_call
     end
   end
 

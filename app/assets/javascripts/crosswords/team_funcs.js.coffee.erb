@@ -8,19 +8,19 @@ window.team_app =
   display_name: username;
 
   receive_team_cell: (data)->
-    unless team_app.solver_id == data.solver_id
+    unless team_app.solver_id is data.solver_id
       $cell = $(".cell[data-row=#{data.row}][data-col=#{data.col}]")
       now = Date.now()
-      unless (team_app.last_audio && (now-team_app.last_audio < 4000))
+      unless (team_app.last_audio and (now-team_app.last_audio < 4000))
         team_app.last_audio = now
         team_app.myAudio.play()
       $cell.children('.cell-flag').stop().css('background', "rgb(#{data.red}, #{data.green}, #{data.blue})").animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
-      if data.letter == ''
+      if data.letter is ''
         $cell.delete_letter(false)
-        solve_app.update_unsaved();
+        solve_app.update_unsaved()
       else
         $cell.set_letter(data.letter, false)
-        solve_app.update_unsaved();
+        solve_app.update_unsaved()
 
 
   send_team_cell: ($cell, letter) ->
@@ -48,13 +48,23 @@ window.team_app =
     $.ajax(settings)
 
   welcome_teammate: (data) ->
-    teammate = $('<div>')
-    teammate.addClass('teammate-box has-tip').css('background',  "rgb(#{data.red}, #{data.green}, #{data.blue})").attr('data-tooltip', true).attr('title', data.display_name).attr('solver_id', data.solver_id)
-    $('#teammates').append(teammate)
+    unless $(".teammate-box[solver_id=#{data.solver_id}]").length > 0
+      teammate = $('<div>')
+      teammate.addClass('teammate-box has-tip').css('background',  "rgb(#{data.red}, #{data.green}, #{data.blue})").attr('data-tooltip', true).attr('title', data.display_name).attr('solver_id', data.solver_id)
+      $('#teammates').append(teammate)
 
   farewell_teammate: (data) ->
+    console.log('So long, farewell')
     $("#teammates .teammate-box[solver_id=#{data.solver_id}]").fadeOut 1000, ->
       $(this).remove()
+
+  roll_call: ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/roll_call"
+      data: {authenticity_token: token, channel: channel}
+    $.ajax(settings)
 
 $ ->
   $('#myModal').foundation('reveal', 'open');
@@ -62,9 +72,10 @@ $ ->
   listening_channel.bind('change_cell', team_app.receive_team_cell)
   unless team_app.display_name
     team_app.display_name = "anon_#{team_app.solver_id}"
-  team_app.join_team()
   listening_channel.bind('join_puzzle', team_app.welcome_teammate)
   listening_channel.bind('leave_puzzle', team_app.farewell_teammate)
+  listening_channel.bind('roll_call', team_app.join_team)
+  team_app.roll_call()
 
   $(window).on('unload', team_app.leave_team)
 

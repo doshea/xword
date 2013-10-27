@@ -45,4 +45,9 @@ class SolutionsController < ApplicationController
     Pusher.trigger(params[:channel], 'leave_puzzle', data)
     render nothing: true
   end
+  def roll_call
+    data = {}
+    Pusher.trigger(params[:channel], 'roll_call', data)
+    render nothing: true
+  end
 end
