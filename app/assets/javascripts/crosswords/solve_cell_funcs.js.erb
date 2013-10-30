@@ -158,7 +158,6 @@ function suppressBackspaceAndNav(evt) {
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
     selected.delete_letter(true);
-    solve_app.update_unsaved();
     return false;
   }
   if (_.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
@@ -182,5 +181,22 @@ var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];
 
 //New jQuery functions for use specifically in solve cells
 (function( $ ) {
-  $.fn.delete_letter = function(original){if(!this.is_empty_cell()){this.children('.letter').first().empty(); if(team_app && original){team_app.send_team_cell(this, '')}}}
+  $.fn.delete_letter = function(original){
+    if(this.is_empty_cell()){
+      if(!this.is_word_start()){
+        if(!this.previous_cell().is_empty_cell()){
+          this.previous_cell().delete_letter(true);
+          solve_app.update_unsaved();
+        }
+        this.previous_cell().highlight();
+        return false;
+      }
+    } else {
+      this.children('.letter').first().empty();
+      if((typeof team_app != 'undefined') && original){
+        team_app.send_team_cell(this, '');
+      }
+      solve_app.update_unsaved();
+    }
+  }
 })( jQuery );
