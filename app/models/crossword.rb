@@ -248,40 +248,41 @@ class Crossword < ActiveRecord::Base
 
   def self.add_nyt_puzzle(pz)
     pz_letters = pz['grid'].join('').gsub('.','_')
+    unless Crossword.where(title: pz['title']).any?
+      new_nytimes_crossword = Crossword.create(
+                                                      title: pz['title'],
+                                                      rows: pz['size']['rows'],
+                                                      cols: pz['size']['cols'],
+                                                      published: true,
+                                                      date_published: Date.parse(pz['title'])
+                                                      )
 
-    new_nytimes_crossword = Crossword.create(
-                                                    title: pz['title'],
-                                                    rows: pz['size']['rows'],
-                                                    cols: pz['size']['cols'],
-                                                    published: true,
-                                                    date_published: Date.parse(pz['title'])
-                                                    )
+      new_nytimes_crossword.link_cells
+      new_nytimes_crossword.letters = pz_letters
+      new_nytimes_crossword.set_letters(pz_letters)
+      new_nytimes_crossword.number_cells
 
-    new_nytimes_crossword.link_cells
-    new_nytimes_crossword.letters = pz_letters
-    new_nytimes_crossword.set_letters(pz_letters)
-    new_nytimes_crossword.number_cells
+      nytimes = User.find_by_username('nytimes')
 
-    nytimes = User.find_by_username('nytimes')
+      nytimes.crosswords << new_nytimes_crossword
 
-    nytimes.crosswords << new_nytimes_crossword
+      #adds the clues
+      across_clues = pz['clues']['across']
+      down_clues = pz['clues']['down']
 
-    #adds the clues
-    across_clues = pz['clues']['across']
-    down_clues = pz['clues']['down']
+      across_clues.each do |across_clue|
+        split_clue = across_clue.split('. ', 2)
+        new_nytimes_crossword.set_clue(true, split_clue[0].to_i, split_clue[1])
+      end
 
-    across_clues.each do |across_clue|
-      split_clue = across_clue.split('. ', 2)
-      new_nytimes_crossword.set_clue(true, split_clue[0].to_i, split_clue[1])
+      down_clues.each do |down_clue|
+        split_clue = down_clue.split('. ', 2)
+        new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
+      end
+
+      puts pz_letters
+      puts new_nytimes_crossword.letters
     end
-
-    down_clues.each do |down_clue|
-      split_clue = down_clue.split('. ', 2)
-      new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
-    end
-
-    puts pz_letters
-    puts new_nytimes_crossword.letters
   end
 
   def self.read_list
