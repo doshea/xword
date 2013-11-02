@@ -252,7 +252,9 @@ class Crossword < ActiveRecord::Base
     new_nytimes_crossword = Crossword.create(
                                                     title: pz['title'],
                                                     rows: pz['size']['rows'],
-                                                    cols: pz['size']['cols']
+                                                    cols: pz['size']['cols'],
+                                                    published: true,
+                                                    date_published: Date.parse(pz['title'])
                                                     )
 
     new_nytimes_crossword.link_cells
