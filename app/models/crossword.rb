@@ -13,6 +13,7 @@
 #  user_id        :integer
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  circled        :boolean          default(FALSE)
 #
 
 class Crossword < ActiveRecord::Base
@@ -29,9 +30,9 @@ class Crossword < ActiveRecord::Base
   include PgSearch
   pg_search_scope :starts_with,
     against: :title,
-    using: {
-      tsearch:  {prefix: true}
-    }
+  using: {
+    tsearch:  {prefix: true}
+  }
 
   belongs_to :user, inverse_of: :crosswords
   has_many :comments, inverse_of: :crossword, dependent: :delete_all
@@ -48,19 +49,19 @@ class Crossword < ActiveRecord::Base
     numericality: { only_integer: true , message: ': Must be an integer'},
     inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
-  validates :cols,
+    validates :cols,
     presence: true,
     numericality: { only_integer: true , message: ': Must be an integer'},
     inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
-  MIN_TITLE_LENGTH = 3
+    MIN_TITLE_LENGTH = 3
   MAX_TITLE_LENGTH = 35
 
   validates :title,
     presence: true,
     length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH, message: ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
 
-  #INSTANCE METHODS
+    #INSTANCE METHODS
 
   def rc_to_index(row, col)
     (row-1)*(self.cols)+(col-1)
@@ -90,7 +91,7 @@ class Crossword < ActiveRecord::Base
 
   def publish!
     if self.update_attribute(:published, true)
-    #remove extraneous clues
+      #remove extraneous clues
       self.cells.each do |cell|
         cell.delete_extraneous_cells!
       end
@@ -163,10 +164,10 @@ class Crossword < ActiveRecord::Base
 
   def link_cells
     counter = 1
-      self.reload.cells.each do |cell|
-        # puts counter
-        cell.assign_bordering_cells!
-        counter += 1
+    self.reload.cells.each do |cell|
+      # puts counter
+      cell.assign_bordering_cells!
+      counter += 1
     end
     # if self.reload.published
     #   self.number_cells
@@ -240,6 +241,23 @@ class Crossword < ActiveRecord::Base
     puts output
   end
 
+  def add_circles_by_array(circle_nums)
+    puts circle_nums.length
+    puts self.rows*self.cols
+    if circle_nums.length == self.rows*self.cols
+      circle_needers = []
+      circle_nums.each_with_index do |potential_circle, index|
+        if potential_circle == 1
+          id_number = self.cells.find_by_index(index+1).id
+          circle_needers << id_number
+        end
+      end
+      Cell.where(id: circle_needers).update_all(circled: true)
+    else
+      puts "Too many circles"
+    end
+  end
+
   #INSTANCE METHODS
   def self.add_latest_nyt_puzzle
     latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
@@ -250,12 +268,12 @@ class Crossword < ActiveRecord::Base
     pz_letters = pz['grid'].join('').gsub('.','_')
     unless Crossword.where(title: pz['title']).any?
       new_nytimes_crossword = Crossword.create(
-                                                      title: pz['title'],
-                                                      rows: pz['size']['rows'],
-                                                      cols: pz['size']['cols'],
-                                                      published: true,
-                                                      date_published: Date.parse(pz['title'])
-                                                      )
+        title: pz['title'],
+        rows: pz['size']['rows'],
+        cols: pz['size']['cols'],
+        published: true,
+        date_published: Date.parse(pz['title'])
+      )
 
       new_nytimes_crossword.link_cells
       new_nytimes_crossword.letters = pz_letters

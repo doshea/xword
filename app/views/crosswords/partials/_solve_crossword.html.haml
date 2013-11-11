@@ -7,6 +7,9 @@
         - unless letter == '_'
           %td.cell{:'data-row' => r, :'data-col' => c}
             .letter= @solution.letters[index] if @solution
+            - cell = @crossword.cells.find_by_index(index+1)
+            - if cell.circled
+              .circle
             .cell_num
             .cell-flag
         -else

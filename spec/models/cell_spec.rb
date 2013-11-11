@@ -18,6 +18,7 @@
 #  above_cell_id   :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  circled         :boolean          default(FALSE)
 #
 
 require 'spec_helper'

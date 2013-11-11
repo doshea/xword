@@ -66,6 +66,9 @@ window.team_app =
       data: {authenticity_token: token, channel: channel}
     $.ajax(settings)
 
+  toggle_chat: ->
+    $(this).parent().toggleClass('down')
+
 $ ->
   $('#myModal').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)
@@ -76,6 +79,7 @@ $ ->
   listening_channel.bind('leave_puzzle', team_app.farewell_teammate)
   listening_channel.bind('roll_call', team_app.join_team)
   team_app.roll_call()
+  $('#team-chat .row-topper').on('click', team_app.toggle_chat)
 
   $(window).on('unload', team_app.leave_team)
 

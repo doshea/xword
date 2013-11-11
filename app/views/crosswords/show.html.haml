@@ -15,20 +15,24 @@
 - if @team
   = javascript_include_tag 'crosswords/team_funcs'
 
-- if @current_user && @solution.user_id == @current_user.id
-  #myModal.reveal-modal
-    %h2
-      Crosswords: More Fun as a Team
-      %i.fi-torsos-all
-    %p.lead
-      Solve puzzles with your friends in
-      %strong real-time
-      \-- just send them the link to this puzzle!
-    %input.lead{value: request.original_url, style: 'margin-left: 2em; width: 40%; cursor: pointer', readonly: 'readonly', onclick: '$(this).select();'}
-    %i.lead.fi-link{style: 'font-size: large; padding: 0.2em 0.3em;'}
-    %p.lead
-    %p Now to find some friends...
-    %a.close-reveal-modal ×
+  - if @current_user && @solution.user_id == @current_user.id
+    #myModal.reveal-modal
+      %h2
+        Crosswords: More Fun as a Team
+        %i.fi-torsos-all
+      %p.lead
+        Solve puzzles with your friends in
+        %strong real-time
+        \-- just send them the link to this puzzle!
+      %input.lead{value: request.original_url, style: 'margin-left: 2em; width: 40%; cursor: pointer', readonly: 'readonly', onclick: '$(this).select();'}
+      %i.lead.fi-link{style: 'font-size: large; padding: 0.2em 0.3em;'}
+      %p.lead
+      %p Now to find some friends...
+      %a.close-reveal-modal ×
+
+  #team-chat.down
+    .row.row-topper Team Chat
+    %input
 
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"

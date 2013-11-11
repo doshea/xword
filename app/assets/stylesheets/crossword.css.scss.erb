@@ -205,3 +205,47 @@ table#crossword {
     margin-right: 0.2em;
   }
 }
+
+#team-chat {
+  width: 300px;
+  height: 400px;
+  position: fixed;
+  bottom: 0;
+  background: white;
+  right: 2em;
+  border: 1px solid black;
+  border-bottom: none;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  transition: bottom 1s;
+
+  &.down {
+    bottom: -380px;
+  }
+
+  .row-topper {
+    height: 1.5em;
+    background: black;
+    -webkit-border-top-left-radius: 0.5em;
+    -webkit-border-top-right-radius: 0.5em;
+    -moz-border-radius-topleft: 0.5em;
+    -moz-border-radius-topright: 0.5em;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 0.2em;
+  }
+  input {
+    position: absolute;
+    bottom: 0.2em;
+    width: 96%;
+    left: 2%;
+    right: 2%;
+  }
+}
