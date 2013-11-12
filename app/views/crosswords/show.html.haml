@@ -9,6 +9,7 @@
     team_app = {};
     team_app.display_name = "#{display_name}";
     team_app.solver_id = "#{solver_id}";
+    console.log("#{channel}")
 
 = javascript_include_tag 'solve'
 = stylesheet_link_tag "crossword"
@@ -36,6 +37,7 @@
     =form_tag(send_team_chat_solution_path(@solution), remote: true) do
       = hidden_field_tag 'display_name', display_name, id: nil
       = hidden_field_tag 'channel', channel, id: nil
+      = hidden_field_tag 'avatar', @current_user ? @current_user.image.thumb : asset_path('default_images/default_user_img.jpg'), id: nil
       = text_field_tag 'chat', nil, id: nil
 
 :javascript

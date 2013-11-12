@@ -70,20 +70,25 @@ window.team_app =
     $('#team-chat').toggleClass('down')
 
   receive_chat: (data) ->
+    is_my_chat = (team_app.display_name is data['display_name'])
     chats = $('#team-chat')
-    new_div = $('<div>')
+    new_chat = $('<div>')
+    new_chat.addClass('chat')
+    new_chat.addClass('my-chat') if is_my_chat
 
     avatar = $('<img>')
-    display_name = $('<span>')
+    display_name = $('<span>') unless is_my_chat
     chat_text = $('<span>')
 
-    display_name.text(data['display_name']+': ')
-    chat_text.text(data['chat_text'])
+    avatar.attr('src', data['avatar']).addClass('avatar')
+    display_name.text(data['display_name']+': ').addClass('display-name') unless is_my_chat
+    chat_text.text(data['chat_text']).addClass('chat-text')
 
-    avatar.appendTo(new_div)
-    if team_app.display_name is data['display_name'] then display_name.prependTo(new_div) else display_name.appendTo(new_div)
-    if team_app.display_name is data['display_name'] then chat_text.prependTo(new_div) else chat_text.appendTo(new_div)
-    new_div.insertBefore('#team-chat form')
+    avatar.appendTo(new_chat)
+    unless is_my_chat
+      display_name.appendTo(new_chat)
+    if is_my_chat then chat_text.prependTo(new_chat) else chat_text.appendTo(new_chat)
+    new_chat.insertBefore('#team-chat form')
 
 $ ->
   $('#myModal').foundation('reveal', 'open');
