@@ -32,6 +32,10 @@
   $.fn.across_word_from_start = function() {if( !this.has_right() ){return [this];} else {return [this].concat(this.cell_to_right().across_word_from_start());}};
   $.fn.get_across_word = function(){return $.map( this.get_across_word_cells(), function(el, i){return el.text();}).join('');};
 
+  $.fn.get_word_cells = function(){return (select_across ? this.get_across_word_cells() : this.get_down_word_cells());};
+  $.fn.word_from_start = function(){return (select_across ? this.across_word_from_start() : this.down_word_from_start());};
+  $.fn.get_start_cell = function(){return (select_across ? this.get_across_start_cell() : this.get_down_start_cell());};
+
   $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
 
@@ -41,6 +45,8 @@
   $.fn.is_last_letter_of_puzzle = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
   $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};
 
+  $.fn.corresponding_clue_by_num = function(){var dir = select_across ? '.across-clue' : '.down-clue'; return $("" + dir + "[data-cell-num=" + this.data('cell') + "]");}
+
   $.fn.highlight = function() {
     if (this.hasClass('cell') && !this.hasClass('void')) {
       unhighlight_all();
@@ -49,6 +55,8 @@
       word_highlight();
     }
   }
+
+  $.fn.in_finished_word = function(){var cells = this.get_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
 
   $.fn.next_empty_cell = function(){
     if(this.is_last_letter_of_puzzle()){

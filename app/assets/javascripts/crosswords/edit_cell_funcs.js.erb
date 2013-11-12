@@ -45,7 +45,7 @@ function highlight_next_word() {
 function word_highlight() {
   $('.selected-word').removeClass('selected-word');
   var $cell = $('.selected');
-  var selected_word_letters = select_across ? $cell.get_across_word_cells() : $cell.get_down_word_cells();
+  var selected_word_letters = $cell.get_word_cells();
   $.each(selected_word_letters, function(index, value) {
     value.addClass('selected-word');
   });

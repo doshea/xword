@@ -137,6 +137,11 @@ table#crossword {
       text-indent: -1.7em;
       cursor: pointer;
 
+      &.crossed-off {
+        text-decoration: line-through;
+        opacity: 0.5;
+      }
+
       &.selected-clue {
         background-color: rgba(255, 255, 170, 1);
         border: 1px solid #999;

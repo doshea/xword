@@ -43,12 +43,12 @@ function highlight_next_word() {
 function word_highlight() {
   $('.selected-word').removeClass('selected-word');
   var $cell = $('.selected');
-  var selected_word_letters = select_across ? $cell.get_across_word_cells() : $cell.get_down_word_cells();
+  var selected_word_letters = $cell.get_word_cells();
   $.each(selected_word_letters, function(index, value) {
     value.addClass('selected-word');
   });
-  var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
-  corresponding_clue(select_start).addClass('selected-clue');
+  var select_start = $cell.get_start_cell();
+  select_start.corresponding_clue_by_num().addClass('selected-clue');
   scroll_to_selected();
 }
 
@@ -59,14 +59,6 @@ function unhighlight_all() {
   $('.selected').removeClass('selected');
   $('.selected-word').removeClass('selected-word');
   $('.selected-clue').removeClass('selected-clue');
-}
-
-//Takes a cell as a parameter and returns its corresponding clue
-
-function corresponding_clue($cell) {
-  var dir = select_across ? '.across-clue' : '.down-clue';
-  var num = $cell.get_number();
-  return $("" + dir + "[data-cell-num=" + num + "]");
 }
 
 //
@@ -131,7 +123,11 @@ function crossword_keypress(e) {
         if (selected) {
           var letter = String.fromCharCode(key);
           if (letter != selected.get_letter()) {
+            var check_for_finish = selected.is_empty_cell();
             selected.set_letter(String.fromCharCode(key), true);
+            if(check_for_finish && selected.in_finished_word()){
+              selected.get_start_cell().corresponding_clue_by_num().addClass('crossed-off');
+            }
             solve_app.update_unsaved();
           }
           selected.next_empty_cell().highlight();
@@ -157,7 +153,9 @@ function suppressBackspaceAndNav(evt) {
   evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
+    var check_for_unfinish = !selected.is_empty_cell();
     selected.delete_letter(true);
+    selected.get_start_cell().corresponding_clue_by_num().removeClass('crossed-off');
     return false;
   }
   if (_.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
