@@ -1,11 +1,11 @@
 window.team_app =
-  solver_id: Math.random().toString(36).substr(2, 5)
   solver_red: (Math.random()*266).floor()
   solver_green: (Math.random()*266).floor()
   solver_blue: (Math.random()*266).floor()
   last_audio: null
   myAudio: new Audio('<%= audio_path('chuck.mp3') %>')
-  display_name: username;
+  display_name: team_app.display_name
+  solver_id: team_app.solver_id
 
   receive_team_cell: (data)->
     unless team_app.solver_id is data.solver_id
@@ -73,8 +73,6 @@ $ ->
   $('#myModal').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)
   listening_channel.bind('change_cell', team_app.receive_team_cell)
-  unless team_app.display_name
-    team_app.display_name = "anon_#{team_app.solver_id}"
   listening_channel.bind('join_puzzle', team_app.welcome_teammate)
   listening_channel.bind('leave_puzzle', team_app.farewell_teammate)
   listening_channel.bind('roll_call', team_app.join_team)

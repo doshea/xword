@@ -34,6 +34,7 @@ Xword4::Application.routes.draw do
       post :join_team
       post :leave_team
       post :roll_call
+      post :send_team_chat
     end
   end
 

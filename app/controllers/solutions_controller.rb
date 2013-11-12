@@ -50,4 +50,10 @@ class SolutionsController < ApplicationController
     Pusher.trigger(params[:channel], 'roll_call', data)
     render nothing: true
   end
+  def send_team_chat
+    data = {display_name: params['display_name'],
+                chat_text: params[:chat_input]}
+    Pusher.trigger(params[:channel], 'chat_message', data)
+    render nothing: true
+  end
 end

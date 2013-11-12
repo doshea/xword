@@ -1,13 +1,14 @@
 - if @team
   = javascript_include_tag "http://js.pusher.com/2.1/pusher.min.js"
+  - solver_id = (0..5).map{random_char}.join('')
+  - display_name = @current_user ? (@current_user.first_name || @current_user.username) : 'anon_'+solver_id
+  - channel = "#{@crossword.id}_#{@solution.key}"
   :javascript
     var pusher = new Pusher("#{Pusher.key}");
-    var channel = "#{@crossword.id}_#{@solution.key}";
-    var username = null;
-  - if @current_user
-    :javascript
-      username = "#{@current_user.first_name || @current_user.username}"
-
+    var channel = "#{channel}";
+    team_app = {};
+    team_app.display_name = "#{display_name}";
+    team_app.solver_id = "#{solver_id}";
 
 = javascript_include_tag 'solve'
 = stylesheet_link_tag "crossword"
@@ -30,9 +31,11 @@
       %p Now to find some friends...
       %a.close-reveal-modal ×
 
-  #team-chat.down
+  =form_tag(send_team_chat_solution_path(@solution), id: 'team-chat', class: 'down', remote: true) do
     .row.row-topper Team Chat
-    %input
+    = hidden_field_tag 'display_name', display_name, id: nil
+    = hidden_field_tag 'channel', channel, id: nil
+    = text_field_tag nil
 
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"
