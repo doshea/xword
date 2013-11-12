@@ -67,7 +67,23 @@ window.team_app =
     $.ajax(settings)
 
   toggle_chat: ->
-    $(this).parent().toggleClass('down')
+    $('#team-chat').toggleClass('down')
+
+  receive_chat: (data) ->
+    chats = $('#team-chat')
+    new_div = $('<div>')
+
+    avatar = $('<img>')
+    display_name = $('<span>')
+    chat_text = $('<span>')
+
+    display_name.text(data['display_name']+': ')
+    chat_text.text(data['chat_text'])
+
+    avatar.appendTo(new_div)
+    if team_app.display_name is data['display_name'] then display_name.prependTo(new_div) else display_name.appendTo(new_div)
+    if team_app.display_name is data['display_name'] then chat_text.prependTo(new_div) else chat_text.appendTo(new_div)
+    new_div.insertBefore('#team-chat form')
 
 $ ->
   $('#myModal').foundation('reveal', 'open');
@@ -76,6 +92,7 @@ $ ->
   listening_channel.bind('join_puzzle', team_app.welcome_teammate)
   listening_channel.bind('leave_puzzle', team_app.farewell_teammate)
   listening_channel.bind('roll_call', team_app.join_team)
+  listening_channel.bind('chat_message', team_app.receive_chat)
   team_app.roll_call()
   $('#team-chat .row-topper').on('click', team_app.toggle_chat)
 

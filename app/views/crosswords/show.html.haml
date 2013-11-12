@@ -31,11 +31,12 @@
       %p Now to find some friends...
       %a.close-reveal-modal ×
 
-  =form_tag(send_team_chat_solution_path(@solution), id: 'team-chat', class: 'down', remote: true) do
+  #team-chat.down
     .row.row-topper Team Chat
-    = hidden_field_tag 'display_name', display_name, id: nil
-    = hidden_field_tag 'channel', channel, id: nil
-    = text_field_tag nil
+    =form_tag(send_team_chat_solution_path(@solution), remote: true) do
+      = hidden_field_tag 'display_name', display_name, id: nil
+      = hidden_field_tag 'channel', channel, id: nil
+      = text_field_tag 'chat', nil, id: nil
 
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"
