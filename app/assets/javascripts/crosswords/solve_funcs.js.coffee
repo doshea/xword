@@ -15,6 +15,8 @@ window.solve_app =
     $('#check_correctness').on('click', solve_app.check_correctness)
     $('#submit_solution').on('click', solve_app.submit_solution)
     $('#solve-save').on('click', solve_app.save_solution)
+    $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> remove_selections())
+    true
 
   save_solution: (e) ->
     e.preventDefault() if e

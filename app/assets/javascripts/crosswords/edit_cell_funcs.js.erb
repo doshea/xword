@@ -160,15 +160,6 @@ function get_letters() {
   return letters;
 }
 
-function remove_selections(){
-  if(selected){
-    selected.removeClass('selected');
-    selected = null;
-    $('.selected-word').removeClass('selected-word');
-    $('.selected-clue').removeClass('selected-clue');
-  }
-}
-
 //Prevents backspace from going to previous window, prevents arrow keys and space from moving around page
 document.onkeydown = suppressBackspaceAndNav;
 document.onkeypress = suppressBackspaceAndNav;

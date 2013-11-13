@@ -12,10 +12,12 @@ $(function() {
 
   $(document).on('keydown', crossword_keypress);
 
-  $('#crossword').on('click', 'td.cell', function() {
+  $('#crossword').on('click', 'td.cell', function(e) {
+    e.stopPropagation();
     $(this).highlight();
   });
-  $('.clue-column').on('click', '.clue', function() {
+  $('.clue-column').on('click', '.clue', function(e) {
+    e.stopPropagation();
     highlight_clue_cell($(this));
   });
 

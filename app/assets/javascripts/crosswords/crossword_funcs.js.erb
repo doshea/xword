@@ -1,0 +1,8 @@
+function remove_selections(){
+  if(selected){
+    selected.removeClass('selected');
+    selected = null;
+    $('.selected-word').removeClass('selected-word');
+    $('.selected-clue').removeClass('selected-clue');
+  }
+}

@@ -88,7 +88,7 @@ window.team_app =
     unless is_my_chat
       display_name.appendTo(new_chat)
     if is_my_chat then chat_text.prependTo(new_chat) else chat_text.appendTo(new_chat)
-    new_chat.insertBefore('#team-chat form')
+    new_chat.appendTo($('#chats'))
 
 $ ->
   $('#myModal').foundation('reveal', 'open');

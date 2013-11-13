@@ -34,6 +34,7 @@
 
   #team-chat.down
     .row.row-topper Team Chat
+    #chats
     =form_tag(send_team_chat_solution_path(@solution), remote: true) do
       = hidden_field_tag 'display_name', display_name, id: nil
       = hidden_field_tag 'channel', channel, id: nil

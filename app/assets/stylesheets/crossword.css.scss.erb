@@ -227,6 +227,7 @@ table#crossword {
   border-top-left-radius: 0.5em;
   border-top-right-radius: 0.5em;
   transition: bottom 0.2s;
+  z-index: 1;
 
   &.down {
     bottom: -380px;
@@ -249,10 +250,15 @@ table#crossword {
   }
   input {
     position: absolute;
-    bottom: 0.2em;
+    bottom: 0.5em;
+    margin: 0;
     width: 96%;
     left: 2%;
     right: 2%;
+  }
+  #chats {
+    overflow: scroll;
+    height: 330px;
   }
   .chat {
     &.my-chat {
