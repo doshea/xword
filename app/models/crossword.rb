@@ -265,13 +265,15 @@ class Crossword < ActiveRecord::Base
 
   def self.add_nyt_puzzle(pz)
     pz_letters = pz['grid'].join('').gsub('.','_')
+    pz_date = Date.parse(pz['title'])
     unless Crossword.where(title: pz['title']).any?
       new_nytimes_crossword = Crossword.create(
         title: pz['title'],
         rows: pz['size']['rows'],
         cols: pz['size']['cols'],
         published: true,
-        date_published: Date.parse(pz['title'])
+        date_published: pz_date,
+        description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz."
       )
 
       new_nytimes_crossword.link_cells
