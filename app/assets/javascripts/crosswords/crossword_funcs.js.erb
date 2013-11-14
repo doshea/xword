@@ -1,3 +1,8 @@
+//Global variables for crossword control
+var selected;
+var select_across = true;
+var counter = 1;
+
 function remove_selections(){
   if(selected){
     selected.removeClass('selected');
@@ -6,3 +11,19 @@ function remove_selections(){
     $('.selected-clue').removeClass('selected-clue');
   }
 }
+
+$(function() {
+  $(document).on('keydown', crossword_keypress);
+
+  $('.cell').on('click', function(e) {
+    e.stopPropagation();
+    $(this).highlight();
+  });
+  $('.clue').on('click', function(e) {
+    e.stopPropagation();
+    highlight_clue_cell($(this));
+  });
+
+  selected = $('.cell:not(.void)').first();
+  selected.highlight();
+});

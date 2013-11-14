@@ -55,6 +55,5 @@ class SolutionsController < ApplicationController
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
     Pusher.trigger(params[:channel], 'chat_message', data)
-    render nothing: true
   end
 end

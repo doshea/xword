@@ -1,25 +1,6 @@
-//Global variables for crossword control
-var selected;
-var select_across = true;
-var counter = 1;
-
 //Document load events and event triggers
 $(function() {
   // number_cells();
-  selected = $('.cell:not(.void)').first();
-  selected.highlight();
-  selected.focus();
-
-  $(document).on('keydown', crossword_keypress);
-
-  $('.cell').on('click', function(e) {
-    e.stopPropagation();
-    $(this).highlight();
-  });
-  $('.clue').on('click', function(e) {
-    e.stopPropagation();
-    highlight_clue_cell($(this));
-  });
 });
 
 function highlight_clue_cell($clue) {
@@ -33,7 +14,6 @@ function highlight_next_word() {
   var clue = $('.clue.selected-clue');
   var next_clue = clue.nextAll(':not(.hidden)').first();
   if (next_clue.hasClass('clue')) {
-    console.log(edit_app.debug_mode ? 'next_clue has class clue' : '');
     highlight_clue_cell(next_clue);
   } else {
     highlight_clue_cell(clue.parent().parent().siblings('.clue-column').first().children().children().first());
@@ -49,7 +29,7 @@ function word_highlight() {
   $.each(selected_word_letters, function(index, value) {
     value.addClass('selected-word');
   });
-  var select_start = select_across ? $cell.get_across_start_cell() : $cell.get_down_start_cell();
+  var select_start = $cell.get_start_cell();
   select_start.corresponding_clue().addClass('selected-clue');
   scroll_to_selected();
 }
@@ -194,7 +174,6 @@ var BACKSPACE = 8;
 var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];
 
 (function( $ ) {
-  $.fn.corresponding_clue = function(){var dir = select_across ? '.across-clue' : '.down-clue'; return $("" + dir + "[data-cell-id=" + this.data('id') + "]");}
   $.fn.corresponding_clues = function(){return $(".clue[data-cell-id=" + this.data('id') + "]");}
 
   $.fn.delete_letter = function(letter){

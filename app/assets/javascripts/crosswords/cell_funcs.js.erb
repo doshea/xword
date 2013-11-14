@@ -44,8 +44,7 @@
 
   $.fn.is_last_letter_of_puzzle = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
   $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};
-
-  $.fn.corresponding_clue_by_num = function(){var dir = select_across ? '.across-clue' : '.down-clue'; return $("" + dir + "[data-cell-num=" + this.data('cell') + "]");}
+  $.fn.corresponding_clue = function(){var dir = select_across ? '.across-clue' : '.down-clue'; return this.data('id') ? $("" + dir + "[data-cell-id=" + this.data('id') + "]") : $("" + dir + "[data-cell-num=" + this.data('cell') + "]");}
 
   $.fn.highlight = function() {
     if (this.hasClass('cell') && !this.hasClass('void')) {
