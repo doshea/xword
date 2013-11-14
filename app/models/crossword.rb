@@ -17,7 +17,7 @@
 #
 
 class Crossword < ActiveRecord::Base
-  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids
+  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids, :circled
 
   before_create :populate_letters, :populate_cells
   # after_create :link_cells
@@ -242,8 +242,6 @@ class Crossword < ActiveRecord::Base
   end
 
   def add_circles_by_array(circle_nums)
-    puts circle_nums.length
-    puts self.rows*self.cols
     if circle_nums.length == self.rows*self.cols
       circle_needers = []
       circle_nums.each_with_index do |potential_circle, index|
@@ -253,6 +251,7 @@ class Crossword < ActiveRecord::Base
         end
       end
       Cell.where(id: circle_needers).update_all(circled: true)
+      self.update_attributes(circled: true)
     else
       puts "Too many circles"
     end
@@ -279,6 +278,7 @@ class Crossword < ActiveRecord::Base
       new_nytimes_crossword.letters = pz_letters
       new_nytimes_crossword.set_letters(pz_letters)
       new_nytimes_crossword.number_cells
+      new_nytimes_crossword.add_circles_by_array(pz['circles']) if pz['circles']
 
       nytimes = User.find_by_username('nytimes')
 

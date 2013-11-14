@@ -22,7 +22,7 @@
 #
 
 class Cell < ActiveRecord::Base
-  attr_accessible :row, :col, :index, :is_void, :across_clue_id, :down_clue_id, :crossword_id, :is_across_start, :is_down_start, :left_cell_id, :above_cell_id, :cell_num, :letter
+  attr_accessible :row, :col, :index, :is_void, :across_clue_id, :down_clue_id, :crossword_id, :is_across_start, :is_down_start, :left_cell_id, :above_cell_id, :cell_num, :letter, :circled
 
   after_create :populate_clues
 
