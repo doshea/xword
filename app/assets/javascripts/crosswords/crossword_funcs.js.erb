@@ -12,6 +12,65 @@ function remove_selections(){
   }
 }
 
+function highlight_next_word() {
+  var clue = $('.clue.selected-clue');
+  var next_clue = clue.nextAll(':not(.hidden)').first();
+  if (next_clue.hasClass('clue')) {
+    highlight_clue_cell(next_clue);
+  } else {
+    highlight_clue_cell(clue.parent().parent().siblings('.clue-column').first().children().children().first());
+  }
+}
+
+//Scrolls to selected clue
+function scroll_to_selected() {
+  var $sel_clue = $('.selected-clue');
+  var $clues = $sel_clue.closest('ol');
+  var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height() / 2 + $sel_clue.height() / 2;
+  // console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
+  $clues.stop().animate({
+    scrollTop: top
+  }, 'fast');
+}
+
+//Unhighlights all cells and clues
+function unhighlight_all() {
+  selected = null;
+  $('.selected').removeClass('selected');
+  $('.selected-word').removeClass('selected-word');
+  $('.selected-clue').removeClass('selected-clue');
+}
+
+function selected_word() {
+  var letters = '';
+  $.each($('.selected-word'), function(index, value) {
+    letters += $(value).get_letter();
+  });
+  return letters;
+}
+
+//highlights the word for a given cell
+function word_highlight() {
+  $('.selected-word').removeClass('selected-word');
+  var $cell = $('.selected');
+  var selected_word_letters = $cell.get_word_cells();
+  $.each(selected_word_letters, function(index, value) {
+    value.addClass('selected-word');
+  });
+  var select_start = $cell.get_start_cell();
+  select_start.corresponding_clue().addClass('selected-clue');
+  scroll_to_selected();
+}
+
+function get_letters() {
+  var letters = '';
+  var $cells = $('.cell');
+  $.each($cells, function(index, cell) {
+    letters += $(cell).hasClass('void') ? '_' : $(cell).get_letter();
+  });
+  return letters;
+}
+
 $(function() {
   $(document).on('keydown', crossword_keypress);
 

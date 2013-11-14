@@ -8,7 +8,6 @@ window.global =
 
   live_search: ->
     query = $('#query').val()
-    console.log(query)
     settings =
       dataType: 'script'
       type: 'GET'
