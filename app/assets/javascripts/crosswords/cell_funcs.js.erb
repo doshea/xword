@@ -58,6 +58,8 @@
     }
   }
 
+  $.fn.in_finished_across_word = function(){var cells = this.get_across_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
+  $.fn.in_finished_down_word = function(){var cells = this.get_down_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
   $.fn.in_finished_word = function(){var cells = this.get_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
 
   $.fn.next_empty_cell = function(){

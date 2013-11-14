@@ -16,6 +16,7 @@ window.solve_app =
     $('#submit_solution').on('click', solve_app.submit_solution)
     $('#solve-save').on('click', solve_app.save_solution)
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> unhighlight_all())
+    solve_app.check_all_finished()
     true
 
   save_solution: (e) ->
@@ -67,8 +68,8 @@ window.solve_app =
 
   check_all_finished: ->
     $.each $('.cell:not(.void)'), (index, cell) ->
-      if !$(cell).has_left() then if $(cell).in_finished_word() then $(cell).corresponding_across_clue().addClass('crossed-off')
-      if !$(cell).has_above() then if $(cell).in_finished_word() then $(cell).corresponding_down_clue().addClass('crossed-off')
+      if !$(cell).has_left() then if $(cell).in_finished_across_word() then $(cell).corresponding_across_clue().addClass('crossed-off')
+      if !$(cell).has_above() then if $(cell).in_finished_down_word() then $(cell).corresponding_down_clue().addClass('crossed-off')
 
 $(document).ready(solve_app.ready)
 
