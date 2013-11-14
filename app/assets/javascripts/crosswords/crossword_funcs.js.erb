@@ -3,15 +3,6 @@ var selected;
 var select_across = true;
 var counter = 1;
 
-function remove_selections(){
-  if(selected){
-    selected.removeClass('selected');
-    selected = null;
-    $('.selected-word').removeClass('selected-word');
-    $('.selected-clue').removeClass('selected-clue');
-  }
-}
-
 function highlight_next_word() {
   var clue = $('.clue.selected-clue');
   var next_clue = clue.nextAll(':not(.hidden)').first();
