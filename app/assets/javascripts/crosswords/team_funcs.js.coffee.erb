@@ -71,6 +71,8 @@ window.team_app =
 
   receive_chat: (data) ->
     is_my_chat = (team_app.display_name is data['display_name'])
+    chats_already_exist = ($('.chat').length > 0)
+
     chats = $('#team-chat')
     new_chat = $('<div>')
     new_chat.addClass('chat')
@@ -88,7 +90,9 @@ window.team_app =
     unless is_my_chat
       display_name.appendTo(new_chat)
     if is_my_chat then chat_text.prependTo(new_chat) else chat_text.appendTo(new_chat)
+    if chats_already_exist then $('<hr />').appendTo($('#chats'))
     new_chat.appendTo($('#chats'))
+    $('#chats').stop().animate({scrollTop: $('#chats').height()}, 'medium')
 
 $ ->
   $('#myModal').foundation('reveal', 'open');

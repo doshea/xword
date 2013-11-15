@@ -260,10 +260,22 @@ table#crossword {
   #chats {
     overflow: scroll;
     height: 330px;
+    padding: 0.1em;
+
+    hr {
+      margin: 0.2em 0;
+    }
   }
   .chat {
+    width: 100%;
+    font-size: 0.8em;
+    min-height: 27px;
     &.my-chat {
       text-align: right;
+    }
+    &:not(.my-chat) {
+      .avatar, .display-name, .chat-text {
+      }
     }
     .avatar {
       width: 27px;
@@ -271,6 +283,10 @@ table#crossword {
     }
     .display-name {
       font-weight: bold;
+    }
+    .chat-text {
+      max-width: 100%;
+      word-wrap: break-word;
     }
   }
 }
