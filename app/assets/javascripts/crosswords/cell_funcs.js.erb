@@ -40,7 +40,7 @@
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
 
   $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '}
-  $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter); if((typeof team_app != 'undefined') && original){team_app.send_team_cell(this, letter)}}
+  $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter);if((typeof team_app != 'undefined')){if(original){team_app.send_team_cell(this, letter);} else {this.check_finisheds();}}}
 
   $.fn.is_last_letter_of_puzzle = function(){var word_cells = (select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
   $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};
@@ -49,18 +49,14 @@
   $.fn.corresponding_down_clue = function(){return this.data('id') ? $(".down-clue[data-cell-id=" + this.data('id') + "]") : $(".down-clue[data-cell-num=" + this.data('cell') + "]");}
   $.fn.corresponding_clue = function(){return select_across ? this.corresponding_across_clue() : this.corresponding_down_clue();}
 
-  $.fn.highlight = function() {
-    if (this.hasClass('cell') && !this.hasClass('void')) {
-      unhighlight_all();
-      selected = this;
-      this.addClass('selected');
-      word_highlight();
-    }
-  }
+  $.fn.highlight = function(){if (this.hasClass('cell') && !this.hasClass('void')){unhighlight_all(); selected = this; this.addClass('selected'); word_highlight();}}
 
   $.fn.in_finished_across_word = function(){var cells = this.get_across_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
   $.fn.in_finished_down_word = function(){var cells = this.get_down_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
   $.fn.in_finished_word = function(){var cells = this.get_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
+
+  $.fn.check_finisheds = function(){if(this.in_finished_across_word()){this.get_across_start_cell().corresponding_across_clue().addClass('crossed-off');}if(this.in_finished_down_word()){this.get_down_start_cell().corresponding_down_clue().addClass('crossed-off');}}
+  $.fn.uncheck_unfinisheds = function(){this.get_across_start_cell().corresponding_across_clue().removeClass('crossed-off'); this.get_down_start_cell().corresponding_down_clue().removeClass('crossed-off');}
 
   $.fn.next_empty_cell = function(){
     if(this.is_last_letter_of_puzzle()){
@@ -78,26 +74,3 @@
     }
   }
 })( jQuery );
-
-//Intelligently sets the numbers of each cell in the crossword by calling the number_cell function
-function number_cells() {
-  counter = 1;
-  var $cells = $('.cell:not(.void)');
-  $.each($cells, function(index, value) {
-    number_cell($(value));
-  });
-  counter = 1;
-}
-
-//Numbers cells if they are the lefmost or topmost cell in a word
-
-function number_cell($cell) {
-  if (!$cell.has_above() || !$cell.has_left()) {
-    $cell.set_number(counter);
-    $cell.attr('data-cell', counter); //no idea why this won't work when I use the .data() method...
-    counter += 1;
-  } else if ($cell.get_number() != ' ') {
-    $cell.set_number('');
-    $cell.removeAttr('data-cell');
-  }
-}

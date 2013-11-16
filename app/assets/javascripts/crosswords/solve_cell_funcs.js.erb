@@ -53,8 +53,8 @@ function crossword_keypress(e) {
           if (letter != selected.get_letter()) {
             var check_for_finish = selected.is_empty_cell();
             selected.set_letter(String.fromCharCode(key), true);
-            if(check_for_finish && selected.in_finished_word()){
-              selected.get_start_cell().corresponding_clue().addClass('crossed-off');
+            if(check_for_finish){
+              selected.check_finisheds();
             }
             solve_app.update_unsaved();
           }
@@ -74,7 +74,9 @@ function suppressBackspaceAndNav(evt) {
   if (evt.keyCode == BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
     var check_for_unfinish = !selected.is_empty_cell();
     selected.delete_letter(true);
-    selected.get_start_cell().corresponding_clue().removeClass('crossed-off');
+    if(check_for_unfinish){
+      selected.uncheck_unfinisheds();
+    }
     return false;
   }
   if (_.contains(PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
@@ -110,8 +112,12 @@ var PAGE_NAV_KEYS = [UP, RIGHT, DOWN, LEFT, SPACE];
       }
     } else {
       this.children('.letter').first().empty();
-      if((typeof team_app != 'undefined') && original){
+      if((typeof team_app != 'undefined')){
+        if(original){
         team_app.send_team_cell(this, '');
+        } else {
+          this.uncheck_unfinisheds();
+        }
       }
       solve_app.update_unsaved();
     }
