@@ -1,0 +1,2 @@
+$("<%=j render partial: 'comments/partials/reply', locals: {reply: @new_reply} %>").hide().appendTo($('.replying .replies')).fadeIn(1500);
+$('.replying h6').text(''+$('.replying .replies').children().length +' Replies')

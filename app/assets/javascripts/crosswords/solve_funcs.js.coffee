@@ -17,6 +17,9 @@ window.solve_app =
     $('#solve-save').on('click', solve_app.save_solution)
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> unhighlight_all())
     solve_app.check_all_finished()
+    $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
+    $('.reply-content').on('keypress', solve_app.add_comment_or_reply)
+    $('.reply-button, .cancel-button').on('click', solve_app.toggle_reply_form)
     true
 
   save_solution: (e) ->
@@ -65,6 +68,24 @@ window.solve_app =
       url: "/solutions/#{solve_app.solution_id}/check_correctness"
       data: {letters: letters}
     $.ajax(settings)
+
+  add_comment_or_reply: (e) ->
+    unless e.metaKey
+      key = e.which
+      if key is ENTER
+        e.preventDefault()
+        unless $(this).val() is ''
+          $('.replying').removeClass('replying')
+          $(this).closest('.comment').addClass('replying')
+          $(this).parent().submit()
+          $(this).val('')
+
+  toggle_reply_form: (e) ->
+    e.preventDefault()
+    $(this).siblings('form').toggle('medium')
+    $(this).siblings('a').toggle()
+    $(this).toggle()
+
 
   check_all_finished: ->
     $.each $('.cell:not(.void)'), (index, cell) ->

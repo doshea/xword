@@ -257,6 +257,36 @@ class Crossword < ActiveRecord::Base
     end
   end
 
+  def get_words_array(across)
+    word_clues = []
+    if across
+      across_starts = self.cells.across_start_cells.asc_indices
+      across_starts.each do |across_start|
+        word = ''
+        current = across_start
+        clue = current.across_clue
+        while current && !current.is_void do
+          word += current.letter
+          current = current.right_cell
+        end
+        word_clues << {word: word, clue: clue}
+      end
+    else
+      down_starts = self.cells.down_start_cells.asc_indices
+      down_starts.each do |down_start|
+        word = ''
+        current = down_start
+        clue = current.down_clue
+        while current && !current.is_void do
+          word += current.letter
+          current = current.below_cell
+        end
+        word_clues << {word: word, clue: clue}
+      end
+    end
+    word_clues
+  end
+
   #INSTANCE METHODS
   def self.add_latest_nyt_puzzle
     latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")

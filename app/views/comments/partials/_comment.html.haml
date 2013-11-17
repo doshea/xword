@@ -1,0 +1,26 @@
+.row.comment
+  .large-1.columns.small-3
+    = link_to (image_tag comment.user.image.comment_size), comment.user
+  .large-11.columns
+    %p
+      %strong
+      = link_to "#{comment.user.display_name}: ", comment.user
+      %br
+      = comment.content
+    %ul.inline-list
+      %li
+        = link_to nil, class: 'reply-button' do
+          %i.fi-comment
+          Reply
+        = link_to 'Never mind', nil, class: 'cancel-button', style: 'display: none;'
+        = form_tag(reply_to_comment_path(comment), remote: true, style: 'display: none;') do
+          = text_area_tag('content', nil, id: nil, class: 'reply-content')
+      / %li
+      /   %a{href: ""} Share
+    %h6.reply-count
+      - if comment.replies.any?
+        = pluralize(comment.replies.count, 'Reply')
+    .replies
+      - comment.replies.each do |reply|
+        = render partial: 'comments/partials/reply', locals: {reply: reply}
+%hr/

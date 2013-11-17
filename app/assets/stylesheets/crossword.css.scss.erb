@@ -124,7 +124,7 @@ table#crossword {
   }
   .clues {
     list-style-type: none;
-    max-height: 350px;
+    max-height: 367px;
     overflow: scroll;
     width: 250px;
     overflow-x: hidden;
@@ -248,6 +248,11 @@ table#crossword {
     font-weight: bold;
     padding-top: 0.2em;
     cursor: pointer;
+
+    #chat-minmax {
+      position: absolute;
+      right: 1em;
+    }
   }
   input {
     position: absolute;
@@ -287,6 +292,21 @@ table#crossword {
     .chat-text {
       max-width: 100%;
       word-wrap: break-word;
+    }
+  }
+}
+#comments {
+  textarea {
+    resize: none;
+    overflow: auto;
+  }
+  .comment {
+    li {
+      width: 70%;
+    }
+    textarea {
+      height: 1em;
+      min-height: 2.3em;
     }
   }
 }

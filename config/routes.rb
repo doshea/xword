@@ -18,7 +18,12 @@ Xword4::Application.routes.draw do
 
   resources :clues, only: [:index, :show, :update]
   resources :words, only: [:index, :show]
-  resources :comments, only: [:index, :create]
+  resources :comments, only: [:index] do
+    member do
+      post :add_comment, as: 'add'
+      post :reply, as: 'reply_to'
+    end
+  end
 
   resources :cells, only: [:update] do
     member do

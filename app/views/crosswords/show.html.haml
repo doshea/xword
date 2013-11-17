@@ -32,7 +32,9 @@
       %a.close-reveal-modal ×
 
   #team-chat.down
-    .row.row-topper Team Chat
+    .row.row-topper
+      Team Chat
+      %i.fi-plus#chat-minmax
     #chats
     = form_tag(send_team_chat_solution_path(@solution), remote: true) do
       = hidden_field_tag 'display_name', display_name, id: nil
@@ -91,29 +93,13 @@
           = link_to @crossword.user.display_name, @crossword.user
     %hr
     %section#comments
-      %h3 Comments
+      %h3
+        %i.fi-comments
+        Comments
       / Feed Entry
+      -if @current_user
+        = form_tag(add_comment_path(@crossword), remote: true) do
+          = text_area_tag('content', nil, id: 'add-comment', placeholder: 'What did you think of this puzzle?')
+      %hr
       - @crossword.comments.each do |comment|
-        .row
-          .large-1.columns.small-3
-            = link_to (image_tag comment.user.image.comment_size), comment.user
-          .large-11.columns
-            %p
-              %strong
-              = link_to "#{comment.user.display_name}: ", comment.user
-              %br
-              = comment.content
-            %ul.inline-list
-              %li
-                %a{href: ""} Reply
-              / %li
-              /   %a{href: ""} Share
-            %h6= pluralize(comment.replies.count, 'Reply')
-            - comment.replies.each do |reply|
-              .row
-                .large-1.columns.small-3
-                  = link_to (image_tag reply.user.image.reply_size), reply.user
-                .large-11.columns
-                  %p= reply.content
-        / End Feed Entry
-        %hr/
+        = render partial: 'comments/partials/comment', locals: {comment: comment}

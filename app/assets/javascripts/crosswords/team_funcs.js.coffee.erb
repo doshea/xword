@@ -68,6 +68,7 @@ window.team_app =
 
   toggle_chat: ->
     $('#team-chat').toggleClass('down')
+    $('#chat-minmax').toggleClass('fi-minus fi-plus')
 
   receive_chat: (data) ->
     is_my_chat = (team_app.display_name is data['display_name'])
