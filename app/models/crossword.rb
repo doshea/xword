@@ -295,7 +295,14 @@ class Crossword < ActiveRecord::Base
 
   def self.add_nyt_puzzle(pz)
     pz_letters = pz['grid'].join('').gsub('.','_')
-    pz_date = Date.parse(pz['title'])
+    begin
+      pz_date = Date.parse(pz['title'])
+    rescue
+      alt_date = pz['date']
+      puts alt_date
+      pz_date = Date.strptime(alt_date, '%m/%d/%Y')
+    end
+
     unless Crossword.where(title: pz['title']).any?
       new_nytimes_crossword = Crossword.create(
         title: pz['title'],
