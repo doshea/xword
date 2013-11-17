@@ -12,7 +12,9 @@
         = link_to nil, class: 'reply-button' do
           %i.fi-comment
           Reply
-        = link_to 'Never mind', nil, class: 'cancel-button', style: 'display: none;'
+        = link_to nil, class: 'cancel-button', style: 'display: none;' do
+          %i.fi-x
+          Never mind
         = form_tag(reply_to_comment_path(comment), remote: true, style: 'display: none;') do
           = text_area_tag('content', nil, id: nil, class: 'reply-content')
       / %li

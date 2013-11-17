@@ -82,9 +82,15 @@ window.solve_app =
 
   toggle_reply_form: (e) ->
     e.preventDefault()
-    $(this).siblings('form').toggle('medium')
+    reply_form = $(this).siblings('form')
+    reply_form.toggle('fast')
     $(this).siblings('a').toggle()
     $(this).toggle()
+    is_showing = (reply_form.css('opacity') < 0.5)
+    if is_showing
+      reply_form.children('textarea').focus()
+    else
+      reply_form[0].reset()
 
 
   check_all_finished: ->
