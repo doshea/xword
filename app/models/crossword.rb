@@ -299,7 +299,6 @@ class Crossword < ActiveRecord::Base
       pz_date = Date.parse(pz['title'])
     rescue
       alt_date = pz['date']
-      puts alt_date
       pz_date = Date.strptime(alt_date, '%m/%d/%Y')
     end
 

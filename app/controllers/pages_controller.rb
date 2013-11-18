@@ -37,4 +37,16 @@ class PagesController < ApplicationController
     redirect_to(root_path) if @current_user.present?
     @user = User.new
   end
+  def stats
+    non_unq_signup_dates = User.pluck(:created_at).map{|time_with_zone| time_with_zone.to_date}.sort
+    unq_signup_dates = non_unq_signup_dates.uniq
+    @days_operational = (unq_signup_dates.first..Date.today)
+
+    date_counts = Hash.new(0)
+    non_unq_signup_dates.each {|date| date_counts[date] += 1}
+
+    @signup_counts = []
+    @days_operational.each {|day| @signup_counts << (date_counts[day] || 0)}
+
+  end
 end
