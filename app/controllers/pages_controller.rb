@@ -48,5 +48,7 @@ class PagesController < ApplicationController
     @signup_counts = []
     @days_operational.each {|day| @signup_counts << (date_counts[day] || 0)}
 
+    @running_signup_counts = @signup_counts.each_with_index.map { |x,i| @signup_counts[0..i].inject(:+) }
+
   end
 end
