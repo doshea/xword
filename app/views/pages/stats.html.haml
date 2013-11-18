@@ -1,5 +1,6 @@
+= stylesheet_link_tag 'site_stats'
 .row.row-topper.row-bookend
-  %h5 Site Statistics
+  %h5
 .row
   .large-12.columns
     %h4 Daily User Signups
@@ -12,9 +13,9 @@
         labels : #{@days_operational.map{|date| ((date == @days_operational.first) || (date == @days_operational.last) || ([1,15].include?(date.day))) ? date.to_s : ''}},
         datasets : [
           {
-            fillColor : "rgba(220,220,220,0.5)",
-            strokeColor : "rgba(220,220,220,1)",
-            pointColor : "rgba(220,220,220,1)",
+            fillColor : "rgba(151,187,205,0.5)",
+            strokeColor : "rgba(151,187,205,1)",
+            pointColor : "rgba(151,187,205,1)",
             pointStrokeColor : "#fff",
             data : #{@signup_counts}
           }
@@ -61,9 +62,9 @@
         labels : #{@days_operational.map{|date| ((date == @days_operational.first) || (date == @days_operational.last) || ([1,15].include?(date.day))) ? date.to_s : ''}},
         datasets : [
           {
-            fillColor : "rgba(220,220,220,0.5)",
-            strokeColor : "rgba(220,220,220,1)",
-            pointColor : "rgba(220,220,220,1)",
+            fillColor : "rgba(151,187,205,0.5)",
+            strokeColor : "rgba(151,187,205,1)",
+            pointColor : "rgba(151,187,205,1)",
             pointStrokeColor : "#fff",
             data : #{@running_signup_counts}
           }
