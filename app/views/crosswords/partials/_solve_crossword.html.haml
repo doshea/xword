@@ -23,6 +23,10 @@
 = render(partial: 'clues/partials/clue_column', locals: {across: false, edit: edit})
 
 #solve-controls
-  %button.button.alert.small#show_incorrect Show Incorrect
-  %button.button.warning.small#check_correctness Check Correctness
-  %button.button.success.small#submit_solution Submit Solution
+  %button.button.warning.small#show-incorrect
+    %i.fi-alert
+    Show Incorrect
+  %button.button.success.small#check-correctness
+    %i.fi-check
+    Check Correctness
+  / %button.button.success.small#submit_solution Submit Solution

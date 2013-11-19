@@ -11,8 +11,8 @@ window.solve_app =
       solve_app.save_solution() if solve_app.unsaved_changes
     , 5000)
     solve_app.clock_updater = window.setInterval(solve_app.update_clock, 10000)
-    $('#show_incorrect').on('click', solve_app.show_incorrect)
-    $('#check_correctness').on('click', solve_app.check_correctness)
+    $('#show-incorrect').on('click', solve_app.show_incorrect)
+    $('#check-correctness').on('click', solve_app.check_correctness)
     $('#submit_solution').on('click', solve_app.submit_solution)
     $('#solve-save').on('click', solve_app.save_solution)
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> unhighlight_all())
