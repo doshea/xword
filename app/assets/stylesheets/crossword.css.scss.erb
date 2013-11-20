@@ -1,4 +1,6 @@
 @import 'dimensions';
+@import 'buttons';
+
 
 #body > .row {
   padding: 0.5em 1em 0 1em;
@@ -175,6 +177,12 @@ table#crossword {
     width: 49%;
     margin: 0;
     outline: none;
+    &.warning {
+      @include button-style(#FFC68D);
+    }
+    &.success {
+      @include button-style(#83EDA3);
+    }
   }
 }
 
