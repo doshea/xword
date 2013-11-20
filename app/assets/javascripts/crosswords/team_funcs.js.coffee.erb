@@ -95,6 +95,40 @@ window.team_app =
     new_chat.appendTo($('#chats'))
     $('#chats').stop().animate({scrollTop: $('#chats').height()}, 'medium')
 
+  show_team_clue: ->
+    token = $('#crossword').data('auth-token')
+    cell_num = $(this).data('cell-num')
+    across = $(this).hasClass('across-clue')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/show_team_clue/"
+      data: {authenticity_token: token, channel: channel, cell_num: cell_num, across: across, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+  outline_team_clue: (data) ->
+    unless data.solver_id is team_app.solver_id
+      outline_width = 2
+      outline_id = "#{data.solver_id}_word_highlight"
+      outline_color = "#{data.red}, #{data.green}, #{data.blue}"
+      the_outline = $("##{outline_id}")
+      unless the_outline.get(0)
+        the_outline = $("<div id='#{outline_id}'>")
+        the_outline.addClass('team-outline').hide().css('border', "#{outline_width}px dashed rgb(#{outline_color})").css('background-color', "rgba(#{outline_color}, 0.2)")
+        $('body').append(the_outline)
+
+      across = data['across'] is 'true'
+      start_cell = $(".cell[data-cell=#{data.cell_num}]")
+      word_cells = if across then start_cell.get_across_word_cells() else start_cell.get_down_word_cells()
+      number_of_cells = word_cells.length
+      height_of_outline = if across then word_cells[0].height()-3 else word_cells[0].height()*number_of_cells+2*number_of_cells-5
+      width_of_outline = if across then word_cells[0].width()*number_of_cells+2*number_of_cells-5 else word_cells[0].width()-3
+      left_corner_x = word_cells[0].offset().left+1
+      left_corner_y = word_cells[0].offset().top+1
+      the_outline.height(height_of_outline)
+      the_outline.width(width_of_outline)
+      the_outline.offset({ top: left_corner_y, left: left_corner_x })
+      the_outline.show()
+
 $ ->
   $('#myModal').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)
@@ -103,8 +137,10 @@ $ ->
   listening_channel.bind('leave_puzzle', team_app.farewell_teammate)
   listening_channel.bind('roll_call', team_app.join_team)
   listening_channel.bind('chat_message', team_app.receive_chat)
+  listening_channel.bind('outline_team_clue', team_app.outline_team_clue)
   team_app.roll_call()
   $('#team-chat .row-topper').on('click', team_app.toggle_chat)
+  $('.clue').on('click', team_app.show_team_clue)
 
   $(window).on('unload', team_app.leave_team)
 

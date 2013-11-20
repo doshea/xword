@@ -42,6 +42,8 @@
       = hidden_field_tag 'avatar', @current_user ? @current_user.image.thumb : asset_path('default_images/default_user_img.jpg'), id: nil
       = text_field_tag 'chat', nil, id: nil
 
+  #test-overlay
+
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"
 

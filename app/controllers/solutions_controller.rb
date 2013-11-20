@@ -56,4 +56,15 @@ class SolutionsController < ApplicationController
                 chat_text: params[:chat]}
     Pusher.trigger(params[:channel], 'chat_message', data)
   end
+  def show_team_clue
+    data = {cell_num: params[:cell_num],
+                across: params[:across],
+                red: params[:red],
+                green: params[:green],
+                blue: params[:blue],
+                solver_id: params[:solver_id]
+                }
+    Pusher.trigger(params[:channel], 'outline_team_clue', data)
+    render nothing: true
+  end
 end

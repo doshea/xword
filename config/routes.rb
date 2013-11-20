@@ -40,6 +40,7 @@ Xword4::Application.routes.draw do
       post :leave_team
       post :roll_call
       post :send_team_chat
+      post :show_team_clue
     end
   end
 
