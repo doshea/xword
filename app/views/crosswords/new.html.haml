@@ -1,4 +1,4 @@
-.row.row-topper
+.row.row-topper.row-bookend
   %h4
     New Puzzle
 .row
@@ -11,3 +11,4 @@
       .row
         .large-12.columns
           = render partial: 'crosswords/partials/mini_pic_canvas2', locals: {rows: @crossword.rows, cols: @crossword.cols}
+.row.row-stopper.row-bookend

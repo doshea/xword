@@ -6,19 +6,31 @@
     %hr
     %h4 Latest puzzles
     %ul
-      - Crossword.published.unowned(@current_user).order(:date_published).each do |crossword|
+      - Crossword.where(rows: 15, cols: 15).published.unowned(@current_user).order(:date_published).each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
-    %h4 Your puzzles
-    %h5
-      Published
+    %h4 Non-standard puzzles
     %ul
-      - @current_user.crosswords.published.each do |crossword|
+      - Crossword.where.not(rows: 15, cols: 15).published.unowned(@current_user).order(:date_published).each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-    %h5
-      Unpublished
-    %ul
-      - @current_user.crosswords.unpublished.each do |crossword|
-        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-  %hr
+    %hr
+    %h4
+      Your puzzles
+    - if @current_user.crosswords.any?
+      - if @current_user.crosswords.published.any?
+        %h5
+          Published
+        %ul
+          - @current_user.crosswords.published.each do |crossword|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      -if @current_user.crosswords.unpublished.any?
+        %h5
+          Unpublished
+        %ul
+          - @current_user.crosswords.unpublished.each do |crossword|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    - else
+      You haven't created any puzzles yet.
+      = link_to 'Want to try?', new_crossword_path, class: 'foundation'
+    %hr
 .row.row-stopper.row-bookend
