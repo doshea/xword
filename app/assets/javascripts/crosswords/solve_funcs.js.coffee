@@ -19,7 +19,8 @@ window.solve_app =
     solve_app.check_all_finished()
     $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
     $('.reply-content').on('keypress', solve_app.add_comment_or_reply)
-    $('.reply-button, .cancel-button').on('click', solve_app.toggle_reply_form)
+    $('.reply-button').on('click', solve_app.toggle_reply_form)
+    $('.cancel-button').on('click', solve_app.toggle_reply_form)
     true
 
   save_solution: (e) ->

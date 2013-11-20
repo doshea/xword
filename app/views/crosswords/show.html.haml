@@ -98,7 +98,7 @@
         Comments
       / Feed Entry
       -if @current_user
-        = form_tag(add_comment_path(@crossword), remote: true) do
+        = form_tag(add_comment_path(@crossword), remote: true, id: 'comment-form') do
           = text_area_tag('content', nil, id: 'add-comment', placeholder: 'What did you think of this puzzle?')
       -else
         =link_to 'Sign up', new_user_path
