@@ -1,7 +1,10 @@
+= stylesheet_link_tag 'new_crossword'
+= javascript_include_tag 'spin.min'
+= javascript_include_tag 'crosswords/new'
 .row.row-topper.row-bookend
   %h4
     New Puzzle
-.row
+.row.spin-target
   .large-7.columns
     = render partial: 'crosswords/partials/new_form'
   .large-5.columns
