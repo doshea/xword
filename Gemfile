@@ -42,6 +42,9 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
+#Moved out of development-only so that Heroku can use it
+gem 'pry-rails'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
@@ -49,7 +52,6 @@ end
 
 group :development, :test do
   #testing gems
-  gem 'pry-rails'
   gem 'pry-debugger'
   gem 'pry-stack_explorer'
 
