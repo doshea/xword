@@ -1,16 +1,18 @@
 .row
-  .large-2.columns
-    %h1
-      = @user.username
+  %br
+  .large-3.columns
     = image_tag @user.image
     %p.center
-      #{@user.first_name} #{@user.last_name}
-  .large-6.columns
-    %h3 Stats
-    %h4
-      Crosswords created: #{@user.crossword_count}
-    %h6
-      Clues written: #{@user.clue_count}
+      - if @user.first_name or @user.last_name
+        #{@user.first_name} #{@user.last_name}
+        %br
+      Joined: #{@user.created_at.strftime("%b %d, %Y")}
+    %h5 Stats
+    %ul
+      %li Crosswords created: #{@user.crossword_count}
+      %li Clues written: #{@user.clue_count}
+  .large-5.columns
+
   .large-4.columns
     %ul
       - @user.crosswords.each do |cw|
