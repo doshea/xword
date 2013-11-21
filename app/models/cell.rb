@@ -100,7 +100,6 @@ class Cell < ActiveRecord::Base
   end
 
   def delete_extraneous_cells!
-      puts 'self'
       self.update_starts!
       self.across_clue.destroy if ((self.is_void? || !self.is_across_start) and self.across_clue)
       self.down_clue.destroy if ((self.is_void? || !self.is_down_start) and self.down_clue)

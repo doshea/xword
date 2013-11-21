@@ -11,7 +11,7 @@
     %hr
     %h4 Non-standard puzzles
     %ul
-      - Crossword.where.not(rows: 15, cols: 15).published.unowned(@current_user).order(:date_published).each do |crossword|
+      - Crossword.where.not('(rows = 15) AND (cols = 15)').published.unowned(@current_user).order(:date_published).each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
     %h4
