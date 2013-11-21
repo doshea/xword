@@ -11,7 +11,7 @@ gem 'multi_json', '1.7.8' #Necessary because 1.7.9 breaks the adapter specificat
 
 gem 'pusher'
 
-gem 'protected_attributes'
+gem 'protected_attributes' #Until I fix things to properly use Rails 4. UPGRADE THIS PLEASE.
 
 gem 'pg'
 gem 'haml'
@@ -52,9 +52,6 @@ end
 
 group :development, :test do
   #testing gems
-  gem 'pry-debugger'
-  gem 'pry-stack_explorer'
-
   gem 'annotate'
 
   gem 'quiet_assets'
@@ -75,9 +72,14 @@ end
 
 group :development do
   #causes problem in conjunction with rspec test
-  gem 'better_errors'
+  gem 'better_errors' #do not put this in production or everyone will be able to mess around with variables
 end
 
 group :production do
   gem 'rails_12factor'
+end
+
+group :production, :development do
+    gem 'pry-debugger'
+    gem 'pry-stack_explorer'
 end
