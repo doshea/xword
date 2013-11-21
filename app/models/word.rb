@@ -19,6 +19,6 @@ class Word < ActiveRecord::Base
                   }
 
   has_many :clues, inverse_of: :word
-  has_and_belongs_to_many :crosswords
+  # has_and_belongs_to_many :crosswords
 end
 

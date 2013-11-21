@@ -3,9 +3,11 @@
     %tr
       %th ID
       %th Content
+      %th Example clue
   %tbody
     - @words.each do |word|
       = content_tag_for(:tr, word) do
         %td= word.id
         %td= word.content
+        %td= word.clues.first.content
 

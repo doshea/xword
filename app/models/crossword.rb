@@ -38,7 +38,10 @@ class Crossword < ActiveRecord::Base
   has_many :comments, inverse_of: :crossword, dependent: :delete_all
   has_many :solutions, inverse_of: :crossword, dependent: :delete_all
   has_many :cells, inverse_of: :crossword, dependent: :delete_all
-  has_and_belongs_to_many :words
+  has_many :across_clues, through: :cells
+  has_many :down_clues, through: :cells
+  has_many :across_words, through: :across_clues, source: :word
+  has_many :down_words, through: :down_clues, source: :word
 
   # A crossword must be between 4x4 and 30x30 and its title must be 3-35 characters long
   MIN_DIMENSION = 4
@@ -49,12 +52,12 @@ class Crossword < ActiveRecord::Base
     numericality: { only_integer: true , message: ': Must be an integer'},
     inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
-    validates :cols,
+  validates :cols,
     presence: true,
     numericality: { only_integer: true , message: ': Must be an integer'},
     inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
-    MIN_TITLE_LENGTH = 3
+  MIN_TITLE_LENGTH = 3
   MAX_TITLE_LENGTH = 35
 
   validates :title,
@@ -95,9 +98,14 @@ class Crossword < ActiveRecord::Base
       self.cells.each do |cell|
         cell.delete_extraneous_cells!
       end
-      true
+      words_hsh = self.get_words_array
+
+      words_hsh.each do |word, clue|
+        the_word = Word.find_or_create_by_content(word)
+        the_word.clues << clue
+      end
+
     else
-      false
     end
   end
 
@@ -183,13 +191,6 @@ class Crossword < ActiveRecord::Base
     self.cells.down_start_cells
   end
 
-  def across_clues
-    Clue.joins('INNER JOIN cells ON cells.across_clue_id = clues.id').where('cells.crossword_id = ?', self.id).order('cells.index ASC')
-  end
-  def down_clues
-    Clue.joins('INNER JOIN cells ON cells.down_clue_id = clues.id').where('cells.crossword_id = ?', self.id).order('cells.index ASC')
-  end
-
   def set_letters(letter_string)
     if letter_string.length == (self.rows * self.cols) &&  letter_string.length == self.cells.count
       self.cells.asc_indices.each_with_index do |cell, index|
@@ -257,32 +258,29 @@ class Crossword < ActiveRecord::Base
     end
   end
 
-  def get_words_array(across)
-    word_clues = []
-    if across
-      across_starts = self.cells.across_start_cells.asc_indices
-      across_starts.each do |across_start|
-        word = ''
-        current = across_start
-        clue = current.across_clue
-        while current && !current.is_void do
-          word += current.letter
-          current = current.right_cell
-        end
-        word_clues << {word: word, clue: clue}
+  def get_words_array
+    word_clues = {}
+    across_starts = self.cells.across_start_cells.asc_indices
+    across_starts.each do |across_start|
+      word = ''
+      current = across_start
+      clue = current.across_clue
+      while current && !current.is_void do
+        word += current.letter
+        current = current.right_cell
       end
-    else
-      down_starts = self.cells.down_start_cells.asc_indices
-      down_starts.each do |down_start|
-        word = ''
-        current = down_start
-        clue = current.down_clue
-        while current && !current.is_void do
-          word += current.letter
-          current = current.below_cell
-        end
-        word_clues << {word: word, clue: clue}
+      word_clues[word] = clue
+    end
+    down_starts = self.cells.down_start_cells.asc_indices
+    down_starts.each do |down_start|
+      word = ''
+      current = down_start
+      clue = current.down_clue
+      while current && !current.is_void do
+        word += current.letter
+        current = current.below_cell
       end
+      word_clues[word] = clue
     end
     word_clues
   end

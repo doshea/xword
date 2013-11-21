@@ -37,8 +37,8 @@ class CrosswordsController < ApplicationController
       @cells = @crossword.cells.asc_indices
       @across_cells = @crossword.across_start_cells.asc_indices
       @down_cells = @crossword.down_start_cells.asc_indices
-      @across_clues = @crossword.across_clues
-      @down_clues = @crossword.down_clues
+      @across_clues = @crossword.across_clues.asc_indices
+      @down_clues = @crossword.down_clues.asc_indices
     end
   end
 
