@@ -6,6 +6,7 @@ window.team_app =
   myAudio: new Audio('<%= audio_path('chuck.mp3') %>')
   display_name: team_app.display_name
   solver_id: team_app.solver_id
+  outline_timer: null
 
   receive_team_cell: (data)->
     unless team_app.solver_id is data.solver_id
@@ -127,7 +128,15 @@ window.team_app =
       the_outline.height(height_of_outline)
       the_outline.width(width_of_outline)
       the_outline.offset({ top: left_corner_y, left: left_corner_x })
-      the_outline.show()
+      the_outline.stop().css('opacity', 1).show()
+
+      if team_app.outline_timer then clearInterval(team_app.outline_timer)
+      team_app.outline_timer = setTimeout (->
+        the_outline.animate
+          'opacity': 0
+        , 'fast'
+      # Do something after 5 seconds
+      ), 20000
 
 $ ->
   $('#myModal').foundation('reveal', 'open');
