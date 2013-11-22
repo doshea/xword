@@ -23,7 +23,7 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.new(params[:crossword])
     @crossword.user = @current_user
     if @crossword.save
-      @crossword.link_cells
+      @crossword.link_cells_to_neighbors
       redirect_to edit_crossword_path(@crossword)
     else
       render :new

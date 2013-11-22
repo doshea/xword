@@ -37,7 +37,7 @@ cro1.save
 
 print "\nLinking cells in complete puzzle..."
 Crossword.all.each do |cw|
-  cw.link_cells
+  cw.link_cells_to_neighbors
 end
 puts " complete!"
 

@@ -17,13 +17,12 @@
 #
 
 class Crossword < ActiveRecord::Base
-  attr_accessible :title, :published, :date_published, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids, :circled
+  include Publishable, Newyorkable
+  attr_accessible :title, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids, :circled
 
   before_create :populate_letters, :populate_cells
-  # after_create :link_cells
+  # after_create :link_cells_to_neighbors
 
-  scope :published, -> {where(published: true)}
-  scope :unpublished, -> {where(published: false)}
   scope :unowned, lambda{ |user| where('user_id != ?', user.id)}
 
   # Searchable by title using pg_search gem
@@ -92,23 +91,6 @@ class Crossword < ActiveRecord::Base
     self.letters.present? ? ([' ','_'].include? self.letters[self.rc_to_index(row,col)]) : nil
   end
 
-  def publish!
-    if self.update_attribute(:published, true)
-      #remove extraneous clues
-      self.cells.each do |cell|
-        cell.delete_extraneous_cells!
-      end
-      words_hsh = self.get_words_array
-
-      words_hsh.each do |word, clue|
-        the_word = Word.find_or_create_by_content(word)
-        the_word.clues << clue
-      end
-
-    else
-    end
-  end
-
   def check_solution(solution_letters)
     self.letters == solution_letters
   end
@@ -170,7 +152,7 @@ class Crossword < ActiveRecord::Base
     # p self.cells
   end
 
-  def link_cells
+  def link_cells_to_neighbors
     counter = 1
     self.reload.cells.each do |cell|
       # puts counter
@@ -258,86 +240,7 @@ class Crossword < ActiveRecord::Base
     end
   end
 
-  def get_words_array
-    word_clues = {}
-    across_starts = self.cells.across_start_cells.asc_indices
-    across_starts.each do |across_start|
-      word = ''
-      current = across_start
-      clue = current.across_clue
-      while current && !current.is_void do
-        word += current.letter
-        current = current.right_cell
-      end
-      word_clues[word] = clue
-    end
-    down_starts = self.cells.down_start_cells.asc_indices
-    down_starts.each do |down_start|
-      word = ''
-      current = down_start
-      clue = current.down_clue
-      while current && !current.is_void do
-        word += current.letter
-        current = current.below_cell
-      end
-      word_clues[word] = clue
-    end
-    word_clues
-  end
-
   #INSTANCE METHODS
-  def self.add_latest_nyt_puzzle
-    latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
-    Crossword.add_nyt_puzzle(latest)
-  end
-
-  def self.add_nyt_puzzle(pz)
-    pz_letters = pz['grid'].join('').gsub('.','_')
-    begin
-      pz_date = Date.parse(pz['title'])
-    rescue
-      alt_date = pz['date']
-      pz_date = Date.strptime(alt_date, '%m/%d/%Y')
-    end
-
-    unless Crossword.where(title: pz['title']).any?
-      new_nytimes_crossword = Crossword.create(
-        title: pz['title'],
-        rows: pz['size']['rows'],
-        cols: pz['size']['cols'],
-        published: true,
-        date_published: pz_date,
-        description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz."
-      )
-
-      new_nytimes_crossword.link_cells
-      new_nytimes_crossword.letters = pz_letters
-      new_nytimes_crossword.set_letters(pz_letters)
-      new_nytimes_crossword.number_cells
-      new_nytimes_crossword.add_circles_by_array(pz['circles']) if pz['circles']
-
-      nytimes = User.find_by_username('nytimes')
-
-      nytimes.crosswords << new_nytimes_crossword
-
-      #adds the clues
-      across_clues = pz['clues']['across']
-      down_clues = pz['clues']['down']
-
-      across_clues.each do |across_clue|
-        split_clue = across_clue.split('. ', 2)
-        new_nytimes_crossword.set_clue(true, split_clue[0].to_i, split_clue[1])
-      end
-
-      down_clues.each do |down_clue|
-        split_clue = down_clue.split('. ', 2)
-        new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
-      end
-
-      puts pz_letters
-      puts new_nytimes_crossword.letters
-    end
-  end
 
   def self.read_list
     puzzle_array = JSON.parse(IO.read('lib/assets/nytimes.json'))
