@@ -8,6 +8,8 @@
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
+    = javascript_include_tag 'foundation5/foundation.min'
+    = javascript_include_tag 'foundation5/modernizr'
     = gflash
     %header#nav.dark-shadow= render partial: 'layouts/partials/nav'
     #body= render partial: 'layouts/partials/body'

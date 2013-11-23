@@ -1,9 +1,13 @@
 /*
  *= require_self
  *= require reset
- *= require normalize
  *
- *= require foundation.min
+ *= require foundation5/normalize
+ * require foundation4/normalize
+ *
+ *= require foundation5/foundation.min
+ * require foundation4/foundation.min
+ *
  *= require foundation_overrides
  *
  *= require global

@@ -1,6 +1,5 @@
 .tooltip {
   font-size: 12px;
-  font-family: inherit;
   padding: 0.4em 0.5em;
 }
 .reveal-modal {
@@ -8,4 +7,22 @@
 }
 .has-tip {
   cursor: inherit;
+}
+.clue-column {
+  ol {
+    margin-left: 0;
+  }
+}
+.top-bar {
+  background: inherit;
+}
+
+.top-bar-section ul {
+  background: inherit;
+}
+.top-bar-section .has-form {
+  background: inherit;
+}
+.top-bar-section > ul > .has-dropdown > a {
+  background: inherit;
 }
