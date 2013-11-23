@@ -17,7 +17,7 @@
   = javascript_include_tag 'crosswords/team_funcs'
 
   - if @current_user && @solution.user_id == @current_user.id
-    #myModal.reveal-modal
+    #myModal.reveal-modal{:'data-reveal' => true}
       %h2
         Crosswords: More Fun as a Team
         %i.fi-torsos-all
