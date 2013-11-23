@@ -22,7 +22,6 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
 
 gem 'foundation-icons-sass-rails'
-gem 'foundation-rails'
 
 # AWS image upload gems
 gem 'carrierwave'
