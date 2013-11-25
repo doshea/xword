@@ -5,10 +5,11 @@ class PagesController < ApplicationController
     if @current_user.nil?
       redirect_to(welcome_path)
     else
-      @solved_puzzles = Crossword.joins(:solutions).solved(@current_user.id).unowned(@current_user)
-      in_progress = Crossword.joins(:solutions).in_progress(@current_user.id)
+      @solved = Crossword.solved(@current_user.id).unowned(@current_user)
+      in_progress = Crossword.in_progress(@current_user.id)
       @in_progress_solos = in_progress.solo
       @in_progress_teams = in_progress.teamed
+      @unstarted = Crossword.unstarted(@current_user.id).unowned(@current_user)
 
       @owned_puzzles = @current_user.crosswords
       if @owned_puzzles.any?

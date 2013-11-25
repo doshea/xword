@@ -8,8 +8,9 @@ module Publishable
     scope :published, -> {where(published: true)}
     scope :unpublished, -> {where(published: false)}
     scope :standard, -> {where(rows: 15, cols: 15)}
-    scope :solved, -> (user_id) {where(solutions: {user_id: user_id, is_complete: true})}
-    scope :in_progress, -> (user_id) {where(solutions: {user_id: user_id, is_complete: false})}
+    scope :solved, -> (user_id) {joins(:solutions).where(solutions: {user_id: user_id, is_complete: true}).published.distinct}
+    scope :in_progress, -> (user_id) {joins(:solutions).where(solutions: {user_id: user_id, is_complete: false}).distinct}
+    scope :unstarted, -> (user_id) {joins(:solutions).where.not(solutions: {user_id: user_id}).published.distinct}
     scope :solo, -> {where(solutions: {team: false})}
     scope :teamed, -> {where(solutions: {team: true})}
   end

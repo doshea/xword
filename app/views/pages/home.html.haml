@@ -18,13 +18,13 @@
       %hr
     %h4 Latest puzzles
     %ul
-      - Crossword.standard.published.unowned(@current_user).each do |crossword|
+      - @unstarted.each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
-    - if @solved_puzzles.any?
+    - if @solved.any?
       %h4 Solved puzzles
       %ul
-        - @solved_puzzles.unowned(@current_user).each do |crossword|
+        - @solved.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
     %h4 Non-standard puzzles
