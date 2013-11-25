@@ -4,11 +4,29 @@
     %h2
       = "Welcome back, #{@current_user.display_first_name}!"
     %hr
+    - if @in_progress_solos.any?
+      %h4 In Progress
+      %ul
+        - @in_progress_solos.standard.unowned(@current_user).each do |crossword|
+          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      %hr
+    - if @in_progress_solos.any?
+      %h4 In Progress (Team)
+      %ul
+        - @in_progress_solos.standard.unowned(@current_user).each do |crossword|
+          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      %hr
     %h4 Latest puzzles
     %ul
-      - Crossword.where(rows: 15, cols: 15).published.unowned(@current_user).order(:date_published).each do |crossword|
+      - Crossword.standard.published.unowned(@current_user).each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
+    - if @solved_puzzles.any?
+      %h4 Solved puzzles
+      %ul
+        - @solved_puzzles.unowned(@current_user).each do |crossword|
+          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      %hr
     %h4 Non-standard puzzles
     %ul
       - Crossword.where.not('(rows = 15) AND (cols = 15)').published.unowned(@current_user).order(:date_published).each do |crossword|
@@ -16,21 +34,23 @@
     %hr
     %h4
       Your puzzles
-    - if @current_user.crosswords.any?
-      - if @current_user.crosswords.published.any?
-        %h5
-          Published
-        %ul
-          - @current_user.crosswords.published.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-      -if @current_user.crosswords.unpublished.any?
+    - if @owned_puzzles.any?
+      -if @unpublished.any?
         %h5
           Unpublished
         %ul
-          - @current_user.crosswords.unpublished.each do |crossword|
+          - @unpublished.each do |crossword|
             = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+            %hr
+      - if @published.any?
+        %h5
+          Published
+        %ul
+          - @published.each do |crossword|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+            %hr
     - else
       You haven't created any puzzles yet.
       = link_to 'Want to try?', new_crossword_path, class: 'foundation'
-    %hr
+      %hr
 .row.row-stopper.row-bookend

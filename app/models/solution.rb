@@ -18,6 +18,7 @@ class Solution < ActiveRecord::Base
 
   belongs_to :user, inverse_of: :solutions
   belongs_to :crossword, inverse_of: :solutions
+  scope :completed, -> { where(is_complete: true)}
 
   before_save :check_completion
 

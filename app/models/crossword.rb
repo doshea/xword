@@ -23,7 +23,7 @@ class Crossword < ActiveRecord::Base
   before_create :populate_letters, :populate_cells
   # after_create :link_cells_to_neighbors
 
-  scope :unowned, lambda{ |user| where('user_id != ?', user.id)}
+  scope :unowned, -> (user) { where.not(user_id: user.id)}
 
   # Searchable by title using pg_search gem
   include PgSearch

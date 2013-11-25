@@ -4,8 +4,14 @@ module Publishable
   included do
     attr_accessible :published, :date_published
 
+    default_scope {order(date_published: :desc)}
     scope :published, -> {where(published: true)}
     scope :unpublished, -> {where(published: false)}
+    scope :standard, -> {where(rows: 15, cols: 15)}
+    scope :solved, -> (user_id) {where(solutions: {user_id: user_id, is_complete: true})}
+    scope :in_progress, -> (user_id) {where(solutions: {user_id: user_id, is_complete: false})}
+    scope :solo, -> {where(solutions: {team: false})}
+    scope :teamed, -> {where(solutions: {team: true})}
   end
 
   #Takes an existing crossword puzzle and figures out all of the words in that crossword by cell.
