@@ -85,6 +85,25 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  def favorite
+    @crossword = Crossword.find(params[:id])
+    if @crossword && @current_user
+      unless @current_user.favorites.include? @crossword
+        new_favorite = FavoritePuzzle.create
+        @current_user.favorite_puzzles << new_favorite
+        @crossword.favorite_puzzles << new_favorite
+      end
+    end
+  end
+
+  def unfavorite
+    @crossword = Crossword.find(params[:id])
+    if @crossword && @current_user
+      existing_favorite = FavoritePuzzle.find_by_user_id_and_crossword_id(@current_user.id, @crossword.id)
+      existing_favorite.delete if existing_favorite
+    end
+  end
+
   private
   def ensure_owner_or_admin
     @crossword = Crossword.find(params[:id])

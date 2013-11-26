@@ -65,11 +65,13 @@
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
-      %a#solve-save.button.tiny.secondary.rounded{href: '#', :'data-tooltip' => true, title: 'Save Solution'}
-        %i.fi-save
-      - puts @team
+      - if @current_user
+        %a#solve-save.button.tiny.secondary{href: '#', :'data-tooltip' => true, title: 'Quicksave'}
+          %i.fi-save
+      %a.button.tiny.secondary{:'data-tooltip' => true, title: 'Favorite Puzzle'}
+        %i.fi-star
       - if @team
-        %div.button.tiny.secondary.rounded
+        %div.button.tiny.secondary
           %i.fi-torsos-all
           Team
           #teammates

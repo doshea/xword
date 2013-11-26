@@ -16,11 +16,12 @@
         - @in_progress_solos.standard.unowned(@current_user).each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
-    %h4 Latest puzzles
-    %ul
-      - @unstarted.each do |crossword|
-        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-    %hr
+    - if @unstarted.any?
+      %h4 Latest puzzles
+      %ul
+        - @unstarted.each do |crossword|
+          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      %hr
     - if @solved.any?
       %h4 Solved puzzles
       %ul

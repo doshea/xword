@@ -12,6 +12,8 @@ Xword4::Application.routes.draw do
     member do
       get :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'
+      post 'favorite'
+      delete 'unfavorite'
       get 'team/:key' => 'crosswords#team', as: 'team'
     end
   end

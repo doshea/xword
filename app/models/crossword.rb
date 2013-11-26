@@ -42,6 +42,9 @@ class Crossword < ActiveRecord::Base
   has_many :across_words, through: :across_clues, source: :word
   has_many :down_words, through: :down_clues, source: :word
 
+  has_many :favorite_puzzles, inverse_of: :crossword
+  has_many :favoriters, through: :favorite_puzzles, source: :user
+
   # A crossword must be between 4x4 and 30x30 and its title must be 3-35 characters long
   MIN_DIMENSION = 4
   MAX_DIMENSION = 30

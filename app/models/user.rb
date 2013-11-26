@@ -25,6 +25,9 @@ class User < ActiveRecord::Base
   has_many :solutions, inverse_of: :user
   has_many :clues, inverse_of: :user
 
+  has_many :favorite_puzzles, inverse_of: :user
+  has_many :favorites, through: :favorite_puzzles, source: :crossword
+
   before_create { generate_token(:auth_token) }
 
   include PgSearch
