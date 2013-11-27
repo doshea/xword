@@ -1,3 +1,13 @@
+.row.row-topper.row-bookend
 .row
-  .large-12.columns
+  .large-12.columns.center
     = render partial: 'words/partials/word'
+    %hr
+    %h5 Featured #{pluralize(@count, 'time')} in #{pluralize(@crosswords.length, 'puzzle')}:
+    - @crosswords.each do |crossword|
+      = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    %hr
+    %h5 There #{@clues.length == 1 ? 'is' : 'are'} #{pluralize(@clues.length, 'clue')} for this word:
+    - @clues.each do |clue|
+      = link_to clue.content, clue
+.row.row-stopper.row-bookend
