@@ -4,16 +4,10 @@
     %h2
       = "Welcome back, #{@current_user.display_first_name}!"
     %hr
-    - if @in_progress_solos.any?
+    - if @in_progress.any?
       %h4 In Progress
       %ul
-        - @in_progress_solos.standard.unowned(@current_user).each do |crossword|
-          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-      %hr
-    - if @in_progress_solos.any?
-      %h4 In Progress (Team)
-      %ul
-        - @in_progress_solos.standard.unowned(@current_user).each do |crossword|
+        - @in_progress.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
     - if @unstarted.any?

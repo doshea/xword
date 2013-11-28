@@ -5,13 +5,20 @@ class PagesController < ApplicationController
     if @current_user.nil?
       redirect_to(welcome_path)
     else
-      @solved = Crossword.solved(@current_user.id).unowned(@current_user)
-      in_progress = Crossword.in_progress(@current_user.id)
-      @in_progress_solos = in_progress.solo
-      @in_progress_teams = in_progress.teamed
-      @unstarted = Crossword.unstarted(@current_user.id).unowned(@current_user)
-
       @owned_puzzles = @current_user.crosswords
+      unowned_published = Crossword.published.standard - @owned_puzzles
+      @solved = Crossword.solved(@current_user.id).unowned(@current_user).distinct
+      not_finished = unowned_published - @solved
+      @in_progress = Crossword.in_progress(@current_user.id).distinct & not_finished
+      @unstarted = not_finished - @in_progress
+
+      # @solved = Crossword.solved(@current_user.id).unowned(@current_user)
+      # in_progress = Crossword.in_progress(@current_user.id)
+      # @in_progress_solos = in_progress.solo
+      # @in_progress_teams = in_progress.teamed
+      # @unstarted = Crossword.unstarted(@current_user.id).unowned(@current_user)
+
+
       if @owned_puzzles.any?
         @unpublished = @owned_puzzles.unpublished
         @published = @owned_puzzles.published

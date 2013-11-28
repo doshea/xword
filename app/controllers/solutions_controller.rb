@@ -7,7 +7,11 @@ class SolutionsController < ApplicationController
     solution.save
   end
   def get_incorrect
-    @mismatches = Solution.find(params[:id]).crossword.return_mismatches(params[:letters])
+    @solution = Solution.find(params[:id])
+    @mismatches = @solution.crossword.return_mismatches(params[:letters])
+    if @mismatches.empty?
+      @solution.update_attributes(is_complete: true)
+    end
   end
   def check_correctness
     @correctness = Solution.find(params[:id]).crossword.letters == params[:letters]

@@ -1,6 +1,7 @@
 class CrosswordsController < ApplicationController
   before_filter :ensure_admin, only: [:index]
   before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish]
+
   def index
     @crosswords = Crossword.order(:created_at)
   end
@@ -79,6 +80,9 @@ class CrosswordsController < ApplicationController
     if @crossword && @solution
       @team = true
       @cells = @crossword.cells.asc_indices
+      if @current_user
+        SolutionPartnering.find_or_create_by(solution_id: @solution.id, user_id: @current_user.id) unless (@solution.user == @current_user)
+      end
       render :show
     else
       #some sort of error
