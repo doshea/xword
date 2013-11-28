@@ -19,7 +19,7 @@
         = text_field_tag :username, params[:username], placeholder: "username", class: "chalkboardInput subtle-input", required: true
         = password_field_tag :password , nil,  class: "chalkboardInput subtle-input", placeholder: "password", required: true
         #remember_box
-          = check_box_tag :remember_me, 1, params[:remember_me] #find out what the second two arguments do
+          = check_box_tag :remember_me, 1, params[:remember_me], checked: true #find out what the second two arguments do
           = label_tag :remember_me, 'remember me'
         = submit_tag "Log in" , :class => "chalkboardButton"
       %span or
