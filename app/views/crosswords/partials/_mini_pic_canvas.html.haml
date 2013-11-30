@@ -14,3 +14,5 @@
       -if row != cw.rows
         ctx.fillStyle="444444";
         ctx.fillRect(0,#{row}*5,#{cw.cols}*5,1);
+    - if (cw.rows != 15) || (cw.cols != 15)
+      $(c).width(75)

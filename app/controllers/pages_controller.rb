@@ -6,11 +6,17 @@ class PagesController < ApplicationController
       redirect_to(welcome_path)
     else
       @owned_puzzles = @current_user.crosswords
+
       unowned_published = Crossword.published.standard - @owned_puzzles
-      @solved = Crossword.solved(@current_user.id).unowned(@current_user).distinct
-      not_finished = unowned_published - @solved
-      @in_progress = Crossword.in_progress(@current_user.id).distinct & not_finished
-      @unstarted = not_finished - @in_progress
+      @nonstandard = Crossword.published.nonstandard
+
+      @solved_solo = Crossword.solved(@current_user.id).solo.unowned(@current_user).distinct
+      not_solved_solo = unowned_published - @solved_solo
+      @in_progress_solo = Crossword.in_progress(@current_user.id).distinct & not_solved_solo
+      @unstarted_solo = not_solved_solo - @in_progress_solo
+
+      # JUST SEARCH BY SOLUTIONPARTNERING YA DUMBO!
+      @solved_team = Crossword.partnered(user_id: @current_user.id)
 
       # @solved = Crossword.solved(@current_user.id).unowned(@current_user)
       # in_progress = Crossword.in_progress(@current_user.id)

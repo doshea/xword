@@ -14,4 +14,5 @@ class SolutionPartnering < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :solution
+  has_one :crossword, through: :solution, inverse_of: :solution_partnerings
 end
