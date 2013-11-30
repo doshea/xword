@@ -15,7 +15,7 @@
     - if @in_progress_team.any?
       %h4
         %i.fi-clipboard-pencil
-        In Progress Team
+        In Progress (Team)
       %ul
         - @in_progress_team.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
@@ -38,14 +38,14 @@
       %hr
     %h4
       %i.fi-alert
-      Non-standard puzzles
+      Non-Standard Puzzles
     %ul
       - Crossword.nonstandard.published.unowned(@current_user).order(:date_published).each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
     %h4
       %i.fi-pencil
-      Your puzzles
+      Your Puzzles
     - if @owned_puzzles.any?
       .large-6.columns
         -if @unpublished.any?
