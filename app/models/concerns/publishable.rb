@@ -18,7 +18,7 @@ module Publishable
     scope :solo, -> {where(solutions: {team: false})}
     scope :teamed, -> {where(solutions: {team: true})}
 
-    scope :partnered, -> (user_id) {joins(:solutionpartnerships).where(solutionpartnerships:{user_id: user_id})}
+    scope :partnered, -> (user_id) {joins(:solution_partnerings).where(solution_partnerings:{user_id: user_id})}
 
 
   end

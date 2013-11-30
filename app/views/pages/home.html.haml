@@ -12,20 +12,28 @@
         - @in_progress_solo.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
-    - if @unstarted_solo.any?
+    - if @in_progress_team.any?
+      %h4
+        %i.fi-clipboard-pencil
+        In Progress Team
+      %ul
+        - @in_progress_team.each do |crossword|
+          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      %hr
+    - if @unstarted.any?
       %h4
         %i.fi-clipboard
         New Puzzles
       %ul
-        - @unstarted_solo.each do |crossword|
+        - @unstarted.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
-    - if @solved_solo.any?
+    - if @solved.any?
       %h4
         %i.fi-clipboard-notes
         Solved Puzzles
       %ul
-        - @solved_solo.each do |crossword|
+        - @solved.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
     %h4

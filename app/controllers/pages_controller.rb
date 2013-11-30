@@ -10,13 +10,22 @@ class PagesController < ApplicationController
       unowned_published = Crossword.published.standard - @owned_puzzles
       @nonstandard = Crossword.published.nonstandard
 
-      @solved_solo = Crossword.solved(@current_user.id).solo.unowned(@current_user).distinct
+      @solved_solo = Crossword.standard.solved(@current_user.id).solo.unowned(@current_user).distinct
       not_solved_solo = unowned_published - @solved_solo
-      @in_progress_solo = Crossword.in_progress(@current_user.id).distinct & not_solved_solo
-      @unstarted_solo = not_solved_solo - @in_progress_solo
+      @in_progress_solo = Crossword.standard.in_progress(@current_user.id).distinct & not_solved_solo
+      published_not_solo = not_solved_solo - @in_progress_solo
 
       # JUST SEARCH BY SOLUTIONPARTNERING YA DUMBO!
-      @solved_team = Crossword.partnered(user_id: @current_user.id)
+      my_partnerings = @current_user.solution_partnerings.map{|par| {sol: par.solution, cw: par.crossword}}
+      my_partnerings_solved = my_partnerings.select{|par| par[:sol].is_complete}.map{|par| par[:cw]}.uniq
+      my_partnerings_in_progress = my_partnerings.select{|par| !par[:sol].is_complete}.map{|par| par[:cw]}.uniq
+
+      @solved_team = published_not_solo & (Crossword.standard.solved(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_solved)
+      @solved = (@solved_solo | @solved_team).sort{|x, y| y.date_published <=> x.date_published}
+      available_in_progress_team = published_not_solo - @solved_team
+      @in_progress_team = available_in_progress_team & (Crossword.standard.in_progress(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_in_progress)
+
+      @unstarted = available_in_progress_team - @in_progress_team
 
       # @solved = Crossword.solved(@current_user.id).unowned(@current_user)
       # in_progress = Crossword.in_progress(@current_user.id)
