@@ -87,4 +87,8 @@ class PagesController < ApplicationController
     @running_signup_counts = @signup_counts.each_with_index.map { |x,i| @signup_counts[0..i].inject(:+) }
 
   end
+  def nytimes
+    @nytimes_user = User.find_by_username('nytimes')
+    @nytimes_puzzles = @nytimes_user.crosswords.published
+  end
 end
