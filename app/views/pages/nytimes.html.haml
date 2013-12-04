@@ -4,6 +4,7 @@
     %h4
       = image_tag @nytimes_user.image.reply_size
       New York Times Crosswords
+    %hr
     %ul
       - @nytimes_puzzles.each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}

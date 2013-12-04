@@ -15,7 +15,7 @@ class PagesController < ApplicationController
       @in_progress_solo = Crossword.standard.in_progress(@current_user.id).distinct & not_solved_solo
       published_not_solo = not_solved_solo - @in_progress_solo
 
-      # JUST SEARCH BY SOLUTIONPARTNERING YA DUMBO!
+
       my_partnerings = @current_user.solution_partnerings.map{|par| {sol: par.solution, cw: par.crossword}}
       my_partnerings_solved = my_partnerings.select{|par| par[:sol].is_complete}.map{|par| par[:cw]}.uniq
       my_partnerings_in_progress = my_partnerings.select{|par| !par[:sol].is_complete}.map{|par| par[:cw]}.uniq
@@ -27,12 +27,6 @@ class PagesController < ApplicationController
 
       @unstarted = available_in_progress_team - @in_progress_team
 
-      # @solved = Crossword.solved(@current_user.id).unowned(@current_user)
-      # in_progress = Crossword.in_progress(@current_user.id)
-      # @in_progress_solos = in_progress.solo
-      # @in_progress_teams = in_progress.teamed
-      # @unstarted = Crossword.unstarted(@current_user.id).unowned(@current_user)
-
 
       if @owned_puzzles.any?
         @unpublished = @owned_puzzles.unpublished
@@ -40,10 +34,13 @@ class PagesController < ApplicationController
       end
     end
   end
+
   def unauthorized
   end
+
   def account_required
   end
+
   def search
     query = params[:query]
     @users = User.starts_with(query)

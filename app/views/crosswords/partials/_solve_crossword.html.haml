@@ -15,11 +15,11 @@
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
 
-/ Solve Clue Columns
+-# Solve Clue Columns
 - edit = false
-/ Across Clues
+-# Across Clues
 = render(partial: 'clues/partials/clue_column', locals: {across: true, edit: edit})
-/ Down Clues
+-# Down Clues
 = render(partial: 'clues/partials/clue_column', locals: {across: false, edit: edit})
 
 #solve-controls

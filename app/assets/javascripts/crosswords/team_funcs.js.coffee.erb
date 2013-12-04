@@ -8,6 +8,78 @@ window.team_app =
   solver_id: team_app.solver_id
   outline_timer: null
 
+  #------------------
+  # GENERAL FUNCTIONS
+  #------------------
+
+  toggle_chat: ->
+    $('#team-chat').toggleClass('down')
+    $('#chat-minmax').toggleClass('fi-minus fi-plus')
+
+  #------------------
+  #PUSHER SENDS
+  #------------------
+
+  # Triggers a 'team_update' Pusher message out on this team solution's channel, instructing all
+  # other participants to update their visible crossword with the updated cell
+  send_team_cell: ($cell, letter) ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'PATCH'
+      url: "/solutions/#{solve_app.solution_id}/team_update"
+      data: {authenticity_token: token, letter: letter, col: $cell.data('col'), row: $cell.data('row'), channel: channel, solver_id: team_app.solver_id, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue}
+    $.ajax(settings)
+
+  # Triggers a 'join_team' Pusher message out on this team solution's channel, instructing all
+  # other participants to update their visible rosters by adding this participant's color and name
+  join_team: ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/join_team"
+      data: {authenticity_token: token, channel: channel, display_name: team_app.display_name, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+  # Triggers a 'leave_team' Pusher message out on this team solution's channel, instructing all
+  # other participants to update their visible rosters by removing this participant's color and name
+  leave_team: ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/leave_team"
+      data: {authenticity_token: token, channel: channel, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+  # Triggers a 'roll_call' Pusher message out on this team solution's channel, instructing all
+  # participants to join the team
+  # TODO: Figure out why this isn't properly getting all teammates
+  roll_call: ->
+    token = $('#crossword').data('auth-token')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/roll_call"
+      data: {authenticity_token: token, channel: channel}
+    $.ajax(settings)
+
+  # Triggers a 'show_team_clue' Pusher message out on this team solution's channel, instructing all
+  # other participants to temporarily outline that clue
+  # TODO: Figure out why this isn't properly getting all teammates
+  show_team_clue: ->
+    token = $('#crossword').data('auth-token')
+    cell_num = $(this).data('cell-num')
+    across = $(this).hasClass('across-clue')
+    settings =
+      type: 'POST'
+      url: "/solutions/#{solve_app.solution_id}/show_team_clue/"
+      data: {authenticity_token: token, channel: channel, cell_num: cell_num, across: across, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue, solver_id: team_app.solver_id}
+    $.ajax(settings)
+
+  #------------------
+  #PUSHER RECEIVES
+  #------------------
+
+  # When a 'team_update' Pusher message is received on this channel (updating a cell's contents),
+  # if this window was not the original sender, updates the cell and flashes the sender's RGB color on that cell
   receive_team_cell: (data)->
     unless team_app.solver_id is data.solver_id
       $cell = $(".cell[data-row=#{data.row}][data-col=#{data.col}]")
@@ -23,31 +95,6 @@ window.team_app =
         $cell.set_letter(data.letter, false)
         solve_app.update_unsaved()
 
-
-  send_team_cell: ($cell, letter) ->
-    token = $('#crossword').data('auth-token')
-    settings =
-      type: 'PATCH'
-      url: "/solutions/#{solve_app.solution_id}/team_update"
-      data: {authenticity_token: token, letter: letter, col: $cell.data('col'), row: $cell.data('row'), channel: channel, solver_id: team_app.solver_id, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue}
-    $.ajax(settings)
-
-  join_team: ->
-    token = $('#crossword').data('auth-token')
-    settings =
-      type: 'POST'
-      url: "/solutions/#{solve_app.solution_id}/join_team"
-      data: {authenticity_token: token, channel: channel, display_name: team_app.display_name, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue, solver_id: team_app.solver_id}
-    $.ajax(settings)
-
-  leave_team: ->
-    token = $('#crossword').data('auth-token')
-    settings =
-      type: 'POST'
-      url: "/solutions/#{solve_app.solution_id}/leave_team"
-      data: {authenticity_token: token, channel: channel, solver_id: team_app.solver_id}
-    $.ajax(settings)
-
   welcome_teammate: (data) ->
     unless $(".teammate-box[solver_id=#{data.solver_id}]").length > 0
       teammate = $('<div>')
@@ -58,18 +105,6 @@ window.team_app =
     console.log('So long, farewell')
     $("#teammates .teammate-box[solver_id=#{data.solver_id}]").fadeOut 1000, ->
       $(this).remove()
-
-  roll_call: ->
-    token = $('#crossword').data('auth-token')
-    settings =
-      type: 'POST'
-      url: "/solutions/#{solve_app.solution_id}/roll_call"
-      data: {authenticity_token: token, channel: channel}
-    $.ajax(settings)
-
-  toggle_chat: ->
-    $('#team-chat').toggleClass('down')
-    $('#chat-minmax').toggleClass('fi-minus fi-plus')
 
   receive_chat: (data) ->
     is_my_chat = (team_app.display_name is data['display_name'])
@@ -95,16 +130,6 @@ window.team_app =
     if chats_already_exist then $('<hr />').appendTo($('#chats'))
     new_chat.appendTo($('#chats'))
     $('#chats').stop().animate({scrollTop: $('#chats').height()}, 'medium')
-
-  show_team_clue: ->
-    token = $('#crossword').data('auth-token')
-    cell_num = $(this).data('cell-num')
-    across = $(this).hasClass('across-clue')
-    settings =
-      type: 'POST'
-      url: "/solutions/#{solve_app.solution_id}/show_team_clue/"
-      data: {authenticity_token: token, channel: channel, cell_num: cell_num, across: across, red: team_app.solver_red, green: team_app.solver_green, blue: team_app.solver_blue, solver_id: team_app.solver_id}
-    $.ajax(settings)
 
   outline_team_clue: (data) ->
     unless data.solver_id is team_app.solver_id
@@ -137,6 +162,10 @@ window.team_app =
         , 'fast'
       # Do something after 5 seconds
       ), 20000
+
+#------------------
+# DOCUMENT LOAD
+#------------------
 
 $ ->
   $('#myModal').foundation('reveal', 'open');

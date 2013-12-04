@@ -1,20 +1,20 @@
 %nav.top-bar{:'data-topbar' => true, :'data-options'=> 'is_hover: false'}
   %ul.title-area
-    / Title Area
+    -# Title Area
     %li.name
       %h1
         = link_to image_tag("header_icon.png", height: "35%", alt: "Crossword Café | Home", id: 'header_icon'), root_url
-    / Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone
+    -# Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone
     %li.toggle-topbar.menu-icon
       = link_to '#' do
         %span Menu
   %section.top-bar-section
-    / Left Nav Section
+    -# Left Nav Section
     %ul.left
       - if is_admin?
         =render partial: 'layouts/partials/admin'
       %li.divider
-    / Right Nav Section
+    -# Right Nav Section
     %ul.right
       %li.has-form
         = form_tag search_path, method: 'get', id: 'top_search', class: 'relative' do

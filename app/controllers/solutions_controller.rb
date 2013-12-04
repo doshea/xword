@@ -16,6 +16,7 @@ class SolutionsController < ApplicationController
   def check_correctness
     @correctness = Solution.find(params[:id]).crossword.letters == params[:letters]
   end
+
   def team_update
     data = {
                 row: params[:row],

@@ -1,8 +1,8 @@
-// needs cw passed in locals
+-# needs cw passed in locals
 =link_to cw do
   %li
     = cw.title
-    / Generate an SVG image of the crossword puzzle
+    -# Generate an SVG image of the crossword puzzle
     %svg
       %rect{fill: "white", height: 5*cw.rows+2, width: 5*cw.cols+2, stroke: "black", ':stroke-width'=> 1}
       - (1..cw.rows).each do |row|

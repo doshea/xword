@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '2.0.0'
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.2'
 gem 'coffee-rails'
 gem 'json'
 
@@ -15,10 +15,10 @@ gem 'protected_attributes' #Until I fix things to properly use Rails 4. UPGRADE 
 
 gem 'pg'
 gem 'haml'
-gem 'bcrypt-ruby', '3.0.0'
+gem 'bcrypt-ruby'
 
 #asset gems
-gem 'sass-rails', '~> 4.0.0'
+gem 'sass-rails', '~> 4.0.1'
 gem 'uglifier', '>= 1.3.0'
 
 gem 'foundation-icons-sass-rails'
@@ -28,6 +28,7 @@ gem 'carrierwave'
 gem 'fog'
 gem 'rmagick'
 gem 'remotipart'
+gem 'unf'
 
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.
 gem 'pg_search'
