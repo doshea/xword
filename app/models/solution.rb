@@ -58,8 +58,16 @@ class Solution < ActiveRecord::Base
       sum += 1 if (cw_letters[index] == char) and (char != '_')
     end
 
-    percent = ((sum.to_f/current_letters.length)*100).round(2)
+    percent = ((sum.to_f/letter_count)*100).round(2)
     {numerator: sum, denominator: letter_count, percent: percent}
+  end
+
+  def fill_letters
+    if self.letters.length != self.crossword.letters.length
+      puts 'Mismatched letters length! Check the fill_letters method!'
+      self.letters = self.crossword.letters.gsub(/[^_]/,' ')
+      self.save
+    end
   end
 
   scope :complete, -> {where(solution_complete: true)}

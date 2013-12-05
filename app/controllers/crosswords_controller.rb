@@ -10,12 +10,7 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     if @crossword
       @solution = Solution.find_or_create_by_crossword_id_and_user_id_and_team(@crossword.id, @current_user.id, false) if @current_user
-      if @solution.letters.length < (@crossword.rows * @crossword.cols)
-        binding.pry
-        @solution.letters = @crossword.letters.gsub(/[^_]/,' ')
-        @solution.save
-        binding.pry
-      end
+      @solution.fill_letters
       @cells = @crossword.cells.asc_indices
     else
       #redirect to 404 page
