@@ -1,0 +1,39 @@
+-# This page is only shown to users if they have worked on multiple solutions to the same crossword
+.row.row-topper.row-bookend
+  %h4 Choose a Solution
+.row
+  .large-6.columns
+    = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: @crossword, scale: 2.0}
+    fhj gj hg jhg jhg hjgj hjg jh gjh ghj gjh gjh ghj gjh ghj gjh gjh ghj gjh gjh gjh ghj ghj ghj gjh gjh gjh gjh gjh gjh gjh gjh gj gjh gj gh gj ghjgh
+  .large-6.columns
+    -# The table of available solutions
+    %table#solution-choice
+      %thead
+        %tr
+          %th
+            -# Blank column for Team status
+          %th.center{colspan: 2} Completion
+          %th Last Worked On
+          %th Started
+      %tbody
+        - @solutions.each do |solution|
+          - solution_completion = solution.percent_complete
+          %tr
+            %td
+              = link_to solution do
+                -if solution.team
+                  %i.fi-torsos-all
+            %td
+              = link_to solution do
+                #{solution_completion[:percent]}%
+            %td
+              = link_to solution do
+                #{solution_completion[:numerator]}/#{solution_completion[:denominator]}
+            %td
+              = link_to solution do
+                #{distance_of_time_in_words_to_now(solution.created_at, {include_seconds: true})} ago
+            %td
+              = link_to solution do
+                #{distance_of_time_in_words_to_now(solution.updated_at, {include_seconds: true})} ago
+
+.row.row-stopper.row-bookend

@@ -19,13 +19,11 @@ window.new_cw =
     left: 'auto' #Left position relative to parent in px
   clever_processes: ['Reticulating splines', 'barfing']
 
-
   ready: ->
     $('form').on('submit', new_cw.generate_puzzle_overlay)
 
   generate_puzzle_overlay: ->
     console.log('hello1')
-
 
     $('#body .row:not(.row-bookend)').first().children().animate
       'opacity': 0

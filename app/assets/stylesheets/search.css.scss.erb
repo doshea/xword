@@ -69,3 +69,21 @@
     margin: 0;
   }
 }
+
+.result-crossword {
+  .fi-refresh {
+    position: absolute;
+    bottom: 0.5em;
+    right: 1em;
+    opacity: 0;
+    transition: opacity 0.4s;
+    font-size: larger;
+  }
+  &:hover .fi-refresh {
+    opacity: 1;
+    &:hover {
+      color: #2ba6cb;
+      transition: color 0.3s;
+    }
+  }
+}

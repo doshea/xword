@@ -31,7 +31,6 @@ window.edit_app =
         authenticity_token: token
     $.ajax(settings)
 
-
   update_title: (e) ->
     unless $('#title-status').length > 0
       spinbox = $('<i id="title-status">')

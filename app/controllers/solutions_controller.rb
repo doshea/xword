@@ -1,6 +1,18 @@
 class SolutionsController < ApplicationController
-  def index
+
+  def show
+    solution = Solution.find(params[:id])
+    if solution.team
+      if (@current_user == solution.user) || (SolutionPartnering.where(solution_id: solution.id, user_id: @current_user.id).any?)
+        redirect_to team_crossword_path(solution.crossword.id, solution.key)
+      else
+        render :nothing
+      end
+    else
+      redirect_to solution.crossword
+    end
   end
+
   def update
     solution = Solution.find(params[:id])
     solution.letters = params[:letters]

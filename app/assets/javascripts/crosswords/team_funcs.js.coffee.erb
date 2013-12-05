@@ -17,7 +17,7 @@ window.team_app =
     $('#chat-minmax').toggleClass('fi-minus fi-plus')
 
   #------------------
-  #PUSHER SENDS
+  # PUSHER SENDS
   #------------------
 
   # Triggers a 'team_update' Pusher message out on this team solution's channel, instructing all
@@ -75,7 +75,7 @@ window.team_app =
     $.ajax(settings)
 
   #------------------
-  #PUSHER RECEIVES
+  # PUSHER RECEIVES
   #------------------
 
   # When a 'team_update' Pusher message is received on this channel (updating a cell's contents),
@@ -95,17 +95,21 @@ window.team_app =
         $cell.set_letter(data.letter, false)
         solve_app.update_unsaved()
 
+  # Triggered when a 'join_puzzle' Pusher message is received. Adds a new square to the roster of the joining teammate's color
   welcome_teammate: (data) ->
     unless $(".teammate-box[solver_id=#{data.solver_id}]").length > 0
       teammate = $('<div>')
       teammate.addClass('teammate-box has-tip').css('background',  "rgb(#{data.red}, #{data.green}, #{data.blue})").attr('data-tooltip', true).attr('title', data.display_name).attr('solver_id', data.solver_id)
       $('#teammates').append(teammate)
 
+  # Triggered when a 'join_puzzle' Pusher message is received. Removes the roster square of the leaving teammate
   farewell_teammate: (data) ->
     console.log('So long, farewell')
     $("#teammates .teammate-box[solver_id=#{data.solver_id}]").fadeOut 1000, ->
       $(this).remove()
 
+  # Triggered when a 'chat_message' Pusher message is received. If the message originated from this sender, adds a
+  # sender-styled chat to the chat history. If it is from another sender, adds an other-styled chat to the chat history.
   receive_chat: (data) ->
     is_my_chat = (team_app.display_name is data['display_name'])
     chats_already_exist = ($('.chat').length > 0)
@@ -131,6 +135,8 @@ window.team_app =
     new_chat.appendTo($('#chats'))
     $('#chats').stop().animate({scrollTop: $('#chats').height()}, 'medium')
 
+  # Triggered when a 'outline_team_clue' Pusher message is received from another user. Makes and/or moves the hidden outline
+  # to cover the word in question, then fades it in and changes its color to match the user who outlined it
   outline_team_clue: (data) ->
     unless data.solver_id is team_app.solver_id
       outline_width = 2
@@ -166,7 +172,6 @@ window.team_app =
 #------------------
 # DOCUMENT LOAD
 #------------------
-
 $ ->
   $('#myModal').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)

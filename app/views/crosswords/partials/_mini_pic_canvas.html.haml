@@ -1,5 +1,9 @@
-%canvas.light-shadow{id: 'crossword_' + cw.id.to_s, width: 5*cw.cols, height: 5*cw.rows, style: 'border: 1px solid black'}
+-# This is a littly janky because scale is being set globally
+%canvas.light-shadow{id: 'crossword_' + cw.id.to_s, width: 5*cw.cols*(scale ||= 1), height: 5*cw.rows*(scale || 1), style: 'border: 1px solid black'}
+
   %script
+    var scale = #{scale || 1};
+
     var c = document.getElementById("crossword_#{cw.id}");
     var ctx=c.getContext("2d");
     - (1..cw.rows).each do |row|
@@ -7,15 +11,15 @@
       - (1..cw.cols).each do |col|
         ctx.fillStyle="000000";
         -if cw.is_void_at?(row, col)
-          ctx.fillRect(#{(col-1)*5},#{(row-1)*5},5,5);
+          ctx.fillRect(#{(col-1)*5*scale},#{(row-1)*5*scale},5*scale,5*scale);
         -if col != cw.cols
           ctx.fillStyle="444444";
-          ctx.fillRect(#{col}*5,0,1,#{cw.rows}*5);
+          ctx.fillRect(#{col}*5*scale,0,1*scale,#{cw.rows}*5*scale);
       -if row != cw.rows
         ctx.fillStyle="444444";
-        ctx.fillRect(0,#{row}*5,#{cw.cols}*5,1);
+        ctx.fillRect(0,#{row}*5*scale,#{cw.cols}*5*scale,1*scale);
     - if (cw.rows != 15) || (cw.cols != 15)
       - if cw.rows > cw.cols
-        $(c).height(75)
+        $(c).height(75*scale)
       - else
-        $(c).width(75)
+        $(c).width(75*scale)

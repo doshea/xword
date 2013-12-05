@@ -108,6 +108,19 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  def solution_choice
+    @crossword = Crossword.find(params[:id])
+    @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
+    @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
+
+    if @solutions.count < 1
+      redirect_to @crossword
+    elsif @solutions.count == 1
+      redirect_to @solutions.first
+    end
+
+  end
+
   private
   def ensure_owner_or_admin
     @crossword = Crossword.find(params[:id])

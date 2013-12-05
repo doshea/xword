@@ -40,6 +40,23 @@ class Solution < ActiveRecord::Base
     new_key
   end
 
+  def percent_complete
+    letter_count = self.letters.length
+    valid_letter_count = self.letters.gsub(/( |_)/, '').length
+    percent = ((valid_letter_count.to_f)/(letter_count)*100).round(1)
+    {numerator: valid_letter_count, denominator: letter_count, percent: percent}
+  end
+
+  def percent_correct
+    current_letters = self.letters
+    cw_letters = self.crossword.letters
+    sum = 0
+    current_letters.split(//).each_with_index do |char, index|
+      sum += 1 if (cw_letters[index] == char) and (char != '_')
+    end
+    ((sum.to_f/current_letters.length)*100).round(2)
+  end
+
   scope :complete, -> {where(solution_complete: true)}
   scope :incomplete, -> {where(solution_complete: false)}
   scope :order_recent, -> {order(updated_at: :desc)}

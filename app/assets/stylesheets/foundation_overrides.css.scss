@@ -30,3 +30,21 @@
 .reveal-modal {
   z-index: 99999;
 }
+
+
+#solution-choice {
+  a {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+  tr:not(:hover){
+    a {
+      color: inherit;
+    }
+  }
+  tbody tr {
+    cursor: pointer;
+  }
+}

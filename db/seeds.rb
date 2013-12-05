@@ -150,4 +150,4 @@ puts " complete!"
 
 puts "\n-------------"
 puts "SEED COMPLETE"
-puts "\nSeeding took ~ #{distance_of_time_in_words_to_now(seed_start_time, true)}" #this line required an import of the DateHelper in the Rakefile
+puts "\nSeeding took ~ #{distance_of_time_in_words_to_now(seed_start_time, {include_seconds: true})}" #this line required an import of the DateHelper in the Rakefile

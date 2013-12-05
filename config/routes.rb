@@ -15,6 +15,7 @@ Xword4::Application.routes.draw do
       post :favorite
       delete :unfavorite
       get 'team/:key' => 'crosswords#team', as: 'team'
+      get 'solution_choice'
     end
   end
 
@@ -33,7 +34,7 @@ Xword4::Application.routes.draw do
     end
   end
 
-  resources :solutions, only: [:index, :update] do
+  resources :solutions, only: [:show, :update] do
     member do
       post :get_incorrect
       post :check_correctness
