@@ -69,7 +69,7 @@
     if(!hidden_canvas){
       hidden_canvas = $("<canvas class='hidden-canvas' id='letters_" + key + "'>");
       console.log('Made a hidden canvas!');
-      $row.append(hidden_canvas);
+      $row.children(':first-child').append(hidden_canvas);
 
       var main_canvas = $('canvas[id^="crossword"]');
       var left_corner_x = main_canvas.offset().left+1;

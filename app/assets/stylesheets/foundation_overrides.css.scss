@@ -33,10 +33,46 @@
 
 
 #solution-choice {
+  tr:hover{
+    button {
+      -webkit-transform: scale(1.4, 1) translateX(-12%);
+        -moz-transform: scale(2, 1) translateX(-12%);
+        -o-transform: scale(2, 1) translateX(-12%);
+        transform: scale(2, 1) translateX(-12%);
+    }
+    .hidden-canvas {
+      background-color: rgba(0,0,0,0);
+      -webkit-border-radius: 0em;
+      -moz-border-radius: 0em;
+      border-radius: 0em;
+    }
+  }
+  tr:not(:hover){
+    .hidden-canvas {
+      opacity: 0;
+      top: 0 !important;
+      left: 0 !important;
+      -webkit-transform: scale(0);
+      -moz-transform: scale(0);
+      -o-transform: scale(0);
+      transform: scale(0);
+      visibility: hidden;
+    }
+    a {
+      color: inherit;
+    }
+    button {
+      opacity: 0.5;
+    }
+  }
   .hidden-canvas {
     position: absolute;
     margin: 0;
-    transition: opacity 0.3s;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+    background-color: rgba(43, 166, 203, 0.5);
   }
   table {
     margin: 0.5em 0 1.5em 1em;
@@ -69,27 +105,9 @@
   a.not-blue {
     color: inherit;
   }
-  tr:hover{
-    button {
-      -webkit-transform: scale(1.4, 1) translateX(-12%);
-        -moz-transform: scale(2, 1) translateX(-12%);
-        -o-transform: scale(2, 1) translateX(-12%);
-        transform: scale(2, 1) translateX(-12%);
-    }
-  }
-  tr:not(:hover){
-    .hidden-canvas {
-      opacity: 0;
-    }
-    a {
-      color: inherit;
-    }
-    button {
-      opacity: 0.5;
-    }
-  }
   tbody td{
     cursor: pointer;
+    position: relative;
     .delete-td {
       cursore: inherit;
     }
