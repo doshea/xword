@@ -64,6 +64,14 @@
   a.not-blue {
     color: inherit;
   }
+  tr:hover{
+    button {
+      -webkit-transform: scale(1.4, 1) translateX(-12%);
+        -moz-transform: scale(2, 1) translateX(-12%);
+        -o-transform: scale(2, 1) translateX(-12%);
+        transform: scale(2, 1) translateX(-12%);
+    }
+  }
   tr:not(:hover){
     a {
       color: inherit;
@@ -72,7 +80,7 @@
       opacity: 0.5;
     }
   }
-  tbody tr {
+  tbody td:not(:last-child){
     cursor: pointer;
   }
   canvas {
