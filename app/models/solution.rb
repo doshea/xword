@@ -41,7 +41,7 @@ class Solution < ActiveRecord::Base
   end
 
   def percent_complete
-    letter_count = self.crossword.letters.gsub(/ |_/, '').length
+    letter_count = self.crossword.nonvoid_letter_count
     valid_letter_count = self.letters.gsub(/( |_)/, '').length
     percent = ((valid_letter_count.to_f)/(letter_count)*100).round(1)
     {numerator: valid_letter_count, denominator: letter_count, percent: percent}
@@ -51,7 +51,7 @@ class Solution < ActiveRecord::Base
     current_letters = self.letters
     cw_letters = self.crossword.letters
 
-    letter_count = self.crossword.letters.gsub(/ |_/, '').length
+    letter_count = self.crossword.nonvoid_letter_count
 
     sum = 0
     current_letters.split(//).each_with_index do |char, index|

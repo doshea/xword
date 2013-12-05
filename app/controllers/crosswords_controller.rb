@@ -119,7 +119,7 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
     @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
-    @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_correct[:numerator], Time.current - x.updated_at]}
+    @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_complete[:numerator], Time.current - x.updated_at]}
 
     if @solutions.count < 1
       redirect_to @crossword

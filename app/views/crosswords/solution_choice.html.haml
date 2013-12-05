@@ -8,7 +8,10 @@
       %h5
         %strong= @crossword.title
       %p= @crossword.user.display_name
-      %p #{@crossword.rows} x #{@crossword.cols}
+      %p.smaller
+        #{@crossword.rows} x #{@crossword.cols}
+        %br
+        #{@crossword.nonvoid_letter_count} empty cells
     %hr
     %p
       You have more than one solution for this crossword, please click on the one you would like to work on.
@@ -18,9 +21,11 @@
       %thead
         %tr
           %th
+            -# Blank column for Arrow button
+          %th
             -# Blank column for Team status
-          %th.center{colspan: 2} Correctness
-          %th.center{colspan: 2} Completion
+          %th.center Correct
+          %th.center Complete
           %th Last Worked On
           %th Started
           %th Delete
@@ -29,30 +34,45 @@
           - solution_correctness = solution.percent_correct
           - solution_completion = solution.percent_complete
           %tr
-            %td.center
-              = link_to solution do
-                -if solution.team
-                  %i.fi-torsos-all
             %td
+              = button_to solution, method: :get do
+                %i.fi-arrow-left
+            %td.center.larger
+              = link_to solution do
+                %i{class: solution.team ? 'fi-torsos-all' : 'fi-torso'}
+            %td.text-right
               = link_to solution do
                 #{solution_correctness[:percent]}%
-            %td
-              = link_to solution do
-                #{solution_correctness[:numerator]}/#{solution_correctness[:denominator]}
-            %td
+            -# Not useful at the moment
+              %td
+                = link_to solution do
+                  #{solution_correctness[:numerator]}/#{solution_correctness[:denominator]}
+            %td.text-right
               = link_to solution do
                 #{solution_completion[:percent]}%
-            %td
-              = link_to solution do
-                #{solution_completion[:numerator]}/#{solution_completion[:denominator]}
-            %td
+            -# Not useful at the moment
+              %td.text-right
+                = link_to solution do
+                  #{solution_completion[:numerator]}/#{solution_completion[:denominator]}
+            %td.smaller
               = link_to solution do
                 #{distance_of_time_in_words_to_now(solution.updated_at, {include_seconds: true})} ago
-            %td
+            %td.smaller
               = link_to solution do
                 #{distance_of_time_in_words_to_now(solution.created_at, {include_seconds: true})} ago
-            %td.center
-              = link_to(delete_solution_path(solution), method: :delete, confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?') do
+            %td.center.larger
+              = link_to(delete_solution_path(solution), method: :delete, confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?', class: 'not-blue') do
                 %i.fi-trash.center
+          - if !solution.team
+            %tr
+              %td
+              %td
+              -# %td
+              -# %td
+              %td
+              %td
+              %td
+              %td
+              %td
 
 .row.row-stopper.row-bookend

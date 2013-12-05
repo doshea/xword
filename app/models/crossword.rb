@@ -88,6 +88,10 @@ class Crossword < ActiveRecord::Base
     [row, col]
   end
 
+  def nonvoid_letter_count
+    self.letters.gsub(/ |_/, '').length
+  end
+
   def letters_a
     self.letters.split('')
   end

@@ -33,8 +33,27 @@
 
 
 #solution-choice {
+  table {
+    margin: 0.5em 0 1.5em 1em;
+  }
+  button, form {
+    margin: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+  button {
+    padding: 0.5em 1em;
+  }
   i {
     font-size: larger;
+    transition: all 0.3s;
+    &.fi-trash{
+      &:hover {
+        color: #f04124;
+      }
+    }
   }
   a {
     -webkit-transition: all 0.3s;
@@ -42,9 +61,15 @@
     -o-transition: all 0.3s;
     transition: all 0.3s;
   }
+  a.not-blue {
+    color: inherit;
+  }
   tr:not(:hover){
     a {
       color: inherit;
+    }
+    button {
+      opacity: 0.5;
     }
   }
   tbody tr {
