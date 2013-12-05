@@ -2,8 +2,7 @@
   .large-1.columns.small-3
     = link_to (image_tag comment.user.image.comment_size), comment.user
   .large-11.columns
-    %p
-      %strong
+    %p<
       = link_to "#{comment.user.display_name}: ", comment.user
       %br
       = comment.content
@@ -12,7 +11,7 @@
         - if @current_user
           = link_to nil, class: 'reply-button' do
             %i.fi-comment
-            Reply
+            %span Reply
           = link_to nil, class: 'cancel-button', style: 'display: none;' do
             %i.fi-x
             Never mind
@@ -20,7 +19,7 @@
             = text_area_tag('content', nil, id: nil, class: 'reply-content')
       / %li
       /   %a{href: ""} Share
-    %h6.reply-count
+    %h6.reply-count<
       - if comment.replies.any?
         = pluralize(comment.replies.count, 'Reply')
     .replies

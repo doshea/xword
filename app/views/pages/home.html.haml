@@ -1,8 +1,7 @@
 .row.row-topper.row-bookend
 .row
   .large-12.columns.puzzle-tabs
-    %h2
-      = "Welcome back, #{@current_user.display_first_name}!"
+    %h2 Welcome back, #{@current_user.display_first_name}!
     %hr
     - if @in_progress_solo.any?
       %h4
