@@ -33,6 +33,11 @@
 
 
 #solution-choice {
+  .hidden-canvas {
+    position: absolute;
+    margin: 0;
+    transition: opacity 0.3s;
+  }
   table {
     margin: 0.5em 0 1.5em 1em;
   }
@@ -73,6 +78,9 @@
     }
   }
   tr:not(:hover){
+    .hidden-canvas {
+      opacity: 0;
+    }
     a {
       color: inherit;
     }
@@ -80,8 +88,11 @@
       opacity: 0.5;
     }
   }
-  tbody td:not(:last-child){
+  tbody td{
     cursor: pointer;
+    .delete-td {
+      cursore: inherit;
+    }
   }
   canvas {
     float: left;

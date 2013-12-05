@@ -55,7 +55,7 @@
         %br
         = link_to('Edit Puzzle', edit_crossword_path(@crossword))
         or
-        = link_to('Publish Puzzle', publish_crossword_path(@crossword), confirm: "Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.")
+        = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
 
 .row#credit-area
   .large-12.columns

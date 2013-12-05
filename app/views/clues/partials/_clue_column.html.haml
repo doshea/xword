@@ -6,6 +6,6 @@
       - @cells.zip(directional_clues).each do |cell, clue|
         = render(partial: 'clues/partials/clue', locals: {cell: cell, clue: clue, edit: true, across: across})
     - else
-      - directional_cells = across ? @crossword.across_start_cells.asc_indices : @crossword.down_start_cells.asc_indices
+      - directional_cells = across ? @crossword.across_start_cells.asc_indices.includes(:across_clue) : @crossword.down_start_cells.asc_indices.includes(:down_clue)
       - directional_cells.each do |cell|
         = render(partial: 'clues/partials/clue', locals: {cell: cell, edit: false, across: across})

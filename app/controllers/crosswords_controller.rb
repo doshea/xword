@@ -9,7 +9,11 @@ class CrosswordsController < ApplicationController
   def show
     @crossword = Crossword.find(params[:id])
     if @crossword
-      @solution = Solution.find_or_create_by_crossword_id_and_user_id_and_team(@crossword.id, @current_user.id, false) if @current_user
+      @solution = Solution.find_or_create_by(
+        crossword_id: @crossword.id,
+        user_id: @current_user.id,
+        team: false
+      ) if @current_user
       @solution.fill_letters
       @cells = @crossword.cells.asc_indices
     else

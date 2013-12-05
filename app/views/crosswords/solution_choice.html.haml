@@ -33,7 +33,7 @@
         - @solutions.each do |solution|
           - solution_correctness = solution.percent_correct
           - solution_completion = solution.percent_complete
-          %tr{:'data-link' => solution_path(solution)}
+          %tr{data: {link: solution_path(solution), letters: solution.letters, key: solution.key, cols: @crossword.cols}}
             %td
               = button_to solution, method: :get do
                 %i.fi-arrow-left
@@ -47,8 +47,8 @@
               %td.text-right #{solution_completion[:numerator]}/#{solution_completion[:denominator]}
             %td.smaller #{distance_of_time_in_words_to_now(solution.updated_at, {include_seconds: true})} ago
             %td.smaller #{distance_of_time_in_words_to_now(solution.created_at, {include_seconds: true})} ago
-            %td.center.larger
-              = link_to(delete_solution_path(solution), method: :delete, confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?', class: 'not-blue') do
+            %td.center.larger.trash-td
+              = link_to(delete_solution_path(solution), method: :delete, class: 'not-blue', data: {confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?'}) do
                 %i.fi-trash.center
           - if !solution.team
             %tr
@@ -62,6 +62,45 @@
               %td
               %td
 :javascript
-  $('tr').on('click', 'td:not(:last-child)', function(e){e.preventDefault(); window.location = $(this).parent().data('link');})
+  function draw_letters($row){
+    var cols = 15;
+    var key = $row.data('key');
+    var hidden_canvas = $('canvas#letters_'+key).get(0);
+    if(!hidden_canvas){
+      hidden_canvas = $("<canvas class='hidden-canvas' id='letters_" + key + "'>");
+      console.log('Made a hidden canvas!');
+      $row.append(hidden_canvas);
+
+      var main_canvas = $('canvas[id^="crossword"]');
+      var left_corner_x = main_canvas.offset().left+1;
+      var left_corner_y = main_canvas.offset().top+1;
+      hidden_canvas.width(main_canvas.width());
+      hidden_canvas.height(main_canvas.height());
+      hidden_canvas.offset({ top: left_corner_y, left: left_corner_x });
+
+      var temp_context = hidden_canvas.get(0).getContext("2d");
+
+      var letters = $row.data('letters');
+      temp_context.font = "bold 10px Helvetica Neue";
+
+      var letter_array = [];
+      while(letters.length > 0){
+        letter_array.push(letters.substr(0, cols));
+        letters = letters.substr(cols);
+      }
+      letter_array.each(function(string, row){
+        string.each(function(char, col){
+          if((char != ' ') && (char != '_')){
+            var x = ((col == 0) ? 2.5 : 3.5+10*col)*2;
+            var y = (row == 0) ? 7.5 : 10 + 10*row;
+            temp_context.fillText(char, x, y)
+          }
+        });
+      });
+    }
+  }
+
+  $('tbody').on('click', 'tr td:not(.delete-td)', function(e){e.preventDefault(); window.location = $(this).parent().data('link');});
+  $('tbody tr').each(function(index, el){draw_letters($(el))});
 
 .row.row-stopper.row-bookend
