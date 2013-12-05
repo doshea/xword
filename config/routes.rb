@@ -24,7 +24,7 @@ Xword4::Application.routes.draw do
   resources :comments, only: [:index] do
     member do
       post :add_comment, as: 'add'
-      post :reply, as: 'reply_to'
+      post :reply, as: :reply_to
     end
   end
 
@@ -44,6 +44,7 @@ Xword4::Application.routes.draw do
       post :roll_call
       post :send_team_chat
       post :show_team_clue
+      delete :destroy, as: :delete
     end
   end
 

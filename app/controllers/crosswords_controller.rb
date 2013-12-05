@@ -10,6 +10,12 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     if @crossword
       @solution = Solution.find_or_create_by_crossword_id_and_user_id_and_team(@crossword.id, @current_user.id, false) if @current_user
+      if @solution.letters.length < (@crossword.rows * @crossword.cols)
+        binding.pry
+        @solution.letters = @crossword.letters.gsub(/[^_]/,' ')
+        @solution.save
+        binding.pry
+      end
       @cells = @crossword.cells.asc_indices
     else
       #redirect to 404 page
@@ -63,7 +69,8 @@ class CrosswordsController < ApplicationController
     if @crossword && @current_user
       @solution = Solution.new(
         crossword_id: @crossword.id,
-        user_id: @current_user.id
+        user_id: @current_user.id,
+        letters: @crossword.letters.gsub(/[^_]/, ' ')
       )
       @solution.key = Solution.generate_unique_key
       @solution.team = true
@@ -112,6 +119,7 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
     @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
+    @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_correct[:numerator], Time.current - x.updated_at]}
 
     if @solutions.count < 1
       redirect_to @crossword

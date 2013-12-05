@@ -1,4 +1,5 @@
 class SolutionsController < ApplicationController
+  before_filter :ensure_owner_or_partner, only: [:destroy]
 
   def show
     solution = Solution.find(params[:id])
@@ -83,5 +84,22 @@ class SolutionsController < ApplicationController
                 }
     Pusher.trigger(params[:channel], 'outline_team_clue', data)
     render nothing: true
+  end
+
+  # If the user is a partner on the solution, delete their partnership. If they are the owner, delete the solution.
+  def destroy
+    if @solution_partnering
+      @solution_partnering.delete
+    else
+      @solution.delete
+    end
+    redirect_to :back
+  end
+
+  private
+  def ensure_owner_or_partner
+    @solution = Solution.find(params[:id])
+    @solution_partnering = SolutionPartnering.find_by_user_id_and_solution_id(@current_user.id, @solution.id)
+    redirect_to(unauthorized_path) if !((@current_user == @solution.user) || (@solution_partnering))
   end
 end

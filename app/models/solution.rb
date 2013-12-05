@@ -19,7 +19,7 @@ class Solution < ActiveRecord::Base
   belongs_to :user, inverse_of: :solutions
   belongs_to :crossword, inverse_of: :solutions
 
-  has_many :solution_partnerings, inverse_of: :solution
+  has_many :solution_partnerings, inverse_of: :solution, dependent: :delete_all
   has_many :teammates, through: :solution_partnerings, source: :user
 
   scope :completed, -> { where(is_complete: true)}
@@ -41,7 +41,7 @@ class Solution < ActiveRecord::Base
   end
 
   def percent_complete
-    letter_count = self.letters.length
+    letter_count = self.crossword.letters.gsub(/ |_/, '').length
     valid_letter_count = self.letters.gsub(/( |_)/, '').length
     percent = ((valid_letter_count.to_f)/(letter_count)*100).round(1)
     {numerator: valid_letter_count, denominator: letter_count, percent: percent}
@@ -50,11 +50,16 @@ class Solution < ActiveRecord::Base
   def percent_correct
     current_letters = self.letters
     cw_letters = self.crossword.letters
+
+    letter_count = self.crossword.letters.gsub(/ |_/, '').length
+
     sum = 0
     current_letters.split(//).each_with_index do |char, index|
       sum += 1 if (cw_letters[index] == char) and (char != '_')
     end
-    ((sum.to_f/current_letters.length)*100).round(2)
+
+    percent = ((sum.to_f/current_letters.length)*100).round(2)
+    {numerator: sum, denominator: letter_count, percent: percent}
   end
 
   scope :complete, -> {where(solution_complete: true)}
