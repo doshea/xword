@@ -6,7 +6,7 @@
     - if @in_progress_solo.any?
       %h4
         %i.fi-clipboard-pencil
-        In Progress
+        %span In Progress
       %ul
         - @in_progress_solo.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
@@ -14,7 +14,7 @@
     - if @in_progress_team.any?
       %h4
         %i.fi-clipboard-pencil
-        In Progress (Team)
+        %span In Progress (Team)
       %ul
         - @in_progress_team.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
@@ -22,7 +22,7 @@
     - if @unstarted.any?
       %h4
         %i.fi-clipboard
-        New Puzzles
+        %span New Puzzles
       %ul
         - @unstarted.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
@@ -30,26 +30,25 @@
     - if @solved.any?
       %h4
         %i.fi-clipboard-notes
-        Solved Puzzles
+        %span Solved Puzzles
       %ul
         - @solved.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       %hr
     %h4
       %i.fi-alert
-      Non-Standard Puzzles
+      %span Non-Standard Puzzles
     %ul
       - Crossword.nonstandard.published.unowned(@current_user).order(:date_published).each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
     %hr
     %h4
       %i.fi-pencil
-      Your Puzzles
+      %span Your Puzzles
     - if @owned_puzzles.any?
       .large-6.columns
         -if @unpublished.any?
-          %h5
-            Unpublished
+          %h5 Unpublished
           %ul
             - @unpublished.each do |crossword|
               = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
