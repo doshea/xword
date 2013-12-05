@@ -33,6 +33,9 @@
 
 
 #solution-choice {
+  i {
+    font-size: larger;
+  }
   a {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
@@ -47,4 +50,18 @@
   tbody tr {
     cursor: pointer;
   }
+  canvas {
+    float: left;
+    margin: 1em 1em 0;
+  }
+  hr {
+    border-width: 0 0 1px;
+    padding-top: 1em;
+  }
+  .metadata {
+    padding-top: 0.5em;
+  }
+}
+input#query {
+  height: inherit;
 }

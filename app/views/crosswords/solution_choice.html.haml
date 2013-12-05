@@ -2,10 +2,17 @@
 .row.row-topper.row-bookend
   %h4 Choose a Solution
 .row#solution-choice
-  .large-5.columns
+  .large-4.columns
     = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: @crossword, scale: 2.0}
-    fhj gj hg jhg jhg hjgj hjg jh gjh ghj gjh gjh ghj gjh ghj gjh gjh ghj gjh gjh gjh ghj ghj ghj gjh gjh gjh gjh gjh gjh gjh gjh gj gjh gj gh gj ghjgh
-  .large-7.columns
+    .metadata
+      %h5
+        %strong= @crossword.title
+      %p= @crossword.user.display_name
+      %p #{@crossword.rows} x #{@crossword.cols}
+    %hr
+    %p
+      You have more than one solution for this crossword, please click on the one you would like to work on.
+  .large-8.columns
     -# The table of available solutions
     %table
       %thead
@@ -22,7 +29,7 @@
           - solution_correctness = solution.percent_correct
           - solution_completion = solution.percent_complete
           %tr
-            %td
+            %td.center
               = link_to solution do
                 -if solution.team
                   %i.fi-torsos-all
@@ -44,8 +51,8 @@
             %td
               = link_to solution do
                 #{distance_of_time_in_words_to_now(solution.created_at, {include_seconds: true})} ago
-            %td
-              = link_to(delete_solution_path(solution), method: :delete, confirm: 'Are you sure you want to delete this solution? You will permanently lose all work on this solution.') do
-                %i.fi-trash
+            %td.center
+              = link_to(delete_solution_path(solution), method: :delete, confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?') do
+                %i.fi-trash.center
 
 .row.row-stopper.row-bookend
