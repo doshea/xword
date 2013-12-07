@@ -56,6 +56,7 @@ Xword4::Application.routes.draw do
   get '/search' => 'pages#search'
   get '/live_search' => 'pages#live_search'
   get '/about' => 'pages#about'
+  get '/faq' => 'pages#faq'
   get '/contact' => 'pages#contact'
   get '/stats' => 'pages#stats'
   get '/nytimes' => 'pages#nytimes'

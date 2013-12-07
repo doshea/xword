@@ -41,6 +41,9 @@ class PagesController < ApplicationController
   def account_required
   end
 
+  def faq
+  end
+
   def search
     query = params[:query]
     @users = User.starts_with(query)
@@ -88,4 +91,5 @@ class PagesController < ApplicationController
     @nytimes_user = User.find_by_username('nytimes')
     @nytimes_puzzles = @nytimes_user.crosswords.published
   end
+
 end
