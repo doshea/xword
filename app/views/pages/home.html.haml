@@ -37,8 +37,8 @@
               - @in_progress_team.each do |crossword|
                 = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
             %hr
-          - else
-            You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}
+        - else
+          You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}
       #panel2.content
         %ul
           - @unstarted.each do |crossword|
