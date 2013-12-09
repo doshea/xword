@@ -22,6 +22,11 @@
       %dd
         = link_to '#panel4' do
           %h5
+            %i.fi-alert
+            %span Non-Standard Puzzles
+      %dd
+        = link_to '#panel5' do
+          %h5
             %i.fi-pencil
             %span Your Puzzles
     .tabs-content
@@ -48,6 +53,10 @@
           - @solved.each do |crossword|
             = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       #panel4.content
+        %ul
+          - @nonstandard.each do |crossword|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      #panel5.content
         - if @owned_puzzles.any?
           .large-6.columns
             -if @unpublished.any?
