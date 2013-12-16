@@ -1,7 +1,7 @@
 window.global =
   ready: ->
     $('body').on('click', '.fi-magnifying-glass', global.submit_closest_form)
-    $('#top_search').on('keyup', '#query', global.live_search)
+    $('#top-search').on('keyup', '#query', global.live_search)
 
   submit_closest_form: ->
     $(this).closest('form').submit()

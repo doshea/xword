@@ -1,6 +1,9 @@
 .row.row-topper.row-bookend
   %h5
-    Search Results
+    - if @query.blank?
+      Site Search
+    - else
+      Search Results
 .row#search-results.puzzle-tabs
   .large-12.columns
     - if @crosswords.any?
@@ -12,4 +15,9 @@
     - if @words.any?
       = render partial: 'pages/partials/word_search'
       %hr
+    - if @query.blank?
+      %form
+        %input#search2{placeholder: 'A puzzle title, username, clue or word...'}
+        %br
+        %button Go!
 .row.row-stopper.row-bookend
