@@ -7,13 +7,13 @@
       %dd.active
         = link_to '#panel1' do
           %h5
-            %i.fi-clipboard-pencil
-            %span In Progress
+            %i.fi-clipboard
+            %span New Puzzles
       %dd
         = link_to '#panel2' do
           %h5
-            %i.fi-clipboard
-            %span New Puzzles
+            %i.fi-clipboard-pencil
+            %span In Progress
       %dd
         = link_to '#panel3' do
           %h5
@@ -31,6 +31,10 @@
             %span Your Puzzles
     .tabs-content
       #panel1.content.active
+        %ul
+          - @unstarted.each do |crossword|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      #panel2.content
         - if @in_progress_solo.any? || @in_progress_team.any?
           - if @in_progress_solo.any?
             %ul
@@ -44,10 +48,6 @@
             %hr
         - else
           You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}
-      #panel2.content
-        %ul
-          - @unstarted.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
       #panel3.content
         %ul
           - @solved.each do |crossword|
