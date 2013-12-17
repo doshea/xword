@@ -63,7 +63,7 @@
               %h5 Unpublished
               %ul
                 - @unpublished.each do |crossword|
-                  = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+                  = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword, unpublished: true}
           .large-6.columns
             - if @published.any?
               %h5

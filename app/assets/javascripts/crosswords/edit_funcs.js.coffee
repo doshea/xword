@@ -6,7 +6,7 @@ window.edit_app =
 
   ready: ->
     $('#title-status').show()
-    number_cells()
+    cw.number_cells()
 
     $('#crossword').on('dblclick', '.cell', -> $(this).toggle_void(true))
 

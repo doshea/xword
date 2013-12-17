@@ -15,7 +15,7 @@ window.solve_app =
     $('#check-correctness').on('click', solve_app.check_correctness)
     $('#submit_solution').on('click', solve_app.submit_solution)
     $('#solve-save').on('click', solve_app.save_solution)
-    $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> unhighlight_all())
+    $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
     solve_app.check_all_finished()
     $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
     $('.reply-content').on('keypress', solve_app.add_comment_or_reply)
@@ -26,7 +26,7 @@ window.solve_app =
   save_solution: (e) ->
     e.preventDefault() if e
     token = $('#crossword').data('auth-token')
-    letters = get_letters();
+    letters = cw.get_letters();
     settings =
       dataType: 'script'
       type: 'PUT'
@@ -51,7 +51,7 @@ window.solve_app =
   show_incorrect: (e) ->
     e.preventDefault()
     solve_app.save_solution()
-    letters = get_letters();
+    letters = cw.get_letters();
     settings =
       dataType: 'script'
       type: 'POST'
@@ -62,7 +62,7 @@ window.solve_app =
   check_correctness: (e) ->
     e.preventDefault()
     solve_app.save_solution()
-    letters = get_letters();
+    letters = cw.get_letters();
     settings =
       dataType: 'script'
       type: 'POST'
@@ -73,7 +73,7 @@ window.solve_app =
   add_comment_or_reply: (e) ->
     unless e.metaKey
       key = e.which
-      if key is ENTER
+      if key is cw.ENTER
         e.preventDefault()
         unless $(this).val() is ''
           $('.replying').removeClass('replying')

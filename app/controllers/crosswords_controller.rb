@@ -41,10 +41,10 @@ class CrosswordsController < ApplicationController
       redirect_to @crossword
     else
       @cells = @crossword.cells.asc_indices
-      @across_cells = @crossword.across_start_cells.asc_indices
-      @down_cells = @crossword.down_start_cells.asc_indices
-      @across_clues = @crossword.across_clues.asc_indices
-      @down_clues = @crossword.down_clues.asc_indices
+      @across_cells = @crossword.across_start_cells.includes(:across_clue).asc_indices
+      @down_cells = @crossword.down_start_cells.includes(:across_clue).asc_indices
+      @across_clues = Clue.joins(:across_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
+      @down_clues = Clue.joins(:down_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
     end
   end
 
@@ -116,14 +116,20 @@ class CrosswordsController < ApplicationController
 
   def solution_choice
     @crossword = Crossword.find(params[:id])
-    @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
-    @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
-    @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_complete[:numerator], Time.current - x.updated_at]}
 
-    if @solutions.count < 1
-      redirect_to @crossword
-    elsif @solutions.count == 1
-      redirect_to @solutions.first
+    unless @crossword.unpublished
+      redirect_to edit_crossword_path(@crossword)
+    else
+
+      @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
+      @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
+      @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_complete[:numerator], Time.current - x.updated_at]}
+
+      if @solutions.count < 1
+        redirect_to @crossword
+      elsif @solutions.count == 1
+        redirect_to @solutions.first
+      end
     end
 
   end
