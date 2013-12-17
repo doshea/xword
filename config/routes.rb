@@ -1,4 +1,4 @@
-Xword4::Application.routes.draw do
+Xword::Application.routes.draw do
   root to: 'pages#home'
   get '/welcome' => 'pages#welcome'
 

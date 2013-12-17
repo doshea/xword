@@ -1,4 +1,4 @@
-Xword4::Application.configure do
+Xword::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -28,7 +28,7 @@ Xword4::Application.configure do
   config.assets.debug = true
 
   require 'pusher'
-  Pusher.app_id = ENV['XWORD4_PUSHER_APP']
-  Pusher.key = ENV['XWORD4_PUSHER_KEY']
-  Pusher.secret = ENV['XWORD4_PUSHER_SECRET']
+  Pusher.app_id = ENV['XWORD_PUSHER_APP']
+  Pusher.key = ENV['XWORD_PUSHER_KEY']
+  Pusher.secret = ENV['XWORD_PUSHER_SECRET']
 end

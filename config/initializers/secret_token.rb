@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Xword4::Application.config.secret_key_base = '28a58318fcd7a14a2b83ec1938a2cd73d7e038277494cdf684ee580a965be962abf27b69a7491a19898d69140fd104b9bc4f39e67a65c866394e944ffd721c30'
+Xword::Application.config.secret_key_base = '28a58318fcd7a14a2b83ec1938a2cd73d7e038277494cdf684ee580a965be962abf27b69a7491a19898d69140fd104b9bc4f39e67a65c866394e944ffd721c30'

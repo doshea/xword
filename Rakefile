@@ -4,4 +4,4 @@
 require File.expand_path('../config/application', __FILE__)
 include ActionView::Helpers::DateHelper
 
-Xword4::Application.load_tasks
+Xword::Application.load_tasks
