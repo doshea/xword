@@ -117,7 +117,7 @@ class CrosswordsController < ApplicationController
   def solution_choice
     @crossword = Crossword.find(params[:id])
 
-    unless @crossword.unpublished
+    unless @crossword.published
       redirect_to edit_crossword_path(@crossword)
     else
 
