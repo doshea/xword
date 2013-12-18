@@ -35,7 +35,8 @@
           %ul
             - @unstarted.each do |crossword|
               = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        %p You're already working on all of the puzzles we've got!
+        - else
+          %p You're already working on all of the puzzles we've got!
       #panel2.content{class: @unstarted.empty? ? 'active' : ''}
         - if @in_progress_solo.any? || @in_progress_team.any?
           - if @in_progress_solo.any?
