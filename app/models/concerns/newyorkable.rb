@@ -7,10 +7,6 @@ module Newyorkable
     #has_many and belongs_to
   end
 
-  def herro
-    puts 'herro'
-  end
-
   module ClassMethods
 
     def add_nyt_puzzle(pz)
