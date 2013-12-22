@@ -1,0 +1,3 @@
+%ul
+  - @solved.each do |crossword|
+    = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}

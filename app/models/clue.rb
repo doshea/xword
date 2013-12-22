@@ -9,10 +9,11 @@
 #  word_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  phrase_id  :integer
 #
 
 class Clue < ActiveRecord::Base
-  attr_accessible :content, :difficulty, :user_id, :word_id, :crossword_ids
+  attr_accessible :content, :difficulty, :user_id, :word_id, :crossword_ids, :phrase_id
   before_save :strip_tags
 
   has_many :across_cells, class_name: 'Cell', foreign_key: 'across_clue_id', inverse_of: :across_clue, dependent: :nullify
@@ -20,6 +21,7 @@ class Clue < ActiveRecord::Base
 
   belongs_to :word, inverse_of: :clues
   belongs_to :user, inverse_of: :clues
+  belongs_to :phrase, inverse_of: :clues
   has_many :across_crosswords, through: :across_cells, inverse_of: :across_clues, source: :crossword
   has_many :down_crosswords, through: :down_cells, inverse_of: :down_clues, source: :crossword
 

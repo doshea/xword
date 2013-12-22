@@ -23,5 +23,7 @@ class Word < ActiveRecord::Base
   has_many :down_cells, through: :clues
   has_many :across_crosswords, through: :across_cells, source: :crossword
   has_many :down_crosswords, through: :down_cells, source: :crossword
+
+  validates_uniqueness_of :content
 end
 

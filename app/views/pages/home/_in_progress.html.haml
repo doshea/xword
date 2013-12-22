@@ -1,0 +1,13 @@
+- if @in_progress_solo.any? || @in_progress_team.any?
+  - if @in_progress_solo.any?
+    %ul
+      - @in_progress_solo.each do |crossword|
+        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    %hr
+  - if @in_progress_team.any?
+    %ul
+      - @in_progress_team.each do |crossword|
+        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    %hr
+- else
+  You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}

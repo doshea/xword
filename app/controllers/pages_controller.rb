@@ -92,4 +92,5 @@ class PagesController < ApplicationController
     @nytimes_puzzles = @nytimes_user.crosswords.published
   end
 
+
 end

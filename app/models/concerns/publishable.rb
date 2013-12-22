@@ -56,7 +56,7 @@ module Publishable
     words_hsh = self.get_words_hsh
 
     words_hsh.each do |word, clue|
-      the_word = Word.find_or_create_by_content(word)
+      the_word = Word.find_or_create_by(content: word)
       the_word.clues << clue
     end
   end

@@ -1,0 +1,6 @@
+- if @unstarted.any?
+  %ul
+    - @unstarted.each do |crossword|
+      = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+- else
+  %p You're already working on all of the puzzles we've got!

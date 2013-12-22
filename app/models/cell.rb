@@ -49,8 +49,8 @@ class Cell < ActiveRecord::Base
   validates_presence_of :row, :col, :index
 
   def populate_clues
-    self.across_clue = Clue.create!(content: 'ENTER CLUE')
-    self.down_clue = Clue.create!(content: 'ENTER CLUE')
+    self.across_clue = Clue.create!(content: 'ENTER CLUE', user_id: self.user_id)
+    self.down_clue = Clue.create!(content: 'ENTER CLUE', user_id: self.user_id)
     self.save
   end
 

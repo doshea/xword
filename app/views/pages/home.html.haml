@@ -31,116 +31,13 @@
             %span Your Puzzles
     .tabs-content
       #panel1.content{class: @unstarted.any? ? 'active' : ''}
-        - if @unstarted.any?
-          %ul
-            - @unstarted.each do |crossword|
-              = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        - else
-          %p You're already working on all of the puzzles we've got!
+        = render partial: 'pages/home/unstarted'
       #panel2.content{class: @unstarted.empty? ? 'active' : ''}
-        - if @in_progress_solo.any? || @in_progress_team.any?
-          - if @in_progress_solo.any?
-            %ul
-              - @in_progress_solo.each do |crossword|
-                = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-            %hr
-          - if @in_progress_team.any?
-            %ul
-              - @in_progress_team.each do |crossword|
-                = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-            %hr
-        - else
-          You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}
+        = render partial: 'pages/home/in_progress'
       #panel3.content
-        %ul
-          - @solved.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+        = render partial: 'pages/home/solved_puzzles'
       #panel4.content
-        %ul
-          - @nonstandard.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+        = render partial: 'pages/home/nonstandard'
       #panel5.content
-        - if @owned_puzzles.any?
-          .large-6.columns
-            -if @unpublished.any?
-              %h5 Unpublished
-              %ul
-                - @unpublished.each do |crossword|
-                  = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword, unpublished: true}
-          .large-6.columns
-            - if @published.any?
-              %h5
-                Published
-              %ul
-                - @published.each do |crossword|
-                  = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        - else
-          .large-12.columns
-            You haven't created any puzzles yet.
-            = link_to 'Want to try?', new_crossword_path, class: 'foundation'
-  -#
-    .large-12.columns.puzzle-tabs
-      %h2 Welcome back, #{@current_user.display_first_name}!
-      %hr
-      - if @in_progress_solo.any?
-        %h4
-          %i.fi-clipboard-pencil
-          %span In Progress
-        %ul
-          - @in_progress_solo.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        %hr
-      - if @in_progress_team.any?
-        %h4
-          %i.fi-clipboard-pencil
-          %span In Progress (Team)
-        %ul
-          - @in_progress_team.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        %hr
-      - if @unstarted.any?
-        %h4
-          %i.fi-clipboard
-          %span New Puzzles
-        %ul
-          - @unstarted.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        %hr
-      - if @solved.any?
-        %h4
-          %i.fi-clipboard-notes
-          %span Solved Puzzles
-        %ul
-          - @solved.each do |crossword|
-            = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        %hr
-      %h4
-        %i.fi-alert
-        %span Non-Standard Puzzles
-      %ul
-        - Crossword.nonstandard.published.unowned(@current_user).order(:date_published).each do |crossword|
-          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-      %hr
-      %h4
-        %i.fi-pencil
-        %span Your Puzzles
-      - if @owned_puzzles.any?
-        .large-6.columns
-          -if @unpublished.any?
-            %h5 Unpublished
-            %ul
-              - @unpublished.each do |crossword|
-                = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-        .large-6.columns
-          - if @published.any?
-            %h5
-              Published
-            %ul
-              - @published.each do |crossword|
-                = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-      - else
-        .large-12.columns
-          You haven't created any puzzles yet.
-          = link_to 'Want to try?', new_crossword_path, class: 'foundation'
-        %hr
+        = render partial: 'pages/home/your_puzzles'
 .row.row-stopper.row-bookend
