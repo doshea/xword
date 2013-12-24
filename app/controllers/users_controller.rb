@@ -39,4 +39,10 @@ class UsersController < ApplicationController
   def account
     @user = @current_user
   end
+  def forgot_password
+    @user = @current_user
+    @redirect = params[:redirect]
+  end
+  def reset_password
+  end
 end
