@@ -11,7 +11,8 @@
     team_app.solver_id = "#{solver_id}";
 
 = javascript_include_tag 'solve'
-= stylesheet_link_tag "crossword"
+= content_for :head do
+  = stylesheet_link_tag "crossword"
 
 - if @team
   = javascript_include_tag 'crosswords/team_funcs'

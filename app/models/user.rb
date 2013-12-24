@@ -45,16 +45,12 @@ class User < ActiveRecord::Base
   MIN_PASSWORD_LENGTH = 5
   MAX_PASSWORD_LENGTH = 16
   validates :password,
-    presence: true,
     confirmation: true,
-    length: { minimum: MIN_PASSWORD_LENGTH, maximum: MAX_PASSWORD_LENGTH, message: ": Should be #{MIN_PASSWORD_LENGTH}-#{MAX_PASSWORD_LENGTH} characters" },
-    on: :create
-
-  validates :password,
-    confirmation: true,
-    length: { minimum: MIN_PASSWORD_LENGTH, maximum: MAX_PASSWORD_LENGTH, message: ": Should be #{MIN_PASSWORD_LENGTH}-#{MAX_PASSWORD_LENGTH} characters" },
     allow_blank: true,
-    on: :update
+    length: { minimum: MIN_PASSWORD_LENGTH, maximum: MAX_PASSWORD_LENGTH, message: ": Should be #{MIN_PASSWORD_LENGTH}-#{MAX_PASSWORD_LENGTH} characters" }
+
+  validates_presence_of :password, on: :create
+  validates_presence_of :password, on: :reset_password
 
   MIN_EMAIL_LENGTH = 5
   MAX_EMAIL_LENGTH = 40

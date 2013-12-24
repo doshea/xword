@@ -1,0 +1,36 @@
+dd {
+  &.active {
+    border-bottom: 1px solid #efefef;
+    border-left: 1px solid #efefef;
+    border-right: 1px solid #efefef;
+  }
+  &:not(.active) a {
+    &::before {
+      content: "» ";
+    }
+  }
+}
+.content {
+  min-width: 100%;
+}
+
+.slide-close {
+  font-size: 1.375rem;
+  padding: 9px 6px 4px;
+  line-height: 0;
+  position: absolute;
+  top: 0.4375rem;
+  margin-top: 0.3125rem;
+  right: 0.3125rem;
+  color: #333;
+  opacity: 0.3;
+  &:hover,
+  &:focus { opacity: 0.5; }
+}
+
+.alert-box {
+  min-height: 0;
+  p, ul {
+    margin-bottom: 0;
+  }
+}

@@ -3,32 +3,36 @@
   .large-12.columns
     %dl.tabs.vertical{"data-tab" => ""}
       %dd.active
-        %a{href: "#panel1"} Personal Information
+        = link_to '#panel1' do
+          Personal
       %dd
-        %a{href: "#panel2"} Puzzle Settings
+        = link_to '#panel2' do
+          Puzzles
       %dd
-        %a{href: "#panel3"} Email Settings
+        = link_to '#panel3' do
+          Emails
       %dd
-        %a{href: "#panel4"} Password
+        = link_to '#panel4' do
+          Password
     .tabs-content.vertical
       #panel1.content.active
         = form_for user, :html => {:multipart => true}, :remote => true do |f|
           %fieldset
-            %legend
-              Profile Picture
+            %legend Profile Picture
             .row
               .large-5.columns
                 = image_tag user.image, class: 'profile-pic-updateable'
               .large-7.columns
                 %p
-                  Upload an image from your computer
+                  Upload an image from your computer:
                 = f.file_field :image
                 %p
-                  or from the internetz
+                  OR
+                %p
+                  paste an image URL:
                 = text_field_tag "user[remote_image_url]", nil, :placeholder => "http://www.example.com/willshortz"
           %fieldset
-            %legend
-              Personal Info
+            %legend Personal Info
             = f.label :first_name
             = f.text_field :first_name, placeholder: 'Will'
             = f.label :last_name
@@ -39,8 +43,8 @@
       #panel2.content
         = form_tag root_path do
           %fieldset
-            %legend
-              Puzzle Settings
+            %legend Puzzle Settings
+            Coming soon!
       #panel3.content
         = form_tag root_path do
           %fieldset
@@ -49,11 +53,15 @@
       #panel4.content
         / = form_tag root_path do
         %fieldset
-          %legend
-            Change Password
+          #password-errors.alert-box.alert.hidden{data: {alert: true}}
+            %p
+            %a.slide-close{href: "#"} &times;
+          #password-success.alert-box.success.hidden{data: {alert: true}} Password updated!
+          %legend Change Password
           = form_tag(reset_password_users_path, method: :post, remote: true) do
-            = text_field_tag :old_password, nil, placeholder: 'Old Password'
-            = text_field_tag :new_password, nil, placeholder: 'New Password'
-            = text_field_tag :new_password_confirm, nil, placeholder: 'New Password Again'
-            = submit_tag 'Change Password', class: 'button'
+            = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
+            = password_field_tag :new_password, nil, placeholder: 'New Password', required: true
+            = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true
+            = submit_tag 'Change Password', class: 'button', disable_with: 'Changing...'
+
   .row.row-stopper.row-bookend

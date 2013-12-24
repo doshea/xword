@@ -1,5 +1,6 @@
 = javascript_include_tag 'edit'
-= stylesheet_link_tag "crossword"
+= content_for :head do
+  = stylesheet_link_tag :crossword
 
 .row#credit-area
   .large-9.columns
