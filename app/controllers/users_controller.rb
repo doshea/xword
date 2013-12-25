@@ -44,6 +44,8 @@ class UsersController < ApplicationController
     @redirect = params[:redirect]
   end
   def reset_password
+    user = @current_user || User.find_by(email: params[:email]) || User.find_by(username: params[:username])
+    UserMailer.reset_password_email(user).deliver if user
     puts 'POSTED!'
   end
   def change_password

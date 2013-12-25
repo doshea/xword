@@ -100,6 +100,12 @@ class User < ActiveRecord::Base
   def display_first_name
     self.first_name.present? ? self.first_name : self.username
   end
+  def full_name
+    "#{self.first_name} #{self.last_name}".strip
+  end
+  def named_email_address
+    self.full_name.blank? ? self.email : "#{self.full_name} <#{self.email}>"
+  end
   def self.rand_unowned_puzzle
     @current_user.present? ? Crossword.where('user_id != ?', @current_user.id).order("RANDOM()").first : Crossword.order("RANDOM()").first
   end

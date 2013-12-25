@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+  %body
+    %h1
+      Welcome to Crossword Café, #{@user.first_name}
+    %p
+      You have successfully signed up to crossword-cafe.com,
+      your username is: #{@user.username}.
+      %br/
+    %p
+      To login to the site, just follow this link: #{@url}.
+    %p Thanks for joining and have a great day!
+    %p --Dylan
