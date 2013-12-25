@@ -44,6 +44,9 @@ class UsersController < ApplicationController
     @redirect = params[:redirect]
   end
   def reset_password
+    puts 'POSTED!'
+  end
+  def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
         render :password_updated

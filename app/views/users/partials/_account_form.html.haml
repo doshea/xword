@@ -58,7 +58,7 @@
             %a.slide-close{href: "#"} &times;
           #password-success.alert-box.success.hidden{data: {alert: true}} Password updated!
           %legend Change Password
-          = form_tag(reset_password_users_path, method: :post, remote: true) do
+          = form_tag(change_password_users_path, method: :post, remote: true) do
             = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
             = password_field_tag :new_password, nil, placeholder: 'New Password', required: true
             = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true

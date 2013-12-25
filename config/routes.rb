@@ -5,8 +5,9 @@ Xword::Application.routes.draw do
   resources :users, only: [:index, :new, :create, :show, :update] do
     collection do
       get :account
-      get :reset_password, to: :forgot_password
+      get :forgot_password
       post :reset_password
+      post :change_password
     end
   end
 
