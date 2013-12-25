@@ -46,8 +46,8 @@ class UsersController < ApplicationController
   def reset_password
     user = @current_user || User.find_by(email: params[:email]) || User.find_by(username: params[:username])
     UserMailer.reset_password_email(user).deliver if user
-    puts 'POSTED!'
   end
+  
   def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
