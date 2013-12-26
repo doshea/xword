@@ -6,9 +6,13 @@ namespace :nyt do
   end
 
   task :latest_nyt => :environment do
-    puts "Getting latest NYT puzzle and adding it to db"
-    Crossword.add_latest_nyt_puzzle
-    puts "\nDone."
+    begin
+      puts "Getting latest NYT puzzle and adding it to db"
+      Crossword.add_latest_nyt_puzzle
+      puts "\nDone."
+    rescue
+      AdminMailer.nyt_upload_error_email.deliver
+    end
   end
 
   task :remove_duplicate_nyt_puzzles => :environment do
