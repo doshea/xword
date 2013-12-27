@@ -94,7 +94,6 @@ GEM
     foundation-icons-sass-rails (3.0.0)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
-    gritter (1.0.3)
     guard (2.2.4)
       formatador (>= 0.2.4)
       listen (~> 2.1)
@@ -274,7 +273,6 @@ DEPENDENCIES
   faker
   fog
   foundation-icons-sass-rails
-  gritter
   guard-rspec
   haml
   httparty

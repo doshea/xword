@@ -15,7 +15,7 @@ window.edit_app =
     $('#description').on('change', edit_app.update_description)
 
     # $('.cell, .clue').on('click', (e) -> e.stopImmediatePropagation())
-    $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> unhighlight_all())
+    $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
 
   update_clue: (e) ->
     id = $(this).parent().data('id')

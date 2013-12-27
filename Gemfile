@@ -33,9 +33,6 @@ gem 'unf'
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.
 gem 'pg_search'
 
-#Growl-like browser notifications
-gem 'gritter'
-
 #JS gems
 gem 'jquery-rails'
 gem 'turbolinks'
