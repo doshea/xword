@@ -14,7 +14,8 @@
         Password
   .tabs-content.vertical
     #panel1.content.active
-      = form_for user, :html => {:multipart => true}, :remote => true do |f|
+      = form_for user, html: {multipart: true}, remote: true do |f|
+        = token_tag nil
         %fieldset
           %legend Profile Picture
           .row
