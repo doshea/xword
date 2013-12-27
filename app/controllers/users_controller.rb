@@ -1,10 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :ensure_admin, only: [:index]
   before_filter :ensure_logged_in, only: [:account]
-
-  def index
-    @users = User.order(:created_at)
-  end
 
   def show
     @user = User.find(params[:id])

@@ -1,10 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_filter :ensure_admin, only: [:index]
   before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish]
-
-  def index
-    @crosswords = Crossword.order(:created_at)
-  end
 
   def show
     @crossword = Crossword.find(params[:id])

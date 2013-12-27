@@ -1,7 +1,4 @@
-.row.row-topper.row-bookend
-.row
-  .large-12.columns
-    %row
-      .large-6.columns.large-offset-3
-        = render partial: 'users/partials/form'
-.row.row-stopper.row-bookend
+= render layout: 'layouts/partials/topper_stopper' do
+  .row
+    .large-6.columns.large-offset-3
+      = render partial: 'users/partials/form'

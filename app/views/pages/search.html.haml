@@ -1,23 +1,18 @@
-.row.row-topper.row-bookend
-  %h5
-    - if @query.blank?
-      Site Search
-    - else
-      Search Results
-.row#search-results.puzzle-tabs
-  .large-12.columns
-    - if @crosswords.any?
-      = render partial: 'pages/partials/crossword_search'
-      %hr
-    - if @users.any?
-      = render partial: 'pages/partials/user_search'
-      %hr
-    - if @words.any?
-      = render partial: 'pages/partials/word_search'
-      %hr
-    - if @query.blank?
-      %form
-        %input#search2{placeholder: 'A puzzle title, username, clue or word...'}
-        %br
-        %button Go!
-.row.row-stopper.row-bookend
+= content_for :head do
+  = stylesheet_link_tag :search
+
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: @query.blank? ? 'Site Search' : 'Search Results',row_class: 'puzzle-tabs'} do  
+  - if @crosswords.any?
+    = render partial: 'pages/partials/crossword_search'
+    %hr
+  - if @users.any?
+    = render partial: 'pages/partials/user_search'
+    %hr
+  - if @words.any?
+    = render partial: 'pages/partials/word_search'
+    %hr
+  - if @query.blank?
+    %form
+      %input#search2{placeholder: 'A puzzle title, username, clue or word...'}
+      %br
+      %button Go!

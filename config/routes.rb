@@ -2,7 +2,7 @@ Xword::Application.routes.draw do
   root to: 'pages#home'
   get '/welcome' => 'pages#welcome'
 
-  resources :users, only: [:index, :new, :create, :show, :update] do
+  resources :users, only: [:new, :create, :show, :update] do
     collection do
       get :account
       get :forgot_password
@@ -11,7 +11,7 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :crosswords do
+  resources :crosswords, except: [:index] do
     member do
       get :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'
@@ -22,9 +22,9 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :clues, only: [:index, :show, :update]
-  resources :words, only: [:index, :show]
-  resources :comments, only: [:index] do
+  resources :clues, only: [:show, :update]
+  resources :words, only: [:show]
+  resources :comments, only: [] do
     member do
       post :add_comment, as: 'add'
       post :reply, as: :reply_to
@@ -63,5 +63,15 @@ Xword::Application.routes.draw do
   get '/contact' => 'pages#contact'
   get '/stats' => 'pages#stats'
   get '/nytimes' => 'pages#nytimes'
+
+  namespace :admin do
+    get :email
+
+    get :crosswords
+    get :clues
+    get :users
+    get :words
+    get :comments
+  end
 
 end

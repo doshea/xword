@@ -1,67 +1,63 @@
-.row.row-topper.row-bookend
-.row
-  .large-12.columns
-    %dl.tabs.vertical{"data-tab" => ""}
-      %dd.active
-        = link_to '#panel1' do
-          Personal
-      %dd
-        = link_to '#panel2' do
-          Puzzles
-      %dd
-        = link_to '#panel3' do
-          Emails
-      %dd
-        = link_to '#panel4' do
-          Password
-    .tabs-content.vertical
-      #panel1.content.active
-        = form_for user, :html => {:multipart => true}, :remote => true do |f|
-          %fieldset
-            %legend Profile Picture
-            .row
-              .large-5.columns
-                = image_tag user.image, class: 'profile-pic-updateable'
-              .large-7.columns
-                %p
-                  Upload an image from your computer:
-                = f.file_field :image
-                %p
-                  OR
-                %p
-                  paste an image URL:
-                = text_field_tag "user[remote_image_url]", nil, :placeholder => "http://www.example.com/willshortz"
-          %fieldset
-            %legend Personal Info
-            = f.label :first_name
-            = f.text_field :first_name, placeholder: 'Will'
-            = f.label :last_name
-            = f.text_field :last_name, placeholder: 'Shortz'
-            = f.label :location
-            = f.text_field :location, placeholder: 'Lost in thought'
-            = f.submit 'Update Account', class: 'button'
-      #panel2.content
-        = form_tag root_path do
-          %fieldset
-            %legend Puzzle Settings
-            Coming soon!
-      #panel3.content
-        = form_tag root_path do
-          %fieldset
-            %legend
-              Email Settings
-      #panel4.content
-        / = form_tag root_path do
+= render layout: 'layouts/partials/topper_stopper' do
+  %dl.tabs.vertical{"data-tab" => ""}
+    %dd.active
+      = link_to '#panel1' do
+        Personal
+    %dd
+      = link_to '#panel2' do
+        Puzzles
+    %dd
+      = link_to '#panel3' do
+        Emails
+    %dd
+      = link_to '#panel4' do
+        Password
+  .tabs-content.vertical
+    #panel1.content.active
+      = form_for user, :html => {:multipart => true}, :remote => true do |f|
         %fieldset
-          #password-errors.alert-box.alert.hidden{data: {alert: true}}
-            %p
-            %a.slide-close{href: "#"} &times;
-          #password-success.alert-box.success.hidden{data: {alert: true}} Password updated!
-          %legend Change Password
-          = form_tag(change_password_users_path, method: :post, remote: true) do
-            = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
-            = password_field_tag :new_password, nil, placeholder: 'New Password', required: true
-            = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true
-            = submit_tag 'Change Password', class: 'button', disable_with: 'Changing...'
-
-  .row.row-stopper.row-bookend
+          %legend Profile Picture
+          .row
+            .large-5.columns
+              = image_tag user.image, class: 'profile-pic-updateable'
+            .large-7.columns
+              %p
+                Upload an image from your computer:
+              = f.file_field :image
+              %p
+                OR
+              %p
+                paste an image URL:
+              = text_field_tag "user[remote_image_url]", nil, :placeholder => "http://www.example.com/willshortz"
+        %fieldset
+          %legend Personal Info
+          = f.label :first_name
+          = f.text_field :first_name, placeholder: 'Will'
+          = f.label :last_name
+          = f.text_field :last_name, placeholder: 'Shortz'
+          = f.label :location
+          = f.text_field :location, placeholder: 'Lost in thought'
+          = f.submit 'Update Account', class: 'button'
+    #panel2.content
+      = form_tag root_path do
+        %fieldset
+          %legend Puzzle Settings
+          Coming soon!
+    #panel3.content
+      = form_tag root_path do
+        %fieldset
+          %legend
+            Email Settings
+    #panel4.content
+      / = form_tag root_path do
+      %fieldset
+        #password-errors.alert-box.alert.hidden{data: {alert: true}}
+          %p
+          %a.slide-close{href: "#"} &times;
+        #password-success.alert-box.success.hidden{data: {alert: true}} Password updated!
+        %legend Change Password
+        = form_tag(change_password_users_path, method: :post, remote: true) do
+          = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
+          = password_field_tag :new_password, nil, placeholder: 'New Password', required: true
+          = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true
+          = submit_tag 'Change Password', class: 'button', disable_with: 'Changing...'

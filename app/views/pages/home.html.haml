@@ -1,43 +1,40 @@
-.row.row-topper.row-bookend
-.row
-  .large-12.columns.puzzle-tabs
-    %h2 Welcome back, #{@current_user.display_first_name}!
-    %hr{style: 'margin-bottom: 0;'}
-    %dl.tabs{"data-tab" => ""}
-      %dd{class: @unstarted.any? ? 'active' : ''}
-        = link_to '#panel1' do
-          %h5
-            %i.fi-clipboard
-            %span New Puzzles
-      %dd{class: @unstarted.empty? ? 'active' : ''}
-        = link_to '#panel2' do
-          %h5
-            %i.fi-clipboard-pencil
-            %span In Progress
-      %dd
-        = link_to '#panel3' do
-          %h5
-            %i.fi-clipboard-notes
-            %span Solved Puzzles
-      %dd
-        = link_to '#panel4' do
-          %h5
-            %i.fi-alert
-            %span Non-Standard Puzzles
-      %dd
-        = link_to '#panel5' do
-          %h5
-            %i.fi-pencil
-            %span Your Puzzles
-    .tabs-content
-      #panel1.content{class: @unstarted.any? ? 'active' : ''}
-        = render partial: 'pages/home/unstarted'
-      #panel2.content{class: @unstarted.empty? ? 'active' : ''}
-        = render partial: 'pages/home/in_progress'
-      #panel3.content
-        = render partial: 'pages/home/solved_puzzles'
-      #panel4.content
-        = render partial: 'pages/home/nonstandard'
-      #panel5.content
-        = render partial: 'pages/home/your_puzzles'
-.row.row-stopper.row-bookend
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
+  %h2 Welcome back, #{@current_user.display_first_name}!
+  %hr{style: 'margin-bottom: 0;'}
+  %dl.tabs{"data-tab" => ""}
+    %dd{class: @unstarted.any? ? 'active' : ''}
+      = link_to '#panel1' do
+        %h5
+          %i.fi-clipboard
+          %span New Puzzles
+    %dd{class: @unstarted.empty? ? 'active' : ''}
+      = link_to '#panel2' do
+        %h5
+          %i.fi-clipboard-pencil
+          %span In Progress
+    %dd
+      = link_to '#panel3' do
+        %h5
+          %i.fi-clipboard-notes
+          %span Solved Puzzles
+    %dd
+      = link_to '#panel4' do
+        %h5
+          %i.fi-alert
+          %span Non-Standard Puzzles
+    %dd
+      = link_to '#panel5' do
+        %h5
+          %i.fi-pencil
+          %span Your Puzzles
+  .tabs-content
+    #panel1.content{class: @unstarted.any? ? 'active' : ''}
+      = render partial: 'pages/home/unstarted'
+    #panel2.content{class: @unstarted.empty? ? 'active' : ''}
+      = render partial: 'pages/home/in_progress'
+    #panel3.content
+      = render partial: 'pages/home/solved_puzzles'
+    #panel4.content
+      = render partial: 'pages/home/nonstandard'
+    #panel5.content
+      = render partial: 'pages/home/your_puzzles'

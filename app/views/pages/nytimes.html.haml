@@ -1,11 +1,8 @@
-.row.row-topper.row-bookend
-.row
-  .large-12.columns.puzzle-tabs
-    %h4
-      = image_tag @nytimes_user.image.reply_size
-      New York Times Crosswords
-    %hr
-    %ul
-      - @nytimes_puzzles.each do |crossword|
-        = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-.row.row-stopper.row-bookend
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
+  %h4
+    = image_tag @nytimes_user.image.reply_size
+    New York Times Crosswords
+  %hr
+  %ul
+    - @nytimes_puzzles.each do |crossword|
+      = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}

@@ -1,4 +1,2 @@
-.row.row-topper.row-bookend
-  %h4 #{@user.username}'s Public Profile
-= render partial: 'users/partials/user'
-.row.row-stopper.row-bookend
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "#{@user.username}'s Public Profile", custom_columns: true} do
+  = render partial: 'users/partials/user'

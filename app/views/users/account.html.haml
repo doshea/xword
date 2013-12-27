@@ -1,8 +1,5 @@
 = content_for :head do
   = stylesheet_link_tag :account
   = javascript_include_tag :account
-.row.row-topper.row-bookend
-.row
-  .large-12.columns
-    = render partial: 'users/partials/account_form', locals: {user: @user}
-.row.row-stopper.row-bookend
+= render layout: 'layouts/partials/topper_stopper' do
+  = render partial: 'users/partials/account_form', locals: {user: @user}

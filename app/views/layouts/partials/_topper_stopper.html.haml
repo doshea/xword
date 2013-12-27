@@ -1,0 +1,11 @@
+.row.row-bookend.row-topper
+  - if defined?(row_top_title)
+    %h4
+      = row_top_title
+.row{style: defined?(row_style) ? row_style : nil, class: defined?(row_class) ? row_class : nil}
+  - unless defined?(custom_columns)
+    .large-12.columns{style: defined?(columns_style) ? columns_style : nil, class: defined?(columns_class) ? columns_class : nil}
+      = yield
+  - else
+    = yield
+.row.row-bookend.row-stopper

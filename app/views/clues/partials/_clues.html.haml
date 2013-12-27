@@ -5,7 +5,7 @@
       %th Content
       %th Word
       %th Difficulty
-      %th Creator
+      -# %th Creator
       %th
       %th
   %tbody
@@ -15,6 +15,6 @@
         %td= clue.content
         %td= clue.word.content if clue.word
         %td= clue.difficulty
-        %td= link_to clue.user.username, clue.user
+        -# # %td= link_to clue.user.username, clue.user
         %td Edit
         %td Delete

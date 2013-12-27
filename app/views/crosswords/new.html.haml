@@ -2,10 +2,8 @@
   = stylesheet_link_tag 'new_crossword'
 = javascript_include_tag 'spin.min'
 = javascript_include_tag 'crosswords/new'
-.row.row-topper.row-bookend
-  %h4
-    New Puzzle
-.row.spin-target
+
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'New Puzzle', row_class: 'spin-target', custom_columns: true} do
   .large-7.columns
     = render partial: 'crosswords/partials/new_form'
   .large-5.columns
@@ -15,4 +13,3 @@
       .row
         .large-12.columns
           = render partial: 'crosswords/partials/mini_pic_canvas2', locals: {rows: @crossword.rows, cols: @crossword.cols}
-.row.row-stopper.row-bookend

@@ -1,4 +1,6 @@
 class UserMailer < ActionMailer::Base
+  layout 'default_mail'
+
   full_sender = "Crossword Caf\u00e9 <info@crossword-cafe.com>"
   default from: full_sender
 

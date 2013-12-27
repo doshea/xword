@@ -1,7 +1,4 @@
 class CommentsController < ApplicationController
-  def index
-    @comments = Comment.all
-  end
   def add_comment
     crossword = Crossword.find(params[:id])
     user = @current_user

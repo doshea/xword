@@ -1,9 +1,8 @@
 -# This page is only shown to users if they have worked on multiple solutions to the same crossword
 = content_for :head do
   = stylesheet_link_tag :solution_choice
-.row.row-topper.row-bookend
-  %h4 Choose a Solution
-.row#solution-choice
+
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Choose a Solution', custom_columns: true} do
   .large-4.columns
     = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: @crossword, scale: 2.0}
     .metadata
@@ -65,5 +64,3 @@
               %td
 /# This script will show previews of the solutions on the page when their rows are hovered
 = javascript_include_tag 'solution_choice'
-
-.row.row-stopper.row-bookend

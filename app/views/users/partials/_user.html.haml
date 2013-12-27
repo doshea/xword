@@ -1,22 +1,21 @@
-.row
-  %br
-  .large-3.columns
-    = image_tag @user.image
-    %p.center
-      - if @user.first_name or @user.last_name
-        #{@user.first_name} #{@user.last_name}
-        %br
-      Joined: #{@user.created_at.strftime("%b %d, %Y")}
-    %h5 Stats
-    %ul
-      %li Crosswords created: #{@user.crossword_count}
-      %li Clues written: #{@user.clue_count}
-  .large-5.columns
+%br
+.large-3.columns
+  = image_tag @user.image
+  %p.center
+    - if @user.first_name or @user.last_name
+      #{@user.first_name} #{@user.last_name}
+      %br
+    Joined: #{@user.created_at.strftime("%b %d, %Y")}
+  %h5 Stats
+  %ul
+    %li Crosswords created: #{@user.crossword_count}
+    %li Clues written: #{@user.clue_count}
+.large-5.columns
 
-  .large-4.columns
-    %ul
-      - @user.crosswords.each do |cw|
-        %li
-          = link_to cw.title, cw
-          = link_to cw do
-            = render partial: 'crosswords/partials/mini_pic_canvas', locals: {:cw => cw}
+.large-4.columns
+  %ul
+    - @user.crosswords.each do |cw|
+      %li
+        = link_to cw.title, cw
+        = link_to cw do
+          = render partial: 'crosswords/partials/mini_pic_canvas', locals: {:cw => cw}

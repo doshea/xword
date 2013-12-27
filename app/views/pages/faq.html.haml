@@ -1,9 +1,6 @@
-.row.row-topper.row-bookend
-.row
-  .large-12.columns
-    %h2 Frequently Asked Questions
-    %hr
-    %h5 Why isn't there more on this page?
-    %p
-      Well, I haven't been asked many questions yet. If you have questions, #{mail_to 'info@crossword-cafe.com', 'email me'}!
-.row.row-stopper.row-bookend
+= render layout: 'layouts/partials/topper_stopper' do
+  %h2 Frequently Asked Questions
+  %hr
+  %h5 Why isn't there more on this page?
+  %p
+    Well, I haven't been asked many questions yet. If you have questions, #{mail_to 'info@crossword-cafe.com', 'email me'}!
