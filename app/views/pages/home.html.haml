@@ -1,3 +1,7 @@
+-# TODO: FIX UP THE SEARCH.CSS FILE SO IT DOESN'T CONTAIN THIS SORT OF GLOBAL CSS
+= content_for :head do
+  = stylesheet_link_tag :search
+
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
   %h2 Welcome back, #{@current_user.display_first_name}!
   %hr{style: 'margin-bottom: 0;'}
