@@ -66,6 +66,7 @@ Xword::Application.routes.draw do
 
   namespace :admin do
     get :email
+    post :test_emails
 
     get :crosswords
     get :clues

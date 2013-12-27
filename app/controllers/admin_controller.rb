@@ -3,6 +3,8 @@ class AdminController < ApplicationController
   def email
 
   end
+  def test_emails
+  end
 
   def users
     @users = User.order(:created_at)

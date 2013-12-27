@@ -26,4 +26,17 @@ namespace :nyt do
       end
     end
   end
+
+  # should only be run on local environment
+  task :record => :environment do
+    latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
+    # target_path = 'lib/assets/nyt_puzzle_history.rb'
+    target_path = '../nyt_puzzle_history/nyt_puzzle_history.rb'
+    File.open(target_path, 'a') do |f|
+      f.puts ','
+      f.print latest
+    end
+    puts "Puzzle Recorded."
+  end
+
 end

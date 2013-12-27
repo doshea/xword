@@ -21,7 +21,7 @@
         = form_tag search_path, method: 'get', id: 'top-search', class: 'relative' do
           .row.collapse
             .small-12.columns
-              = text_field_tag 'query', nil, class: 'round', autocomplete: 'off'
+              = search_field_tag 'query', nil, class: 'round', autocomplete: 'off'
               %i.fi-magnifying-glass
           %ol#live_results
       %li.divider

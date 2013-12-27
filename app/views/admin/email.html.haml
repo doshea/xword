@@ -1,1 +1,17 @@
-email
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Email Testing Tool', custom_columns: true} do
+  = form_tag admin_test_emails_path, remote: true do
+    .large-6.columns
+      %h5 User
+      = label_tag :reset_password
+      = check_box_tag :reset_password
+      = label_tag :signup
+      = check_box_tag :signup
+    .large-6.columns
+      %h5 Admin
+      = label_tag :nyt_upload_error, 'NYT Upload Error'
+      = check_box_tag :nyt_upload_error
+    .large-6.columns
+      = label_tag :address, 'Mail To:'
+      = email_field_tag :address, 'info@crossword-cafe.com'
+    .large-6.columns
+      = submit_tag 'Send Test Emails', class: 'button'
