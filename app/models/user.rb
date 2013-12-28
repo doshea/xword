@@ -2,18 +2,20 @@
 #
 # Table name: users
 #
-#  id              :integer          not null, primary key
-#  first_name      :string(255)
-#  last_name       :string(255)
-#  username        :string(255)      not null
-#  email           :string(255)      not null
-#  is_admin        :boolean          default(FALSE)
-#  password_digest :string(255)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  image           :text
-#  location        :string(255)
-#  auth_token      :string(255)
+#  id                     :integer          not null, primary key
+#  first_name             :string(255)
+#  last_name              :string(255)
+#  username               :string(255)      not null
+#  email                  :string(255)      not null
+#  image                  :text
+#  location               :string(255)
+#  is_admin               :boolean          default(FALSE)
+#  password_digest        :string(255)
+#  auth_token             :string(255)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  password_reset_token   :string(255)
+#  password_reset_sent_at :datetime
 #
 
 class User < ActiveRecord::Base
