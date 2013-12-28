@@ -38,11 +38,38 @@ class UsersController < ApplicationController
     @user = @current_user
     @redirect = params[:redirect]
   end
-  def reset_password
+  def send_password_reset
     user = @current_user || User.find_by(email: params[:email]) || User.find_by(username: params[:username])
-    UserMailer.reset_password_email(user).deliver if user
+    if user
+      user.generate_token(:password_reset_token)
+      user.password_reset_sent_at = Time.zone.now
+      user.save
+      UserMailer.reset_password_email(user).deliver
+    else
+      #IF THERE IS NO USER
+    end
+  end
+  def reset_password
+    @user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
   end
   
+  def resetter
+    user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
+    if user
+      if user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
+        user.password_reset_token = nil
+        user.password_reset_sent_at = nil
+        user.save
+        render :password_updated
+      else
+        @errors = user.errors.full_messages.uniq
+        render :password_errors
+      end
+    else
+      render :redirect_back
+    end
+  end
+
   def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])

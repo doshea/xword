@@ -6,8 +6,10 @@ Xword::Application.routes.draw do
     collection do
       get :account
       get :forgot_password
-      post :reset_password
+      get 'reset_password/:password_reset_token' => 'users#reset_password', as: 'reset_password'
+      post :send_password_reset
       post :change_password
+      post :resetter
     end
   end
 

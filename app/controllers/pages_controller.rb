@@ -40,7 +40,7 @@ class PagesController < ApplicationController
 
   def account_required
     @redirect = params[:redirect]
-    # redirect_to reset_password_users_path(redirect: url_for({controller: :pages, action: :account_required, only_path: false}).html_safe)
+    # redirect_to send_password_reset_users_path(redirect: url_for({controller: :pages, action: :account_required, only_path: false}).html_safe)
   end
 
   def faq

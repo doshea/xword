@@ -8,11 +8,14 @@ window.global =
 
   live_search: ->
     query = $('#query').val()
-    settings =
-      dataType: 'script'
-      type: 'GET'
-      url: "/live_search"
-      data: {query: query}
-    $.ajax(settings)
+    if query is ''
+      $('#live-results').hide()
+    else
+      settings =
+        dataType: 'script'
+        type: 'GET'
+        url: "/live_search"
+        data: {query: query}
+      $.ajax(settings)
 
 $(document).ready(global.ready)

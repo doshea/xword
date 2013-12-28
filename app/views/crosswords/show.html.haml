@@ -91,7 +91,7 @@
     .row
       .large-2.columns
         = link_to @crossword.user do
-          =image_tag(@crossword.user.image.creator_pic)
+          = image_tag(@crossword.user.image.creator_pic, class: 'small-shadow thin-border')
       .large-10.columns
         %p
           %em= @crossword.description
