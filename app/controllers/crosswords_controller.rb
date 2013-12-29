@@ -61,10 +61,11 @@ class CrosswordsController < ApplicationController
   def create_team
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
+      preexisting_letters = @current_user.solutions.where(team: false, crossword_id: @crossword.id).first.try(:letters)
       @solution = Solution.new(
         crossword_id: @crossword.id,
         user_id: @current_user.id,
-        letters: @crossword.letters.gsub(/[^_]/, ' ')
+        letters: preexisting_letters || @crossword.letters.gsub(/[^_]/, ' ')
       )
       @solution.key = Solution.generate_unique_key
       @solution.team = true
