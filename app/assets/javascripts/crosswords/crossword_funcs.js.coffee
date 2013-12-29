@@ -15,6 +15,7 @@ window.cw =
   SHIFT : 16
   TAB : 9
   BACKSPACE : 8
+  HYPHEN: 189
   PAGE_NAV_KEYS: null
 
   # Removes highlighting from the selected cell, the selected word and the selected clue. Also sets the
@@ -134,9 +135,10 @@ window.cw =
         else
           if cw.selected
             letter = String.fromCharCode(key)
+            letter = '-' if key is cw.HYPHEN
             unless letter is cw.selected.get_letter()
               if cw.editing
-                cw.selected.set_letter String.fromCharCode(key), true
+                cw.selected.set_letter letter, true
                 edit_app.update_unsaved()
                 token = $("#crossword").data("auth-token")
                 cell_id = cw.selected.data("id")
@@ -153,7 +155,7 @@ window.cw =
                     alert "Error toggling void!"
               else
                 check_for_finish = cw.selected.is_empty_cell()
-                cw.selected.set_letter String.fromCharCode(key), true
+                cw.selected.set_letter letter, true
                 cw.selected.check_finisheds()  if check_for_finish
                 solve_app.update_unsaved()
             cw.selected.next_empty_cell().highlight()
