@@ -10,7 +10,16 @@ module Newyorkable
   module ClassMethods
 
     def add_nyt_puzzle(pz)
-      pz_letters = pz['grid'].join('').gsub('.','_')
+      #account for multiples
+      pz_letters = pz['grid']
+
+      pz_letters.each_with_index do |el, i|
+        if el.length > 1
+          pz_letters[i] = '-' #replace with hyphens, not underscores because underscores mean void
+        end
+      end
+
+      pz_letters = pz_letters.join('').gsub('.','_')
       begin
         pz_date = Date.parse(pz['title'])
       rescue
