@@ -1,0 +1,24 @@
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Clone User Tool', custom_columns: true} do
+  %br
+  = form_tag(admin_user_search_path, class: 'center', remote: true) do
+    .large-1.columns
+      = label_tag 'user[id]', 'ID'
+      = number_field_tag 'user[id]'
+    .large-2.columns
+      = label_tag 'user[first_name]', 'First Name'
+      = text_field_tag 'user[first_name]'
+    .large-2.columns
+      = label_tag 'user[last_name]', 'Last Name'
+      = text_field_tag 'user[last_name]'
+    .large-2.columns
+      = label_tag 'user[username]', 'Username'
+      = text_field_tag 'user[username]'
+    .large-3.columns
+      = label_tag 'user[email]', 'Email'
+      = email_field_tag 'user[email]'
+    .large-2.columns
+      = submit_tag 'Search', class: 'button'
+  = render partial: 'users/partials/users'
+  = form_tag(admin_clone_user_path, class: 'center') do
+    = number_field_tag :id, nil
+    = submit_tag 'Clone', class: 'button'

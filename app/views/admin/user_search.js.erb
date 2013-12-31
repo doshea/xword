@@ -1,0 +1,2 @@
+$('#users').after("<%=j render partial: 'users/partials/users' %>").remove();
+alert("<%= @users.any? ? (pluralize(@users.length, 'user'))+' found!' : 'NO USERS FOUND.' %>");

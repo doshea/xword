@@ -69,6 +69,9 @@ Xword::Application.routes.draw do
   namespace :admin do
     get :email
     post :test_emails
+    get :clone_user, to: :cloning_tank, as: :cloning_tank
+    post :user_search
+    post :clone_user
 
     get :crosswords
     get :clues

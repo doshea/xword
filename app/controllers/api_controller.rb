@@ -8,11 +8,11 @@ class ApiController < ApplicationController
       end
 
       format.json do
-        render json: @data.to_json
+        render json: @data
       end
 
       format.xml do
-        render xml: @data.to_xml
+        render xml: @data
       end
     end
   end
