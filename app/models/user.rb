@@ -42,6 +42,12 @@ class User < ActiveRecord::Base
                     tsearch: {prefix: true}
                   }
 
+  pg_search_scope :admin_search,
+                against: [:id, :first_name, :last_name, :username, :email],
+                using: {
+                  tsearch: {prefix: true}
+                }
+
   mount_uploader :image, AccountPicUploader
 
   MIN_PASSWORD_LENGTH = 5

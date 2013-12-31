@@ -10,8 +10,7 @@ class AdminController < ApplicationController
   end
 
   def user_search
-    relevant_params = params[:user].select{|k,v| !v.blank?}
-    @users = User.where(relevant_params)
+    @users = User.admin_search(params[:query])
   end
   def clone_user
     user = User.find params[:id]
