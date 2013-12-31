@@ -77,4 +77,8 @@ Xword::Application.routes.draw do
     get :comments
   end
 
+  namespace :api do
+    get :history
+  end
+
 end
