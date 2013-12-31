@@ -33,8 +33,11 @@ namespace :nyt do
     # target_path = 'lib/assets/nyt_puzzle_history.rb'
     target_path = '../nyt_puzzle_history/nyt_puzzle_history.rb'
     File.open(target_path, 'a') do |f|
+      File.truncate(target_path, File.size(target_path)-2)
       f.puts ','
+      f.print '  '
       f.print latest
+      f.puts ']'
     end
     puts "Puzzle Recorded."
   end
