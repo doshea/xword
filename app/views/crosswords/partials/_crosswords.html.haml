@@ -23,8 +23,8 @@
         %td= link_to crossword.user.username, crossword.user
         %td= crossword.published ? 'T' : 'F'
         %td= crossword.date_published ? crossword.date_published.strftime('%m/%d/%y') : 'N/A'
-        %td{style: 'font-size: 6px; max-width: 300px; overflow-wrap: break-word;'}= crossword.description
+        %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.description
         %td= crossword.rows
         %td= crossword.cols
-        %td{style: 'font-size: 6px; max-width: 300px; overflow-wrap: break-word;'}= crossword.letters
+        %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.letters
         %td= crossword.circled ? 'T' : 'F'
