@@ -23,7 +23,7 @@ class AdminController < ApplicationController
   end
 
   def crosswords
-    @crosswords = Crossword.order(:created_at)
+    @crosswords = Crossword.order(:created_at).paginate(:page => params[:page])
   end
 
   def words

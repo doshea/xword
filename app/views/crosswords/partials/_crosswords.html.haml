@@ -11,7 +11,7 @@
       %th Rows
       %th Columns
       %th Letters
-      %th Circles
+      %th Circled?
   %tbody
     - @crosswords.each do |crossword|
       = content_tag_for(:tr, crossword) do
@@ -21,11 +21,10 @@
         %td= crossword.id
         %td= link_to crossword.title, crossword
         %td= link_to crossword.user.username, crossword.user
-        %td= crossword.published
-        %td= crossword.date_published
-        %td= crossword.description
+        %td= crossword.published ? 'T' : 'F'
+        %td= crossword.date_published ? crossword.date_published.strftime('%m/%d/%y') : 'N/A'
+        %td{style: 'font-size: 6px; max-width: 300px; overflow-wrap: break-word;'}= crossword.description
         %td= crossword.rows
         %td= crossword.cols
-        %td= crossword.letters
-        / %td= crossword.circles
-        %td= crossword.letters
+        %td{style: 'font-size: 6px; max-width: 300px; overflow-wrap: break-word;'}= crossword.letters
+        %td= crossword.circled ? 'T' : 'F'

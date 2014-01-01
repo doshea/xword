@@ -1,4 +1,3 @@
-.row
-  .large-12.columns
-    %h1 Crosswords
-    = render partial: 'crosswords/partials/crosswords'
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Crosswords'} do
+  = render partial: 'crosswords/partials/crosswords'
+  = will_paginate @crosswords
