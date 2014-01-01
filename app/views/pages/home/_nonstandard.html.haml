@@ -3,6 +3,7 @@
   %ul
     - nonstandard_initial.each do |crossword|
       = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+      
   - nonstandard_remaining = @nonstandard[Crossword.per_page..-1]
   - if nonstandard_remaining && nonstandard_remaining.any?
     .row.center
