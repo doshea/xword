@@ -16,7 +16,7 @@ FactoryGirl.define do
   #THESE CLUES NEED ASSOCIATED WORDS
   factory :clue, class: Clue do
     difficulty { rand(5) + 1}
-    content Faker::Lorem.words(7)
+    content Faker::Lorem.words(7).join(' ')
   end
   factory :min_clue, class: Clue do
     content 'this is a clue'

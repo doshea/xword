@@ -23,8 +23,8 @@ describe Clue do
     it {should belong_to :user}
     it {should have_many :across_cells}
     it {should have_many :down_cells}
-    it {should have_many(:crosswords).through(:across_cells)}
-    it {should have_many(:crosswords).through(:down_cells)}
+    it {should have_many(:across_crosswords).through(:across_cells)}
+    it {should have_many(:down_crosswords).through(:down_cells)}
   end
   context 'attributes' do
 

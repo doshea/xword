@@ -10,23 +10,13 @@
       %th Created
       %th Updated
   %tbody
-    - if @users && @users.any?
-      - @users.each do |user|
-        = content_tag_for(:tr, user) do
-          %td= user.id
-          %td= user.first_name
-          %td= user.last_name
-          %td= link_to user.username, user
-          %td= user.email
-          %td= user.is_admin
-          %td= user.created_at.strftime("%b %d, %Y")
-          %td= user.updated_at.strftime("%b %d, %Y")
-    - else
-      %td N/A
-      %td N/A
-      %td N/A
-      %td N/A
-      %td N/A
-      %td N/A
-      %td N/A
-      %td N/A
+    - @users.each do |user|
+      = content_tag_for(:tr, user) do
+        %td= user.id
+        %td= user.first_name
+        %td= user.last_name
+        %td= link_to user.username, user
+        %td= user.email
+        %td= user.is_admin
+        %td= user.created_at.strftime("%b %d, %Y")
+        %td= user.updated_at.strftime("%b %d, %Y")
