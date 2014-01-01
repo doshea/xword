@@ -31,6 +31,8 @@
         %h5
           %i.fi-pencil
           %span Your Puzzles
+  :javascript
+    var puzzles_remaining = {};
   .tabs-content
     #panel1.content{class: @unstarted.any? ? 'active' : ''}
       = render partial: 'pages/home/unstarted'

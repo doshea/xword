@@ -22,6 +22,9 @@ Xword::Application.routes.draw do
       get 'team/:key' => 'crosswords#team', as: 'team'
       get 'solution_choice'
     end
+    collection do
+      post :batch
+    end
   end
 
   resources :clues, only: [:show, :update]

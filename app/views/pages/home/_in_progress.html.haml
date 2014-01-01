@@ -1,13 +1,23 @@
 - if @in_progress_solo.any? || @in_progress_team.any?
   - if @in_progress_solo.any?
+    - in_progress_solo_initial = @in_progress_solo[0...Crossword.per_page]
     %ul
-      - @in_progress_solo.each do |crossword|
+      - in_progress_solo_initial.each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    - in_progress_solo_remaining = @in_progress_solo[Crossword.per_page..-1]
+    - if in_progress_solo_remaining && in_progress_solo_remaining.any?
+      .row.center
+        = render partial: 'pages/home/load_next_button', locals: {remaining: in_progress_solo_remaining}
     %hr
   - if @in_progress_team.any?
+    - in_progress_team_initial = @in_progress_team[0...Crossword.per_page]
     %ul
-      - @in_progress_team.each do |crossword|
+      - in_progress_team_initial.each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    - in_progress_team_remaining = @in_progress_team[Crossword.per_page..-1]
+    - if in_progress_team_remaining && in_progress_team_remaining.any?
+      .row.center
+        = render partial: 'pages/home/load_next_button', locals: {remaining: in_progress_team_remaining}
     %hr
 - else
   You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}

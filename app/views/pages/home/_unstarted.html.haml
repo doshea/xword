@@ -1,6 +1,11 @@
 - if @unstarted.any?
+  - unstarted_initial = @unstarted[0...Crossword.per_page] || []
   %ul
-    - @unstarted.each do |crossword|
+    - unstarted_initial.each do |crossword|
       = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+  - unstarted_remaining = @unstarted[Crossword.per_page..-1]
+  - if unstarted_remaining && unstarted_remaining.any?
+    .row.center
+      = render partial: 'pages/home/load_next_button', locals: {remaining: unstarted_remaining}
 - else
   %p You're already working on all of the puzzles we've got!

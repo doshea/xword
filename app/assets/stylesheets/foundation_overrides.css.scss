@@ -128,4 +128,7 @@ input#query {
   .content {
     width: 100%;
   }
+  ul {
+    overflow: auto;
+  }
 }

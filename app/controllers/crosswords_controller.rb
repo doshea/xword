@@ -127,7 +127,12 @@ class CrosswordsController < ApplicationController
         redirect_to @solutions.first
       end
     end
+  end
 
+  def batch
+    @crosswords = Crossword.find(params[:ids])
+    @crosswords_remaining = @crosswords[Crossword.per_page..-1]
+    @crosswords = @crosswords[0...Crossword.per_page]
   end
 
   private
