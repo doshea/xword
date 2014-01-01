@@ -1,7 +1,13 @@
 <% @crosswords.each do |crossword| %>
-$('.content.active ul').append("<%=j render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword} %>");
+  $('.content.active ul').append("<%=j render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword} %>");
 <% end %>
+if($('.content.active form').length == 1){
+  var old_button = $('.content.active form');
+} else {
+  var old_button = $('.content.active input[disabled]').parent();
+}
 <% if @crosswords_remaining && @crosswords_remaining.any? %>
-  $('.content.active form').after("<%=j render partial: 'pages/home/load_next_button', locals: {remaining: @crosswords_remaining} %>");
+  old_button.after("<%=j render partial: 'pages/home/load_next_button', locals: {remaining: @crosswords_remaining} %>").remove();
+<% else %>
+  old_button.remove();
 <% end %>
-$('.content.active form').first().remove();
