@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131228071856) do
+ActiveRecord::Schema.define(version: 20140101094125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,8 +70,8 @@ ActiveRecord::Schema.define(version: 20131228071856) do
   end
 
   create_table "favorite_puzzles", force: true do |t|
-    t.integer  "crossword_id"
-    t.integer  "user_id"
+    t.integer  "crossword_id", null: false
+    t.integer  "user_id",      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -83,8 +83,8 @@ ActiveRecord::Schema.define(version: 20131228071856) do
   end
 
   create_table "solution_partnerings", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "solution_id"
+    t.integer  "user_id",     null: false
+    t.integer  "solution_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
