@@ -48,6 +48,8 @@ class User < ActiveRecord::Base
                   tsearch: {prefix: true}
                 }
 
+  self.per_page = 50
+
   mount_uploader :image, AccountPicUploader
 
   MIN_PASSWORD_LENGTH = 5

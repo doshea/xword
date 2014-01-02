@@ -19,7 +19,7 @@ class AdminController < ApplicationController
   end
 
   def users
-    @users = User.order(:created_at)
+    @users = User.order(:created_at).paginate(:page => params[:page])
   end
 
   def crosswords
@@ -27,15 +27,15 @@ class AdminController < ApplicationController
   end
 
   def words
-    @words = Word.all
+    @words = Word.all.paginate(:page => params[:page])
   end
 
   def clues
-    @clues = Clue.all
+    @clues = Clue.all.paginate(:page => params[:page])
   end
 
   def comments
-    @comments = Comment.all
+    @comments = Comment.all.paginate(:page => params[:page])
   end
 
 end

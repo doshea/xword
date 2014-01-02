@@ -1,4 +1,5 @@
-.row
-  .large-12.columns
-    %h1 Users
-    = render partial: 'users/partials/users'
+= content_for :head do
+  = stylesheet_link_tag :pagination
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Users'} do
+  = will_paginate @users, class: 'smaller pagination'
+  = render partial: 'users/partials/users'

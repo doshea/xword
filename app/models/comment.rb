@@ -19,4 +19,6 @@ class Comment < ActiveRecord::Base
   belongs_to :crossword, inverse_of: :comments
   has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id'
   belongs_to :base_comment, class_name: 'Comment'
+
+  self.per_page = 50
 end

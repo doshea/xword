@@ -3,30 +3,13 @@
   %a Admin
   %ul.dropdown
     %li.has-dropdown
-      = link_to 'Users', admin_users_path
+      = link_to 'Indices', '#'
       %ul.dropdown
-        %li
-          = link_to 'See All', admin_users_path
-    %li.has-dropdown
-      = link_to 'Crosswords', admin_crosswords_path
-      %ul.dropdown
-        %li
-          = link_to 'See All', admin_crosswords_path
-    %li.has-dropdown
-      = link_to 'Clues', admin_clues_path
-      %ul.dropdown
-        %li
-          = link_to 'See All', admin_clues_path
-    %li.has-dropdown
-      = link_to 'Words', admin_words_path
-      %ul.dropdown
-        %li
-          = link_to 'See All', admin_words_path
-    %li.has-dropdown
-      = link_to 'Comments', admin_comments_path
-      %ul.dropdown
-        %li
-          = link_to 'See All', admin_comments_path
+        %li= link_to 'Users', admin_users_path
+        %li= link_to 'Crosswords', admin_crosswords_path
+        %li= link_to 'Clues', admin_clues_path
+        %li= link_to 'Words', admin_words_path
+        %li= link_to 'Comments', admin_comments_path
     %li
       = link_to 'Emails', admin_email_path
     %li

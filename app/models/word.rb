@@ -24,6 +24,8 @@ class Word < ActiveRecord::Base
   has_many :across_crosswords, through: :across_cells, source: :crossword
   has_many :down_crosswords, through: :down_cells, source: :crossword
 
+  self.per_page = 50
+
   validates_uniqueness_of :content
 end
 

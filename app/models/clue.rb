@@ -25,8 +25,12 @@ class Clue < ActiveRecord::Base
   has_many :across_crosswords, through: :across_cells, inverse_of: :across_clues, source: :crossword
   has_many :down_crosswords, through: :down_cells, inverse_of: :down_clues, source: :crossword
 
+  self.per_page = 50
+
   validates :content, presence: true, length: {maximum: 100}
   validates :difficulty, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5}
+
+
 
   private
   def strip_tags
