@@ -16,7 +16,7 @@
         %td= user.first_name
         %td= user.last_name
         %td= link_to user.username, user
-        %td= user.email
+        %td= mail_to user.email, user.email
         %td= user.is_admin
-        %td= user.created_at.strftime("%b %d, %Y")
-        %td= user.updated_at.strftime("%b %d, %Y")
+        %td= user.created_at.strftime("%m/%d/%y")
+        %td= user.updated_at.strftime("%m/%d/%y")

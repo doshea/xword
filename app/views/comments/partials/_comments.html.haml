@@ -3,7 +3,7 @@
     %tr
       %th ID
       %th Content
-      %th Flagged
+      %th Flag?
       %th Creator
       %th Crossword
   %tbody
@@ -11,7 +11,9 @@
       = content_tag_for(:tr, comment) do
         %td= comment.id
         %td= comment.content
-        %td= comment.flagged
+        %td
+          - if comment.flagged
+            %i.fi-flag{style: 'color: red;'}
         %td
           = link_to comment.user.username, comment.user
         %td

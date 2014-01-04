@@ -11,8 +11,8 @@
   %tbody
     - @clues.each do |clue|
       = content_tag_for(:tr, clue) do
-        %td= clue.id
-        %td= clue.content
+        %td= link_to clue.id, clue
+        %td= link_to clue.content, clue
         %td= clue.word.content if clue.word
         %td= clue.difficulty
         -# # %td= link_to clue.user.username, clue.user

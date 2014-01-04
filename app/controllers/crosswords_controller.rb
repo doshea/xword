@@ -95,9 +95,11 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
       unless @current_user.favorites.include? @crossword
-        new_favorite = FavoritePuzzle.create
-        @current_user.favorite_puzzles << new_favorite
-        @crossword.favorite_puzzles << new_favorite
+        if FavoritePuzzle.create(user_id: @current_user.id, crossword_id: @crossword.id)
+          render :favorite_unfavorite
+        else
+
+        end
       end
     end
   end
@@ -107,6 +109,7 @@ class CrosswordsController < ApplicationController
     if @crossword && @current_user
       existing_favorite = FavoritePuzzle.find_by_user_id_and_crossword_id(@current_user.id, @crossword.id)
       existing_favorite.delete if existing_favorite
+      render :favorite_unfavorite
     end
   end
 

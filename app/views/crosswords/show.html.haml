@@ -70,8 +70,10 @@
       - if @current_user
         %a#solve-save.button.tiny.secondary{href: '#', :'data-tooltip' => true, title: 'Quicksave'}
           %i.fi-save
-      %a.button.tiny.secondary{:'data-tooltip' => true, title: 'Favorite Puzzle'}
-        %i.fi-star
+        = link_to(favorite_crossword_path(@crossword), title: 'Favorite Puzzle', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? ' hidden' : ''}", method: :post, id: 'favorite', remote: true) do
+          %i.fi-star>
+        = link_to(unfavorite_crossword_path(@crossword), title: 'Unfavorite Puzzle', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", method: :delete, id: 'unfavorite', remote: true) do
+          %i.fi-star{style: 'color: red;'}>
       - if @team
         %div.button.tiny.secondary
           %i.fi-torsos-all
