@@ -24,11 +24,11 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    clue = Clue.find params[:id]
-    if @current_user && (@current_user.is_admin? || (@current_user == clue.user))
-      clue.delete
+    @comment = Comment.find params[:id]
+    if @current_user && (@current_user.is_admin? || (@current_user == @comment.user))
+      @comment.delete
     else
-
+      
     end
   end
 end

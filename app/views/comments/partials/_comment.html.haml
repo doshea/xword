@@ -1,4 +1,4 @@
-.row.comment
+= content_tag_for(:div, comment, class: 'row') do
   .large-1.columns.small-3
     = link_to (image_tag comment.user.image.comment_size), comment.user
   .large-11.columns
@@ -9,11 +9,11 @@
     %ul.inline-list
       %li
         - if @current_user
-          = link_to nil, class: 'reply-button' do
+          = link_to nil, class: 'reply-button reply', style: 'display: inline-block;' do
             %i.fi-comment
             %span Reply
           - if @current_user.is_admin? || (@current_user == comment.user)
-            = link_to comment, method: :delete, remote: true, class: 'reply-button' do
+            = link_to comment, method: :delete, remote: true, class: 'reply-button', style: 'display: inline-block;' do
               %i.fi-trash
               %span #{'Admin ' unless (@current_user == comment.user)}Delete
           = link_to nil, class: 'cancel-button', style: 'display: none;' do

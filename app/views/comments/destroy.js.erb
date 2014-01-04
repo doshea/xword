@@ -1,0 +1,4 @@
+var id = <%= @comment.id %>;
+var target = $('#comment_'+id);
+target.next('hr').fadeOut('fast');
+target.fadeOut('fast');
