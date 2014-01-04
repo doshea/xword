@@ -15,7 +15,7 @@
           - if @current_user.is_admin? || (@current_user == comment.user)
             = link_to comment, method: :delete, remote: true, class: 'reply-button' do
               %i.fi-trash
-              %span= @current_user.is_admin? ? 'ADMIN Delete' : 'Delete'
+              %span #{'Admin ' unless (@current_user == comment.user)}Delete
           = link_to nil, class: 'cancel-button', style: 'display: none;' do
             %i.fi-x
             Never mind
