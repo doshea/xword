@@ -3,7 +3,7 @@
 # Table name: clues
 #
 #  id         :integer          not null, primary key
-#  content    :string(255)      default("ENTER CLUE")
+#  content    :text             default("ENTER CLUE")
 #  difficulty :integer          default(1)
 #  user_id    :integer
 #  word_id    :integer

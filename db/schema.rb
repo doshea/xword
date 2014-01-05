@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140105070403) do
+ActiveRecord::Schema.define(version: 20140101094125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20140105070403) do
   end
 
   create_table "clues", force: true do |t|
-    t.string   "content",    default: "ENTER CLUE"
+    t.text     "content",    default: "ENTER CLUE"
     t.integer  "difficulty", default: 1
     t.integer  "user_id"
     t.integer  "word_id"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20140105070403) do
   end
 
   create_table "comments", force: true do |t|
-    t.string   "content",                         null: false
+    t.text     "content",                         null: false
     t.boolean  "flagged",         default: false, null: false
     t.integer  "user_id"
     t.integer  "crossword_id"

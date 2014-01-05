@@ -3,7 +3,7 @@
 # Table name: comments
 #
 #  id              :integer          not null, primary key
-#  content         :string(255)      not null
+#  content         :text             not null
 #  flagged         :boolean          default(FALSE), not null
 #  user_id         :integer
 #  crossword_id    :integer
