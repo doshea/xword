@@ -18,8 +18,8 @@ window.solve_app =
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
     solve_app.check_all_finished()
     $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
-    $('.reply-content').on('keypress', solve_app.add_comment_or_reply)
-    $('.reply-button.reply').on('click', solve_app.toggle_reply_form)
+    $('#comments').on('keypress', '.reply-content', solve_app.add_comment_or_reply)
+    $('#comments').on('click', '.reply-button.reply', solve_app.toggle_reply_form)
     $('.cancel-button').on('click', solve_app.toggle_reply_form)
     true
 
@@ -82,7 +82,7 @@ window.solve_app =
           $(this).val('')
 
   toggle_reply_form: (e) ->
-    e.preventDefault()
+    e.preventDefault() if e
     reply_form = $(this).siblings('form')
     reply_form.toggle('fast')
     $(this).siblings('a').toggle()

@@ -3,8 +3,8 @@
 # Table name: favorite_puzzles
 #
 #  id           :integer          not null, primary key
-#  crossword_id :integer
-#  user_id      :integer
+#  crossword_id :integer          not null
+#  user_id      :integer          not null
 #  created_at   :datetime
 #  updated_at   :datetime
 #
