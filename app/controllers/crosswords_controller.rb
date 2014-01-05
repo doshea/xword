@@ -51,7 +51,7 @@ class CrosswordsController < ApplicationController
 
   def destroy
     @crossword = Crossword.find(params[:id])
-    @crossword.delete
+    @crossword.destroy
   end
 
   def publish
@@ -108,7 +108,7 @@ class CrosswordsController < ApplicationController
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
       existing_favorite = FavoritePuzzle.find_by_user_id_and_crossword_id(@current_user.id, @crossword.id)
-      existing_favorite.delete if existing_favorite
+      existing_favorite.destroy if existing_favorite
       render :favorite_unfavorite
     end
   end

@@ -26,7 +26,7 @@ class CommentsController < ApplicationController
   def destroy
     @comment = Comment.find params[:id]
     if @current_user && (@current_user.is_admin? || (@current_user == @comment.user))
-      @comment.delete
+      @comment.destroy
     else
       
     end

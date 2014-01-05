@@ -21,7 +21,7 @@ namespace :nyt do
         lookalikes = Crossword.where(title: cw.title)
         max_created_at = lookalikes.max_by {|p| p.created_at}
         lookalikes.each do |lookalike|
-            lookalike.delete unless (lookalike.created_at == max_created_at)
+            lookalike.destroy unless (lookalike.created_at == max_created_at)
         end
       end
     end

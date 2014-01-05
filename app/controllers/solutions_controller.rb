@@ -89,9 +89,9 @@ class SolutionsController < ApplicationController
   # If the user is a partner on the solution, delete their partnership. If they are the owner, delete the solution.
   def destroy
     if @solution_partnering
-      @solution_partnering.delete
+      @solution_partnering.destroy
     else
-      @solution.delete
+      @solution.destroy
     end
     redirect_to :back
   end
