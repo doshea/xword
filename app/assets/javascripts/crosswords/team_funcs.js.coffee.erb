@@ -133,7 +133,14 @@ window.team_app =
     if is_my_chat then chat_text.prependTo(new_chat) else chat_text.appendTo(new_chat)
     if chats_already_exist then $('<hr />').appendTo($('#chats'))
     new_chat.appendTo($('#chats'))
-    $('#chats').stop().animate({scrollTop: $('#chats').height()}, 'medium')
+    unless is_my_chat
+      new_chat.css('background-color': '#ff7878')
+      window.setTimeout (->
+        new_chat.css('background-color': 'white')
+      ), 0.4
+    chats_scroll_length = $('#chats').get(0).scrollHeight
+    $('#chats').stop().animate({scrollTop: chats_scroll_length}, 'fast')
+
 
   # Triggered when a 'outline_team_clue' Pusher message is received from another user. Makes and/or moves the hidden outline
   # to cover the word in question, then fades it in and changes its color to match the user who outlined it
@@ -173,7 +180,7 @@ window.team_app =
 # DOCUMENT LOAD
 #------------------
 $ ->
-  $('#myModal').foundation('reveal', 'open');
+  $('#team-explanation').foundation('reveal', 'open');
   listening_channel = pusher.subscribe(channel)
   listening_channel.bind('change_cell', team_app.receive_team_cell)
   listening_channel.bind('join_puzzle', team_app.welcome_teammate)

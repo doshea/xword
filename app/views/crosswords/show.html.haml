@@ -1,49 +1,8 @@
-- if @team
-  = javascript_include_tag "http://js.pusher.com/2.1/pusher.min.js"
-  - solver_id = (0..5).map{random_char}.join('')
-  - display_name = @current_user ? (@current_user.first_name || @current_user.username) : 'anon_'+solver_id
-  - channel = "#{@crossword.id}_#{@solution.key}"
-  :javascript
-    var pusher = new Pusher("#{Pusher.key}");
-    var channel = "#{channel}";
-    team_app = {};
-    team_app.display_name = "#{display_name}";
-    team_app.solver_id = "#{solver_id}";
-
 = javascript_include_tag 'solve'
 = content_for :head do
   = stylesheet_link_tag "crossword"
 
-- if @team
-  = javascript_include_tag 'crosswords/team_funcs'
-
-  - if @current_user && @solution.user_id == @current_user.id
-    #myModal.reveal-modal{:'data-reveal' => true}
-      %h2
-        Crosswords: More Fun as a Team
-        %i.fi-torsos-all
-      %p.lead
-        Solve puzzles with your friends in
-        %strong real-time
-        \-- just send them the link to this puzzle!
-      %input.lead{value: request.original_url, style: 'margin-left: 2em; width: 40%; cursor: pointer', readonly: 'readonly', onclick: '$(this).select();'}
-      %i.lead.fi-link{style: 'font-size: large; padding: 0.2em 0.3em;'}
-      %p.lead
-      %p Now to find some friends...
-      %a.close-reveal-modal ×
-
-  #team-chat.down
-    .row.row-topper
-      Team Chat
-      %i.fi-plus#chat-minmax
-    #chats
-    = form_tag(send_team_chat_solution_path(@solution), remote: true) do
-      = hidden_field_tag 'display_name', display_name, id: nil
-      = hidden_field_tag 'channel', channel, id: nil
-      = hidden_field_tag 'avatar', @current_user ? @current_user.image.thumb : asset_path('default_images/default_user_img.jpg'), id: nil
-      = text_field_tag 'chat', nil, id: nil
-
-  #test-overlay
+= render partial: 'crosswords/partials/team'
 
 :javascript
   solve_app.solution_id = "#{@solution.id if @solution}"
@@ -51,7 +10,7 @@
 - if @current_user == @crossword.user
   .alert-box{data: {alert: true}}
     %div.center
-      You are the creator of this puzzle.
+      You are the creator of this puzzle
       -if !@crossword.published
         %br
         = link_to('Edit Puzzle', edit_crossword_path(@crossword))
@@ -62,7 +21,7 @@
 .row#credit-area
   .large-12.columns
     %h3
-      = @crossword.title
+      = @crossword.title.html_safe
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
     #puzzle-controls
       %span#save-status.smaller No changes yet

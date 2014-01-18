@@ -1,5 +1,5 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'center'} do
-  %h1= @clue.content
+  %h1= @clue.content.html_safe
   %hr
   %h5 Featured #{pluralize(@count, 'time')} in #{pluralize(@crosswords.length, 'puzzle')}:
   - @crosswords.each do |crossword|

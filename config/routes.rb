@@ -83,6 +83,10 @@ Xword::Application.routes.draw do
     get :comments
   end
 
+  namespace :create do
+    get :dashboard
+  end
+
   namespace :api do
     get :history
   end

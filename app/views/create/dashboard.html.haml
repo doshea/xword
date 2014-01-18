@@ -1,0 +1,14 @@
+= render layout: 'layouts/partials/topper_stopper' do
+  %h2 Welcome back, #{@current_user.display_first_name}!
+  %hr{style: 'margin-bottom: 0;'}
+  %dl.tabs{"data-tab" => ""}
+    %dd.active
+      = link_to '#panel1' do
+        %h5
+          %i.fi-pencil
+          %span Your Puzzles
+  :javascript
+    var puzzles_remaining = {};
+  .tabs-content
+    #panel1.content.active
+      = render partial: 'pages/home/your_puzzles'

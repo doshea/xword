@@ -117,6 +117,6 @@ class User < ActiveRecord::Base
     self.full_name.blank? ? self.email : "#{self.full_name} <#{self.email}>"
   end
   def self.rand_unowned_puzzle
-    @current_user.present? ? Crossword.where('user_id != ?', @current_user.id).order("RANDOM()").first : Crossword.order("RANDOM()").first
+    @current_user.present? ? Crossword.unowned(@current_user).published.order("RANDOM()").first : Crossword.published.order("RANDOM()").first
   end
 end
