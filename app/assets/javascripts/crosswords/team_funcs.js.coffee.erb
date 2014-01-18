@@ -2,8 +2,11 @@ window.team_app =
   solver_red: (Math.random()*266).floor()
   solver_green: (Math.random()*266).floor()
   solver_blue: (Math.random()*266).floor()
-  last_audio: null
-  myAudio: new Audio('<%= audio_path('chuck.mp3') %>')
+  cell_clack_sound: new Audio('<%= audio_path('chuck.mp3') %>')
+  last_clack: null
+  message_received_sound: new Audio('<%= audio_path('submarine.m4a') %>')
+  last_received: null
+  unread_count: 0
   display_name: team_app.display_name
   solver_id: team_app.solver_id
   outline_timer: null
@@ -14,6 +17,9 @@ window.team_app =
 
   toggle_chat: ->
     $('#team-chat').toggleClass('down')
+    unless $('#team-chat').hasClass 'down'
+      team_app.unread_count = 0
+      $('#unread-chat-count').text ''
     $('#chat-minmax').toggleClass('fi-minus fi-plus')
 
   #------------------
@@ -84,9 +90,9 @@ window.team_app =
     unless team_app.solver_id is data.solver_id
       $cell = $(".cell[data-row=#{data.row}][data-col=#{data.col}]")
       now = Date.now()
-      unless (team_app.last_audio and (now-team_app.last_audio < 4000))
-        team_app.last_audio = now
-        team_app.myAudio.play()
+      unless (team_app.last_clack and (now-team_app.last_clack < 4000))
+        team_app.last_clack = now
+        team_app.cell_clack_sound.play()
       $cell.children('.cell-flag').stop().css('background', "rgb(#{data.red}, #{data.green}, #{data.blue})").animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
       if data.letter is ''
         $cell.delete_letter(false)
@@ -135,6 +141,13 @@ window.team_app =
     new_chat.appendTo($('#chats'))
     unless is_my_chat
       new_chat.css('background-color': '#ff7878')
+      if chats.hasClass('down')
+        team_app.unread_count += 1
+        $('#unread-chat-count').text("(#{team_app.unread_count})")
+      now = Date.now()
+      unless (team_app.last_received and (now-team_app.last_received < 8000))
+        team_app.last_received = now
+        team_app.message_received_sound.play()
       window.setTimeout (->
         new_chat.css('background-color': 'white')
       ), 0.4
