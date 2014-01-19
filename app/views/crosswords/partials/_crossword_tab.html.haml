@@ -5,7 +5,7 @@
       .large-4.columns.minipic
         = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: crossword}
       .large-8.columns.metadata
-        %p.title= crossword.title
+        %p.title= crossword.title.html_safe
         %p.byline= "by #{crossword.user.display_name}"
         %p.dimensions= "#{crossword.rows} x #{crossword.cols}"
     =link_to root_path do
