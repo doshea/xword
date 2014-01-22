@@ -1,3 +1,4 @@
+= javascript_include_tag 'jquery.flightboard.min'
 %h2.center
   %i.fi-trophy
   SOLVED!
@@ -9,21 +10,114 @@
   %i #{@solution.crossword.title}
   in:
 - time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
-- if time_difference[:days] <= 0
-  %p.lead.center.larger
-    %span
-      #{time_difference[:hours]}:#{time_difference[:minutes]}:#{time_difference[:seconds]}
-- else
-  %p.lead
-    - time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
-    You completed
-    %i #{@solution.crossword.title}
-    in
-    - if time_difference[:days] > 0
-      #{time_difference[:days]} days, 
-    - if time_difference[:hours] > 0
-      #{time_difference[:hours]} hours, 
-    - if time_difference[:minutes] > 0
-      #{time_difference[:minutes]} minutes, 
-    - if time_difference[:seconds] > 0
-      #{time_difference[:seconds]} seconds.
+- day_s = '%03d' % time_difference[:days]
+- hour_s = '%02d' % time_difference[:hours]
+- minute_s = '%02d' % time_difference[:minutes]
+- second_s = '%02d' % time_difference[:seconds]
+- millisecond_s = '%03d' % time_difference[:milliseconds]
+- more_than_a_day = (time_difference[:days] > 0)
+- more_than_an_hour = (time_difference[:hours] > 0)
+
+.center
+  - if more_than_a_day
+    #days{style: 'display: inline-block'}
+    days, and
+  .clock{style: 'background: black; display: inline-block; padding: 1px 5px 0; color: #EEE; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; '}
+    -if more_than_an_hour
+      #hours{style: 'display: inline-block;'}
+      %span{style: 'vertical-align: top; line-height: 37px;'} :
+    #minutes{style: 'display: inline-block;'}
+    %span{style: 'vertical-align: top; line-height: 37px;'} :
+    #seconds{style: 'display: inline-block;'}
+    - unless more_than_a_day
+      %span{style: 'bottom: 7px; position: relative;'} .
+      #milliseconds{style: 'display: inline-block;'}
+:javascript
+  function days_board(){
+    $('#days').flightboard({
+      messages: [' A', "#{day_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 2000,
+      flips: 36,
+      sequential: true,
+      afterFlip: function(){
+        $('#hours').flightboard('flip', 'next');
+      }
+    });
+  }
+  function hours_board(){
+    $('#hours').flightboard({
+      messages: ["#{more_than_a_day ? 'WH' : 'CR'}", "#{hour_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 2000,
+      flips: 36,
+      sequential: true,
+      afterFlip: function(){
+        $('#minutes').flightboard('flip', 'next');
+      }
+    });
+  }
+  function minutes_board(){
+    $('#minutes').flightboard({
+      messages: ["#{more_than_a_day ? 'IL' : (more_than_an_hour ? 'OS' : 'RA')}", "#{minute_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 400,
+      flips: 36,
+      afterFlip: function(){
+        $('#seconds').flightboard('flip', 'next');
+      }
+    });
+  }
+  function seconds_board(){
+    $('#seconds').flightboard({
+      messages: ["#{more_than_a_day ? 'E ' : (more_than_an_hour ? 'SW' : 'PI')}", "#{second_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 400,
+      flips: 36,
+      afterFlip: function(){
+        $('#milliseconds').flightboard('flip', 'next');
+      }
+    });
+  }
+  function milliseconds_board(){
+    $('#milliseconds').flightboard({
+      messages: ["#{more_than_an_hour ? 'ORD' : 'DLY'}", "#{millisecond_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 3,
+      repeat: false,
+      speed: 50,
+      pause: 400,
+      flips: 36,
+    });
+  }
+  days_board();
+  hours_board();
+  minutes_board();
+  seconds_board();
+  milliseconds_board();
+  setTimeout(function(){
+    if($('#days').get(0)){
+      $('#days').flightboard('flip', 'next');
+    } else if ($('#hours').get(0)){
+      $('#hours').flightboard('flip', 'next');
+    } else {
+      $('#minutes').flightboard('flip', 'next');
+    }
+  }, 1200);

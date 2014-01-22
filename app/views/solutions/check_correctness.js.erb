@@ -7,7 +7,7 @@ if(<%= @correctness %>){
   if (typeof applause == 'undefined'){
     var applause = new Audio('<%= audio_path('mod_applause.mp3') %>');
   }
-  applause.play();
+  // applause.play();
   $('#win-modal').foundation('reveal', 'open');
 } else {
   alert("Your solution contains incorrect letters.");
