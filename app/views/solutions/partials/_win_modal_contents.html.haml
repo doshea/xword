@@ -27,18 +27,19 @@
       #hours{style: 'display: inline-block;'}
       %span{style: 'vertical-align: top; line-height: 37px;'} :
     #minutes{style: 'display: inline-block;'}
-    %span{style: 'vertical-align: top; line-height: 37px;'} :
-    #seconds{style: 'display: inline-block;'}
     - unless more_than_a_day
+      %span{style: 'vertical-align: top; line-height: 37px;'} :
+      #seconds{style: 'display: inline-block;'}
+    - unless more_than_an_hour
       %span{style: 'bottom: 7px; position: relative;'} .
       #milliseconds{style: 'display: inline-block;'}
 :javascript
   function days_board(){
     $('#days').flightboard({
-      messages: [' A', "#{day_s}"],
+      messages: ['FOR', "#{day_s}"],
       lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
       shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
-      maxLength: 2,
+      maxLength: 3,
       repeat: false,
       speed: 50,
       pause: 2000,
@@ -51,7 +52,7 @@
   }
   function hours_board(){
     $('#hours').flightboard({
-      messages: ["#{more_than_a_day ? 'WH' : 'CR'}", "#{hour_s}"],
+      messages: ["#{more_than_a_day ? 'EV' : 'DE'}", "#{hour_s}"],
       lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
       shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
       maxLength: 2,
@@ -67,7 +68,7 @@
   }
   function minutes_board(){
     $('#minutes').flightboard({
-      messages: ["#{more_than_a_day ? 'IL' : (more_than_an_hour ? 'OS' : 'RA')}", "#{minute_s}"],
+      messages: ["#{more_than_a_day ? 'ER' : (more_than_an_hour ? 'CE' : 'RA')}", "#{minute_s}"],
       lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
       shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
       maxLength: 2,
@@ -82,7 +83,7 @@
   }
   function seconds_board(){
     $('#seconds').flightboard({
-      messages: ["#{more_than_a_day ? 'E ' : (more_than_an_hour ? 'SW' : 'PI')}", "#{second_s}"],
+      messages: ["#{more_than_an_hour ? 'NT' : 'PI'}", "#{second_s}"],
       lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
       shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
       maxLength: 2,
@@ -97,7 +98,7 @@
   }
   function milliseconds_board(){
     $('#milliseconds').flightboard({
-      messages: ["#{more_than_an_hour ? 'ORD' : 'DLY'}", "#{millisecond_s}"],
+      messages: ['DLY', "#{millisecond_s}"],
       lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
       shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
       maxLength: 3,
