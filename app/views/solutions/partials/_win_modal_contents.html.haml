@@ -1,0 +1,29 @@
+%h2.center
+  %i.fi-trophy
+  SOLVED!
+  %i.fi-trophy
+%p.lead.center
+  Congratulations, #{@current_user.display_first_name}!
+%p.lead.center
+  You completed
+  %i #{@solution.crossword.title}
+  in:
+- time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
+- if time_difference[:days] > 0
+  %p.lead.center.larger
+    %span
+      #{time_difference[:hours]}:#{time_difference[:minutes]}:#{time_difference[:seconds]}
+- else
+  %p.lead
+    - time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
+    You completed
+    %i #{@solution.crossword.title}
+    in
+    - if time_difference[:days] > 0
+      #{time_difference[:days]} days, 
+    - if time_difference[:hours] > 0
+      #{time_difference[:hours]} hours, 
+    - if time_difference[:minutes] > 0
+      #{time_difference[:minutes]} minutes, 
+    - if time_difference[:seconds] > 0
+      #{time_difference[:seconds]} seconds.

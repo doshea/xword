@@ -27,7 +27,8 @@ class SolutionsController < ApplicationController
     end
   end
   def check_correctness
-    @correctness = Solution.find(params[:id]).crossword.letters == params[:letters]
+    @solution = Solution.find(params[:id])
+    @correctness = @solution.crossword.letters == params[:letters]
   end
 
   def team_update

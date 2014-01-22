@@ -1,5 +1,14 @@
 if(<%= @correctness %>){
-  alert("CORRECT!!!");
+  var win_modal = $('#win-modal');
+  if(!win_modal.attr('filled')){
+    win_modal.prepend("<%=j render partial: 'solutions/partials/win_modal_contents' %>");
+    win_modal.attr('filled', true);
+  }
+  if (typeof applause == 'undefined'){
+    var applause = new Audio('<%= audio_path('mod_applause.mp3') %>');
+  }
+  applause.play();
+  $('#win-modal').foundation('reveal', 'open');
 } else {
   alert("Your solution contains incorrect letters.");
 }

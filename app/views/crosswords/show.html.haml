@@ -76,3 +76,5 @@
       %hr
       - @crossword.comments.each do |comment|
         = render partial: 'comments/partials/comment', locals: {comment: comment}
+
+= render partial: 'solutions/partials/win_modal'

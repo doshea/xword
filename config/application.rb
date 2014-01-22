@@ -7,6 +7,9 @@ require "action_mailer/railtie"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
+#Allows me to put custom functions in the custom_funcs.rb file
+Dir.glob("./lib/custom_funcs.rb").each { |file| require file }
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
