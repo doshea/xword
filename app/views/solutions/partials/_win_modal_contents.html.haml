@@ -9,7 +9,7 @@
   %i #{@solution.crossword.title}
   in:
 - time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
-- if time_difference[:days] < 0
+- if time_difference[:days] <= 0
   %p.lead.center.larger
     %span
       #{time_difference[:hours]}:#{time_difference[:minutes]}:#{time_difference[:seconds]}
