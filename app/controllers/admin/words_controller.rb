@@ -11,6 +11,12 @@ class Admin::WordsController < ApplicationController
 
   def update
     @word = Word.find(params[:id])
+    @word.update_attributes(params[:word])
+  end
+
+  def destroy
+    @word = Word.find(params[:id])
+    @word.destroy
   end
 
 end

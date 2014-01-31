@@ -11,6 +11,7 @@
 #  updated_at   :datetime         not null
 #  team         :boolean          default(FALSE), not null
 #  key          :string(255)
+#  solved_at    :datetime
 #
 
 class Solution < ActiveRecord::Base

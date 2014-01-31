@@ -77,10 +77,10 @@ Xword::Application.routes.draw do
     post :clone_user
 
     resources :crosswords, only: [:index, :edit, :update, :destroy]
-    resources :clues, only: [:index, :edit, :update]
-    resources :words, only: [:index, :edit, :update]
-    resources :comments, only: [:index, :edit, :update]
-    resources :users, only: [:index, :edit, :update]
+    resources :clues, only: [:index, :edit, :update, :destroy]
+    resources :words, only: [:index, :edit, :update, :destroy]
+    resources :comments, only: [:index, :edit, :update, :destroy]
+    resources :users, only: [:index, :edit, :update, :destroy]
   end
 
   namespace :create do

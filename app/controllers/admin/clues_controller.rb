@@ -14,6 +14,12 @@ class Admin::CluesController < ApplicationController
 
   def update
     @clue = Clue.find(params[:id])
+    @clue.update_attributes(params[:clue])
+  end
+
+  def destroy
+    @clue = Clue.find(params[:id])
+    @clue.destroy
   end
 
 end

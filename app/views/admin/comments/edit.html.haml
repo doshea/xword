@@ -1,0 +1,11 @@
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Comment", custom_columns: true} do
+  %br
+  = form_for @comment, url: url_for(controller: 'admin/comments', action: :update), remote: true do |f|
+    .large-8.columns
+      = f.label :content
+      = f.text_field :content
+    .large-4.columns
+      = f.label :flagged
+      = f.check_box :flagged
+    .large-12.columns
+      = f.submit class: 'button', disable_with: 'Updating...'

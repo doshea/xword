@@ -26,5 +26,5 @@
           = link_to edit_admin_user_path(user) do
             %i.fi-pencil
         %td
-          = link_to user, method: :delete, remote: true, data: {confirm: "Are you sure you want to delete #{user.display_first_name}?"} do
+          = link_to admin_user_path(user), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete #{user.display_first_name}?"} do
             %i.fi-trash

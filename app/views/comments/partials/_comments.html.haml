@@ -6,6 +6,8 @@
       %th Flag?
       %th Creator
       %th Crossword
+      %th
+      %th
   %tbody
     - @comments.each do |comment|
       = content_tag_for(:tr, comment) do
@@ -18,3 +20,9 @@
           = link_to comment.user.username, comment.user
         %td
           = comment.crossword.present? ? link_to(comment.crossword.title, comment.crossword) : link_to(comment.base_comment.crossword.title, comment.base_comment.crossword)
+        %td
+          = link_to edit_admin_comment_path(comment) do
+            %i.fi-pencil
+        %td
+          = link_to admin_comment_path(comment), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete this comment by #{comment.user.username}?"} do
+            %i.fi-trash

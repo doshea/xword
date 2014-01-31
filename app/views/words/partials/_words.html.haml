@@ -4,10 +4,17 @@
       %th ID
       %th Content
       %th Example clue
+      %th
+      %th
   %tbody
     - @words.each do |word|
       = content_tag_for(:tr, word) do
         %td= link_to word.id, word
         %td= link_to word.content, word
-        %td= word.clues.first.content
-
+        %td= word.clues.first.try(:content)
+        %td
+          = link_to edit_admin_word_path(word) do
+            %i.fi-pencil
+        %td
+          = link_to admin_word_path(word), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete #{word.content}?"} do
+            %i.fi-trash
