@@ -49,11 +49,6 @@ class CrosswordsController < ApplicationController
     render nothing: true
   end
 
-  def destroy
-    @crossword = Crossword.find(params[:id])
-    @crossword.destroy
-  end
-
   def publish
     @crossword.publish
   end

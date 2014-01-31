@@ -76,11 +76,11 @@ Xword::Application.routes.draw do
     post :user_search
     post :clone_user
 
-    get :crosswords
-    get :clues
-    get :users
-    get :words
-    get :comments
+    resources :crosswords, only: [:index, :edit, :update, :destroy]
+    resources :clues, only: [:index, :edit, :update]
+    resources :words, only: [:index, :edit, :update]
+    resources :comments, only: [:index, :edit, :update]
+    resources :users, only: [:index, :edit, :update]
   end
 
   namespace :create do

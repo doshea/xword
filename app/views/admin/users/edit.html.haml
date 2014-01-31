@@ -1,0 +1,25 @@
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@user.username}</i>".html_safe, custom_columns: true} do
+  %br
+  = form_for @user, url: url_for(controller: 'admin/users', action: :update) do |f|
+    .large-3.columns
+      = f.label :username
+      = f.text_field :username
+      = f.label :first_name
+      = f.text_field :first_name
+    .large-3.columns
+      = f.label :email
+      = f.email_field :email
+      = f.label :last_name
+      = f.text_field :last_name
+    .large-4.columns
+      = f.label :image
+      = image_tag @user.image.creator_pic
+      = f.text_field :image
+    .large-2.columns{style: @user.is_admin ? 'background: lightgreen;' : nil}
+      = f.label :is_admin, 'Admin'
+      = f.check_box :is_admin  
+    .large-12.columns
+      = f.label :location
+      = f.text_field :location
+    .large-12.columns
+      = f.submit class: 'button'

@@ -12,6 +12,7 @@
       %th Letters
       %th Circled?
       %th
+      %th
   %tbody
     - @crosswords.each do |crossword|
       = content_tag_for(:tr, crossword) do
@@ -26,5 +27,8 @@
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.letters
         %td= crossword.circled ? 'T' : 'F'
         %td
-          = link_to crossword, method: :delete, remote: true, data: {confirm: "Are you sure you want to delete #{crossword.title} by #{crossword.user.username}"} do
+          = link_to edit_admin_crossword_path(crossword) do
+            %i.fi-pencil
+        %td
+          = link_to admin_crossword_path(crossword), method: :delete, remote: true, data: {confirm: "Are you sure you want to delete '#{crossword.title}' by #{crossword.user.username}?"} do
             %i.fi-trash
