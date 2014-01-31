@@ -11,6 +11,7 @@ class Admin::CrosswordsController < ApplicationController
 
   def update
     @crossword = Crossword.find(params[:id])
+    @crossword.update_attributes(params[:crossword])
   end
 
   def destroy
