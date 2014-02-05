@@ -24,16 +24,16 @@ class Comment < ActiveRecord::Base
 
   @@wine_vocab = {
     advs:[
-      'freakishly', 'longingly', 'forcefully', 'morally'
+      'freakishly','longingly','forcefully','morally'
     ],
     adjs: [
-      'acidic','arcane','aggressive','atomic','bashful','complex','dainty','dried','evil','elegant','fat','fleshy','french-oaked','focused','forceful','hopeful','intense','lackluster','light','middle-aged','musty','overdone','putrid','ripe','roasted','semi-weak','salted','smoked','strong','strong-willed','stunning','sugary','superior','weak','wicked','yellowed'
+      'acidic','arcane','aggressive','atomic','bashful','brackish','complex','dainty','dried','evil','elegant','fat','fleshy','french-oaked','focused','forceful','hopeful','intense','lackluster','light','middle-aged','musty','overdone','putrid','ripe','roasted','semi-weak','salted','smoked','supple','strong','strong-willed','stunning','sugary','superior','weak','wicked','yellowed'
     ],
     nouns: [
-      'acid','american oak','apple','bacon','beef','berry','blackberry','black-cherry','blueberry','candy','cardboard','cassis','celery','chutney','cigarbox','clay','coffee','fig','fir','fruit punch','garlic','herbs','honey','jam','lemon rind','lime','loganberry','mango','meat','melon','mocha','orange peel','papaya','pear','peach-pit','pepper','prune juice','rye','salad','spice','strawberry','tangerine','tea notes','tobacco','thyme','vanilla'
+      'acid','american oak','apple','bacon','banana','beef','berry','blackberry','black-cherry','blueberry','candy','cardboard','cassis','celery','chutney','cigarbox','clay','cocoa','coffee','fig','fir','fruit punch','garlic','herbs','honey','jam','lemon rind','lime','loganberry','mango','meat','melon','mocha','orange peel','papaya','pear','peach-pit','pepper','prune juice','rye','salad','spice','strawberry','tangerine','tea notes','tobacco','thyme','vanilla'
     ],
     amts: [
-      'traces', 'hints', 'essences', 'whispers'
+      'aromas','essences','hints','traces','whispers'
     ],
     starts: [
       '',
@@ -43,6 +43,8 @@ class Comment < ActiveRecord::Base
       'begins with ',
       'contains ',
       'displays ',
+      'forces ',
+      'hits you with',
       'kicks you with ',
       'opens with ',
       'reminds one of ',
