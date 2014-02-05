@@ -19,7 +19,9 @@
         %td= user.last_name
         %td= link_to user.username, user
         %td= mail_to user.email, user.email
-        %td= user.is_admin
+        %td
+          - if user.is_admin
+            %i.fi-check
         %td= user.created_at.strftime("%m/%d/%y")
         %td= user.updated_at.strftime("%m/%d/%y")
         %td

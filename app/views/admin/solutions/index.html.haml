@@ -1,0 +1,39 @@
+= content_for :head do
+  = stylesheet_link_tag :pagination
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Solutions'} do
+  = will_paginate @solutions, class: 'smaller pagination'
+  %table
+    %thead
+      %tr
+        %th ID
+        %th Crossword
+        %th Creator
+        %th Letters
+        %th Complete?
+        %th Team Solution?
+        %th Key
+
+        %th
+        %th
+    %tbody
+      - @solutions.each do |solution|
+        = content_tag_for(:tr, solution) do
+          %td= solution.id
+          %td= link_to solution.crossword.try(:title) || 'NONE', solution.crossword
+          %td= link_to solution.user.username, solution.user
+          %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= solution.letters
+          %td
+            - if solution.is_complete
+              %i.fi-check
+          %td
+            - if solution.team
+              %i.fi-check
+          %td
+            - if solution.key
+              = link_to solution.key, team_crossword_path(solution.crossword, solution.key)
+          %td
+            = link_to edit_admin_solution_path(solution) do
+              %i.fi-pencil
+          %td
+            = link_to admin_solution_path(solution), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete this solution by #{solution.user.username}?"} do
+              %i.fi-trash

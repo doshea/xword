@@ -13,7 +13,7 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :crosswords, except: [:index] do
+  resources :crosswords, except: [:index, :destroy] do
     member do
       get :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'
@@ -75,12 +75,14 @@ Xword::Application.routes.draw do
     get :clone_user, to: :cloning_tank, as: :cloning_tank
     post :user_search
     post :clone_user
+    get :wine_comment
 
     resources :crosswords, only: [:index, :edit, :update, :destroy]
     resources :clues, only: [:index, :edit, :update, :destroy]
     resources :words, only: [:index, :edit, :update, :destroy]
     resources :comments, only: [:index, :edit, :update, :destroy]
     resources :users, only: [:index, :edit, :update, :destroy]
+    resources :solutions, only: [:index, :edit, :update, :destroy]
   end
 
   namespace :create do

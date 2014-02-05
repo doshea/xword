@@ -13,7 +13,7 @@
             %i.fi-comment
             %span Reply
           - if @current_user.is_admin? || (@current_user == comment.user)
-            = link_to comment, method: :delete, remote: true, class: 'reply-button', style: 'display: inline-block;', confirm: 'Are you SURE you want to delete this comment?' do
+            = link_to comment, method: :delete, remote: true, class: 'reply-button', style: 'display: inline-block;', data: {confirm: 'Are you SURE you want to delete this comment?'} do
               %i.fi-trash
               %span #{'Admin ' unless (@current_user == comment.user)}Delete
           = link_to nil, class: 'cancel-button', style: 'display: none;' do

@@ -19,13 +19,17 @@
         %td= link_to crossword.id, crossword.published? ? crossword : edit_crossword_path(crossword)
         %td= link_to crossword.title, crossword.published? ? crossword : edit_crossword_path(crossword)
         %td= link_to crossword.user.username, crossword.user
-        %td= crossword.published ? 'T' : 'F'
+        %td
+          -if crossword.published?
+            %i.fi-check
         %td= crossword.date_published ? crossword.date_published.strftime('%m/%d/%y') : 'N/A'
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.description
         %td= crossword.rows
         %td= crossword.cols
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.letters
-        %td= crossword.circled ? 'T' : 'F'
+        %td
+          - if crossword.circled?
+            %i.fi-check
         %td
           = link_to edit_admin_crossword_path(crossword) do
             %i.fi-pencil

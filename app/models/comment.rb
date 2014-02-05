@@ -22,4 +22,49 @@ class Comment < ActiveRecord::Base
 
   self.per_page = 50
 
+  @@wine_vocab = {
+    advs:[
+      'freakishly', 'longingly', 'forcefully', 'morally'
+    ],
+    adjs: [
+      'acidic','arcane','aggressive','atomic','bashful','complex','dainty','dried','evil','elegant','fat','fleshy','french-oaked','focused','forceful','hopeful','intense','lackluster','light','middle-aged','musty','overdone','putrid','ripe','roasted','semi-weak','salted','smoked','strong','strong-willed','stunning','sugary','superior','weak','wicked','yellowed'
+    ],
+    nouns: [
+      'acid','american oak','apple','bacon','beef','berry','blackberry','black-cherry','blueberry','candy','cardboard','cassis','celery','chutney','cigarbox','clay','coffee','fig','fir','fruit punch','garlic','herbs','honey','jam','lemon rind','lime','loganberry','mango','meat','melon','mocha','orange peel','papaya','pear','peach-pit','pepper','prune juice','rye','salad','spice','strawberry','tangerine','tea notes','tobacco','thyme','vanilla'
+    ],
+    amts: [
+      'traces', 'hints', 'essences', 'whispers'
+    ],
+    starts: [
+      '',
+      '*adv bites you with ',
+      '*amt of ',
+      'attacks with ',
+      'begins with ',
+      'contains ',
+      'displays ',
+      'kicks you with ',
+      'opens with ',
+      'reminds one of ',
+      'resembles ',
+      'spews ',
+      'starts with ',
+      'throws out '
+    ],
+    lists: [
+      '*adj *noun, *adj *noun and *adj *noun',
+      '*noun, *adj and *adj *noun and *adj *noun',
+      '*noun, *adj *noun and *adj *noun',
+      '*noun, *adv *adj *noun and *amt of *adj *noun',
+      '*noun, *adj *adj *noun and *adj *noun',
+      '*noun, *adj *noun and *adj *amt of *noun',
+      '*noun, *adj *noun and total absence of *noun'
+    ]
+  }
+
+  def self.random_wine_comment
+    structure = @@wine_vocab[:starts].sample + @@wine_vocab[:lists].sample
+    structure.gsub(/\*adv/){|a| @@wine_vocab[:advs].sample}.gsub(/\*adj/){|a| @@wine_vocab[:adjs].sample}.gsub(/\*noun/){|a| @@wine_vocab[:nouns].sample}.gsub(/\*amt/){|a| @@wine_vocab[:amts].sample}.humanize + '...'
+  end
+
 end

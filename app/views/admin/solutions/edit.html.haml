@@ -1,0 +1,28 @@
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Solution", custom_columns: true} do
+  %br
+  = form_for @solution, url: url_for(controller: 'admin/solutions', action: :update), remote: true do |f|
+    .large-8.columns
+      = f.label :letters
+      = f.text_area :letters, maxlength: @solution.crossword.try(:rows) * @solution.crossword.try(:cols), style: 'text-transform: uppercase;'
+    .large-2.columns
+      = f.label :is_complete
+      = f.check_box :is_complete
+    .large-2.columns
+      = f.label :team
+      = f.check_box :team
+    - if @solution.team
+      .large-12.columns
+        = f.label :key
+        = f.text_field :key
+    .large-12.columns
+      = f.submit class: 'button', disable_with: 'Updating...'
+  %hr
+  %section
+    %h4 Additional Info
+    %ul
+      %li
+        User:
+        = link_to @solution.user.username, @solution.user
+      %li
+        Crossword:
+        = link_to @solution.crossword.title, @solution.crossword

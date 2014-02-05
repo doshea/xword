@@ -17,5 +17,7 @@ class AdminController < ApplicationController
     cookies[:auth_token] = user.auth_token
     redirect_to root_path
   end
+  def wine_comment
+  end
 
 end

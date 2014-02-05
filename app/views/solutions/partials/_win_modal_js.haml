@@ -1,0 +1,89 @@
+:javascript
+  function days_board(){
+    $('#days').flightboard({
+      messages: ['FOR', "#{day_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 3,
+      repeat: false,
+      speed: 50,
+      pause: 2000,
+      flips: 36,
+      sequential: true,
+      afterFlip: function(){
+        $('#hours').flightboard('flip', 'next');
+      }
+    });
+  }
+  function hours_board(){
+    $('#hours').flightboard({
+      messages: ["#{more_than_a_day ? 'EV' : 'DE'}", "#{hour_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 2000,
+      flips: 36,
+      sequential: true,
+      afterFlip: function(){
+        $('#minutes').flightboard('flip', 'next');
+      }
+    });
+  }
+  function minutes_board(){
+    $('#minutes').flightboard({
+      messages: ["#{more_than_a_day ? 'ER' : (more_than_an_hour ? 'CE' : 'RA')}", "#{minute_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 400,
+      flips: 36,
+      afterFlip: function(){
+        $('#seconds').flightboard('flip', 'next');
+      }
+    });
+  }
+  function seconds_board(){
+    $('#seconds').flightboard({
+      messages: ["#{more_than_an_hour ? 'NT' : 'PI'}", "#{second_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 2,
+      repeat: false,
+      speed: 50,
+      pause: 400,
+      flips: 36,
+      afterFlip: function(){
+        $('#milliseconds').flightboard('flip', 'next');
+      }
+    });
+  }
+  function milliseconds_board(){
+    $('#milliseconds').flightboard({
+      messages: ['DLY', "#{millisecond_s}"],
+      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
+      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
+      maxLength: 3,
+      repeat: false,
+      speed: 50,
+      pause: 400,
+      flips: 36,
+    });
+  }
+  days_board();
+  hours_board();
+  minutes_board();
+  seconds_board();
+  milliseconds_board();
+  setTimeout(function(){
+    if($('#days').get(0)){
+      $('#days').flightboard('flip', 'next');
+    } else if ($('#hours').get(0)){
+      $('#hours').flightboard('flip', 'next');
+    } else {
+      $('#minutes').flightboard('flip', 'next');
+    }
+  }, 1200);

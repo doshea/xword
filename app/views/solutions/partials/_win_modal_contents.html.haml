@@ -33,92 +33,30 @@
     - unless more_than_an_hour
       %span{style: 'bottom: 7px; position: relative;'} .
       #milliseconds{style: 'display: inline-block;'}
-:javascript
-  function days_board(){
-    $('#days').flightboard({
-      messages: ['FOR', "#{day_s}"],
-      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
-      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
-      maxLength: 3,
-      repeat: false,
-      speed: 50,
-      pause: 2000,
-      flips: 36,
-      sequential: true,
-      afterFlip: function(){
-        $('#hours').flightboard('flip', 'next');
-      }
-    });
-  }
-  function hours_board(){
-    $('#hours').flightboard({
-      messages: ["#{more_than_a_day ? 'EV' : 'DE'}", "#{hour_s}"],
-      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
-      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
-      maxLength: 2,
-      repeat: false,
-      speed: 50,
-      pause: 2000,
-      flips: 36,
-      sequential: true,
-      afterFlip: function(){
-        $('#minutes').flightboard('flip', 'next');
-      }
-    });
-  }
-  function minutes_board(){
-    $('#minutes').flightboard({
-      messages: ["#{more_than_a_day ? 'ER' : (more_than_an_hour ? 'CE' : 'RA')}", "#{minute_s}"],
-      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
-      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
-      maxLength: 2,
-      repeat: false,
-      speed: 50,
-      pause: 400,
-      flips: 36,
-      afterFlip: function(){
-        $('#seconds').flightboard('flip', 'next');
-      }
-    });
-  }
-  function seconds_board(){
-    $('#seconds').flightboard({
-      messages: ["#{more_than_an_hour ? 'NT' : 'PI'}", "#{second_s}"],
-      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
-      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
-      maxLength: 2,
-      repeat: false,
-      speed: 50,
-      pause: 400,
-      flips: 36,
-      afterFlip: function(){
-        $('#milliseconds').flightboard('flip', 'next');
-      }
-    });
-  }
-  function milliseconds_board(){
-    $('#milliseconds').flightboard({
-      messages: ['DLY', "#{millisecond_s}"],
-      lettersImage: "#{image_path 'flightBoardLarge2C.png'}",
-      shadingImages: ["#{image_path 'flightBoardHigh.png'}", "#{image_path 'flightBoardShad.png'}"],
-      maxLength: 3,
-      repeat: false,
-      speed: 50,
-      pause: 400,
-      flips: 36,
-    });
-  }
-  days_board();
-  hours_board();
-  minutes_board();
-  seconds_board();
-  milliseconds_board();
-  setTimeout(function(){
-    if($('#days').get(0)){
-      $('#days').flightboard('flip', 'next');
-    } else if ($('#hours').get(0)){
-      $('#hours').flightboard('flip', 'next');
-    } else {
-      $('#minutes').flightboard('flip', 'next');
-    }
-  }, 1200);
+= render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
+- unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
+  %hr
+  = form_tag add_comment_path(@solution.crossword), remote: true, id: 'complete-form' do
+    %h5
+      %i.fi-comment
+      How was the crossword?
+    = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
+    :javascript
+      $('#complete-form').on('keypress', 'textarea', function(e){
+        if(!e.metaKey){
+          var key = e.which
+          if(key == cw.ENTER){
+            e.preventDefault();
+            if(!$(this).val() == ''){
+              $(this).parent().submit();
+              $(this).val('');
+              var thank_you = $('<h3 style="text-align: center; display: none;">');
+              thank_you.text('Thank you!');
+              $(this).parent().after(thank_you);
+              $(this).parent().fadeOut(500, function(){
+                thank_you.fadeIn();
+              });
+            }
+          }
+        }
+      })
