@@ -19,6 +19,20 @@
         = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
       %a.slide-close{href: "#"} &times;
 
+-# Quick fix for sunday crosswords. TODO fix this.
+- if @crossword.cols > 15
+  :scss
+    #body > .row {
+      max-width: none;
+      width: 1250px;
+    }
+- if @crossword.rows > 15
+  :scss
+    .clue-column .clues {
+      max-height: 547px;
+    }
+
+
 .row#credit-area
   .large-12.columns
     %h3
