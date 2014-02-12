@@ -28,8 +28,15 @@ module Newyorkable
       end
 
       unless Crossword.where(title: pz['title']).any?
+        #fix the title capitalization
+        if pz['title'][0..2] = 'NY '
+          fixed_title = 'NY ' + pz['title'][3..-1].split.map(&:capitalize).join(' ')
+        else
+          fixed_title = pz['title'].split.map(&:capitalize).join(' ')
+        end 
+
         new_nytimes_crossword = Crossword.create(
-          title: pz['title'],
+          title: fixed_title,
           rows: pz['size']['rows'],
           cols: pz['size']['cols'],
           published: true,
@@ -61,7 +68,6 @@ module Newyorkable
           new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
         end
 
-        puts pz_letters
         puts new_nytimes_crossword.letters
       else
         puts 'That puzzle has already been added! Woo a freebie!'
