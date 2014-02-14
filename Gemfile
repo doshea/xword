@@ -17,7 +17,7 @@ gem 'pg'
 gem 'haml'
 gem 'bcrypt-ruby'
 
-#asset gems
+# asset gems
 gem 'sass-rails', '~> 4.0.1'
 gem 'uglifier', '>= 1.3.0'
 
