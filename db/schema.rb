@@ -38,8 +38,8 @@ ActiveRecord::Schema.define(version: 20140122042713) do
     t.integer  "down_clue_id"
     t.integer  "left_cell_id"
     t.integer  "above_cell_id"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "circled",         default: false
   end
 
@@ -48,8 +48,8 @@ ActiveRecord::Schema.define(version: 20140122042713) do
     t.integer  "difficulty", default: 1
     t.integer  "user_id"
     t.integer  "word_id"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "phrase_id"
   end
 
@@ -59,8 +59,8 @@ ActiveRecord::Schema.define(version: 20140122042713) do
     t.integer  "user_id"
     t.integer  "crossword_id"
     t.integer  "base_comment_id"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "crosswords", force: true do |t|
@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 20140122042713) do
     t.boolean  "published",      default: false,      null: false
     t.datetime "date_published"
     t.integer  "user_id"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "circled",        default: false
   end
 
@@ -102,8 +102,8 @@ ActiveRecord::Schema.define(version: 20140122042713) do
     t.boolean  "is_complete",  default: false, null: false
     t.integer  "user_id"
     t.integer  "crossword_id"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "team",         default: false, null: false
     t.string   "key"
     t.datetime "solved_at"
@@ -119,16 +119,16 @@ ActiveRecord::Schema.define(version: 20140122042713) do
     t.boolean  "is_admin",               default: false
     t.string   "password_digest"
     t.string   "auth_token"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "password_reset_token"
     t.datetime "password_reset_sent_at"
   end
 
   create_table "words", force: true do |t|
     t.string   "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

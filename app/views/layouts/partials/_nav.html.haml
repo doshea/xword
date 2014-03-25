@@ -1,4 +1,3 @@
--# %nav.top-bar{:'data-topbar' => true, :'data-options'=> 'is_hover: false'}
 %nav.top-bar{data: {topbar: true, options: 'is_hover: false'}}
   %ul.title-area
     -# Title Area
@@ -23,7 +22,7 @@
             .small-12.columns
               = search_field_tag 'query', nil, class: 'round', autocomplete: 'off'
               %i.fi-magnifying-glass
-          %ol#live-results
+          %ul#live-results
       %li.divider
       %li.has-dropdown
         = link_to '#' do

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.1.1'
 gem 'rails', '4.0.2'
 gem 'coffee-rails'
 gem 'json'
@@ -26,7 +26,7 @@ gem 'foundation-icons-sass-rails'
 # AWS image upload gems
 gem 'carrierwave'
 gem 'fog'
-gem 'rmagick'
+gem 'rmagick', :require => 'RMagick' #This explicit specification prevents an unusual 'stack level too deep' error referenced here: https://github.com/carrierwaveuploader/carrierwave/issues/1330
 gem 'remotipart'
 gem 'unf'
 
