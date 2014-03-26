@@ -23,8 +23,6 @@ window.new_cw =
     $('form').on('submit', new_cw.generate_puzzle_overlay)
 
   generate_puzzle_overlay: ->
-    console.log('hello1')
-
     $('#body .row:not(.row-bookend)').first().children().animate
       'opacity': 0
     , 'slow', ->

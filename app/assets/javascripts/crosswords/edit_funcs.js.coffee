@@ -1,3 +1,5 @@
+cw.editing = true
+
 window.edit_app =
   unsaved_changes: false
   debug_mode: false
@@ -7,7 +9,6 @@ window.edit_app =
   ready: ->
     $('#title-status').show()
     cw.number_cells()
-    cw.editing = true
 
     $('#crossword').on('dblclick', '.cell', -> $(this).toggle_void(true))
 
@@ -103,5 +104,76 @@ window.edit_app =
       left: 'auto' #Left position relative to parent in px
     target = document.getElementById('title-status')
     edit_app.title_spinner = new Spinner(opts).spin(target)
+
+# jQuery editing functions
+(($) ->
+  $.fn.corresponding_clues = ->
+    $ ".clue[data-cell-id=" + @data("id") + "]"
+
+  $.fn.delete_letter = (letter) ->
+    @children(".letter").first().empty()
+    token = $("#crossword").data("auth-token")
+    cell_id = @data("id")
+    settings =
+      dataType: "script"
+      type: "PUT"
+      url: "/cells/" + cell_id
+      data:
+        authenticity_token: token
+        cell:
+          letter: ""
+      error: ->
+        alert "Error toggling void!"
+    $.ajax settings
+
+  $.fn.get_mirror_cell = ->
+    $cells = $(".cell")
+    cell_count = $cells.length
+    this_index = $.inArray(this[0], $cells)
+    $ $cells[cell_count - this_index - 1]
+
+  $.fn.toggle_void = (recursive) ->
+
+    #Makes this cell void
+    @toggleClass "void"
+
+    #if this cell was made void, hides its clues and shows any clues below and right
+    if @hasClass("void")
+      @corresponding_clues().hide()
+      @cell_below().corresponding_clues().filter(".down-clue").show()  if @cell_below()
+      @cell_to_right().corresponding_clues().filter(".across-clue").show()  if @cell_to_right()
+    else
+
+      #Otherwise, hides clues below and right and possibly shows this cell's clues
+      @cell_below().corresponding_clues().filter(".down-clue").hide()  if @cell_below()
+      @cell_to_right().corresponding_clues().filter(".across-clue").hide()  if @cell_to_right()
+      @corresponding_clues().filter(".down-clue").show()  unless @cell_above()
+      @corresponding_clues().filter(".across-clue").show()  unless @cell_to_left()
+
+    #Sends request to database to toggle void on the back end
+    token = $("#crossword").data("auth-token")
+    cell_id = @data("id")
+    settings =
+      dataType: "script"
+      type: "PUT"
+      url: "/cells/" + cell_id + "/toggle_void"
+      data:
+        authenticity_token: token
+
+      error: ->
+        alert "Error toggling void!"
+
+    $.ajax settings
+    mirror_cell = @get_mirror_cell()
+
+    #Does all the same for the mirror of this cell unless this cell is its own mirror
+    if recursive and (this[0] isnt mirror_cell[0])
+      mirror_cell.toggle_void false
+      cw.number_cells()
+      if @hasClass("void")
+        @next_cell().highlight()
+      else
+        @highlight()
+) jQuery
 
 $(document).ready(edit_app.ready)

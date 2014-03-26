@@ -99,5 +99,25 @@ window.solve_app =
       if !$(cell).has_left() then if $(cell).in_finished_across_word() then $(cell).corresponding_across_clue().addClass('crossed-off')
       if !$(cell).has_above() then if $(cell).in_finished_down_word() then $(cell).corresponding_down_clue().addClass('crossed-off')
 
+# jQuery solving functions
+(($) ->
+  $.fn.delete_letter = (original) ->
+    if @is_empty_cell()
+      unless @is_word_start()
+        unless @previous_cell().is_empty_cell()
+          @previous_cell().delete_letter true
+          solve_app.update_unsaved()
+        @previous_cell().highlight()
+        false
+    else
+      @children(".letter").first().empty()
+      unless typeof team_app is "undefined"
+        if original
+          team_app.send_team_cell this, ""
+        else
+          @uncheck_unfinisheds()
+      solve_app.update_unsaved()
+) jQuery
+
 $(document).ready(solve_app.ready)
 
