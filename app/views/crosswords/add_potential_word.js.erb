@@ -1,4 +1,4 @@
-if(<%= @was_new %>){
+if(<%= @new_word %>){
   var li_to_insert = $("<%=j render partial: 'crosswords/partials/potential_word', locals: {word: @word} %>");
   var ul = $('#ideas ul');
   var lis = ul.children('li');

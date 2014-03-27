@@ -90,9 +90,10 @@ class CrosswordsController < ApplicationController
   def add_potential_word
     @crossword = Crossword.find(params[:id])
     if @crossword
-      @was_new = Word.find_by_content(params[:word]).nil?
-      @word = Word.find_or_create_by_content(params[:word])
-      unless @crossword.potential_words.include? @word
+      word_content = params[:word].upcase
+      @word = Word.find_or_create_by_content(word_content)
+      @new_word = !@crossword.potential_words.include?(@word)
+      if @new_word
         @crossword.potential_words << @word
       end
     else

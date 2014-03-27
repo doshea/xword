@@ -29,7 +29,23 @@
       = text_area_tag :description, @crossword.description
 
 %section#tools
-  #ideas.large-4.columns
+  #settings.large-1.large-offset-1.columns
+    %i.fi-widget
+    Settings
+    %hr
+    %input{type: 'checkbox'}
+    %br
+    %input{type: 'checkbox'}
+    %br
+    %input{type: 'checkbox'}
+    %br
+    %input{type: 'checkbox'}
+    %br
+    %input{type: 'checkbox'}
+    %br
+    %input{type: 'checkbox'}
+    %br
+  #ideas.large-2.columns
     .row.row-topper sup
     = form_tag add_potential_word_crossword_path(@crossword), remote: true do
       = text_field_tag :word, nil, id: nil
@@ -43,3 +59,6 @@
 %ol.joyride-list{data: {joyride: true}}
   %li{data: {id: 'credit-area', text: 'Next'}}
     %p Hello and welcome to the Joyride documentation page.
+
+.reveal-modal{:'data-reveal' => true}
+  Hello
