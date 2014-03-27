@@ -46,7 +46,7 @@ window.cw =
     # console.log('Clues div has top at ' + $clues.scrollTop() + ' and selected clue is ' + $sel_clue.position().top + ' from the top. The div height is ' + $clues.height()/2 + ' and the clue height is ' + $sel_clue.height()/2 + ' so we scrollTo ' + top)
     $clues.stop().animate
       scrollTop: top
-    , "fast"
+    , 100
 
   # Returns all of the letters of the selected word in order
   selected_word: ->

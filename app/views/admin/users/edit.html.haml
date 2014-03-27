@@ -1,6 +1,6 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@user.username}</i>".html_safe, custom_columns: true} do
   %br
-  = form_for @user, url: url_for(controller: 'admin/users', action: :update), remote: true do |f|
+  = form_for @user, url: url_for(controller: 'admin/users', method: :update), remote: true do |f|
     .large-3.columns
       = f.label :username
       = f.text_field :username

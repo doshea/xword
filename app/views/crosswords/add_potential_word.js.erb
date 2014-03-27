@@ -1,0 +1,26 @@
+if(<%= @was_new %>){
+  var li_to_insert = $("<%=j render partial: 'crosswords/partials/potential_word', locals: {word: @word} %>");
+  var ul = $('#ideas ul');
+  var lis = ul.children('li');
+  if(lis.length > 0){
+    var found_lower = false;
+    var new_length = <%= @word.content.length %>;
+
+    for(var i = 0; i < lis.length; i++){
+      var li = $(lis.get(i));
+      var length = parseInt(li.attr('length'));
+      if(length < new_length){
+        found_lower = true;
+        li.before(li_to_insert);
+        break;
+      }
+    }
+    if(!found_lower){
+      li_to_insert.appendTo(ul);
+    }
+  } else {
+    li_to_insert.prependTo(ul);
+  }
+} else {
+  alert('Word already added to list.');
+}

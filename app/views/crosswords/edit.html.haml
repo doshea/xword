@@ -1,6 +1,8 @@
 = javascript_include_tag 'edit'
 = content_for :head do
   = stylesheet_link_tag :crossword
+  = stylesheet_link_tag :edit
+  = javascript_include_tag 'jquery-ui-1.10.4.draggable.min'
 
 .row#credit-area
   .large-9.columns
@@ -25,6 +27,17 @@
     %p
       = label_tag :description
       = text_area_tag :description, @crossword.description
+
+%section#tools
+  #ideas.large-4.columns
+    .row.row-topper sup
+    = form_tag add_potential_word_crossword_path(@crossword), remote: true do
+      = text_field_tag :word, nil, id: nil
+    %ul
+      - @potential_words.each do |word|
+        = render partial: 'crosswords/partials/potential_word', locals: {word: word}
+  #wordsearch.large-4.columns
+  #birdsearch.large-4.columns.end
 
 -# At the bottom of your page but inside of the body tag
 %ol.joyride-list{data: {joyride: true}}

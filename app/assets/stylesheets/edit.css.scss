@@ -1,0 +1,65 @@
+#tools {
+  position: fixed;
+  height: 300px;
+  width: 96%;
+  margin: 0 2%;
+  bottom: 0;
+  z-index: 10000;
+  background: rgba(30,30,30, 0.3);
+  #ideas {
+    background: black;
+    height: inherit;
+    ul {
+      background: white;
+      overflow-y: scroll;
+      height: inherit;
+      margin: 0;
+      height: 80%;
+
+      .columns {
+        padding: 0;
+      }
+
+      li {
+        list-style-type: none;
+        width: 100%;
+        -webkit-transition: color 0.2s;
+        -moz-transition: color 0.2s;
+        -o-transition: color 0.2s;
+        transition: color 0.2s;
+
+        .row {
+          height: 1.6em;
+        }
+        form {
+          display: inline-block;
+          margin: 0;
+          height: 1em;
+
+          input {
+            margin: 0 auto;
+          }
+        }
+        .length {
+          opacity: 0.5;
+          font-size: smaller;
+          text-align: center;
+        }
+      }
+    }
+  }
+  #wordsearch {
+    background: black;
+    height: inherit;
+  }
+  #birdsearch {
+    background: black;
+    height: inherit;
+  }
+}
+.ui-draggable {
+  cursor: -webkit-grab;
+  &.ui-draggable-dragging {
+    cursor: -webkit-grabbing;
+  }
+}

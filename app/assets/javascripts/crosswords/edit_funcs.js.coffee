@@ -18,6 +18,18 @@ window.edit_app =
 
     # $('.cell, .clue').on('click', (e) -> e.stopImmediatePropagation())
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
+    # $('#tools').draggable({ containment: "body"})
+
+    $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word)
+
+  add_potential_word: (e) ->
+    unless e.metaKey
+      key = e.which
+      if key is cw.ENTER
+        e.preventDefault()
+        unless $(this).val() is ''
+          $(this).parent().submit()
+          $(this).val('')
 
   update_clue: (e) ->
     id = $(this).parent().data('id')

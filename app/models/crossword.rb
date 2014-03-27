@@ -47,6 +47,8 @@ class Crossword < ActiveRecord::Base
 
   has_many :solution_partnerings, through: :solutions, inverse_of: :crossword
 
+  has_and_belongs_to_many :potential_words, class_name: 'Word', join_table: :potential_crosswords_potential_words
+
   self.per_page = 12
 
   # A crossword must be between 4x4 and 30x30 and its title must be 3-35 characters long

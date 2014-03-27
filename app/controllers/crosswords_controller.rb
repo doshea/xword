@@ -1,5 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish]
+  before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish, :add_potential_word]
 
   def show
     @crossword = Crossword.find(params[:id])
@@ -40,6 +40,7 @@ class CrosswordsController < ApplicationController
       @down_cells = @crossword.down_start_cells.includes(:across_clue).asc_indices
       @across_clues = Clue.joins(:across_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
       @down_clues = Clue.joins(:down_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
+      @potential_words = @crossword.potential_words.desc_length
     end
   end
 
@@ -83,6 +84,29 @@ class CrosswordsController < ApplicationController
       render :show
     else
       #some sort of error
+    end
+  end
+
+  def add_potential_word
+    @crossword = Crossword.find(params[:id])
+    if @crossword
+      @was_new = Word.find_by_content(params[:word]).nil?
+      @word = Word.find_or_create_by_content(params[:word])
+      unless @crossword.potential_words.include? @word
+        @crossword.potential_words << @word
+      end
+    else
+      render nothing: true
+    end
+  end
+
+  def remove_potential_word
+    @crossword = Crossword.find(params[:id])
+    if @crossword
+      @word = Word.find(params[:potential_word_id])
+      @crossword.potential_words.delete(@word)
+    else
+      render nothing: true
     end
   end
 

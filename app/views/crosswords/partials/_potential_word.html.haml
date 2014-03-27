@@ -1,0 +1,7 @@
+= content_tag_for(:li, word, length: word.content.length) do
+  .row
+    .length.large-1.columns (#{word.content.length})
+    .large-9.columns= word.content
+    .large-1.columns.end
+      = link_to remove_potential_word_crossword_path(@crossword, word), method: :delete, remote: true do
+        %i.fi-x
