@@ -94,6 +94,7 @@ class CrosswordsController < ApplicationController
       @word = Word.find_or_create_by_content(word_content)
       @new_word = !@crossword.potential_words.include?(@word)
       if @new_word
+        @added = true
         @crossword.potential_words << @word
       end
     else

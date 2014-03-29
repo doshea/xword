@@ -1,5 +1,6 @@
 class CellsController < ApplicationController
   def update
+    binding.pry
     @cell = Cell.find(params[:id])
     @cell.update_attributes(params[:cell])
     render nothing: true
@@ -11,4 +12,7 @@ class CellsController < ApplicationController
 
     render nothing: true
   end
+
+  private
+
 end

@@ -1,4 +1,4 @@
-= content_tag_for(:li, word, length: word.content.length) do
+= content_tag_for(:li, word, length: word.content.length, class: ('added-word' if (defined? @added and @added))) do
   .row
     .length.large-1.columns (#{word.content.length})
     .large-9.columns= word.content

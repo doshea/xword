@@ -21,6 +21,7 @@ if(<%= @new_word %>){
   } else {
     li_to_insert.prependTo(ul);
   }
+  li_to_insert.slideDown('400', function(){ li_to_insert.removeClass('added-word')})
 } else {
   alert('Word already added to list.');
 }

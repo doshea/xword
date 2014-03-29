@@ -8,15 +8,14 @@
   .large-9.columns
     %h3.large
       .row
-        .large-10.columns
-          = text_field_tag 'title', @crossword.title
-        .large-2.columns
-          %span#creator-credit by Me
+        .large-1.columns.smaller Title:
+        .large-9.columns.end= text_field_tag 'title', @crossword.title
   .large-3.columns
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
-      = link_to_function 'Save Solution', 'app.save_solution()', class: 'button tiny secondary rounded'
+      = link_to 'app.save_solution()', class: 'button tiny secondary rounded' do
+        %i.fi-save
 
 
 .row#solve-area
@@ -28,10 +27,40 @@
       = label_tag :description
       = text_area_tag :description, @crossword.description
 
+-# NON-INLINE ELEMENTS
+
+#ideas
+  .row.row-topper
+  .row
+    = form_tag add_potential_word_crossword_path(@crossword), remote: true do
+      = text_field_tag :word, nil, id: nil, autocomplete: 'off', placeholder: "Enter a word you're considering"
+  .row
+    %ul
+      - @potential_words.each do |word|
+        = render partial: 'crosswords/partials/potential_word', locals: {word: word}
+
 %section#tools
-  #settings.large-1.large-offset-1.columns
+
+
+%ol.joyride-list{data: {joyride: true}}
+  %li{data: {id: 'credit-area', text: 'Next'}}
+    %p Hello and welcome to the Joyride documentation page.
+
+
+
+= link_to('#ideas', class: 'side-button', id: 'ideas-button', remote: true) do
+  %i.fi-list
+  %span.small Ideas
+= link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button', remote: true) do
+  %i.fi-widget
+
+
+#edit-settings.reveal-modal{:'data-reveal' => true}
+  %h3
     %i.fi-widget
-    Settings
+    Edit Settings
+  #settings
+    
     %hr
     %input{type: 'checkbox'}
     %br
@@ -45,20 +74,3 @@
     %br
     %input{type: 'checkbox'}
     %br
-  #ideas.large-2.columns
-    .row.row-topper sup
-    = form_tag add_potential_word_crossword_path(@crossword), remote: true do
-      = text_field_tag :word, nil, id: nil
-    %ul
-      - @potential_words.each do |word|
-        = render partial: 'crosswords/partials/potential_word', locals: {word: word}
-  #wordsearch.large-4.columns
-  #birdsearch.large-4.columns.end
-
--# At the bottom of your page but inside of the body tag
-%ol.joyride-list{data: {joyride: true}}
-  %li{data: {id: 'credit-area', text: 'Next'}}
-    %p Hello and welcome to the Joyride documentation page.
-
-.reveal-modal{:'data-reveal' => true}
-  Hello

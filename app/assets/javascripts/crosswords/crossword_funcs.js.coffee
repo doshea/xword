@@ -150,9 +150,9 @@ window.cw =
                     authenticity_token: token
                     cell:
                       letter: letter
-
                   error: ->
                     alert "Error toggling void!"
+                $.ajax(settings)
               else
                 check_for_finish = cw.selected.is_empty_cell()
                 cw.selected.set_letter letter, true

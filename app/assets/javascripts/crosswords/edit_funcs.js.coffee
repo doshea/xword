@@ -21,6 +21,7 @@ window.edit_app =
     # $('#tools').draggable({ containment: "body"})
 
     $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word)
+    $('#settings-button').on('click', -> $('#edit-settings').foundation('reveal', 'open'))
 
   add_potential_word: (e) ->
     unless e.metaKey
