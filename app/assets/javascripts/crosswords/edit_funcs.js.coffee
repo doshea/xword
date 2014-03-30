@@ -22,6 +22,7 @@ window.edit_app =
 
     $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word)
     $('#settings-button').on('click', -> $('#edit-settings').foundation('reveal', 'open'))
+    $('#ideas-button').on('click', -> $('#idea-container').toggleClass('open'))
 
   add_potential_word: (e) ->
     unless e.metaKey

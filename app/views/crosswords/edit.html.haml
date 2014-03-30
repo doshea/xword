@@ -29,17 +29,21 @@
 
 -# NON-INLINE ELEMENTS
 
-#ideas
-  .row.row-topper
-  .row
-    = form_tag add_potential_word_crossword_path(@crossword), remote: true do
-      = text_field_tag :word, nil, id: nil, autocomplete: 'off', placeholder: "Enter a word you're considering"
-  .row
+#idea-container
+  = link_to('#ideas', class: 'side-button', id: 'ideas-button', remote: true) do
+    %i.fi-list
+    %span.small Ideas
+  #ideas
+    .row.row-topper
+    .row
+      = form_tag add_potential_word_crossword_path(@crossword), remote: true do
+        = text_field_tag :word, nil, id: nil, autocomplete: 'off', placeholder: "Type a word you're considering"
     %ul
       - @potential_words.each do |word|
         = render partial: 'crosswords/partials/potential_word', locals: {word: word}
 
-%section#tools
+-# TODO MAKE OR DELETE THIS
+-# %section#tools
 
 
 %ol.joyride-list{data: {joyride: true}}
@@ -47,10 +51,6 @@
     %p Hello and welcome to the Joyride documentation page.
 
 
-
-= link_to('#ideas', class: 'side-button', id: 'ideas-button', remote: true) do
-  %i.fi-list
-  %span.small Ideas
 = link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button', remote: true) do
   %i.fi-widget
 

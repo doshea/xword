@@ -2,11 +2,11 @@ $bottomcolor: black;
 
 .side-button {
   background: black;
-  position: fixed;
   color: gray;
   font-size: 1.5em;
 
   &#settings-button {
+    position: fixed;
     right: 0;
     top: 40%;
     -webkit-border-top-left-radius: 0.4em;
@@ -19,8 +19,10 @@ $bottomcolor: black;
   }
 
   &#ideas-button {
-    left: 0;
-    top: 2.5em;
+    position: absolute;
+    color: whitesmoke;
+    top: -1.5em;
+    width: 4.1em;
     -webkit-border-top-right-radius: 0.5em;
     -moz-border-radius-topright: 0.5em;
     border-top-right-radius: 0.5em;
@@ -29,6 +31,26 @@ $bottomcolor: black;
   }
 }
 
+#idea-container {
+  z-index: 70001;
+  position: fixed;
+  height: 90%;
+  bottom: 0;
+  left: 0;
+  top: 100%;
+  -webkit-transition: top 0.4s;
+  -moz-transition: top 0.4s;
+  -o-transition: top 0.4s;
+  transition: top 0.4s;
+
+  &.open{
+    top: 95px;
+    -webkit-transition: top 0.4s;
+    -moz-transition: top 0.4s;
+    -o-transition: top 0.4s;
+    transition: top 0.4s;
+  }
+}
 
 #settings {
     color: whitesmoke;
@@ -37,18 +59,11 @@ $bottomcolor: black;
   }
 
 #ideas {
-  -webkit-transition: left 0.4s;
-  -moz-transition: left 0.4s;
-  -o-transition: left 0.4s;
-  transition: left 0.4s;
+  position: absolute;
   text-transform: uppercase;
   background: $bottomcolor;
-  height: inherit;
-  position: fixed;
-  left: 0;
-  top: 5.8em;
   max-height: 80%;
-  width: 300px;
+  width: 18.5em;
   padding: 1em;
 
 
@@ -76,7 +91,12 @@ $bottomcolor: black;
     overflow-y: scroll;
     height: inherit;
     margin: 0;
-    height: 80%;
+    width: 16.5em;
+    max-height: 25em;
+    -webkit-transition: max-height 0.4s;
+    -moz-transition: max-height 0.4s;
+    -o-transition: max-height 0.4s;
+    transition: max-height 0.4s;
 
     .columns {
       padding: 0;
@@ -91,13 +111,13 @@ $bottomcolor: black;
       -o-transition: background 0.4s;
       transition: background 0.4s;
 
+      &:nth-child(even) {
+        background: #eee;
+      }
+
       &.added-word {
         background: lightgreen;
         display: none;
-      }
-
-      .row {
-        height: 1.6em;
       }
 
       .length {
@@ -143,4 +163,10 @@ $bottomcolor: black;
     border-radius: 8px;
     border: 2px solid white; /* should match background, can't be transparent */
     background-color: rgba(0, 0, 0, .5);
+}
+
+@media (max-height: 700px){
+  #ideas ul {
+    max-height: 15em;
+  }
 }
