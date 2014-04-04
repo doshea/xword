@@ -31,5 +31,12 @@ class Word < ActiveRecord::Base
   self.per_page = 50
 
   validates_uniqueness_of :content
+
+  def self.word_match(pattern)
+    url = "http://www.a2zwordfinder.com/cgi-bin/crossword.cgi?SearchType=Crossword&Pattern=#{pattern}&Search=Find+Words"
+    page = Nokogiri::HTML(open(url))
+    results = page.css('font[face=Courier]').text.split(", \n")
+    results
+  end
 end
 

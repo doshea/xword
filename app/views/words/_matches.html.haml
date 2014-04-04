@@ -1,0 +1,7 @@
+- if @results.any?
+  %h6#match-header #{pluralize(@results.count, 'word')} match that pattern: 
+  %ul
+    - @results.each do |r|
+      %li= r
+- else
+  %h6 No words matching that pattern.

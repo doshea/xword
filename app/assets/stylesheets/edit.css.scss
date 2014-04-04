@@ -2,10 +2,10 @@ $bottomcolor: black;
 
 .side-button {
   background: black;
-  color: gray;
+  color: whitesmoke;
   font-size: 1.5em;
 
-  &#settings-button {
+  #settings-button {
     position: fixed;
     right: 0;
     top: 40%;
@@ -17,38 +17,53 @@ $bottomcolor: black;
     border-bottom-left-radius: 0.4em;
     padding: 0.3em 0.3em 0.2em 0.4em;
   }
-
-  &#ideas-button {
-    position: absolute;
-    color: whitesmoke;
-    top: -1.5em;
-    width: 4.1em;
-    -webkit-border-top-right-radius: 0.5em;
-    -moz-border-radius-topright: 0.5em;
-    border-top-right-radius: 0.5em;
-    padding: 0.3em 0.4em 0.2em 0.3em;
-
-  }
 }
 
-#idea-container {
+.bottom-button {
+  background: black;
+  color: whitesmoke;
+  font-size: 1.25em;
+  position: absolute;
+  top: -1.5em;
+  width: 4.1em;
+}
+#ideas-button {
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+  border-top-right-radius: 0.5em;
+  padding: 0.3em 0.4em 0.2em 0.3em;
+
+}
+#pattern-search-button {
+  width: 9em;
+  left: 5.8em;
+  -webkit-border-top-left-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  border-top-left-radius: 0.5em;
+  padding: 0.3em 0.3em 0.2em 0.4em;
+}
+
+.slide-up-container {
   z-index: 70001;
   position: fixed;
-  height: 90%;
-  bottom: 0;
-  left: 0;
-  top: 100%;
   -webkit-transition: top 0.4s;
   -moz-transition: top 0.4s;
   -o-transition: top 0.4s;
   transition: top 0.4s;
+  top: 100%;
+  bottom: 0;
+  height: 90%;
 
+  &#idea-container {
+    left: 0;
+  }
+
+  &#pattern-container {
+    right: 0;
+    width: 18.5em;
+  }
   &.open{
     top: 95px;
-    -webkit-transition: top 0.4s;
-    -moz-transition: top 0.4s;
-    -o-transition: top 0.4s;
-    transition: top 0.4s;
   }
 }
 
@@ -58,38 +73,65 @@ $bottomcolor: black;
     background: $bottomcolor;
   }
 
+#pattern-search {
+  position: absolute;
+  background: $bottomcolor;
+  max-height: 80%;
+  min-height: 20em;
+  width: 18.5em;
+  padding: 1em;
+
+}
+
+#word-match-results {
+  background: white;
+  overflow-y: scroll;
+  max-height: 25em;
+
+  #match-header {
+    text-align: center;
+  }
+
+  li {
+    display: inline-block;
+    font-size: small;
+
+    &:hover {
+      color: blue;
+    }
+  }
+}
+
+#pattern-search input, #ideas input {
+  text-transform: uppercase;
+  height: 2em;
+
+  &::-webkit-input-placeholder {
+    text-transform: none;
+  }
+  &:-moz-placeholder { /* Firefox 18- */
+     text-transform: none;
+  }
+  &::-moz-placeholder {  /* Firefox 19+ */
+     text-transform: none;
+  }
+  &:-ms-input-placeholder {  
+     text-transform: none;
+  }
+}
+
 #ideas {
   position: absolute;
   text-transform: uppercase;
   background: $bottomcolor;
   max-height: 80%;
+  min-height: 20em;
   width: 18.5em;
   padding: 1em;
-
-
-  input {
-    text-transform: uppercase;
-    height: 2em;
-
-    &::-webkit-input-placeholder {
-      text-transform: none;
-    }
-    &:-moz-placeholder { /* Firefox 18- */
-       text-transform: none;
-    }
-    &::-moz-placeholder {  /* Firefox 19+ */
-       text-transform: none;
-    }
-    &:-ms-input-placeholder {  
-       text-transform: none;
-       color: red;
-    }
-  }
 
   ul {
     background: white;
     overflow-y: scroll;
-    height: inherit;
     margin: 0;
     width: 16.5em;
     max-height: 25em;
@@ -166,7 +208,7 @@ $bottomcolor: black;
 }
 
 @media (max-height: 700px){
-  #ideas ul {
+  #ideas ul, #word-match-results {
     max-height: 15em;
   }
 }

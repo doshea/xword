@@ -9,4 +9,8 @@ class WordsController < ApplicationController
 
     @clues = @word.clues.sort{|x,y| x.difficulty <=> y.difficulty}
   end
+
+  def match
+    @results = Word.word_match(params[:pattern].gsub(/_|-/, '?')).map(&:upcase)
+  end
 end

@@ -30,7 +30,11 @@ Xword::Application.routes.draw do
   end
 
   resources :clues, only: [:show, :update]
-  resources :words, only: [:show]
+  resources :words, only: [:show] do
+    collection do
+      post :match
+    end
+  end
   resources :comments, only: [:destroy] do
     member do
       post :add_comment, as: 'add'

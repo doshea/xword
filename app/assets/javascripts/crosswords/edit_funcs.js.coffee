@@ -9,6 +9,7 @@ window.edit_app =
   ready: ->
     $('#title-status').show()
     cw.number_cells()
+    edit_app.number_clues()
 
     $('#crossword').on('dblclick', '.cell', -> $(this).toggle_void(true))
 
@@ -22,7 +23,7 @@ window.edit_app =
 
     $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word)
     $('#settings-button').on('click', -> $('#edit-settings').foundation('reveal', 'open'))
-    $('#ideas-button').on('click', -> $('#idea-container').toggleClass('open'))
+    $('.bottom-button').on('click', -> $(this).closest('.slide-up-container').toggleClass('open'))
 
   add_potential_word: (e) ->
     unless e.metaKey
@@ -119,6 +120,13 @@ window.edit_app =
     target = document.getElementById('title-status')
     edit_app.title_spinner = new Spinner(opts).spin(target)
 
+  number_clues: ->
+    $('.clue').each -> 
+      clue_num = $(this).children('.clue-num')
+      cell_id = $(this).data('cell-id')
+      cell_num = parseInt($(".cell[data-id=#{cell_id}]").first().attr('data-cell'))
+      clue_num.text("#{cell_num}.")
+
 # jQuery editing functions
 (($) ->
   $.fn.corresponding_clues = ->
@@ -184,6 +192,7 @@ window.edit_app =
     if recursive and (this[0] isnt mirror_cell[0])
       mirror_cell.toggle_void false
       cw.number_cells()
+      edit_app.number_clues()
       if @hasClass("void")
         @next_cell().highlight()
       else

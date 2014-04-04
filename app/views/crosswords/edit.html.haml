@@ -29,18 +29,27 @@
 
 -# NON-INLINE ELEMENTS
 
-#idea-container
-  = link_to('#ideas', class: 'side-button', id: 'ideas-button', remote: true) do
+%section#idea-container.slide-up-container
+  = link_to('#ideas', class: 'bottom-button', id: 'ideas-button', remote: true) do
     %i.fi-list
     %span.small Ideas
   #ideas
-    .row.row-topper
     .row
       = form_tag add_potential_word_crossword_path(@crossword), remote: true do
         = text_field_tag :word, nil, id: nil, autocomplete: 'off', placeholder: "Type a word you're considering"
     %ul
       - @potential_words.each do |word|
         = render partial: 'crosswords/partials/potential_word', locals: {word: word}
+
+%section#pattern-container.slide-up-container
+  = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button', remote: true) do
+    %i.fi-magnifying-glass
+    %span.small Pattern Search
+  #pattern-search
+    .row
+      = form_tag match_words_path, method: :post, remote: true do
+        = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
+      #word-match-results
 
 -# TODO MAKE OR DELETE THIS
 -# %section#tools
