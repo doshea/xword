@@ -25,14 +25,16 @@ $bottomcolor: black;
   font-size: 1.25em;
   position: absolute;
   top: -1.5em;
-  width: 4.1em;
+  width: 4.2em;
+  z-index: 1;
+  border-top: 1px solid #444;
 }
 #ideas-button {
   -webkit-border-top-right-radius: 0.5em;
   -moz-border-radius-topright: 0.5em;
   border-top-right-radius: 0.5em;
   padding: 0.3em 0.4em 0.2em 0.3em;
-
+  border-right: 1px solid #444;
 }
 #pattern-search-button {
   width: 9em;
@@ -41,6 +43,7 @@ $bottomcolor: black;
   -moz-border-radius-topleft: 0.5em;
   border-top-left-radius: 0.5em;
   padding: 0.3em 0.3em 0.2em 0.4em;
+  border-left: 1px solid #444;
 }
 
 .slide-up-container {
@@ -80,6 +83,9 @@ $bottomcolor: black;
   min-height: 20em;
   width: 18.5em;
   padding: 1em;
+  border-left: 1px solid #444;
+  border-bottom: 1px solid #444;
+  border-top: 1px solid #444;
 
 }
 
@@ -128,6 +134,9 @@ $bottomcolor: black;
   min-height: 20em;
   width: 18.5em;
   padding: 1em;
+  border-right: 1px solid #444;
+  border-bottom: 1px solid #444;
+  border-top: 1px solid #444;
 
   ul {
     background: white;
