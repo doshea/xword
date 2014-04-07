@@ -62,7 +62,8 @@ module Publishable
   end
 
   def publish!
-    if self.update_attribute(:published, true)
+    letters = self.string_from_cells
+    if self.update_attributes(published: true, date_published: Date.today, letters: letters)
       #remove extraneous clues
       self.cells.each do |cell|
         cell.delete_extraneous_cells!

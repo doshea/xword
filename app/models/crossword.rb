@@ -253,7 +253,11 @@ class Crossword < ActiveRecord::Base
     end
   end
 
-  #INSTANCE METHODS
+  def string_from_cells
+    self.cells.order(:index).map{|cell| cell.is_void ? '_' : cell.letter }.join
+  end
+
+  # CLASS METHODS
 
   def self.read_list
     puzzle_array = JSON.parse(IO.read('lib/assets/nytimes.json'))
@@ -261,5 +265,7 @@ class Crossword < ActiveRecord::Base
       Crossword.add_nyt_puzzle(pz)
     end
   end
+
+
 
 end
