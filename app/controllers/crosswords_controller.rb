@@ -51,7 +51,7 @@ class CrosswordsController < ApplicationController
   end
 
   def publish
-    @crossword.publish
+    @crossword.publish!
   end
 
   def create_team
