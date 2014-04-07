@@ -4,7 +4,7 @@
   SOLVED!
   %i.fi-trophy
 %p.lead.center
-  Congratulations, #{@current_user.display_first_name}!
+  Congratulations#{", #{@current_user.display_first_name}" if @current_user}!
 %p.lead.center
   You completed
   %i #{@solution.crossword.title}
@@ -34,29 +34,30 @@
       %span{style: 'bottom: 7px; position: relative;'} .
       #milliseconds{style: 'display: inline-block;'}
 = render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
-- unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
-  %hr
-  = form_tag add_comment_path(@solution.crossword), remote: true, id: 'complete-form' do
-    %h5
-      %i.fi-comment
-      How was the crossword?
-    = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
-    :javascript
-      $('#complete-form').on('keypress', 'textarea', function(e){
-        if(!e.metaKey){
-          var key = e.which
-          if(key == cw.ENTER){
-            e.preventDefault();
-            if(!$(this).val() == ''){
-              $(this).parent().submit();
-              $(this).val('');
-              var thank_you = $('<h3 style="text-align: center; display: none;">');
-              thank_you.text('Thank you!');
-              $(this).parent().after(thank_you);
-              $(this).parent().fadeOut(500, function(){
-                thank_you.fadeIn();
-              });
+- if @current_user
+  - unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
+    %hr
+    = form_tag add_comment_path(@solution.crossword), remote: true, id: 'complete-form' do
+      %h5
+        %i.fi-comment
+        How was the crossword?
+      = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
+      :javascript
+        $('#complete-form').on('keypress', 'textarea', function(e){
+          if(!e.metaKey){
+            var key = e.which
+            if(key == cw.ENTER){
+              e.preventDefault();
+              if(!$(this).val() == ''){
+                $(this).parent().submit();
+                $(this).val('');
+                var thank_you = $('<h3 style="text-align: center; display: none;">');
+                thank_you.text('Thank you!');
+                $(this).parent().after(thank_you);
+                $(this).parent().fadeOut(500, function(){
+                  thank_you.fadeIn();
+                });
+              }
             }
           }
-        }
-      })
+        })

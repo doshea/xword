@@ -15,7 +15,7 @@
 #
 
 class Solution < ActiveRecord::Base
-  attr_accessible :letters, :is_complete, :user_id, :crossword_id
+  attr_accessible :letters, :is_complete, :user_id, :crossword_id, :solved_at
 
   belongs_to :user, inverse_of: :solutions
   belongs_to :crossword, inverse_of: :solutions
@@ -28,7 +28,10 @@ class Solution < ActiveRecord::Base
   before_save :check_completion
 
   def check_completion
-    self.is_complete = (self.letters == self.crossword.letters)
+    if self.letters == self.crossword.letters and not self.is_complete?
+      self.is_complete = true
+      self.solved_at = Time.now
+    end
     true
   end
 

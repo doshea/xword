@@ -96,10 +96,10 @@ window.team_app =
       $cell.children('.cell-flag').stop().css('background', "rgb(#{data.red}, #{data.green}, #{data.blue})").animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
       if data.letter is ''
         $cell.delete_letter(false)
-        solve_app.update_unsaved()
+        # solve_app.update_unsaved()
       else
         $cell.set_letter(data.letter, false)
-        solve_app.update_unsaved()
+        # solve_app.update_unsaved()
 
   # Triggered when a 'join_puzzle' Pusher message is received. Adds a new square to the roster of the joining teammate's color
   welcome_teammate: (data) ->

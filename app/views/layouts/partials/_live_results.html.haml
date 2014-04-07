@@ -13,7 +13,7 @@
       %li
         = crossword.title
 - if @words.any?
-  -if @crosswords.any? || @users.any?
+  -if @crosswords.any? or @users.any?
     %hr
   %h6 Words
   - @words.each do |word|

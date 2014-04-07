@@ -8,7 +8,7 @@
     var ctx = $("#total-users").get(0).getContext("2d");
 
     var data = {
-      labels : #{@days_operational.map{|date| ((date == @days_operational.first) || (date == @days_operational.last) || ([1,15].include?(date.day))) ? date.to_s : ''}},
+      labels : #{@days_operational.map{|date| ((date == @days_operational.first) or (date == @days_operational.last) or ([1,15].include?(date.day))) ? date.to_s : ''}},
       datasets : [
         {
           fillColor : "rgba(151,187,205,0.5)",
@@ -56,7 +56,7 @@
     var ctx = $("#signup-counts").get(0).getContext("2d");
 
     var data = {
-      labels : #{@days_operational.map{|date| ((date == @days_operational.first) || (date == @days_operational.last) || ([1,15].include?(date.day))) ? date.to_s : ''}},
+      labels : #{@days_operational.map{|date| ((date == @days_operational.first) or (date == @days_operational.last) or ([1,15].include?(date.day))) ? date.to_s : ''}},
       datasets : [
         {
           fillColor : "rgba(151,187,205,0.5)",

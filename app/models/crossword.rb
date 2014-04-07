@@ -149,7 +149,7 @@ class Crossword < ActiveRecord::Base
     while row <= self.rows
       col = 1
       while col <= self.cols
-        if (row == 1 || col == 1)
+        if (row == 1 or col == 1)
           temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1, cell_num: cell_num)
           cell_num += 1
         else

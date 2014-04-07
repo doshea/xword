@@ -1,4 +1,5 @@
 window.solve_app =
+  logged_in: null
   solution_id: null
   save_timer: null
   clock_updater: null
@@ -7,20 +8,20 @@ window.solve_app =
   debug_mode: false
 
   ready: ->
-    solve_app.save_timer = window.setInterval(->
-      solve_app.save_solution() if solve_app.unsaved_changes
-    , 5000)
-    solve_app.clock_updater = window.setInterval(solve_app.update_clock, 10000)
+    unless solve_app.anonymous
+      solve_app.save_timer = window.setInterval(->
+        solve_app.save_solution() if solve_app.unsaved_changes
+      , 5000)
+      solve_app.clock_updater = window.setInterval(solve_app.update_clock, 10000)
+      $('#comments').on('keypress', '.reply-content', solve_app.add_comment_or_reply)
+      $('#comments').on('click', '.reply-button.reply', solve_app.toggle_reply_form)
+      $('#solve-save').on('click', solve_app.save_solution)
+      $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
+      $('.cancel-button').on('click', solve_app.toggle_reply_form)
     $('#show-incorrect').on('click', solve_app.show_incorrect)
     $('#check-correctness').on('click', solve_app.check_correctness)
-    $('#submit_solution').on('click', solve_app.submit_solution)
-    $('#solve-save').on('click', solve_app.save_solution)
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
     solve_app.check_all_finished()
-    $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
-    $('#comments').on('keypress', '.reply-content', solve_app.add_comment_or_reply)
-    $('#comments').on('click', '.reply-button.reply', solve_app.toggle_reply_form)
-    $('.cancel-button').on('click', solve_app.toggle_reply_form)
     true
 
   save_solution: (e) ->
@@ -39,14 +40,15 @@ window.solve_app =
     solve_app.unsaved_changes = false
 
   update_clock: ->
-    if solve_app.last_save
+    if solve_app.last_save and not solve_app.anonymous
       $('#save-status').text('Saved ')
       $('#save-clock').text(moment(solve_app.last_save).fromNow())
 
   update_unsaved: ->
-    solve_app.unsaved_changes = true
-    $('#save-status').text('Unsaved changes')
-    $('#save-clock').empty()
+    unless solve_app.anonymous
+      solve_app.unsaved_changes = true
+      $('#save-status').text('Unsaved changes')
+      $('#save-clock').empty()
 
   show_incorrect: (e) ->
     e.preventDefault()

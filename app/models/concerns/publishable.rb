@@ -68,6 +68,7 @@ module Publishable
       self.cells.each do |cell|
         cell.delete_extraneous_cells!
       end
+      self.number_cells
       self.generate_words_and_link_clues
     else
     end

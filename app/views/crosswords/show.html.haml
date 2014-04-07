@@ -6,7 +6,8 @@
   = render partial: 'crosswords/partials/team'
 
 :javascript
-  solve_app.solution_id = "#{@solution.id if @solution}"
+  solve_app.solution_id = #{@solution.try(:id)}
+  solve_app.anonymous = #{@current_user.nil?}
 
 - if @current_user == @crossword.user
   .alert-box{data: {alert: true}}
@@ -39,7 +40,8 @@
       = @crossword.title.html_safe
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
     #puzzle-controls
-      %span#save-status.smaller No changes yet
+      - if @current_user
+        %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       - if @current_user
         %a#solve-save.button.tiny.secondary{href: '#', :'data-tooltip' => true, title: 'Quicksave'}

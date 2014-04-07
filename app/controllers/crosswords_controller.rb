@@ -4,12 +4,14 @@ class CrosswordsController < ApplicationController
   def show
     @crossword = Crossword.find(params[:id])
     if @crossword
-      @solution = Solution.find_or_create_by(
-        crossword_id: @crossword.id,
-        user_id: @current_user.id,
-        team: false
-      ) if @current_user
-      @solution.fill_letters
+      if @current_user
+        @solution = Solution.find_or_create_by(
+          crossword_id: @crossword.id,
+          user_id: @current_user.id,
+          team: false
+        )
+        @solution.fill_letters
+      end
       @cells = @crossword.cells.asc_indices
     else
       #redirect to 404 page
@@ -51,7 +53,8 @@ class CrosswordsController < ApplicationController
   end
 
   def publish
-    @crossword.publish!
+    @crossword.publish! unless @crossword.published?
+    redirect @crossword
   end
 
   def create_team
@@ -162,6 +165,6 @@ class CrosswordsController < ApplicationController
   private
   def ensure_owner_or_admin
     @crossword = Crossword.find(params[:id])
-    redirect_to(unauthorized_path) if !(@current_user.is_admin || @current_user == @crossword.user)
+    redirect_to(unauthorized_path) if !(@current_user.is_admin or @current_user == @crossword.user)
   end
 end

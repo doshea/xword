@@ -19,7 +19,7 @@
       - @solutions.each do |solution|
         = content_tag_for(:tr, solution) do
           %td= solution.id
-          %td= link_to solution.crossword.try(:title) || 'NONE', solution.crossword
+          %td= link_to solution.crossword.try(:title) or 'NONE', solution.crossword
           %td= link_to solution.user.username, solution.user
           %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= solution.letters
           %td

@@ -26,6 +26,7 @@
     %p
       = label_tag :description
       = text_area_tag :description, @crossword.description
+  = link_to('Publish Puzzle', publish_crossword_path(@crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
 
 -# NON-INLINE ELEMENTS
 
@@ -50,10 +51,6 @@
       = form_tag match_words_path, method: :post, remote: true do
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
       #word-match-results
-
--# TODO MAKE OR DELETE THIS
--# %section#tools
-
 
 %ol.joyride-list{data: {joyride: true}}
   %li{data: {id: 'credit-area', text: 'Next'}}

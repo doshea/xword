@@ -98,7 +98,7 @@ window.cw =
 
   #Keyboard Function triggered by
   keypress : (e) ->
-    #in edit pages also had the following JS: if (!(e.ctrlKey || e.altKey || e.metaKey) && (selected && ($(':focus').length == 0)))
+    #in edit pages also had the following JS: if (!(e.ctrlKey or e.altKey or e.metaKey) && (selected && ($(':focus').length == 0)))
     if not (e.ctrlKey or e.altKey or e.metaKey) and (cw.selected and ($(":focus").length is 0))
       key = e.which
       switch key
