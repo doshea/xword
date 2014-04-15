@@ -131,7 +131,7 @@ window.cw =
           cw.highlight_next_word()
         when cw.ENTER
           e.preventDefault()
-          cw.highlight_next_word()
+          cw.selected.next_empty_cell().highlight()
         when cw.SHIFT then
         when cw.DELETE then
         when cw.SPACE
@@ -163,7 +163,7 @@ window.cw =
                 cw.selected.set_letter letter, true
                 cw.selected.check_finisheds() if check_for_finish
                 solve_app.update_unsaved()
-             cw.selected.next_cell().highlight() unless cw.selected.is_word_end()
+            cw.selected.next_empty_cell_in_word().highlight() unless cw.selected.is_word_end()
 
   highlight_clue_cell : ($clue) ->
     $cell = if cw.editing then $(".cell[data-id='" + $clue.data('cell-id') + "']").first() else $(".cell[data-cell='" + $clue.attr("data-cell-num") + "']").first()

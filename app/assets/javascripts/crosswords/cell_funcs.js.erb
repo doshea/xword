@@ -29,17 +29,20 @@
 
   $.fn.get_down_word_cells = function() {return this.get_down_start_cell().down_word_from_start();};
   $.fn.get_down_start_cell = function() {if( !this.has_above() ){return this;} else {return this.cell_above().get_down_start_cell();}};
+  $.fn.get_down_end_cell = function() {if( !this.has_below() ){return this;} else {return this.cell_below().get_down_end_cell();}};
   $.fn.down_word_from_start = function() {if( !this.has_below() ){return [this];} else {return [this].concat(this.cell_below().down_word_from_start());}};
   $.fn.get_down_word = function(){return $.map( this.get_down_word_cells(), function(el, i){return el.text();}).join('');};
 
   $.fn.get_across_word_cells = function() {return this.get_across_start_cell().across_word_from_start();};
   $.fn.get_across_start_cell = function() {if( !this.has_left() ){return this;} else {return this.cell_to_left().get_across_start_cell();}};
+  $.fn.get_across_end_cell = function() {if( !this.has_right() ){return this;} else {return this.cell_to_right().get_across_end_cell();}};
   $.fn.across_word_from_start = function() {if( !this.has_right() ){return [this];} else {return [this].concat(this.cell_to_right().across_word_from_start());}};
   $.fn.get_across_word = function(){return $.map( this.get_across_word_cells(), function(el, i){return el.text();}).join('');};
 
   $.fn.get_word_cells = function(){return (cw.select_across ? this.get_across_word_cells() : this.get_down_word_cells());};
   $.fn.word_from_start = function(){return (cw.select_across ? this.across_word_from_start() : this.down_word_from_start());};
   $.fn.get_start_cell = function(){return (cw.select_across ? this.get_across_start_cell() : this.get_down_start_cell());};
+  $.fn.get_end_cell = function(){return (cw.select_across ? this.get_across_end_cell() : this.get_down_end_cell());};
 
   $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
   $.fn.set_number = function(number){this.children('.cell_num').text(number);}
@@ -59,9 +62,14 @@
   $.fn.in_finished_across_word = function(){var cells = this.get_across_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
   $.fn.in_finished_down_word = function(){var cells = this.get_down_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
   $.fn.in_finished_word = function(){var cells = this.get_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
+  $.fn.in_directional_finished_word = function(){return (cw.select_across ? this.in_finished_across_word() : this.in_finished_down_word());}
 
   $.fn.check_finisheds = function(){if(this.in_finished_across_word()){this.get_across_start_cell().corresponding_across_clue().addClass('crossed-off');}if(this.in_finished_down_word()){this.get_down_start_cell().corresponding_down_clue().addClass('crossed-off');}}
   $.fn.uncheck_unfinisheds = function(){this.get_across_start_cell().corresponding_across_clue().removeClass('crossed-off'); this.get_down_start_cell().corresponding_down_clue().removeClass('crossed-off');}
+
+  $.fn.next_empty_cell_in_word = function(){
+    return ((this.is_word_end() || this.is_empty_cell()) ? this : this.next_cell().next_empty_cell_in_word());
+  }
 
   $.fn.next_empty_cell = function(){
     if(this.is_last_letter_of_puzzle()){
