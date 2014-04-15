@@ -15,6 +15,10 @@ namespace :nyt do
     end
   end
 
+  task :latest_nyt_to_github => :environment do
+    Crossword.record_latest_nyt_puzzle_on_github
+  end
+
   task :remove_duplicate_nyt_puzzles => :environment do
     User.where(username: 'nytimes').crosswords.each do |cw|
       if Crossword.where(title: cw.title).length > 1

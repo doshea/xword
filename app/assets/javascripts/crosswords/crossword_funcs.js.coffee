@@ -129,6 +129,9 @@ window.cw =
         when cw.TAB
           e.preventDefault()
           cw.highlight_next_word()
+        when cw.ENTER
+          e.preventDefault()
+          cw.highlight_next_word()
         when cw.SHIFT then
         when cw.DELETE then
         when cw.SPACE

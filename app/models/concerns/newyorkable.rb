@@ -78,5 +78,28 @@ module Newyorkable
       latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
       Crossword.add_nyt_puzzle(latest)
     end
+
+    def record_latest_nyt_puzzle_on_github
+      puzzle_text = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx").to_s
+      url_stem = 'https://api.github.com'
+      repo = 'nyt_puzzle_history'
+      username = 'doshea'
+
+      date_underscores = Date.today.to_s.gsub('-', '_')
+
+      auth = {username: ENV['GITHUB_USERNAME'], password: ENV['GITHUB_PASSWORD']}
+      create_url = url_stem + "/repos/#{username}/#{repo}/contents/#{date_underscores}.json"
+
+      HTTParty.put(
+        create_url,
+        basic_auth: auth,
+        headers: {"User-Agent" => ENV['GITHUB_USERNAME']},
+        body: {
+          message: "NYT puzzle for #{Date.today.strftime('%a, %b %d, %Y')}",
+          content: Base64.strict_encode64(puzzle_text)
+        }.to_json
+      )
+    end
+
   end
 end
