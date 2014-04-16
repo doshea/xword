@@ -14,15 +14,15 @@
   $.fn.get_col_beginning = function(){var col = parseInt(this.get_col());return $('.cell[data-row=1][data-col='+ col +']');}
   $.fn.get_col_end = function(){var col = parseInt(this.get_col());return $('.cell[data-row=' + $('#crossword').data('rows') + '][data-col='+col+']');}
 
-  $.fn.has_above = function(){if(this.in_top_row()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");return !above.hasClass('void');}};
-  $.fn.has_below = function(){if(this.in_bottom_row()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");return !below.hasClass('void');}};
-  $.fn.has_left = function(){if(this.in_left_col()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var left = $(".cell[data-row='" + row + "'][data-col='"+ (col-1) +"']");return !left.hasClass('void');}};
-  $.fn.has_right = function(){if(this.in_right_col()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var right = $(".cell[data-row='" + row + "'][data-col='"+ (col+1) +"']");return !right.hasClass('void');}};
+  $.fn.has_above = function(){if(this.in_top_row()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");return !above.is_void();}};
+  $.fn.has_below = function(){if(this.in_bottom_row()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");return !below.is_void();}};
+  $.fn.has_left = function(){if(this.in_left_col()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var left = $(".cell[data-row='" + row + "'][data-col='"+ (col-1) +"']");return !left.is_void();}};
+  $.fn.has_right = function(){if(this.in_right_col()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var right = $(".cell[data-row='" + row + "'][data-col='"+ (col+1) +"']");return !right.is_void();}};
 
   $.fn.cell_to_left = function() {if(this.in_left_col()){return false;}  else {var left_cell = this.prevAll('.cell:not(.void)').first(); if(left_cell.get(0)){return left_cell}else{return false}}};
   $.fn.cell_to_right = function() {if(this.in_right_col()){return false;}  else {var right_cell = this.nextAll('.cell:not(.void)').first(); if(right_cell.get(0)){return right_cell}else{return false}}};
-  $.fn.cell_above = function() {if( this.in_top_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");if(!above.hasClass('void')){return above;} else {return above.cell_above();}}};
-  $.fn.cell_below = function() {if( this.in_bottom_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");if (!below.hasClass('void')){return below;} else {return below.cell_below();}}};
+  $.fn.cell_above = function() {if( this.in_top_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");if(!above.is_void()){return above;} else {return above.cell_above();}}};
+  $.fn.cell_below = function() {if( this.in_bottom_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");if (!below.is_void()){return below;} else {return below.cell_below();}}};
 
   $.fn.previous_cell = function(){return cw.select_across ? this.cell_to_left() : this.cell_above();}
   $.fn.next_cell = function(){ return cw.select_across ? this.cell_to_right() : this.cell_below();}
@@ -59,7 +59,7 @@
   $.fn.corresponding_down_clue = function(){return this.data('id') ? $(".down-clue[data-cell-id=" + this.data('id') + "]") : $(".down-clue[data-cell-num=" + this.data('cell') + "]");}
   $.fn.corresponding_clue = function(){return cw.select_across ? this.corresponding_across_clue() : this.corresponding_down_clue();}
 
-  $.fn.highlight = function(){if (this.hasClass('cell') && !this.hasClass('void')){cw.unhighlight_all(); cw.selected = this; this.addClass('selected'); cw.word_highlight();}}
+  $.fn.highlight = function(){if (this.hasClass('cell') && !this.is_void()){cw.unhighlight_all(); cw.selected = this; this.addClass('selected'); cw.word_highlight();}}
 
   $.fn.in_finished_across_word = function(){var cells = this.get_across_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
   $.fn.in_finished_down_word = function(){var cells = this.get_down_word_cells(); var is_finished = true; for (i = 0; i < cells.length; i++){if(cells[i].is_empty_cell()){is_finished = false; break;}} return is_finished;};
