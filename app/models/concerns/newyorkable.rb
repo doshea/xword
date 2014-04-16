@@ -85,10 +85,13 @@ module Newyorkable
       repo = 'nyt_puzzle_history'
       username = 'doshea'
 
-      date_underscores = Date.today.to_s.gsub('-', '_')
+      # date_underscores = Date.today.to_s.gsub('-', '_')
+      year = Date.today.year
+      month = Date.today.strftime('%b').downcase
+      day = sprintf('%02d', Date.today.day)
 
       auth = {username: ENV['GITHUB_USERNAME'], password: ENV['GITHUB_PASSWORD']}
-      create_url = url_stem + "/repos/#{username}/#{repo}/contents/#{date_underscores}.json"
+      create_url = url_stem + "/repos/#{username}/#{repo}/contents/#{year}/#{month}/#{day}.json"
 
       HTTParty.put(
         create_url,
