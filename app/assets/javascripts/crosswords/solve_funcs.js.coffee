@@ -18,6 +18,10 @@ window.solve_app =
       $('#solve-save').on('click', solve_app.save_solution)
       $('#add-comment').on('keypress', solve_app.add_comment_or_reply)
       $('.cancel-button').on('click', solve_app.toggle_reply_form)
+    $('#controls-button').on('click', (e) -> 
+      e.preventDefault()
+      $('#controls-modal').foundation('reveal', 'open')
+    )
     $('#show-incorrect').on('click', solve_app.show_incorrect)
     $('#check-correctness').on('click', solve_app.check_correctness)
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())

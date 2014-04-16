@@ -1,6 +1,8 @@
 (function( $ ) {
+
   $.fn.get_row = function() {return this.data('row');};
   $.fn.get_col = function() {return this.data('col');};
+  $.fn.is_void = function(){return this.hasClass('void');};
 
   $.fn.in_top_row = function() {return $(this).get_row() == 1;};
   $.fn.in_bottom_row = function() {return this.get_row() == $('#crossword').data('rows');};
@@ -17,8 +19,8 @@
   $.fn.has_left = function(){if(this.in_left_col()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var left = $(".cell[data-row='" + row + "'][data-col='"+ (col-1) +"']");return !left.hasClass('void');}};
   $.fn.has_right = function(){if(this.in_right_col()){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var right = $(".cell[data-row='" + row + "'][data-col='"+ (col+1) +"']");return !right.hasClass('void');}};
 
-  $.fn.cell_to_left = function() {if(this.in_left_col()){return false;}  else {return this.prevAll('.cell:not(.void)').first();}};
-  $.fn.cell_to_right = function() {if(this.in_right_col()){return false;}  else {return this.nextAll('.cell:not(.void)').first();}};
+  $.fn.cell_to_left = function() {if(this.in_left_col()){return false;}  else {var left_cell = this.prevAll('.cell:not(.void)').first(); if(left_cell.get(0)){return left_cell}else{return false}}};
+  $.fn.cell_to_right = function() {if(this.in_right_col()){return false;}  else {var right_cell = this.nextAll('.cell:not(.void)').first(); if(right_cell.get(0)){return right_cell}else{return false}}};
   $.fn.cell_above = function() {if( this.in_top_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var above = $(".cell[data-row='" + (row - 1) + "'][data-col='"+ col +"']");if(!above.hasClass('void')){return above;} else {return above.cell_above();}}};
   $.fn.cell_below = function() {if( this.in_bottom_row() ){return false;} else {var row = parseInt(this.get_row());var col = parseInt(this.get_col());var below = $(".cell[data-row='" + (row + 1) + "'][data-col='"+ col +"']");if (!below.hasClass('void')){return below;} else {return below.cell_below();}}};
 
@@ -44,10 +46,10 @@
   $.fn.get_start_cell = function(){return (cw.select_across ? this.get_across_start_cell() : this.get_down_start_cell());};
   $.fn.get_end_cell = function(){return (cw.select_across ? this.get_across_end_cell() : this.get_down_end_cell());};
 
-  $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '}
-  $.fn.set_number = function(number){this.children('.cell_num').text(number);}
+  $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '};
+  $.fn.set_number = function(number){this.children('.cell_num').text(number);};
 
-  $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '}
+  $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '};
   $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter);if((typeof team_app != 'undefined')){if(original){team_app.send_team_cell(this, letter);} else {this.check_finisheds();}}}
 
   $.fn.is_last_letter_of_puzzle = function(){var word_cells = (cw.select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}

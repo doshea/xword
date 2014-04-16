@@ -107,25 +107,33 @@ window.cw =
             if cw.selected.cell_above()
               cw.selected.cell_above().highlight()
             else
-              cw.selected.get_col_end().highlight()
+              wraparound_cell = cw.selected.get_col_end()
+              wraparound_cell = wraparound_cell.cell_above() if wraparound_cell.is_void()
+              wraparound_cell.highlight()
         when cw.RIGHT
           if cw.selected
             if cw.selected.cell_to_right()
               cw.selected.cell_to_right().highlight()
             else
-              cw.selected.get_row_beginning().highlight()
+              wraparound_cell = cw.selected.get_row_beginning()
+              wraparound_cell = wraparound_cell.cell_to_right() if wraparound_cell.is_void()
+              wraparound_cell.highlight()
         when cw.DOWN
           if cw.selected
             if cw.selected.cell_below()
               cw.selected.cell_below().highlight()
             else
-              cw.selected.get_col_beginning().highlight()
+              wraparound_cell = cw.selected.get_col_beginning()
+              wraparound_cell = wraparound_cell.cell_below() if wraparound_cell.is_void()
+              wraparound_cell.highlight()
         when cw.LEFT
           if cw.selected
             if cw.selected.cell_to_left()
               cw.selected.cell_to_left().highlight()
             else
-              cw.selected.get_row_end().highlight()
+              wraparound_cell = cw.selected.get_row_end()
+              wraparound_cell = wraparound_cell.cell_to_left() if wraparound_cell.is_void()
+              wraparound_cell.highlight()
         when cw.TAB
           e.preventDefault()
           cw.highlight_next_word()

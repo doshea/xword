@@ -50,10 +50,11 @@
           %i.fi-star>
         = link_to(unfavorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", method: :delete, id: 'unfavorite', remote: true) do
           %i.fi-star{style: 'color: #ff7878;'}>
+        = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
+          %i.fi-widget
       - if @team
         %div.button.tiny.secondary
           %i.fi-torsos-all
-          Team
           #teammates
       - else
         = link_to create_team_crossword_path(@crossword), method: 'post', class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively' do
@@ -94,3 +95,4 @@
         = render partial: 'comments/partials/comment', locals: {comment: comment}
 
 = render partial: 'solutions/partials/win_modal'
+= render partial: 'crosswords/partials/controls_modal'
