@@ -39,7 +39,7 @@
     %h3
       = @crossword.title.html_safe
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
-    #puzzle-controls
+    #puzzle-controls.no-select
       - if @current_user
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller

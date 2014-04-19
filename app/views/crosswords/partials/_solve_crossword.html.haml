@@ -1,5 +1,5 @@
 -# %table#crossword{:'data-id' => @crossword.id, :'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols, :'data-auth-token' => form_authenticity_token}
-%table#crossword{data: {id: @crossword.id, rows: @crossword.rows, cols: @crossword.cols, :'auth-token' => form_authenticity_token}}
+%table#crossword.no-select{data: {id: @crossword.id, rows: @crossword.rows, cols: @crossword.cols, :'auth-token' => form_authenticity_token}}
   - for r in 1..@crossword.rows
     %tr{:'data-row' => r}
       - for c in 1..@crossword.cols
