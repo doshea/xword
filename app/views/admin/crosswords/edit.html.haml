@@ -1,6 +1,6 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@crossword.title}</i>".html_safe, custom_columns: true} do
   %br
-  = form_for @crossword, url: url_for(controller: 'admin/crosswords', method: :update), remote: true do |f|
+  = form_for @crossword, url: url_for(controller: 'admin/crosswords', action: :update, id: @crossword.id), remote: true do |f|
     .large-6.columns
       = f.label :title
       = f.text_field :title
