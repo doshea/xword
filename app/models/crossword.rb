@@ -18,7 +18,9 @@
 
 class Crossword < ActiveRecord::Base
   include Publishable, Newyorkable
-  attr_accessible :title, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids, :circled
+  attr_accessible :title, :description, :rows, :cols, :letters, :user_id, :comment_ids, :solution_ids, :clue_ids, :circled, :preview
+
+  mount_uploader :preview, PreviewUploader
 
   before_create :populate_letters, :populate_cells
   # after_create :link_cells_to_neighbors

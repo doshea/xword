@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140327080806) do
+ActiveRecord::Schema.define(version: 20140429105154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20140327080806) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "circled",        default: false
+    t.text     "preview"
   end
 
   create_table "favorite_puzzles", force: true do |t|
