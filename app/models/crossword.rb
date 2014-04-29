@@ -257,7 +257,7 @@ class Crossword < ActiveRecord::Base
     self.cells.order(:index).map{|cell| cell.is_void ? '_' : cell.letter }.join
   end
 
-  def make_me_a_sandwich
+  def generate_image
     cell_dim = 5
     width_cw = cols*cell_dim
     height_cw = rows*cell_dim
@@ -290,8 +290,8 @@ class Crossword < ActiveRecord::Base
     end
 
     gc.draw(preview)
-    preview.write('preview.gif')
-
+    file_name = "preview_#{self.id}.png"
+    preview.write(file_name)
   end
 
 
@@ -303,7 +303,5 @@ class Crossword < ActiveRecord::Base
       Crossword.add_nyt_puzzle(pz)
     end
   end
-
-
 
 end
