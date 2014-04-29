@@ -7,8 +7,8 @@
 #  is_complete  :boolean          default(FALSE), not null
 #  user_id      :integer
 #  crossword_id :integer
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  created_at   :datetime
+#  updated_at   :datetime
 #  team         :boolean          default(FALSE), not null
 #  key          :string(255)
 #  solved_at    :datetime

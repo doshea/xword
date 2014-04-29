@@ -16,8 +16,8 @@
 #  down_clue_id    :integer
 #  left_cell_id    :integer
 #  above_cell_id   :integer
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  created_at      :datetime
+#  updated_at      :datetime
 #  circled         :boolean          default(FALSE)
 #
 

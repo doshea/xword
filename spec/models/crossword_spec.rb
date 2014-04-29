@@ -11,9 +11,10 @@
 #  published      :boolean          default(FALSE), not null
 #  date_published :datetime
 #  user_id        :integer
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
+#  created_at     :datetime
+#  updated_at     :datetime
 #  circled        :boolean          default(FALSE)
+#  preview        :text
 #
 
 require 'spec_helper'

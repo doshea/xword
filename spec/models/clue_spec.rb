@@ -7,8 +7,8 @@
 #  difficulty :integer          default(1)
 #  user_id    :integer
 #  word_id    :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  created_at :datetime
+#  updated_at :datetime
 #  phrase_id  :integer
 #
 

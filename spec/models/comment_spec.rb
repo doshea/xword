@@ -8,8 +8,8 @@
 #  user_id         :integer
 #  crossword_id    :integer
 #  base_comment_id :integer
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  created_at      :datetime
+#  updated_at      :datetime
 #
 
 require 'spec_helper'
