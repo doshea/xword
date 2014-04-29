@@ -257,6 +257,44 @@ class Crossword < ActiveRecord::Base
     self.cells.order(:index).map{|cell| cell.is_void ? '_' : cell.letter }.join
   end
 
+  def make_me_a_sandwich
+    cell_dim = 5
+    width_cw = cols*cell_dim
+    height_cw = rows*cell_dim
+
+    preview = Magick::Image.new(width_cw, height_cw)
+
+    #Make the black drawing pencil 
+    gc = Magick::Draw.new
+    gc.stroke('black')
+    gc.stroke_width(1)
+    gc.fill_opacity(0)
+    gc.fill('black')
+
+    # Draw the Rows and Columns as 1px-width lines
+    (1...self.rows).each do |r|
+      gc.line(0, r*5, width_cw, r*5)
+    end
+    (1...self.cols).each do |c|
+      gc.line(c*5, 0, c*5, height_cw)
+    end
+
+    #Fill in void cells with black squares
+    self.cells.each do |cell|
+      gc.rectangle(
+        (cell.col-1)*cell_dim,
+        (cell.row-1)*cell_dim,
+        cell.col*cell_dim,
+        cell.row*cell_dim
+      ) if cell.is_void?
+    end
+
+    gc.draw(preview)
+    preview.write('preview.gif')
+
+  end
+
+
   # CLASS METHODS
 
   def self.read_list
