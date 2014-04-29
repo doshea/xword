@@ -260,7 +260,7 @@ class Crossword < ActiveRecord::Base
     self.cells.order(:index).map{|cell| cell.is_void ? '_' : cell.letter }.join
   end
 
-  def generate_image
+  def generate_preview
     cell_dim = 5
     width_cw = cols*cell_dim
     height_cw = rows*cell_dim
@@ -293,8 +293,11 @@ class Crossword < ActiveRecord::Base
     end
 
     gc.draw(preview)
-    file_name = "preview_#{self.id}.png"
+    file_name = "tmp/preview_#{self.id}.png"
     preview.write(file_name)
+    self.preview = File.open(file_name)
+    self.save
+    File.delete(file_name)
   end
 
 

@@ -30,17 +30,8 @@ class PreviewUploader < CarrierWave::Uploader::Base
   version :thumb do
     process :resize_to_fill => [27, 27]
   end
-  version :reply_size do
-    process :resize_to_fill => [55, 55]
-  end
-  version :comment_size do
-    process :resize_to_fill => [80, 80]
-  end
-  version :creator_pic do
-    process :resize_to_fill => [95, 95]
-  end
-  version :search do
-    process :resize_to_fill => [120, 120]
+  version :large do
+    process :resize_to_fill => [150, 150]
   end
 
 end
