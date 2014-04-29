@@ -298,6 +298,7 @@ class Crossword < ActiveRecord::Base
     self.preview = File.open(file_name)
     self.save
     File.delete(file_name)
+    puts "Generated preview for Crossword \##{self.id}, \"#{self.title}\""
   end
 
 
