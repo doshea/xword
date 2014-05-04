@@ -1,5 +1,5 @@
 class Admin::SolutionsController < ApplicationController
-  before_filter :ensure_admin
+  before_action :ensure_admin
 
   def index
     @solutions = Solution.all.paginate(:page => params[:page])

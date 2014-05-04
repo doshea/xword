@@ -17,7 +17,7 @@ class Comment < ActiveRecord::Base
 
   belongs_to :user, inverse_of: :comments
   belongs_to :crossword, inverse_of: :comments
-  has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id', dependent: :delete_all
+  has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id', dependent: :destroy
   belongs_to :base_comment, class_name: 'Comment'
 
   self.per_page = 50

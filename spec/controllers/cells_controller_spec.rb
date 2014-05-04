@@ -1,0 +1,3 @@
+describe CellsController do
+
+end

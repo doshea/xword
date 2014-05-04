@@ -12,8 +12,6 @@
 #  updated_at      :datetime
 #
 
-require 'spec_helper'
-
 describe Comment do
   it 'is pending'
 

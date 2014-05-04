@@ -69,6 +69,7 @@ module Newyorkable
         end
 
         puts new_nytimes_crossword.letters
+        new_nytimes_crossword.generate_preview
       else
         puts 'That puzzle has already been added! Woo a freebie!'
       end

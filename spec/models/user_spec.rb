@@ -18,13 +18,15 @@
 #  password_reset_sent_at :datetime
 #
 
-require 'spec_helper'
-
 describe User do
+  context 'setup' do
+    it { should have_secure_password }
+  end
   context 'validations' do
     let!(:user) { create(:user)}
     it {should validate_uniqueness_of(:email)}
     it {should validate_uniqueness_of(:username)}
+    it {should validate_presence_of(:email)}
     it {should validate_presence_of(:email)}
     it {should validate_presence_of(:username)}
 
@@ -63,9 +65,14 @@ describe User do
     end
   end
   context 'associations' do
-    it {should have_many :crosswords}
-    it {should have_many :comments}
-    it {should have_many :clues}
+    it { should have_many :crosswords }
+    it { should have_many :comments }
+    it { should have_many :solutions }
+    it { should have_many :clues }
+    it { should have_many :favorite_puzzles }
+    it { should have_many(:favorites).through(:favorite_puzzles).source(:crossword) }
+    it { should have_many(:solutions_partnerings).dependent(:destroy) }
+    it { should have_many(:team_solutions).through(:solution_partnerings).source(:user) }
   end
   describe 'instance methods' do
 

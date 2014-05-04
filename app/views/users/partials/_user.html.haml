@@ -8,8 +8,8 @@
     Joined: #{@user.created_at.strftime("%b %d, %Y")}
   %h5 Stats
   %ul
-    %li Crosswords created: #{@user.crossword_count}
-    %li Clues written: #{@user.clue_count}
+    %li Crosswords created: #{@user.crosswords.count}
+    %li Clues written: #{@user.clues.count}
 .large-5.columns
 
 .large-4.columns

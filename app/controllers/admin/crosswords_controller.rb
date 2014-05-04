@@ -1,5 +1,5 @@
 class Admin::CrosswordsController < ApplicationController
-  before_filter :ensure_admin
+  before_action :ensure_admin
 
   def index
     @crosswords = Crossword.order(:created_at).paginate(:page => params[:page])

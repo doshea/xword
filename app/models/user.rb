@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   has_many :favorite_puzzles, inverse_of: :user
   has_many :favorites, through: :favorite_puzzles, source: :crossword
 
-  has_many :solution_partnerings, inverse_of: :user, dependent: :delete_all
+  has_many :solution_partnerings, inverse_of: :user, dependent: :destroy
   has_many :team_solutions, through: :solution_partnerings, source: :user
 
   before_create { generate_token(:auth_token) }
@@ -92,13 +92,6 @@ class User < ActiveRecord::Base
     begin
       self[column] = SecureRandom.urlsafe_base64
     end while User.exists?(column => self[column]) #may need a colon
-  end
-
-  def clue_count
-    self.clues.count
-  end
-  def crossword_count
-    self.crosswords.count
   end
   def display_name
     if self.first_name.present?

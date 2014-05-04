@@ -14,8 +14,6 @@
 #  solved_at    :datetime
 #
 
-require 'spec_helper'
-
 describe Solution do
 
 

@@ -21,8 +21,6 @@
 #  circled         :boolean          default(FALSE)
 #
 
-require 'spec_helper'
-
 describe Cell do
 
 

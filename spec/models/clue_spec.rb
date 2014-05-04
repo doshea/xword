@@ -12,12 +12,10 @@
 #  phrase_id  :integer
 #
 
-require 'spec_helper'
-
 describe Clue do
   subject(:clue) { create(:clue) }
   it 'creates an instance of Clue' do
-
+    
   end
   context 'associations' do
     it {should belong_to :user}

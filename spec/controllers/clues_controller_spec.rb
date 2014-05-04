@@ -1,0 +1,3 @@
+describe CluesController do
+
+end

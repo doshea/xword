@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
-  before_filter :ensure_logged_in, only: [:account]
+  before_action :ensure_logged_in, only: [:account]
 
   def show
     @user = User.find(params[:id])
+    unless @user
   end
 
   def new

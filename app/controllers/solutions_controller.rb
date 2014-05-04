@@ -1,5 +1,5 @@
 class SolutionsController < ApplicationController
-  before_filter :ensure_owner_or_partner, only: [:destroy]
+  before_action :ensure_owner_or_partner, only: [:destroy]
 
   def show
     solution = Solution.find(params[:id])

@@ -1,6 +1,6 @@
 class CrosswordsController < ApplicationController
-  before_filter :ensure_logged_in, only: [:create]
-  before_filter :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish, :add_potential_word]
+  before_action :ensure_logged_in, only: [:create]
+  before_action :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish, :add_potential_word]
 
   def show
     @crossword = Crossword.find(params[:id])

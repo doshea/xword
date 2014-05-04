@@ -1,5 +1,5 @@
 class Admin::CommentsController < ApplicationController
-  before_filter :ensure_admin
+  before_action :ensure_admin
 
   def index
     @comments = Comment.all.paginate(:page => params[:page])

@@ -1,5 +1,5 @@
 class Admin::UsersController < ApplicationController
-  before_filter :ensure_admin
+  before_action :ensure_admin
 
   def index
     @users = User.order(:created_at).paginate(:page => params[:page])

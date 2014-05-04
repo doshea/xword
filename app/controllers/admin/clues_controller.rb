@@ -1,5 +1,5 @@
 class Admin::CluesController < ApplicationController
-  before_filter :ensure_admin
+  before_action :ensure_admin
 
   def index
     published_cw_ids = Crossword.published.pluck(:id)

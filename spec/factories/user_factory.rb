@@ -26,7 +26,7 @@ FactoryGirl.define do
     email Faker::Internet.email
     username 'min_user'
     password 'abcde'
-    password_confirmation 'abcde'
+    password_confirmation { "#{password}" }
   end
   factory :user, class: User do
     first_name Faker::Name.first_name
@@ -43,7 +43,7 @@ FactoryGirl.define do
     username 'admin'
     is_admin true
     password 'abcde'
-    password_confirmation 'abcde'
+    password_confirmation { "#{password}" }
   end
   factory :invalid_user_nil, class: User do
     email nil
@@ -53,21 +53,21 @@ FactoryGirl.define do
 
   end
   factory :invalid_user_min, class: User do
-    first_name { random_char*1 }
-    last_name { random_char*1 }
-    email { random_char * 4}
-    username { random_char*3 }
-    password { random_char*4 }
-    password_confirmation { random_char*4 }
+    first_name Faker::Lorem.characters(1)
+    last_name Faker::Lorem.characters(1)
+    email Faker::Lorem.characters(4)
+    username Faker::Lorem.characters(3)
+    password Faker::Lorem.characters(4)
+    password_confirmation Faker::Lorem.characters(4)
 
   end
   factory :invalid_user_max, class: User do
-    first_name { random_char*19 }
-    last_name { random_char*25 }
-    email { random_char * 41}
-    username { random_char*17 }
-    password { random_char*17 }
-    password_confirmation { random_char*17 }
+    first_name Faker::Lorem.characters(19)
+    last_name Faker::Lorem.characters(25)
+    email Faker::Lorem.characters(41)
+    username Faker::Lorem.characters(17)
+    password Faker::Lorem.characters(17)
+    password_confirmation Faker::Lorem.characters(17)
   end
 
 end
