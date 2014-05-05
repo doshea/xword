@@ -37,9 +37,9 @@ class Crossword < ActiveRecord::Base
   }
 
   belongs_to :user, inverse_of: :crosswords
-  has_many :comments, inverse_of: :crossword, dependent: :destroy
+  has_many :comments, -> {order(created_at: :desc) }, inverse_of: :crossword, dependent: :destroy
   has_many :solutions, inverse_of: :crossword, dependent: :destroy
-  has_many :cells, inverse_of: :crossword, dependent: :destroy
+  has_many :cells, -> { order(:index) }, inverse_of: :crossword, dependent: :destroy
   has_many :across_clues, through: :cells
   has_many :down_clues, through: :cells
   has_many :across_words, through: :across_clues, source: :word

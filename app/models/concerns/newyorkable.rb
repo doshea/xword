@@ -80,6 +80,10 @@ module Newyorkable
       Crossword.add_nyt_puzzle(latest)
     end
 
+    def get_nyt_from_date(date)
+      puzzle_string = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?date=#{date.month}/#{date.day}/#{date.year}")
+    end
+
     def record_on_github(puzzle_string, date)
       url_stem = 'https://api.github.com'
       repo = 'nyt_puzzle_history'
