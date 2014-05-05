@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
   before_action :ensure_logged_in, only: [:account]
+  # TODO Fix this
+  # rescue_from ActiveRecord::Error::RecordNotFound with: :user_not_found
+
 
   def show
     @user = User.find(params[:id])
@@ -84,4 +87,10 @@ class UsersController < ApplicationController
       #things to do when the old password is incorrect
     end
   end
+
+  private
+  def user_not_found
+    redirect_to error_path, flash: { error: "User \##{params[:id]} not found. :-("}
+  end
+
 end

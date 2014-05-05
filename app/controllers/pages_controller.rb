@@ -1,6 +1,9 @@
 class PagesController < ApplicationController
   layout 'logged_out_home', only: [:welcome]
 
+  def error
+  end
+
   def home
     if @current_user.nil?
       redirect_to(welcome_path)

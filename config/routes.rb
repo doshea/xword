@@ -65,6 +65,7 @@ Xword::Application.routes.draw do
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'
 
+  get '/error' => 'pages#error'
   get '/unauthorized' => 'pages#unauthorized'
   get '/account_required' => 'pages#account_required'
   get '/search' => 'pages#search'

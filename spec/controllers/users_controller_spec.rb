@@ -12,6 +12,15 @@ describe UsersController do
         expect(response.status).to eq 200
       end
     end
+    context 'Nonexistent user' do
+      before {get :show, id: 9999}
+
+      it 'has a 200 status code' do
+        expect(response.status).to eq 200
+      end
+
+      it { should redirect_to(error_path)}
+    end
 
     
   end

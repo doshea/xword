@@ -1,0 +1,5 @@
+= render layout: 'layouts/partials/topper_stopper' do
+  %h1.center Sorry...
+  - if flash[:error]
+    = flash[:error]
+    %br
