@@ -13,4 +13,6 @@
 class CellEdit < ActiveRecord::Base
   attr_accessible :across_clue_content, :down_clue_content, :cell_id
 
+  belongs_to :cell, inverse_of: :cell_edit
+
 end
