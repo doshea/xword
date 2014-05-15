@@ -2,14 +2,18 @@ Xword::Application.routes.draw do
   root to: 'pages#home'
   get '/welcome' => 'pages#welcome'
 
-  resources :users, only: [:new, :create, :show, :update] do
-    collection do
-      get :account
-      get :forgot_password
-      get 'reset_password/:password_reset_token' => 'users#reset_password', as: 'reset_password'
-      post :send_password_reset
-      post :change_password
-      post :resetter
+  resources :cells, only: [:update] do
+    member do
+      put :toggle_void
+    end
+  end
+
+  resources :clues, only: [:show, :update]
+
+  resources :comments, only: [:destroy] do
+    member do
+      post :add_comment, as: 'add'
+      post :reply, as: :reply_to
     end
   end
 
@@ -29,25 +33,6 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :clues, only: [:show, :update]
-  resources :words, only: [:show] do
-    collection do
-      post :match
-    end
-  end
-  resources :comments, only: [:destroy] do
-    member do
-      post :add_comment, as: 'add'
-      post :reply, as: :reply_to
-    end
-  end
-
-  resources :cells, only: [:update] do
-    member do
-      put :toggle_void
-    end
-  end
-
   resources :solutions, only: [:show, :update] do
     member do
       post :get_incorrect
@@ -59,6 +44,23 @@ Xword::Application.routes.draw do
       post :send_team_chat
       post :show_team_clue
       delete :destroy, as: :delete
+    end
+  end
+
+  resources :users, only: [:new, :create, :show, :update] do
+    collection do
+      get :account
+      get :forgot_password
+      get 'reset_password/:password_reset_token' => 'users#reset_password', as: 'reset_password'
+      post :send_password_reset
+      post :change_password
+      post :resetter
+    end
+  end
+  
+  resources :words, only: [:show] do
+    collection do
+      post :match
     end
   end
 

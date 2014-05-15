@@ -11,7 +11,7 @@
 
 - if @current_user == @crossword.user
   .alert-box{data: {alert: true}}
-    %div.center
+    .center
       You are the creator of this puzzle
       -if !@crossword.published
         %br
@@ -53,7 +53,7 @@
         = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
           %i.fi-widget
       - if @team
-        %div.button.tiny.secondary
+        .button.tiny.secondary
           %i.fi-torsos-all
           #teammates
       - else

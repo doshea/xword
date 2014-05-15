@@ -26,24 +26,36 @@
       %li.divider
       %li.has-dropdown
         = link_to '#' do
-          %i.fi-pencil.larger
           Solve
         %ul.dropdown
           %li.divider
           %li
-            = link_to 'Random Puzzle', User.rand_unowned_puzzle
+            = link_to '#' do #TODO
+              = image_tag 'nyt_white.png', style: 'max-width: 18px; max-height: 18px;'
+              NY Times
+          %li.divider
+          %li
+            = link_to '#' do #TODO
+              %i.fi-torso.larger
+              User-Made
+          %li.divider
+          %li
+            = link_to User.rand_unowned_puzzle do
+              %i.fi-shuffle.larger
+              Random
       %li.divider
       %li.has-dropdown
         = link_to '#' do
-          %i.fi-lightbulb.larger
           Create
         %ul.dropdown
           %li.divider
           %li
             = link_to new_crossword_path do
+              %i.fi-pencil.larger
               New
           %li
             = link_to create_dashboard_path do
+              %i.fi-results.larger
               Dashboard
       %li.divider
       - if is_logged_in?
