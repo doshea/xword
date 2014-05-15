@@ -1,3 +1,12 @@
+###
+Crossword Editing Functions
+---------------------------
+This file defines functions used only by the site's Javascript-based
+crossword editor. Functions are scoped inside of the 'solve.app'
+variable, with the exception of jQuery custom functions which may
+be called by any jQuery object.
+###
+
 cw.editing = true
 
 window.edit_app =

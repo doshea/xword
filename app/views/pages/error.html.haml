@@ -1,5 +1,9 @@
 = render layout: 'layouts/partials/topper_stopper' do
-  %h1.center Sorry...
-  - if flash[:error]
-    = flash[:error]
-    %br
+  .small-4.columns.small-offset-4.end
+    = image_tag 'error.png', class: 'center', style: 'display: block; margin: 0 auto; width: 75%;'
+  .small-12.columns
+    %h3.center
+      - if flash[:error]
+        = flash[:error]
+        %br
+  

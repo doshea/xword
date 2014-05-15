@@ -8,18 +8,19 @@ describe UsersController do
     context 'Existing user' do
       before {get :show, id: user.id}
 
-      it 'has a 200 status code' do
+      it 'has a 200 (OK) status code' do
         expect(response.status).to eq 200
       end
+      it 
     end
     context 'Nonexistent user' do
       before {get :show, id: 9999}
 
-      it 'has a 200 status code' do
-        expect(response.status).to eq 200
+      it 'has a 302 (redirect) status code' do
+        expect(response.status).to eq 302
       end
 
-      it { should redirect_to(error_path)}
+      it { should redirect_to(error_path(prev: request.original_url))}
     end
 
     

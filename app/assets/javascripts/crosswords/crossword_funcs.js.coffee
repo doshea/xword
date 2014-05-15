@@ -14,9 +14,9 @@ window.cw =
   DELETE : 8
   SHIFT : 16
   TAB : 9
+  ESCAPE : 27
   BACKSPACE : 8
   HYPHEN: 189
-  PAGE_NAV_KEYS: null
 
   # Removes highlighting from the selected cell, the selected word and the selected clue. Also sets the
   # selected boolean to false to disable keystroke events for the puzzle while it isn't in "focus"
@@ -86,7 +86,7 @@ window.cw =
 
     counter = 1
 
-  #Numbers cells if they are the lefmost or topmost cell in a word
+  #Numbers cells if they are the start of the word i.e. if they are the lefmost or topmost cell in a word
   number_cell: ($cell) ->
     if not $cell.has_above() or not $cell.has_left()
       $cell.set_number cw.counter
@@ -96,9 +96,19 @@ window.cw =
       $cell.set_number ""
       $cell.removeAttr "data-cell"
 
-  #Keyboard Function triggered by
+  ###
+  A major function, this triggers on EVERY keypress on the page. As long as a cell is selected when,
+  the key is pressed, the user can use the arrow keys to navigate between cells, can Tab to the next word,
+  can Enter to the next cell, can Escape to unhighlight all cells, can Delete letters, and can of course
+  type letters into cells.
+  
+  (TODO: This may seem to be recreating the wheel by turning td elements into effective inputs -- perhaps
+  it is, but it seemed easier and more manipulable than trying to change the built-in input functionality
+  and styles. Recreating focus/selecting has been extremely annoying, however -- a fix should be considered)
+  ###
   keypress : (e) ->
-    #in edit pages also had the following JS: if (!(e.ctrlKey or e.altKey or e.metaKey) && (selected && ($(':focus').length == 0)))
+    # Does nothing if a cell is not selected, if an elements is focused (prevents search bar
+    # conflict), or if the user is pressing modifier keys.
     if not (e.ctrlKey or e.altKey or e.metaKey) and (cw.selected and ($(":focus").length is 0))
       key = e.which
       switch key
@@ -137,6 +147,9 @@ window.cw =
         when cw.TAB
           e.preventDefault()
           cw.highlight_next_word()
+        when cw.ESCAPE
+          e.preventDefault()
+          cw.unhighlight_all()
         when cw.ENTER
           e.preventDefault()
           cw.selected.next_empty_cell().highlight()

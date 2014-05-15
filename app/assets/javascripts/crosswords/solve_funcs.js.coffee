@@ -1,3 +1,12 @@
+###
+Crossword Solving Functions
+---------------------------
+This file defines functions used only by the site's Javascript-based
+crossword solver. Functions are scoped inside of the 'solve.app'
+variable, with the exception of jQuery custom functions which may
+be called by any jQuery object.
+###
+
 window.solve_app =
   logged_in: null
   solution_id: null

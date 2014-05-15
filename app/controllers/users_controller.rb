@@ -5,7 +5,11 @@ class UsersController < ApplicationController
 
 
   def show
-    @user = User.find(params[:id])
+    begin
+      @user = User.find(params[:id])
+    rescue
+      redirect_to error_path(prev: request.original_url), flash: {error: "Could not find User \##{params[:id]}"}
+    end
   end
 
   def new
@@ -89,8 +93,8 @@ class UsersController < ApplicationController
   end
 
   private
-  def user_not_found
-    redirect_to error_path, flash: { error: "User \##{params[:id]} not found. :-("}
-  end
+  # def user_not_found
+  #   redirect_to error_path, flash: { error: "User \##{params[:id]} not found. :-("}
+  # end
 
 end
