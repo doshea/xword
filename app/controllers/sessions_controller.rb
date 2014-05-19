@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
       # (params[:remember_me] ? cookies.permanent[:auth_token] : cookies[:auth_token] ) = user.auth_token #replaces previous line's functionality
       redirect_to root_path
     else
-      redirect_to login_path
+      redirect_to login_path, flash: {error: 'Username/password combination did not match our records'}
     end
   end
 
