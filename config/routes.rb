@@ -48,6 +48,10 @@ Xword::Application.routes.draw do
   end
 
   resources :users, only: [:new, :create, :show, :update] do
+    member do
+      # TODO
+      # get :favorites 
+    end
     collection do
       get :account
       get :forgot_password

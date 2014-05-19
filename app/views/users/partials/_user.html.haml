@@ -8,13 +8,18 @@
     Joined: #{@user.created_at.strftime("%b %d, %Y")}
   %h5 Stats
   %ul
-    %li Crosswords created: #{@user.crosswords.count}
+    %li
+      Crosswords
+      %ul
+        %li #{@user.solutions.completed.count} solved
+        %li #{@user.crosswords.published.count} created
+        %li #{@user.crosswords.unpublished.count} in the works
     %li Clues written: #{@user.clues.count}
 .large-5.columns
 
 .large-4.columns
   %ul
-    - @user.crosswords.each do |cw|
+    - @user.crosswords.published.each do |cw|
       %li
         = link_to cw.title, cw
         = link_to cw do

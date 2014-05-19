@@ -3,6 +3,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 require 'capybara/rspec'
+require 'launchy'
 require 'database_cleaner'
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
