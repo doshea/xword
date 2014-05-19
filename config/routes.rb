@@ -64,6 +64,7 @@ Xword::Application.routes.draw do
     end
   end
 
+  get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'
 

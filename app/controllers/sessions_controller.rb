@@ -1,4 +1,11 @@
 class SessionsController < ApplicationController
+  
+  # GET /login
+  def new
+
+  end
+
+  # POST /login
   def create
     user = User.find_by_username(params[:username])
     if user.present? && user.authenticate(params[:password])
@@ -11,13 +18,15 @@ class SessionsController < ApplicationController
       # (params[:remember_me] ? cookies.permanent[:auth_token] : cookies[:auth_token] ) = user.auth_token #replaces previous line's functionality
       redirect_to root_path
     else
-      redirect_to welcome_path
+      redirect_to login_path
     end
   end
 
+  # DELETE /logout
   def destroy
     session[:user_id] = nil
     cookies.delete(:auth_token)
     redirect_to root_url
   end
+
 end
