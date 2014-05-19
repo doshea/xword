@@ -1,6 +1,7 @@
 class SolutionsController < ApplicationController
   before_action :ensure_owner_or_partner, only: [:destroy]
 
+  #GET /solutions/:id or solution_path
   def show
     solution = Solution.find(params[:id])
     if solution.team
@@ -14,11 +15,14 @@ class SolutionsController < ApplicationController
     end
   end
 
+  #PATCH/PUT /solutions/:id or solution_path
   def update
     solution = Solution.find(params[:id])
     solution.letters = params[:letters]
     solution.save
   end
+
+  #POST /solutions/:id/get_incorrect or get_incorrect_solution_path
   def get_incorrect
     @solution = Solution.find(params[:id])
     @mismatches = @solution.crossword.return_mismatches(params[:letters])
@@ -26,11 +30,14 @@ class SolutionsController < ApplicationController
       @solution.update_attributes(is_complete: true)
     end
   end
+
+  #POST /solutions/:id/check_correctness or check_correctness_solution_path
   def check_correctness
     @solution = Solution.find(params[:id])
     @correctness = @solution.crossword.letters == params[:letters]
   end
 
+  #PATCH /solutions/:id/team_update or team_update_solution_path
   def team_update
     data = {
                 row: params[:row],
@@ -46,6 +53,8 @@ class SolutionsController < ApplicationController
 
     render nothing: true
   end
+
+  #POST /solutions/:id/join_team or join_team_solution_path
   def join_team
     data = {
                 display_name: params[:display_name],
@@ -57,6 +66,8 @@ class SolutionsController < ApplicationController
     Pusher.trigger(params[:channel], 'join_puzzle', data)
     render nothing: true
   end
+
+  #POST /solutions/:id/leave_team or leave_team_solution_path
   def leave_team
     data = {
                 solver_id: params[:solver_id]
@@ -64,17 +75,23 @@ class SolutionsController < ApplicationController
     Pusher.trigger(params[:channel], 'leave_puzzle', data)
     render nothing: true
   end
+
+  #POST /solutions/:id/roll_call or roll_call_solution_path
   def roll_call
     data = {}
     Pusher.trigger(params[:channel], 'roll_call', data)
     render nothing: true
   end
+
+  #POST /solutions/:id/send_team_chat or send_team_chat_solution_path
   def send_team_chat
     data = {display_name: params[:display_name],
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
     Pusher.trigger(params[:channel], 'chat_message', data)
   end
+
+  #POST /solutions/:id/show_team_clue or show_team_clue_solution_path
   def show_team_clue
     data = {cell_num: params[:cell_num],
                 across: params[:across],
@@ -88,6 +105,7 @@ class SolutionsController < ApplicationController
   end
 
   # If the user is a partner on the solution, delete their partnership. If they are the owner, delete the solution.
+  #DELETE /solutions/:id or delete_solution_path
   def destroy
     if @solution_partnering
       @solution_partnering.destroy

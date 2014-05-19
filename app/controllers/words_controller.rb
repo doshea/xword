@@ -1,4 +1,6 @@
 class WordsController < ApplicationController
+  
+  #GET /words/:id or word_path
   def show
     @word = Word.find(params[:id])
 
@@ -10,6 +12,7 @@ class WordsController < ApplicationController
     @clues = @word.clues.sort{|x,y| x.difficulty <=> y.difficulty}
   end
 
+  #POST /words/match or match_words_path
   def match
     @results = Word.word_match(params[:pattern].gsub(/_|-/, '?')).map(&:upcase)
   end

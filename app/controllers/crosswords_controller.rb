@@ -2,6 +2,7 @@ class CrosswordsController < ApplicationController
   before_action :ensure_logged_in, only: [:create]
   before_action :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish, :add_potential_word]
 
+  #GET /crosswords/:id or crossword_path
   def show
     @crossword = Crossword.find(params[:id])
     if @crossword
@@ -19,10 +20,12 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #GET /crosswords/new or new_crossword_path
   def new
     @crossword = Crossword.new
   end
 
+  #POST /crosswords or crosswords_path
   def create
     @crossword = Crossword.new(params[:crossword])
     @crossword.user = @current_user
@@ -34,6 +37,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #GET /crosswords/:id/edit or edit_crossword_path
   def edit
     if @crossword.published?
       redirect_to @crossword
@@ -47,17 +51,20 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #PATCH/PUT /crosswords/:id or crossword_path
   def update
     crossword = Crossword.find(params[:id])
     crossword.update_attributes(params[:crossword])
     render nothing: true
   end
 
+  #GET /crosswords/:id/publish or publish_crossword_path
   def publish
     @crossword.publish! unless @crossword.published?
     redirect @crossword
   end
 
+  #POST /crosswords/:id/team or create_team_crossword_path
   def create_team
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
@@ -76,6 +83,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #GET /crosswords/:id/team/:key or team_crossword_path
   def team
     @crossword = Crossword.find(params[:id])
     @solution = Solution.find_by_crossword_id_and_key(params[:id], params[:key])
@@ -91,6 +99,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #POST /crosswords/:id/add_potential_word or add_potential_word_crossword_path
   def add_potential_word
     @crossword = Crossword.find(params[:id])
     if @crossword
@@ -106,6 +115,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #DELETE /crosswords/:id/remove_potential_word/:potential_word_id or remove_potential_word_crossword_path
   def remove_potential_word
     @crossword = Crossword.find(params[:id])
     if @crossword
@@ -116,6 +126,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #POST /crosswords/:id/favorite or favorite_crossword_path
   def favorite
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
@@ -129,6 +140,8 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #DELTE /crosswords/:id/unfavorite or unfavorite_crossword_path
+  #TODO make this use DELETE favorite rather than unfavorite
   def unfavorite
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
@@ -138,6 +151,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #GET /crosswords/:id/solution_choice or solution_choice_crossword_path
   def solution_choice
     @crossword = Crossword.find(params[:id])
 
@@ -157,6 +171,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
+  #GET /crosswords/batch or batch_crosswords_path
   def batch
     @crosswords = Crossword.find(params[:ids])
     @crosswords_remaining = @crosswords[Crossword.per_page..-1]

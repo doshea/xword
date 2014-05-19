@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   # TODO Fix this
   # rescue_from ActiveRecord::Error::RecordNotFound with: :user_not_found
 
-
+  #GET /users/:id or user_path
   def show
     begin
       @user = User.find(params[:id])
@@ -12,10 +12,12 @@ class UsersController < ApplicationController
     end
   end
 
+  #GET /users/new or new_user_path
   def new
     @user = User.new
   end
 
+  #POST /users or users_path
   def create
     @user = User.new(params[:user])
     if @user.save
@@ -26,6 +28,7 @@ class UsersController < ApplicationController
     end
   end
 
+  #PATCH/PUT /users/:id or user_path
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(params[:user])
@@ -38,13 +41,19 @@ class UsersController < ApplicationController
     end
   end
 
+  #GET /users/account or account_users_path
+  #TODO: should there be a separate account controller?
   def account
     @user = @current_user
   end
+
+  #GET /users/forgot_password or forgot_password_users_path
   def forgot_password
     @user = @current_user
     @redirect = params[:redirect]
   end
+
+  #POST /users/send_password_reset or send_password_reset_users_path
   def send_password_reset
     user = @current_user || User.find_by(email: params[:email]) || User.find_by(username: params[:username])
     if user
@@ -56,10 +65,13 @@ class UsersController < ApplicationController
       #IF THERE IS NO USER
     end
   end
+
+  #GET /users/reset_password/:password_reset_token or reset_password_users_path
   def reset_password
     @user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
   end
   
+  #POST /users/resetter or resetter_users_path
   def resetter
     user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
     if user
@@ -77,6 +89,7 @@ class UsersController < ApplicationController
     end
   end
 
+  #POST /users/change_password or change_password_users_path
   def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])

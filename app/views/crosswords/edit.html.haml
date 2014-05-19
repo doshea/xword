@@ -45,7 +45,9 @@
 %section#pattern-container.slide-up-container
   = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button', remote: true) do
     %i.fi-magnifying-glass
-    %span.small Pattern Search
+    %span.small
+      Pattern Search
+      %sup Beta
   #pattern-search
     .row
       = form_tag match_words_path, method: :post, remote: true do
@@ -55,7 +57,6 @@
 %ol.joyride-list{data: {joyride: true}}
   %li{data: {id: 'credit-area', text: 'Next'}}
     %p Hello and welcome to the Joyride documentation page.
-
 
 = link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button', remote: true) do
   %i.fi-widget

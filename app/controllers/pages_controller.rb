@@ -1,9 +1,11 @@
 class PagesController < ApplicationController
   layout 'logged_out_home', only: [:welcome]
 
+  #GET /errors or error_path
   def error
   end
 
+  #GET / or root_path
   def home
     if @current_user.nil?
       redirect_to(welcome_path)
@@ -38,17 +40,21 @@ class PagesController < ApplicationController
     end
   end
 
+  #GET /unauthorized or unauthorized_path
   def unauthorized
   end
 
+  #GET /account_required or account_required_path
   def account_required
     @redirect = params[:redirect]
     # redirect_to send_password_reset_users_path(redirect: url_for({controller: :pages, action: :account_required, only_path: false}).html_safe)
   end
 
+  #GET /faq or faq_path
   def faq
   end
 
+  #GET /search or search_path
   def search
     @query = params[:query]
     @users = User.starts_with(@query)
@@ -57,6 +63,8 @@ class PagesController < ApplicationController
     @crosswords_sliced = @crosswords.each_slice(4)
     @words = Word.starts_with(@query)
   end
+
+  #GET /live_search or live_search_path
   def live_search
     max_results = 15
 
@@ -74,10 +82,14 @@ class PagesController < ApplicationController
 
     @result_count = @users.count + @crosswords.count + @words.count
   end
+
+  #GET /welcome or welcome_path
   def welcome
     redirect_to(root_path) if @current_user.present?
     @user = User.new
   end
+
+  #GET /stats or stats_path
   def stats
     non_unq_signup_dates = User.pluck(:created_at).map{|time_with_zone| time_with_zone.to_date}.sort
     unq_signup_dates = non_unq_signup_dates.uniq
@@ -92,6 +104,8 @@ class PagesController < ApplicationController
     @running_signup_counts = @signup_counts.each_with_index.map { |x,i| @signup_counts[0..i].inject(:+) }
 
   end
+
+  #GET /nytimes or nytimes_path
   def nytimes
     @nytimes_user = User.find_by_username('nytimes')
     @nytimes_puzzles = @nytimes_user.crosswords.published

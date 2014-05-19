@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+
+  #POST /comments/:id/add_comment or add_comment_path
   def add_comment
     crossword = Crossword.find(params[:id])
     user = @current_user
@@ -11,6 +13,7 @@ class CommentsController < ApplicationController
     end
   end
 
+  #POST /comments/:id/reply or reply_to_comment
   def reply
     base_comment = Comment.find(params[:id])
     user = @current_user
@@ -23,6 +26,7 @@ class CommentsController < ApplicationController
     end
   end
 
+  #DELETE /comments/:id or comment_path
   def destroy
     @comment = Comment.find params[:id]
     if @current_user && (@current_user.is_admin? || (@current_user == @comment.user))

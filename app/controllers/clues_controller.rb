@@ -1,4 +1,6 @@
 class CluesController < ApplicationController
+
+  #GET /clue/:id or clue_path
   def show
     @clue = Clue.find(params[:id])
 
@@ -7,6 +9,8 @@ class CluesController < ApplicationController
     @count = across_crosswords.length + down_crosswords.length
     @crosswords = (across_crosswords + down_crosswords).uniq.sort{|x,y| x.title <=> y.title}
   end
+
+  #PATCH/PUT /clue/:id or clue_path
   def update
     @clue = Clue.find(params[:id])
     @clue.update_attributes(params[:clue])
