@@ -65,7 +65,7 @@ FactoryGirl.define do
     first_name Faker::Lorem.characters(19)
     last_name Faker::Lorem.characters(25)
     email Faker::Lorem.characters(41)
-    username Faker::Lorem.characters(17)
+    username Faker::Lorem.characters(21)
     password Faker::Lorem.characters(17)
     password_confirmation Faker::Lorem.characters(17)
   end

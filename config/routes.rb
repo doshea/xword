@@ -22,7 +22,7 @@ Xword::Application.routes.draw do
       get :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'
       post :favorite
-      delete :unfavorite
+      delete 'favorite' => 'crosswords#unfavorite'
       get 'team/:key' => 'crosswords#team', as: 'team'
       get 'solution_choice'
       post :add_potential_word

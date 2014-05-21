@@ -48,7 +48,7 @@
           %i.fi-save
         = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? ' hidden' : ''}", method: :post, id: 'favorite', remote: true) do
           %i.fi-star>
-        = link_to(unfavorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", method: :delete, id: 'unfavorite', remote: true) do
+        = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", method: :delete, id: 'unfavorite', remote: true) do
           %i.fi-star{style: 'color: #ff7878;'}>
         = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
           %i.fi-widget

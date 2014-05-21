@@ -3,9 +3,8 @@
   = text_field_tag :username, nil, :autofocus => true
   = label_tag :password
   = password_field_tag :password
-  = label_tag :remember_me, 'remember me'
+  = label_tag :remember_me, 'Remember me'
   = check_box_tag :remember_me, 1, params[:remember_me], checked: true
-  -# = link_to('Cancel', '#', :'data-clear-form' => true, :class => 'button tiny radius alert')
   %br
   = submit_tag 'Log In', :class => 'button tiny radius success'
   = link_to forgot_password_users_path, class: 'right' do

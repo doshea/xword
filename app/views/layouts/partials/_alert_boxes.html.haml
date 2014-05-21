@@ -1,0 +1,19 @@
+- alert_boxes = {error: 'alert', warning: 'warning', success: 'success', info: 'info', secondary: 'secondary'}
+- alert_boxes.each do |alert_sym, alert_s|
+  - if flash[alert_sym]
+    .alert-box{data: {alert: true}, class: alert_s}
+      .center
+        = flash[alert_sym]
+        = link_to '#', class: 'close' do
+          &times;
+- if flash[:form_error]
+  .alert-box.alert.center{data: {alert: true}}
+    %p.no-margin.larger.underline
+      %u= flash[:form_error]
+    - if flash[:form_errors] && flash[:form_errors].any?
+      %ul.ib.no-margin.smaller
+        - flash[:form_errors].each do |err|
+          %li
+            = err
+    = link_to '#', class: 'close' do
+      &times;

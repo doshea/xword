@@ -140,8 +140,7 @@ class CrosswordsController < ApplicationController
     end
   end
 
-  #DELTE /crosswords/:id/unfavorite or unfavorite_crossword_path
-  #TODO make this use DELETE favorite rather than unfavorite
+  #DELETE /crosswords/:id/favorite or favorite_crossword_path
   def unfavorite
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user

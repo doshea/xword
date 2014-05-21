@@ -1,6 +1,3 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Log In'} do
   .columns.small-6.small-offset-3
-    - if flash[:error]
-      .alert-box.alert
-        = flash[:error]
     = render partial: 'sessions/partials/form_large'
