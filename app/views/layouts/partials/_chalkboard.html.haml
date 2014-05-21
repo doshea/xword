@@ -4,10 +4,10 @@
       #welcomeBoard
       = render(partial: 'shared/form_errors', locals: {object: @user})
       = form_for(@user, html: {:'data-abide' => true}) do |f|
-        = f.text_field :username, placeholder: "username", class: "chalkboardInput subtle-input", required: true
-        = f.email_field :email, placeholder: "email", class: "chalkboardInput subtle-input", required: true
-        = f.password_field :password, placeholder: "password", class: "chalkboardInput subtle-input", required: true
-        = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboardInput subtle-input", required: true
+        = f.text_field :username, placeholder: "username", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_USERNAME_LENGTH
+        = f.email_field :email, placeholder: "email", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_EMAIL_LENGTH
+        = f.password_field :password, placeholder: "password", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
+        = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
         = f.submit "Sign up", class: 'chalkboardButton'
       %span or
       = link_to "#", class: "chalkboardButton button", id: "signup1" do

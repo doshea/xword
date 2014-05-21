@@ -33,9 +33,9 @@
         %fieldset
           %legend Personal Info
           = f.label :first_name
-          = f.text_field :first_name, placeholder: 'Will'
+          = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH
           = f.label :last_name
-          = f.text_field :last_name, placeholder: 'Shortz'
+          = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH
           = f.label :location
           = f.text_field :location, placeholder: 'Lost in thought'
           = f.submit 'Update Account', class: 'button'
@@ -59,6 +59,6 @@
         %legend Change Password
         = form_tag(change_password_users_path, method: :post, remote: true) do
           = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
-          = password_field_tag :new_password, nil, placeholder: 'New Password', required: true
-          = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true
+          = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
+          = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH
           = submit_tag 'Change Password', class: 'button', disable_with: 'Changing...'

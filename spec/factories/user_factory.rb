@@ -53,21 +53,21 @@ FactoryGirl.define do
 
   end
   factory :invalid_user_min, class: User do
-    first_name Faker::Lorem.characters(1)
-    last_name Faker::Lorem.characters(1)
-    email Faker::Lorem.characters(4)
-    username Faker::Lorem.characters(3)
-    password Faker::Lorem.characters(4)
-    password_confirmation Faker::Lorem.characters(4)
+    first_name Faker::Lorem.characters(User::MAX_FIRST_NAME_LENGTH - 1)
+    last_name Faker::Lorem.characters(User::MAX_LAST_NAME_LENGTH - 1)
+    email Faker::Lorem.characters(User::MAX_EMAIL_LENGTH - 1)
+    username Faker::Lorem.characters(User::MAX_USERNAME_LENGTH - 1)
+    password Faker::Lorem.characters(User::MAX_PASSWORD_LENGTH - 1)
+    password_confirmation Faker::Lorem.characters(User::MAX_PASSWORD_LENGTH - 1)
 
   end
   factory :invalid_user_max, class: User do
-    first_name Faker::Lorem.characters(19)
-    last_name Faker::Lorem.characters(25)
-    email Faker::Lorem.characters(41)
-    username Faker::Lorem.characters(21)
-    password Faker::Lorem.characters(17)
-    password_confirmation Faker::Lorem.characters(17)
+    first_name Faker::Lorem.characters(User::MAX_FIRST_NAME_LENGTH + 1)
+    last_name Faker::Lorem.characters(User::MAX_LAST_NAME_LENGTH + 1)
+    email Faker::Lorem.characters(User::MAX_EMAIL_LENGTH + 1)
+    username Faker::Lorem.characters(User::MAX_USERNAME_LENGTH + 1)
+    password Faker::Lorem.characters(User::MAX_PASSWORD_LENGTH + 1)
+    password_confirmation Faker::Lorem.characters(User::MAX_PASSWORD_LENGTH + 1)
   end
 
 end
