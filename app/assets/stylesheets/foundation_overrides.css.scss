@@ -35,9 +35,14 @@ input#query {
   height: inherit;
 }
 
-
-
-
+.alert-box.warning {
+  background-color: #f08a24;
+  border-color: #de770f;
+  color: #fff;
+}
+.alert-box {
+  margin-bottom: 0 !important;
+}
 
 
 

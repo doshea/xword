@@ -81,7 +81,8 @@ Xword::Application.routes.draw do
   get '/faq' => 'pages#faq'
   get '/contact' => 'pages#contact'
   get '/stats' => 'pages#stats'
-  get '/nytimes' => 'pages#nytimes'
+  get '/nytimes' => 'pages#nytimes' #TODO decide if this will be its own page or not
+  get '/user_made' => 'pages#user_made' #TODO decide if this will be its own page or not
 
   namespace :admin do
     get :email

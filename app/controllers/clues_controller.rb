@@ -1,9 +1,8 @@
 class CluesController < ApplicationController
+  before_action :find_clue
 
   #GET /clue/:id or clue_path
   def show
-    @clue = Clue.find(params[:id])
-
     across_crosswords = @clue.across_crosswords
     down_crosswords = @clue.down_crosswords
     @count = across_crosswords.length + down_crosswords.length
@@ -12,8 +11,14 @@ class CluesController < ApplicationController
 
   #PATCH/PUT /clue/:id or clue_path
   def update
-    @clue = Clue.find(params[:id])
     @clue.update_attributes(params[:clue])
     render nothing: true
+  end
+
+
+  private
+
+  def find_clue
+    @clue = Clue.find(params[:id])
   end
 end

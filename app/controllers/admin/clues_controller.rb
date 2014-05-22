@@ -1,5 +1,6 @@
 class Admin::CluesController < ApplicationController
   before_action :ensure_admin
+  before_action :find_clue, only: [:edit, :update, :destroy]
 
   #GET /admin/clues or admin_clues_path
   def index
@@ -11,19 +12,33 @@ class Admin::CluesController < ApplicationController
 
   #GET /admin/clues/:id/edit or edit_admin_clue_path
   def edit
-    @clue = Clue.find(params[:id])
   end
 
   #PATCH/PUT /admin/clues/:id or admin_clue_path
+  # AJAX #
   def update
-    @clue = Clue.find(params[:id])
-    @clue.update_attributes(params[:clue])
+    if @clue.update_attributes(params[:clue])
+      alert_js('SUCCESS clue updated.')
+    else
+      alert_js('!!!ERROR updating clue!!!')
+    end
   end
 
   #DELETE /admin/clues/:id or admin_clue_path
+  # AJAX #
   def destroy
-    @clue = Clue.find(params[:id])
-    @clue.destroy
+    if @clue.destroy
+      alert_js('SUCCESS clue deleted.')
+    else
+      alert_js('!!!ERROR deleting clue!!!')
+    end
   end
 
+  private
+
+  def find_clue
+    @clue = Clue.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+    redirect_to :back, flash: {error: 'Sorry, that clue could not be found.'}
+  end
 end

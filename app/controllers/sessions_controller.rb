@@ -1,10 +1,10 @@
 class SessionsController < ApplicationController
   
-  # GET /login
+  # GET /login or login_path
   def new
   end
 
-  # POST /login
+  # POST /login or login_path
   def create
     user = User.find_by_username(params[:username])
     if user.present? && user.authenticate(params[:password])
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
     end
   end
 
-  # DELETE /logout
+  # DELETE /logout or logout_path
   def destroy
     session[:user_id] = nil
     cookies.delete(:auth_token)

@@ -1,3 +1,5 @@
+- if flash.any?
+  = render partial: 'layouts/partials/alert_boxes'
 = yield
 :javascript
   $(document).foundation(null,null,null,null,true);

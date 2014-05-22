@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  rescue_from ActionController::RedirectBackError, with: :redirect_to_root
+
   before_action :authenticate
 
   private
@@ -18,5 +20,13 @@ class ApplicationController < ActionController::Base
   end
   def ensure_admin
     redirect_to(unauthorized_path) if (@current_user.nil? || !@current_user.is_admin)
+  end
+
+  def redirect_to_root
+    redirect_to root_path
+  end
+
+  def alert_js(s)
+    render js: "alert('#{s}');"
   end
 end

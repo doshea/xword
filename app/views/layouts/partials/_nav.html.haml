@@ -31,12 +31,12 @@
         %ul.dropdown
           %li.divider
           %li
-            = link_to '#' do #TODO
-              = image_tag 'nyt_white.png', style: 'max-width: 18px; max-height: 18px;'
+            = link_to nytimes_path do
+              = image_tag 'nyt_white.png', style: 'max-width: 18px; max-height: 18px;' #TODO remove this junky CSS
               NY Times
           %li.divider
           %li
-            = link_to '#' do #TODO
+            = link_to user_made_path do
               %i.fi-torso.larger
               User-Made
           %li.divider

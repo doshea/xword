@@ -27,7 +27,5 @@
     = javascript_include_tag 'foundation5/foundation.min'
     = javascript_include_tag 'foundation5/modernizr'
     %header#nav.dark-shadow= render partial: 'layouts/partials/nav'
-    - if flash.any?
-      = render partial: 'layouts/partials/alert_boxes'
     #body= render partial: 'layouts/partials/body'
     %footer#footer= render partial: 'layouts/partials/footer'

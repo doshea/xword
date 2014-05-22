@@ -1,4 +1,4 @@
-= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs', row_top_title: "#{image_tag 'nyt_white.png', width: 20} New York Times Crosswords".html_safe} do
   %h4
     = image_tag @nytimes_user.image.reply_size
     New York Times Crosswords

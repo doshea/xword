@@ -9,8 +9,8 @@
   solve_app.solution_id = #{@solution.try(:id)}
   solve_app.anonymous = #{@current_user.nil?}
 
-- if @current_user == @crossword.user
-  .alert-box{data: {alert: true}}
+- if (@current_user == @crossword.user)
+  .alert-box.secondary{data: {alert: true}}
     .center
       You are the creator of this puzzle
       -if !@crossword.published
@@ -18,7 +18,7 @@
         = link_to('Edit Puzzle', edit_crossword_path(@crossword))
         or
         = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
-      %a.slide-close{href: "#"} &times;
+    %a.close{href: "#"} &times;
 
 -# Quick fix for sunday crosswords. TODO fix this.
 - if @crossword.cols > 15
@@ -88,7 +88,7 @@
       -else
         =link_to 'Sign up', new_user_path
         or
-        Log in
+        = link_to 'Log in', login_path
         to comment on this puzzle
       %hr
       - @crossword.comments.each do |comment|

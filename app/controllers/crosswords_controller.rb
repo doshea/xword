@@ -1,23 +1,19 @@
 class CrosswordsController < ApplicationController
+  before_action :find_crossword, only: [:show, :team, :favorite, :unfavorite, :solution_choice]
   before_action :ensure_logged_in, only: [:create]
-  before_action :ensure_owner_or_admin, only: [:edit, :update, :destroy, :publish, :add_potential_word]
+  before_action :ensure_owner_or_admin, only: [:edit, :update, :publish, :add_potential_word, :remove_potential_word]
 
   #GET /crosswords/:id or crossword_path
   def show
-    @crossword = Crossword.find(params[:id])
-    if @crossword
-      if @current_user
-        @solution = Solution.find_or_create_by(
-          crossword_id: @crossword.id,
-          user_id: @current_user.id,
-          team: false
-        )
-        @solution.fill_letters
-      end
-      @cells = @crossword.cells.asc_indices
-    else
-      #redirect to 404 page
+    if @current_user
+      @solution = Solution.find_or_create_by(
+        crossword_id: @crossword.id,
+        user_id: @current_user.id,
+        team: false
+      )
+      @solution.fill_letters
     end
+    @cells = @crossword.cells.asc_indices
   end
 
   #GET /crosswords/new or new_crossword_path
@@ -33,14 +29,14 @@ class CrosswordsController < ApplicationController
       @crossword.link_cells_to_neighbors
       redirect_to edit_crossword_path(@crossword)
     else
-      render :new
+      render :new, flash: {error: 'There was a problem saving your crossword.'}
     end
   end
 
   #GET /crosswords/:id/edit or edit_crossword_path
   def edit
     if @crossword.published?
-      redirect_to @crossword
+      redirect_to @crossword, flash: {secondary: 'Sorry, this puzzle has been published and cannot be further edited.'}
     else
       @cells = @crossword.cells.asc_indices
       @across_cells = @crossword.across_start_cells.includes(:across_clue).asc_indices
@@ -53,7 +49,6 @@ class CrosswordsController < ApplicationController
 
   #PATCH/PUT /crosswords/:id or crossword_path
   def update
-    crossword = Crossword.find(params[:id])
     crossword.update_attributes(params[:crossword])
     render nothing: true
   end
@@ -85,7 +80,6 @@ class CrosswordsController < ApplicationController
 
   #GET /crosswords/:id/team/:key or team_crossword_path
   def team
-    @crossword = Crossword.find(params[:id])
     @solution = Solution.find_by_crossword_id_and_key(params[:id], params[:key])
     if @crossword && @solution
       @team = true
@@ -101,7 +95,6 @@ class CrosswordsController < ApplicationController
 
   #POST /crosswords/:id/add_potential_word or add_potential_word_crossword_path
   def add_potential_word
-    @crossword = Crossword.find(params[:id])
     if @crossword
       word_content = params[:word].upcase
       @word = Word.find_or_create_by_content(word_content)
@@ -117,7 +110,6 @@ class CrosswordsController < ApplicationController
 
   #DELETE /crosswords/:id/remove_potential_word/:potential_word_id or remove_potential_word_crossword_path
   def remove_potential_word
-    @crossword = Crossword.find(params[:id])
     if @crossword
       @word = Word.find(params[:potential_word_id])
       @crossword.potential_words.delete(@word)
@@ -128,13 +120,12 @@ class CrosswordsController < ApplicationController
 
   #POST /crosswords/:id/favorite or favorite_crossword_path
   def favorite
-    @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
-      unless @current_user.favorites.include? @crossword
+      if @current_user.favorites.include? @crossword
+        alert_js('You have already favorited that crossword.')
+      else
         if FavoritePuzzle.create(user_id: @current_user.id, crossword_id: @crossword.id)
           render :favorite_unfavorite
-        else
-
         end
       end
     end
@@ -142,18 +133,22 @@ class CrosswordsController < ApplicationController
 
   #DELETE /crosswords/:id/favorite or favorite_crossword_path
   def unfavorite
-    @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
       existing_favorite = FavoritePuzzle.find_by_user_id_and_crossword_id(@current_user.id, @crossword.id)
-      existing_favorite.destroy if existing_favorite
-      render :favorite_unfavorite
+      if existing_favorite
+        if existing_favorite.destroy
+          render :favorite_unfavorite
+        else
+          alert_js('There was an error removing this crossword from favorites.')
+        end
+      else
+        alert_js('That crossword is not in your favorites.')
+      end
     end
   end
 
   #GET /crosswords/:id/solution_choice or solution_choice_crossword_path
   def solution_choice
-    @crossword = Crossword.find(params[:id])
-
     unless @crossword.published
       redirect_to edit_crossword_path(@crossword)
     else
@@ -171,6 +166,7 @@ class CrosswordsController < ApplicationController
   end
 
   #GET /crosswords/batch or batch_crosswords_path
+  #TODO fix the batching links so they can't be too long. Right now the "Next 12" button can throw a long URI error
   def batch
     @crosswords = Crossword.find(params[:ids])
     @crosswords_remaining = @crosswords[Crossword.per_page..-1]
@@ -178,8 +174,18 @@ class CrosswordsController < ApplicationController
   end
 
   private
+
   def ensure_owner_or_admin
     @crossword = Crossword.find(params[:id])
-    redirect_to(unauthorized_path) if !(@current_user.is_admin or @current_user == @crossword.user)
+    if !(@current_user.is_admin or @current_user == @crossword.user)
+      redirect_to :back, flash: {warning: 'You do not own that crossword.'}
+    end
   end
+
+  def find_crossword
+    @crossword = Crossword.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+    redirect_to :back, flash: {error: 'Sorry, that crossword could not be found.'}
+  end
+
 end

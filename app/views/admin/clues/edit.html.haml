@@ -1,6 +1,6 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Clue", custom_columns: true} do
   %br
-  = form_for @clue, url: url_for(controller: 'admin/clues', method: :update), remote: true do |f|
+  = form_for @clue, url: url_for(controller: 'admin/clues', action: :update), remote: true do |f|
     .large-11.columns
       = f.label :content
       = f.text_field :content
