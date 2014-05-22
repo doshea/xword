@@ -31,7 +31,6 @@ class Admin::CommentsController < ApplicationController
     end  
   end
 
-
   private
 
   def find_comment
@@ -39,6 +38,5 @@ class Admin::CommentsController < ApplicationController
     rescue ActiveRecord::RecordNotFound
     redirect_to :back, flash: {error: 'Sorry, that comment could not be found.'}
   end
-
 
 end
