@@ -36,7 +36,7 @@ class CrosswordsController < ApplicationController
   #GET /crosswords/:id/edit or edit_crossword_path
   def edit
     if @crossword.published?
-      redirect_to @crossword, flash: {secondary: 'Sorry, this puzzle has been published and cannot be further edited.'}
+      redirect_to @crossword, flash: {secondary: 'Sorry, that puzzle has been published and cannot be further edited.'}
     else
       @cells = @crossword.cells.asc_indices
       @across_cells = @crossword.across_start_cells.includes(:across_clue).asc_indices

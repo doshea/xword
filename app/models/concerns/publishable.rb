@@ -2,9 +2,9 @@ module Publishable
   extend ActiveSupport::Concern
 
   included do
-    attr_accessible :published, :date_published
+    attr_accessible :published, :published_at
 
-    default_scope {order(date_published: :desc)}
+    default_scope {order(published_at: :desc)}
     scope :published, -> {where(published: true)}
     scope :unpublished, -> {where(published: false)}
 
@@ -63,7 +63,7 @@ module Publishable
 
   def publish!
     letters = self.string_from_cells
-    if self.update_attributes(published: true, date_published: Date.today, letters: letters)
+    if self.update_attributes(published: true, published_at: Date.today, letters: letters)
       #remove extraneous clues
       self.cells.each do |cell|
         cell.delete_extraneous_cells!

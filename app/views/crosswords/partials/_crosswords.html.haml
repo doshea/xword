@@ -22,7 +22,7 @@
         %td
           -if crossword.published?
             %i.fi-check
-        %td= crossword.date_published ? crossword.date_published.strftime('%m/%d/%y') : 'N/A'
+        %td= crossword.published_at ? crossword.published_at.strftime('%m/%d/%y') : 'N/A'
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.description
         %td= crossword.rows
         %td= crossword.cols
