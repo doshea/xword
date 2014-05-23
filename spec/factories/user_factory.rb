@@ -18,8 +18,6 @@
 #  password_reset_sent_at :datetime
 #
 
-require 'spec_methods'
-
 FactoryGirl.define do
 
   factory :min_user, class: User do
@@ -41,6 +39,7 @@ FactoryGirl.define do
     first_name 'Ed'
     last_name 'Ministrator'
     username 'admin'
+    email Faker::Internet.email
     is_admin true
     password 'abcde'
     password_confirmation { "#{password}" }

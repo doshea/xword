@@ -21,3 +21,6 @@ ehthumbs.db
 Icon?
 Thumbs.db
 .DS_STORE
+
+#Prevents Simplecv from being tracked
+coverage

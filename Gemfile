@@ -67,6 +67,7 @@ group :test do
   gem 'database_cleaner'
   gem 'guard-rspec'
   gem 'faker'
+  gem 'simplecov','~> 0.7.1' , :require => false
 end
 
 group :development do
