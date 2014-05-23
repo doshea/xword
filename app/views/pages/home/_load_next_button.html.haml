@@ -1,2 +1,2 @@
-= button_to((remaining.length <= Crossword.per_page) ? "Load last #{remaining.length}" : "Load next #{Crossword.per_page}", batch_crosswords_path(ids: remaining.map{|cw| cw.id}), remote: true, class: 'button secondary', disable_with: 'Loading...')
+= button_to((remaining.length <= Crossword.per_page) ? "Load last #{remaining.length}" : "Load next #{Crossword.per_page}", batch_crosswords_path(ids: remaining.map{|cw| cw.id}), remote: true, class: 'button secondary', data: {disable_with: 'Loading...'})
 -# TODO THIS is BROKEN. THe request URI is too large for most users

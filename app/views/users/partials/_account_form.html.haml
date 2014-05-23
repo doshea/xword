@@ -61,4 +61,4 @@
           = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
           = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
           = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH
-          = submit_tag 'Change Password', class: 'button', disable_with: 'Changing...'
+          = submit_tag 'Change Password', class: 'button', data: {disable_with: 'Changing...'}

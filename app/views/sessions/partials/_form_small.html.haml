@@ -7,5 +7,5 @@
       = password_field_tag :password
       = label_tag :remember_me
       = check_box_tag :remember_me, 1, params[:remember_me] #find out what the second two arguments do
-      = submit_tag 'Log In', class: 'button expand radius success', disable_with: 'logging in...'
+      = submit_tag 'Log In', class: 'button expand radius success', data: {disable_with: 'logging in...'}
   .large-2.columns
