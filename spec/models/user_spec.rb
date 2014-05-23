@@ -27,7 +27,6 @@ describe User do
     it {should validate_uniqueness_of(:email)}
     it {should validate_uniqueness_of(:username)}
     it {should validate_presence_of(:email)}
-    it {should validate_presence_of(:email)}
     it {should validate_presence_of(:username)}
 
     context 'with valid attributes' do
@@ -40,28 +39,26 @@ describe User do
       it {should allow_value(subject.username).for(:username)}
       it {should allow_value(subject.password).for(:password)}
       it {should allow_value(subject.password_confirmation).for(:password_confirmation)}
+      it {should allow_value(subject.location).for(:location)}
     end
     context 'with invalid nil attributes' do
-      let(:invalid_user) { build :invalid_user_nil}
-      it {should_not allow_value(invalid_user.email).for(:email)}
-      it {should_not allow_value(invalid_user.username).for(:username)}
-      it {should_not allow_value(invalid_user.password).for(:password)}
+      it {should_not allow_value(nil).for(:email)}
+      it {should_not allow_value(nil).for(:username)}
+      it {should_not allow_value(nil).for(:password)}
     end
-    context 'with invalid sub-minimal attributes' do
-      let(:invalid_user) { build :invalid_user_min}
-      it {should_not allow_value(invalid_user.first_name).for(:first_name)}
-      it {should_not allow_value(invalid_user.last_name).for(:last_name)}
-      it {should_not allow_value(invalid_user.email).for(:email)}
-      it {should_not allow_value(invalid_user.username).for(:username)}
-      it {should_not allow_value(invalid_user.password).for(:password)}
+    context 'with invalid (too short) attributes' do
+      it {should_not allow_value(build(:user, :short_first_name).first_name).for(:first_name)}
+      it {should_not allow_value(build(:user, :short_last_name).last_name).for(:last_name)}
+      it {should_not allow_value(build(:user, :short_email).email).for(:email)}
+      it {should_not allow_value(build(:user, :short_username).username).for(:username)}
+      it {should_not allow_value(build(:user, :short_password).password).for(:password)}
     end
-    context 'with invalid super-maximal attributes' do
-      let(:invalid_user) { build :invalid_user_max}
-      it {should_not allow_value(invalid_user.first_name).for(:first_name)}
-      it {should_not allow_value(invalid_user.last_name).for(:last_name)}
-      it {should_not allow_value(invalid_user.email).for(:email)}
-      it {should_not allow_value(invalid_user.username).for(:username)}
-      it {should_not allow_value(invalid_user.password).for(:password)}
+    context 'with invalid (too long) attributes' do
+      it {should_not allow_value(build(:user, :long_first_name).first_name).for(:first_name)}
+      it {should_not allow_value(build(:user, :long_last_name).last_name).for(:last_name)}
+      it {should_not allow_value(build(:user, :long_email).email).for(:email)}
+      it {should_not allow_value(build(:user, :long_username).username).for(:username)}
+      it {should_not allow_value(build(:user, :long_password).password).for(:password)}
     end
   end
   context 'associations' do
@@ -71,7 +68,7 @@ describe User do
     it { should have_many :clues }
     it { should have_many :favorite_puzzles }
     it { should have_many(:favorites).through(:favorite_puzzles).source(:crossword) }
-    it { should have_many(:solutions_partnerings) } #TODO figure out how to get the dependent: :destroy into this test
+    it { should have_many(:solution_partnerings).dependent(:destroy) }
     it { should have_many(:team_solutions).through(:solution_partnerings).source(:user) }
   end
   describe 'instance methods' do

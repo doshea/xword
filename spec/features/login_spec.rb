@@ -1,7 +1,7 @@
 feature 'Login' do
 
   before :each do
-    create(:min_user)
+    @user = create(:user)
   end
 
   scenario 'Anonymous users are redirected from root to welcome page' do
@@ -14,15 +14,15 @@ feature 'Login' do
     page.should have_selector('#login-container')
 
     within('#login-container') do
-      fill_in :username, with: 'min_user'
-      fill_in :password, with: 'abcde'
+      fill_in :username, with: @user.username
+      fill_in :password, with: @user.password
       click_button 'Log in'
     end
 
     visit root_path
     current_path.should eq root_path
     page.should_not have_selector('#login-container')
-    expect(page).to have_text("Welcome back")
+    expect(page).to have_text("Welcome back, #{@user.username}")
 
   end
 
@@ -30,8 +30,8 @@ feature 'Login' do
     visit root_path
 
     within('#login-container') do
-      fill_in :username, with: 'min_user'
-      fill_in :password, with: 'wrong'
+      fill_in :username, with: @user.username
+      fill_in :password, with: 'BADPASSWORD'
       click_button 'Log in'
     end
 

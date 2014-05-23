@@ -10,5 +10,9 @@
 #
 
 describe SolutionPartnering do
-
+  context 'associations' do
+    it { should belong_to :user }
+    it { should belong_to :solution }
+    it { should have_one(:crossword).through(:solution) }
+  end
 end
