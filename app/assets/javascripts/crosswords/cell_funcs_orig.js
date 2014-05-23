@@ -58,8 +58,8 @@ elements of the table#crossword
   $.fn.get_end_cell = function(){return (cw.select_across ? this.get_across_end_cell() : this.get_down_end_cell());};
 
   // Both a td.cell's number (if any) and its letter are stored as child divs, and these functions get and set these values
-  $.fn.get_number = function(){var letter = this.children('.cell_num').text(); return letter.length > 0 ? letter : ' '};
-  $.fn.set_number = function(number){this.children('.cell_num').text(number);};
+  $.fn.get_number = function(){var letter = this.children('.cell-num').text(); return letter.length > 0 ? letter : ' '};
+  $.fn.set_number = function(number){this.children('.cell-num').text(number);};
   $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '};
   $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter);if((typeof team_app != 'undefined')){if(original){team_app.send_team_cell(this, letter);} else {this.check_finisheds();}}}
 

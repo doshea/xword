@@ -185,11 +185,11 @@ elements of the table#crossword
   
   # Both a td.cell's number (if any) and its letter are stored as child divs, and these functions get and set these values
   $.fn.get_number = ->
-    letter = @children(".cell_num").text()
+    letter = @children(".cell-num").text()
     (if letter.length > 0 then letter else " ")
 
   $.fn.set_number = (number) ->
-    @children(".cell_num").text number
+    @children(".cell-num").text number
     return
 
   $.fn.get_letter = ->

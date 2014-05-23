@@ -1,28 +1,28 @@
 #chalkboard
   .slider
     #signup-container
-      #welcomeBoard
+      #welcome-board
       = render(partial: 'shared/form_errors', locals: {object: @user})
       = form_for(@user, html: {:'data-abide' => true}) do |f|
-        = f.text_field :username, placeholder: "username", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_USERNAME_LENGTH
-        = f.email_field :email, placeholder: "email", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_EMAIL_LENGTH
-        = f.password_field :password, placeholder: "password", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
-        = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboardInput subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
-        = f.submit "Sign up", class: 'chalkboardButton'
+        = f.text_field :username, placeholder: "username", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_USERNAME_LENGTH
+        = f.email_field :email, placeholder: "email", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_EMAIL_LENGTH
+        = f.password_field :password, placeholder: "password", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
+        = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
+        = f.submit "Sign up", class: 'chalkboard-button'
       %span or
-      = link_to "#", class: "chalkboardButton button", id: "signup1" do
+      = link_to "#", class: "chalkboard-button button", id: "signup1" do
         Log In
         %i.fi-arrow-right
 
     #login-container
       = form_tag login_path do
-        = text_field_tag :username, params[:username], placeholder: "username", class: "chalkboardInput subtle-input", required: true
-        = password_field_tag :password , nil,  class: "chalkboardInput subtle-input", placeholder: "password", required: true
-        #remember_box
+        = text_field_tag :username, params[:username], placeholder: "username", class: "chalkboard-input subtle-input", required: true
+        = password_field_tag :password , nil,  class: "chalkboard-input subtle-input", placeholder: "password", required: true
+        #remember-box
           = check_box_tag :remember_me, 1, params[:remember_me], checked: true #find out what the second two arguments do
           = label_tag :remember_me, 'remember me'
-        = submit_tag "Log in" , :class => "chalkboardButton"
+        = submit_tag "Log in" , :class => "chalkboard-button"
       %span or
-      = link_to '#', class: "chalkboardButton button", id: "signup2" do
+      = link_to '#', class: "chalkboard-button button", id: "signup2" do
         %i.fi-arrow-left
         Sign Up
