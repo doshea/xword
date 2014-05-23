@@ -11,7 +11,7 @@
     %li
       Crosswords
       %ul
-        %li #{@user.solutions.completed.count} solved
+        %li #{@user.solutions.complete.count} solved
         %li #{@user.crosswords.published.count} created
         %li #{@user.crosswords.unpublished.count} in the works
     %li Clues written: #{@user.clues.count}

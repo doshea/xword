@@ -23,7 +23,9 @@ class Solution < ActiveRecord::Base
   has_many :solution_partnerings, inverse_of: :solution, dependent: :destroy
   has_many :teammates, through: :solution_partnerings, source: :user
 
-  scope :completed, -> { where(is_complete: true)}
+  scope :complete, -> { where(is_complete: true)}
+  scope :incomplete, -> { where(is_complete: false)}
+  scope :order_recent, -> {order(updated_at: :desc)}
 
   before_save :check_completion
 
@@ -74,7 +76,5 @@ class Solution < ActiveRecord::Base
     end
   end
 
-  scope :complete, -> {where(solution_complete: true)}
-  scope :incomplete, -> {where(solution_complete: false)}
-  scope :order_recent, -> {order(updated_at: :desc)}
+
 end

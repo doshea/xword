@@ -15,6 +15,11 @@
 #
 
 describe Solution do
-
+  context 'associations' do
+    it {should belong_to :user}
+    it {should belong_to :crossword}
+    it {should have_many(:solution_partnerings).dependent(:destroy)}
+    it {should have_many(:teammates).through(:solution_partnerings).source(:user)}
+  end
 
 end
