@@ -48,7 +48,11 @@ class Cell < ActiveRecord::Base
   delegate :down_word, to: :down_clue, allow_nil: true
   delegate :user, to: :crossword, allow_nil: true
 
+  #do not include is_void and other booleans in this validation -- false counts as blank
   validates_presence_of :row, :col, :index
+  
+  validates :row, numericality: {only_integer: true}, inclusion: {in: 1..Crossword::MAX_DIMENSION}
+  validates :col, numericality: {only_integer: true}, inclusion: {in: 1..Crossword::MAX_DIMENSION}
 
   def populate_clues
     self.across_clue = Clue.create!(content: 'ENTER CLUE')

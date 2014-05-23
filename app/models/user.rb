@@ -3,10 +3,10 @@
 # Table name: users
 #
 #  id                     :integer          not null, primary key
-#  first_name             :string(255)
-#  last_name              :string(255)
-#  username               :string(255)      not null
-#  email                  :string(255)      not null
+#  first_name             :string(18)
+#  last_name              :string(24)
+#  username               :string(16)       not null
+#  email                  :string(40)       not null
 #  image                  :text
 #  location               :string(255)
 #  is_admin               :boolean          default(FALSE)
@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
   validates_presence_of :password, on: :change_password
 
   MIN_EMAIL_LENGTH = 5
-  MAX_EMAIL_LENGTH = 40
+  MAX_EMAIL_LENGTH = 40 #hard-coded in database
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email,
     presence: true,
@@ -72,15 +72,15 @@ class User < ActiveRecord::Base
     format: { with: VALID_EMAIL_REGEX, message: ": Only real email addresses, please" }
 
   MIN_USERNAME_LENGTH = 4
-  MAX_USERNAME_LENGTH = 20
+  MAX_USERNAME_LENGTH = 16 #hard-coded in database
   validates :username,
     presence: true,
     uniqueness: true,
     length: { minimum: MIN_USERNAME_LENGTH, maximum: MAX_USERNAME_LENGTH, message: ": Should be #{MIN_USERNAME_LENGTH}-#{MAX_USERNAME_LENGTH} characters"}
 
   MIN_NAME_LENGTH = 2
-  MAX_FIRST_NAME_LENGTH = 18
-  MAX_LAST_NAME_LENGTH = 24
+  MAX_FIRST_NAME_LENGTH = 18 #hard-coded in database
+  MAX_LAST_NAME_LENGTH = 24 #hard-coded in database
   validates :first_name,
     allow_blank: true,
     length: { minimum: MIN_NAME_LENGTH, maximum: MAX_FIRST_NAME_LENGTH, message: ": Should be at least #{MIN_NAME_LENGTH} characters"}

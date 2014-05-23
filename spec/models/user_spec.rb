@@ -3,10 +3,10 @@
 # Table name: users
 #
 #  id                     :integer          not null, primary key
-#  first_name             :string(255)
-#  last_name              :string(255)
-#  username               :string(255)      not null
-#  email                  :string(255)      not null
+#  first_name             :string(18)
+#  last_name              :string(24)
+#  username               :string(16)       not null
+#  email                  :string(40)       not null
 #  image                  :text
 #  location               :string(255)
 #  is_admin               :boolean          default(FALSE)

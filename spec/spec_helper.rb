@@ -1,5 +1,7 @@
 require 'simplecov'
-SimpleCov.start
+
+#using the 'rails' profile prevents files outside /app from being checked
+SimpleCov.start 'rails'
 
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)

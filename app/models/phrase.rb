@@ -11,5 +11,7 @@
 class Phrase < ActiveRecord::Base
   attr_accessible :content
 
+  #TODO DECIDE HOW I WILL USE THIS MODEL IF AT ALL!!!
+
   has_many :clues, inverse_of: :phrase
 end
