@@ -41,10 +41,10 @@ class Cell < ActiveRecord::Base
   belongs_to :left_cell, class_name: 'Cell', foreign_key: 'left_cell_id', inverse_of: :right_cell
   belongs_to :above_cell, class_name: 'Cell', foreign_key: 'above_cell_id', inverse_of: :below_cell
 
-  has_one :cell_edit, inverse_of: :cell, dependent: :destroy
+  has_one :cell_edit, inverse_of: :cell, dependent: :destroy #TODO decide whether to use cell_edits or maintain within the cell model
 
   #A Cell belongs to the user that created its crossword, and can have, at most, one down word and one across word that starts in its cell
-  delegate :across_word, to: :clue, allow_nil: true
+  delegate :across_word, to: :across_clue, allow_nil: true
   delegate :down_word, to: :down_clue, allow_nil: true
   delegate :user, to: :crossword, allow_nil: true
 

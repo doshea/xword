@@ -13,6 +13,11 @@
 #
 
 describe Comment do
-  it 'is pending'
+  context 'associations' do
+    it {should belong_to :user}
+    it {should belong_to :crossword}
+    it {should belong_to(:base_comment).class_name('Comment')}
+    it {should have_many(:replies).class_name('Comment').with_foreign_key('base_comment_id').dependent(:destroy)}
+  end
 
 end
