@@ -29,7 +29,7 @@ module Newyorkable
 
       unless Crossword.where(title: pz['title']).any?
         #fix the title capitalization
-        if pz['title'][0..2] = 'NY '
+        if pz['title'][0..2] == 'NY '
           fixed_title = 'NY ' + pz['title'][3..-1].split.map(&:capitalize).join(' ')
         else
           fixed_title = pz['title'].split.map(&:capitalize).join(' ')

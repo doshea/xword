@@ -20,4 +20,24 @@ class ApiController < ApplicationController
     end
   end
 
+  def nyt
+    # url_prefix = 'https://raw.githubusercontent.com/doshea/nyt_puzzle_history/master'
+    url_prefix = "http://www.xwordinfo.com/JSON/Data.aspx"
+    year = params[:year]
+    month = sprintf('%02d', params[:month])
+    day = sprintf('%02d', params[:day])
+    # url = "#{url_prefix}/#{year}/#{month}/#{day}.json"
+    url = "#{url_prefix}?date=#{month}/#{day}/#{year}"
+    @data = HTTParty.get(url, format: 'json') #proper way to grab json and keep it json
+
+    respond_to do |format|
+      format.html do
+        render text: @data
+      end
+      format.json do
+        render json: @data.to_s
+      end
+    end
+  end
+
 end

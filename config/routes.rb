@@ -105,7 +105,7 @@ Xword::Application.routes.draw do
   end
 
   namespace :api do
-    get :history
+    get '/nyt/:year/:month/:day' => :nyt
   end
 
 end
