@@ -10,3 +10,10 @@ def time_difference_hash(most_recent, least_recent)
   seconds = seconds.floor
   {days: days, hours: hours, minutes: minutes, seconds: seconds, milliseconds: milliseconds}
 end
+
+#used to add zeroes to the front of numbers
+class Integer < Numeric
+  def left_digits(digits)
+    sprintf("%0#{digits}d", self)
+  end
+end

@@ -80,37 +80,45 @@ module Newyorkable
       Crossword.add_nyt_puzzle(latest)
     end
 
-    def get_nyt_from_date(date)
-      puzzle_string = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?date=#{date.month}/#{date.day}/#{date.year}")
+    def get_nyt_from_date(date = Date.today, format = 'json')
+      url = "http://www.xwordinfo.com/JSON/Data.aspx?date=#{date.month}/#{date.day}/#{date.year}"
+      puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s) 
     end
 
-    def record_on_github(puzzle_string, date)
-      url_stem = 'https://api.github.com'
-      repo = 'nyt_puzzle_history'
-      username = 'doshea'
-
-      # date_underscores = Date.today.to_s.gsub('-', '_')
-      year = date.year
-      month = sprintf('%02d', date.month)
-      day = sprintf('%02d', date.day)
-
-      auth = {username: ENV['GITHUB_USERNAME'], password: ENV['GITHUB_PASSWORD']}
-      create_url = url_stem + "/repos/#{username}/#{repo}/contents/#{year}/#{month}/#{day}.json"
-
-      HTTParty.put(
-        create_url,
-        basic_auth: auth,
-        headers: {"User-Agent" => ENV['GITHUB_USERNAME']},
-        body: {
-          message: "NYT puzzle for #{date.strftime('%a, %b %d, %Y')}",
-          content: Base64.strict_encode64(puzzle_string)
-        }.to_json
-      )
+    def get_github_nyt_from_date(date = Date.today, format = 'json')
+      url = "https://raw.githubusercontent.com/doshea/nyt_puzzle_history/master/#{date.year}/#{date.month.left_digits(2)}/#{date.day.left_digits(2)}.json"
+      puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)
     end
 
-    def record_latest_nyt_puzzle_on_github
-      puzzle_text = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx").to_s
-      Crossword.record_on_github(puzzle_text, Date.today)
+    def record_on_github(date)
+      puzzle_json = get_nyt_from_date(date)
+
+      unless puzzle_json.nil?
+        url_stem = 'https://api.github.com'
+        repo = 'nyt_puzzle_history'
+        username = 'doshea'
+
+        # date_underscores = Date.today.to_s.gsub('-', '_')
+        year = date.year
+        month = sprintf('%02d', date.month)
+        day = sprintf('%02d', date.day)
+
+        auth = {username: ENV['GITHUB_USERNAME'], password: ENV['GITHUB_PASSWORD']}
+        create_url = url_stem + "/repos/#{username}/#{repo}/contents/#{year}/#{month}/#{day}.json"
+      
+        HTTParty.put(
+          create_url,
+          basic_auth: auth,
+          headers: {"User-Agent" => ENV['GITHUB_USERNAME']},
+          body: {
+            message: "NYT puzzle for #{date.strftime('%a, %b %d, %Y')}",
+            content: Base64.strict_encode64(puzzle_json)
+          }.to_json
+        )
+      else
+        #throw an error because there is no puzzle
+        nil
+      end
     end
 
   end

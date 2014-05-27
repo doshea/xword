@@ -52,6 +52,7 @@ end
 group :development, :test do
   #testing gems
   gem 'annotate'
+  gem 'rainbow'
 
   gem 'quiet_assets'
   gem 'binding_of_caller'

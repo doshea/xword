@@ -104,7 +104,8 @@ Xword::Application.routes.draw do
     get :dashboard
   end
 
-  namespace :api do
+  namespace :api, defaults: {format: :json} do
+    get '/nyt_source/:year/:month/:day' => :nyt_source
     get '/nyt/:year/:month/:day' => :nyt
   end
 
