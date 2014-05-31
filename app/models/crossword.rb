@@ -275,10 +275,10 @@ class Crossword < ActiveRecord::Base
     gc.fill('black')
 
     # Draw the Rows and Columns as 1px-width lines
-    (1...self.rows).each do |r|
+    (1...rows).each do |r|
       gc.line(0, r*5, width_cw, r*5)
     end
-    (1...self.cols).each do |c|
+    (1...cols).each do |c|
       gc.line(c*5, 0, c*5, height_cw)
     end
 
