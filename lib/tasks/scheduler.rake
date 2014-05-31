@@ -31,32 +31,4 @@ namespace :nyt do
     end
   end
 
-  # should only be run on local environment
-  task :record => :environment do
-    latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
-    latest_json = latest.to_json
-    # target_path = 'lib/assets/nyt_puzzle_history.rb'
-
-    rb_target_path = '../nyt_puzzle_history/nyt_puzzle_history.rb'
-    json_target_path = '../nyt_puzzle_history/nyt_puzzle_history.json'
-
-    File.open(rb_target_path, 'a') do |f|
-      File.truncate(rb_target_path, File.size(rb_target_path)-3)
-      f.puts ','
-      f.print '  '
-      f.puts latest
-      f.puts ']'
-    end
-    puts "RB: Puzzle Recorded."
-    File.open(json_target_path, 'a') do |f|
-      File.truncate(json_target_path, File.size(json_target_path)-3)
-      f.puts ','
-      f.print '  '
-      f.puts latest_json
-      f.puts ']'
-    end
-
-    puts "JSON: Puzzle Recorded."
-  end
-
 end

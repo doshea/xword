@@ -86,7 +86,7 @@ module Newyorkable
     end
 
     def get_github_nyt_from_date(date = Date.today, format = 'json')
-      url = "https://raw.githubusercontent.com/doshea/nyt_puzzle_history/master/#{date.year}/#{date.month.left_digits(2)}/#{date.day.left_digits(2)}.json"
+      url = "https://raw.githubusercontent.com/doshea/nyt_crosswords/master/#{date.year}/#{date.month.left_digits(2)}/#{date.day.left_digits(2)}.json"
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)
     end
 
@@ -95,7 +95,7 @@ module Newyorkable
 
       unless puzzle_json.nil?
         url_stem = 'https://api.github.com'
-        repo = 'nyt_puzzle_history'
+        repo = 'nyt_crosswords'
         username = 'doshea'
 
         # date_underscores = Date.today.to_s.gsub('-', '_')
