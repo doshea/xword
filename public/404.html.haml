@@ -1,1 +1,15 @@
-hello
+!!!
+%html
+  %head
+    %title Crossword Caf&eacute;
+    = stylesheet_link_tag    "application", media: "all"
+    = javascript_include_tag "application"
+    = yield :head
+    = csrf_meta_tags
+  %body
+    = javascript_include_tag 'foundation5/foundation.min'
+    = javascript_include_tag 'foundation5/modernizr'
+    %header#nav.dark-shadow= render partial: 'layouts/partials/nav'
+    #body
+      Hello
+    %footer#footer= render partial: 'layouts/partials/footer'
