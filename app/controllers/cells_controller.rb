@@ -3,7 +3,7 @@ class CellsController < ApplicationController
 
   #PATCH/PUT /cells/:id or cell_path
   def update
-    @cell.update_attributes(params[:cell])
+    @cell.update_attributes(cell_params)
     render nothing: true
   end
 
@@ -15,9 +15,12 @@ class CellsController < ApplicationController
   end
 
   private
-
   def find_cell
     @cell = Cell.find(params[:id])
+  end
+
+  def cell_params
+    params.require(:cell).permit(:letter)
   end
 
 end

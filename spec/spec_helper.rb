@@ -27,7 +27,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
-  config.color_enabled = true
+  # config.color_enabled = true
   config.tty = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = false

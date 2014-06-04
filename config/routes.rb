@@ -4,6 +4,7 @@ Xword::Application.routes.draw do
 
   resources :cells, only: [:update] do
     member do
+      put :reletter #TODO
       put :toggle_void
     end
   end

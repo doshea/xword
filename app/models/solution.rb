@@ -26,6 +26,7 @@ class Solution < ActiveRecord::Base
   scope :complete, -> { where(is_complete: true)}
   scope :incomplete, -> { where(is_complete: false)}
   scope :order_recent, -> {order(updated_at: :desc)}
+  scope :abandoned, -> { where('updated_at <= ?', Time.now - 1.5.days) }
 
   before_save :check_completion
 

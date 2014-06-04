@@ -31,4 +31,8 @@ namespace :nyt do
     end
   end
 
+  task :remove_unworked_solutions => :environment do
+
+  end
+
 end
