@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
   #POST /comments/:id/add_comment or add_comment_path
   def add_comment
     user = @current_user
+    crossword = Crossword.find params[:id]
 
     if crossword && user
       @new_comment = Comment.new(content: params[:content])
