@@ -5,8 +5,6 @@ gem 'rails', '4.0.2'
 gem 'coffee-rails'
 gem 'json'
 
-gem 'transpec'
-
 gem 'httparty'
 
 gem 'multi_json', '1.7.8' #Necessary because 1.7.9 breaks the adapter specification  http://stackoverflow.com/questions/18213286/did-not-recognize-your-adapter-specification-turbolinks-related-error-in-rails/18239501?noredirect=1#comment27522141_18239501
@@ -63,7 +61,7 @@ end
 
 group :test do
   gem 'factory_girl_rails'
-  gem 'rspec-rails', '2.14.2'
+  gem 'rspec-rails', '2.14.2' #TODO upgrade to Rspec 3
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'launchy'

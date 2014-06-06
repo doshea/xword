@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :find_comment
+  before_action :find_comment, only: [:reply, :destroy]
 
   #POST /comments/:id/add_comment or add_comment_path
   def add_comment
