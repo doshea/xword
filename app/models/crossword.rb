@@ -23,8 +23,8 @@ class Crossword < ActiveRecord::Base
 
   mount_uploader :preview, PreviewUploader
 
-  before_create :populate_letters, :populate_cells, unless: :skip_callbacks
-  # after_create :link_cells_to_neighbors
+  before_create :populate_letters, unless: :skip_callbacks
+  after_create :populate_cells, unless: :skip_callbacks
 
   scope :unowned, -> (user) { where.not(user_id: user.id)}
 
@@ -171,39 +171,46 @@ class Crossword < ActiveRecord::Base
     end
   end
 
+  #Refactored to use a single SQL statement and run at light speed
   def populate_cells
     if cells.empty?
       row = cell_num = index = 1
+      
+      #make clues_first
+      clue_inserts = ["('ENTER CLUE')"]*area*2
+      clues_sql = "INSERT INTO clues (content) VALUES #{clue_inserts.join(", ")}"
+      
+      next_clue_id = Clue.next_index #TODO This may cause a race condition!!!
+      ActiveRecord::Base.connection.execute(clues_sql)
+
+      cell_inserts = []
       while row <= rows
         col = 1
         while col <= cols
-          temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
-          if (row == 1 or col == 1)
-            temp_cell.cell_num = cell_num
+          # temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
+          # if (row == 1 or col == 1)
+          #   temp_cell.cell_num = cell_num
+          #   cell_num += 1
+          # end
+          # cells << temp_cell
+          temp_insert = "(#{next_clue_id}, #{next_clue_id+1},#{row}, #{col}, #{index}, #{false}, #{col == 1}, #{row == 1}, #{(row == 1 || col == 1) ? cell_num : 'NULL'}, #{id || Crossword.next_index || 1})"
+          if (row == 1 || col == 1)
             cell_num += 1
           end
-          cells << temp_cell
+          cell_inserts.push(temp_insert)
+
           index += 1
           col += 1
+          next_clue_id += 2
         end
         row += 1
       end
+      cells_sql = "INSERT INTO cells (across_clue_id, down_clue_id, row, col, index, is_void, is_across_start, is_down_start, cell_num, crossword_id) VALUES #{cell_inserts.join(", ")}"
+      ActiveRecord::Base.connection.execute(cells_sql)
+
     else
       raise "This crossword already has cells!"
     end
-  end
-
-  def link_cells_to_neighbors
-    counter = 1
-    self.reload.cells.each do |cell|
-      # puts counter
-      cell.assign_bordering_cells!
-      counter += 1
-    end
-    # if self.reload.published
-    #   self.number_cells
-    #   self.publish!
-    # end
   end
 
   def across_start_cells
@@ -341,6 +348,15 @@ class Crossword < ActiveRecord::Base
           if symmetrical
             cell.get_mirror_cell.is_void!
           end
+        end
+      end
+    end
+    if modify_cells
+      letters.split('').each_with_index do |letter, i|
+        unless letter =~ / _/
+          cell = cells.find_by_index(i+1)
+          cell.letter = letter
+          cell.save
         end
       end
     end

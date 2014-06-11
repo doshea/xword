@@ -14,17 +14,16 @@
 #  crossword_id    :integer
 #  across_clue_id  :integer
 #  down_clue_id    :integer
-#  left_cell_id    :integer
-#  above_cell_id   :integer
 #  created_at      :datetime
 #  updated_at      :datetime
 #  circled         :boolean          default(FALSE)
 #
 
 class Cell < ActiveRecord::Base
-  attr_accessible :row, :col, :index, :is_void, :across_clue_id, :down_clue_id, :crossword_id, :is_across_start, :is_down_start, :left_cell_id, :above_cell_id, :cell_num, :letter, :circled
+  attr_accessible :row, :col, :index, :is_void, :across_clue_id, :down_clue_id, :crossword_id, :is_across_start, :is_down_start, :cell_num, :letter, :circled
 
-  after_create :populate_clues
+  # Currently clues are populated using raw SQL. While dangerous, it works.
+  # after_create :populate_clues
 
   scope :across_start_cells, -> {where(is_across_start: true)}
   scope :down_start_cells, -> { where(is_down_start: true)}
@@ -36,12 +35,6 @@ class Cell < ActiveRecord::Base
   belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells
   belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells
   belongs_to :crossword, inverse_of: :cells
-
-  #Sets up two-way associations between cells and their neighbors. Because the relationships are reciprocal, only two fields are required.
-  has_one :right_cell, class_name: 'Cell', foreign_key: 'left_cell_id', inverse_of: :left_cell
-  has_one :below_cell, class_name: 'Cell', foreign_key: 'above_cell_id', inverse_of: :above_cell
-  belongs_to :left_cell, class_name: 'Cell', foreign_key: 'left_cell_id', inverse_of: :right_cell
-  belongs_to :above_cell, class_name: 'Cell', foreign_key: 'above_cell_id', inverse_of: :below_cell
 
   has_one :cell_edit, inverse_of: :cell, dependent: :destroy #TODO decide whether to use cell_edits or maintain within the cell model
 
@@ -57,11 +50,12 @@ class Cell < ActiveRecord::Base
   validates :row, numericality: {only_integer: true}, inclusion: {in: 1..Crossword::MAX_DIMENSION}
   validates :col, numericality: {only_integer: true}, inclusion: {in: 1..Crossword::MAX_DIMENSION}
 
-  def populate_clues
-    self.across_clue = Clue.create!(content: 'ENTER CLUE')
-    self.down_clue = Clue.create!(content: 'ENTER CLUE')
-    self.save
-  end
+  # Currently clues are populated using raw SQL. While dangerous, it works.
+  # def populate_clues
+  #   self.across_clue = Clue.create!(content: 'ENTER CLUE')
+  #   self.down_clue = Clue.create!(content: 'ENTER CLUE')
+  #   self.save
+  # end
 
   def to_s
     "#{self.id}. Cell at [#{self.row}, #{self.col}], #{self.index.ordinalize} cell in Crossword #{self.crossword.id}#{" with cell number #{self.cell_num}" if self.cell_num}. #{"Is across start. " if self.is_across_start}#{"Is down start. " if self.is_down_start}"
@@ -92,12 +86,28 @@ class Cell < ActiveRecord::Base
     self.is_across_start || self.is_down_start
   end
 
-  def assign_bordering_cells!
-    # self.reload
-    # puts "Assign bordering cells for cell in row #{self.row}, column #{self.col}"
-    self.left_cell = self.crossword.cells.find_by_row_and_col(self.row, self.col-1) unless (self.col == 1)
-    self.above_cell = self.crossword.cells.find_by_row_and_col(self.row-1, self.col) unless (self.row == 1)
-    self.save
+  def left_cell
+    unless col == 1
+      crossword.cells.find_by_row_and_col(row, col-1)
+    end
+  end
+
+  def right_cell
+    unless col == crossword.cols
+      crossword.cells.find_by_row_and_col(row, col+1)
+    end
+  end
+
+  def above_cell
+    unless row == 1
+      crossword.cells.find_by_row_and_col(row-1, col)
+    end
+  end
+
+  def below_cell
+    unless row == crossword.rows
+      crossword.cells.find_by_row_and_col(row+1, col)
+    end
   end
 
   def get_mirror_cell

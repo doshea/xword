@@ -44,7 +44,6 @@ module Newyorkable
           description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz."
         )
 
-        new_nytimes_crossword.link_cells_to_neighbors
         new_nytimes_crossword.letters = pz_letters
         new_nytimes_crossword.set_letters(pz_letters)
         new_nytimes_crossword.number_cells

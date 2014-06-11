@@ -198,6 +198,16 @@ describe Crossword do
         end
 
       end
+      describe '#number_cells' do
+        subject {create(:crossword)}
+        before :each do
+          subject.randomize_letters_and_voids(true, true)
+        end
+
+        it 'numbers cells properly' do
+          
+        end
+      end
     end
   end
 

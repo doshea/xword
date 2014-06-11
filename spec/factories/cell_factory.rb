@@ -14,8 +14,6 @@
 #  crossword_id    :integer
 #  across_clue_id  :integer
 #  down_clue_id    :integer
-#  left_cell_id    :integer
-#  above_cell_id   :integer
 #  created_at      :datetime
 #  updated_at      :datetime
 #  circled         :boolean          default(FALSE)

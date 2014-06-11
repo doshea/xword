@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523072833) do
+ActiveRecord::Schema.define(version: 20140611191624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,8 +36,6 @@ ActiveRecord::Schema.define(version: 20140523072833) do
     t.integer  "crossword_id"
     t.integer  "across_clue_id"
     t.integer  "down_clue_id"
-    t.integer  "left_cell_id"
-    t.integer  "above_cell_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "circled",         default: false
