@@ -42,25 +42,120 @@ describe Crossword do
   end
 
   describe 'INSTANCE METHODS' do
+    context 'no requirements' do
+      subject {build(:crossword)}
+
+      its(:random_row){should be_in(1..subject.rows)}
+      its(:random_row){should be_an Integer}
+      its(:random_col){should be_in(1..subject.cols)}
+      its(:random_col){should be_an Integer}
+      its(:random_index){should be_in(1..subject.area)}
+      its(:random_index){should be_an Integer}
+
+      describe "helpers for index/row/col" do
+        it 'interconvert properly' do
+          index = subject.random_index
+          row = subject.row_from_index(index)
+          col = subject.col_from_index(index)
+          expect(subject.index_from_rc(row, col)).to eq index
+        end
+        describe '#index_from_rc' do
+          it 'raises error on too-high row' do
+            expect{subject.index_from_rc(subject.rows * 2, subject.random_col)}.to raise_error
+          end
+          it 'raises error on too-low row' do
+            expect{subject.index_from_rc(subject.rows * -1, subject.random_col)}.to raise_error
+          end
+          it 'raises error on too-high col' do
+            expect{subject.index_from_rc(subject.random_row, subject.cols * 2)}.to raise_error
+          end
+          it 'raises error on too-low col' do
+            expect{subject.index_from_rc(subject.random_row, matsubject.cols * -1)}.to raise_error
+          end
+        end
+        describe '#row_from_index' do
+          it 'raises error on too-high index' do
+            expect{subject.row_from_index(subject.rows*subject.cols*2)}.to raise_error
+          end
+          it 'raises error on too-low index' do
+            expect{subject.row_from_index(subject.rows*subject.cols*-1)}.to raise_error
+          end
+        end
+        describe '#col_from_index' do
+          it 'raises error on too-high index' do
+            expect{subject.col_from_index(subject.rows*subject.cols*2)}.to raise_error
+          end
+          it 'raises error on too-low index' do
+            expect{subject.col_from_index(subject.rows*subject.cols*-1)}.to raise_error
+          end
+        end
+      end
+
+    end
 
     context 'requiring letters' do
       subject {build(:crossword)}
       before {subject.populate_letters}
       after {subject.letters = ''}
 
-      its(:nonvoid_letter_count){ should eq (subject.letters.length - subject.letters.count(' _'))}
+      context 'real letters and voids' do
+        before {subject.randomize_letters_and_voids}
+        its(:nonvoid_letter_count){ should be > 0}
+        its(:nonvoid_letter_count){ should eq (subject.letters.length - subject.letters.count(' _'))}
+        describe '#mismatch_array' do
+          before do
+            #Finds the first alphabetic character to swap it out
+            @letter = subject.letters[subject.letters =~ /[a-zA-Z]/]
+
+            if @letter == 'z'
+              swapped_letter = 'A'
+            else
+              swapped_letter = (@letter.ord + 1).chr
+            end
+            @similar_letters = subject.letters.gsub(@letter, swapped_letter)
+          end
+          it 'returns the correct length array' do
+            swap_count = subject.letters.count(@letter)
+            expect(subject.get_mismatches(@similar_letters).length).to eq swap_count
+          end
+
+          it 'returns the correct array' do
+            mismatches = (0...subject.area).find_all{|i| subject.letters[i] == @letter }
+            subject.get_mismatches(@similar_letters).should eq mismatches
+          end
+
+          it 'returns empty array if the solutions match' do
+            subject.get_mismatches(subject.letters).should eq []
+          end
+
+          it 'raise an error when the solution is improperly sized' do
+            #either halves or doubles the solution
+            bad_letters = rand.round.even? ? subject.letters*2 : subject.letters[subject.letters.length/2,subject.letters.length/2]
+            expect{subject.get_mismatches(bad_letters)}.to raise_error
+          end
+        end
+
+      end
+
       it '#is_void_at?' do
         row = subject.random_row
         col = subject.random_col
-        index = subject.rc_to_index(row, col)
-        expect(subject.is_void_at?(row, col)).to be false
-        subject.letters[index - 1] = '_'
+        index = subject.index_from_rc(row, col)
+        subject.letters[index - 1] = [' ','_'].sample
         expect(subject.is_void_at?(row, col)).to be true
+        subject.letters[index - 1] = Faker::Lorem.characters(1)
+        expect(subject.is_void_at?(row, col)).to be false
+        subject.letters = ''
+        expect(subject.is_void_at?(row, col)).to be false
       end
 
       describe '#populate_letters' do
         its(:letters){ should be_blank}
         its('letters.length'){ should eq subject.area}
+
+        it 'throws error if letters are not blank' do
+          expect {subject.populate_letters}.to raise_error
+        end
       end
     end
 
@@ -97,6 +192,9 @@ describe Crossword do
           remaining_cells.each do |cell|
             expect(cell.cell_num).to be_nil
           end
+        end
+        it 'throws error if already populated' do
+          expect {subject.populate_cells}.to raise_error
         end
 
       end
@@ -135,7 +233,9 @@ describe Crossword do
     context 'without building a Crossword' do
       subject {Crossword}
       its(:random_row_or_col){ should be_in (1..Crossword::MAX_DIMENSION)}
+      its(:random_row_or_col){ should be_an Integer}
       its(:random_dimension){ should be_in (Crossword::MIN_DIMENSION  ..Crossword::MAX_DIMENSION)}
+      its(:random_dimension){ should be_an Integer}
     end
     
 

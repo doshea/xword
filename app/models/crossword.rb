@@ -75,25 +75,41 @@ class Crossword < ActiveRecord::Base
     presence: true,
     length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH, message: ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
 
-  #INSTANCE METHODS
+    #INSTANCE METHODS
   def random_row
-    (0..rows).to_a.sample
+    (1..rows).to_a.sample
   end
 
   def random_col
-    (0..cols).to_a.sample
+    (1..cols).to_a.sample
   end
 
-  def rc_to_index(row, col)
-    (row-1)*(self.cols)+(col-1)
-  end
-  
-  def index_to_row(index)
-    (index / self.cols) + 1
+  def random_index
+    index_from_rc(random_row, random_col)
   end
 
-  def index_to_col(index)
-    (index % self.rows) + 1
+  def index_from_rc(row, col)
+    if (row.in? (1..rows)) && (col.in? (1..cols))
+      (row-1) * cols + col
+    else
+      raise ArgumentError, "(#{row}x#{col}) are outside the Crossword's dimensions (#{rows}x#{cols})."
+    end
+  end
+
+  def row_from_index(index)
+    if index.in? (1..area)
+      (index / cols.to_f).ceil
+    else
+      raise ArgumentError, "Index (#{index}) out of bounds (1-#{area})."
+    end
+  end
+
+  def col_from_index(index)
+    if index.in? (1..area)
+      (index % cols == 0) ? cols : (index % cols)
+    else
+      raise ArgumentError, "Index (#{index}) out of bounds (1-#{area})."
+    end
   end
 
   def area
@@ -101,25 +117,30 @@ class Crossword < ActiveRecord::Base
   end
 
   def nonvoid_letter_count
-    self.letters.gsub(/ |_/, '').length
+    self.letters.delete(' _').length
   end
 
   def is_void_at?(row, col)
-    self.letters.present? ? ([' ','_'].include? self.letters[self.rc_to_index(row,col)]) : false
-  end
-
-  def check_solution(solution_letters)
-    self.letters == solution_letters
-  end
-
-  def return_mismatches(solution_letters)
-    counter = 1
-    mismatch_array = []
-    self.letters.split('').each do |letter|
-      mismatch_array << counter if letter != solution_letters[counter-1]
-      counter += 1
+    if letters.empty?
+      false
+    else
+      [' ','_'].include? letters[index_from_rc(row,col)-1]
     end
-    mismatch_array
+  end
+
+
+  def get_mismatches(solution_letters)
+    if solution_letters.length == letters.length
+      mismatch_array = []
+      letters.split('').each_with_index do |letter, i|
+        if letter != solution_letters[i]
+          mismatch_array << i
+        end
+      end
+      mismatch_array
+    else
+      raise ArgumentError, "Argument string (#{solution_letters.length}) did not match solution length(#{letters.length})."
+    end
   end
 
   # This can be made more efficient by only updating if the values are different
@@ -143,28 +164,25 @@ class Crossword < ActiveRecord::Base
 
   #populates blank letters
   def populate_letters
-    if letters.blank?
+    if letters.empty?
       self.letters = ' '*(rows * cols)
     else
-      raise "This crossword's letters are not blank!"
+      raise "This crossword has letters (even if they are blank)"
     end
   end
 
   def populate_cells
     if cells.empty?
-      index = 1
-      cell_num = 1
-      row = 1
-      while row <= self.rows
+      row = cell_num = index = 1
+      while row <= rows
         col = 1
-        while col <= self.cols
+        while col <= cols
           temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
           if (row == 1 or col == 1)
             temp_cell.cell_num = cell_num
             cell_num += 1
           end
-          self.cells << temp_cell
-          # p "Populating (#{row},#{col}) with a across: #{temp_cell.is_across_start} , down: #{temp_cell.is_down_start} cell"
+          cells << temp_cell
           index += 1
           col += 1
         end
@@ -308,6 +326,25 @@ class Crossword < ActiveRecord::Base
     puts "Generated preview for Crossword \##{self.id}, \"#{self.title}\""
   end
 
+  def randomize_letters_and_voids(symmetrical=true, modify_cells=false)
+    self.letters = Faker::Lorem.characters(area)
+    upper_limit = (symmetrical ? (area/2.0).ceil : area)
+    (1..upper_limit).each do |i|
+      if (rand * 10) > 7
+        letters[i-1] = '_'
+        if symmetrical && ((i.even?) || (i != upper_limit))
+          letters[area-i] = '_'
+        end
+        if modify_cells
+          cell = cells.find_by_index(i)
+          cell.is_void!
+          if symmetrical
+            cell.get_mirror_cell.is_void!
+          end
+        end
+      end
+    end
+  end
 
   # CLASS METHODS
 
@@ -318,4 +355,6 @@ class Crossword < ActiveRecord::Base
   def self.random_dimension
     (Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION).to_a.sample
   end
+
+
 end

@@ -25,7 +25,7 @@ class SolutionsController < ApplicationController
   #POST /solutions/:id/get_incorrect or get_incorrect_solution_path
   def get_incorrect
     @solution = Solution.find(params[:id])
-    @mismatches = @solution.crossword.return_mismatches(params[:letters])
+    @mismatches = @solution.crossword.get_mismatches(params[:letters])
     if @mismatches.empty?
       @solution.update_attributes(is_complete: true)
     end

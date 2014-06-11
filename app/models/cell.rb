@@ -101,11 +101,9 @@ class Cell < ActiveRecord::Base
   end
 
   def get_mirror_cell
-    cw = self.crossword
-    opposing_row = cw.rows-self.row+1
-    opposing_col = cw.cols-self.col+1
-    cw_id = cw.id
-    Cell.find_by_row_and_col_and_crossword_id(opposing_row, opposing_col, cw_id)
+    opposing_row = crossword.rows-row+1
+    opposing_col = crossword.cols-col+1
+    Cell.find_by_row_and_col_and_crossword_id(opposing_row, opposing_col, crossword.id)
   end
 
   def delete_extraneous_cells!

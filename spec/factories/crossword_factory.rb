@@ -32,6 +32,10 @@ FactoryGirl.define do
       published_at {Time.at(rand * Time.now.to_f)}
     end
 
+    trait :with_fake_solution do
+      letters { Faker::Lorem.characters(area) }
+    end
+
   end
 
 
