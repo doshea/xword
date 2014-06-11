@@ -36,6 +36,7 @@ describe Cell do
       it {should delegate_method(:across_word).to(:across_clue)}
       it {should delegate_method(:down_word).to(:down_clue)}
       it {should delegate_method(:user).to(:crossword)}
+      it {should delegate_method(:published).to(:crossword)}
     end
   end
 

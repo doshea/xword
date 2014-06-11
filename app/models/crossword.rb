@@ -23,7 +23,7 @@ class Crossword < ActiveRecord::Base
 
   mount_uploader :preview, PreviewUploader
 
-  before_create :populate_letters, :populate_cells
+  before_create :populate_letters, :populate_cells, unless: :skip_callbacks
   # after_create :link_cells_to_neighbors
 
   scope :unowned, -> (user) { where.not(user_id: user.id)}
@@ -63,24 +63,31 @@ class Crossword < ActiveRecord::Base
     numericality: { only_integer: true , message: ': Must be an integer'},
     inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
-  validates :cols,
+    validates :cols,
     presence: true,
     numericality: { only_integer: true , message: ': Must be an integer'},
     inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
 
-  MIN_TITLE_LENGTH = 3
+    MIN_TITLE_LENGTH = 3
   MAX_TITLE_LENGTH = 35
 
   validates :title,
     presence: true,
     length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH, message: ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
 
-    #INSTANCE METHODS
+  #INSTANCE METHODS
+  def random_row
+    (0..rows).to_a.sample
+  end
+
+  def random_col
+    (0..cols).to_a.sample
+  end
 
   def rc_to_index(row, col)
     (row-1)*(self.cols)+(col-1)
   end
-
+  
   def index_to_row(index)
     (index / self.cols) + 1
   end
@@ -89,22 +96,16 @@ class Crossword < ActiveRecord::Base
     (index % self.rows) + 1
   end
 
-  def index_to_rc(index)
-    row = (index / self.cols) + 1
-    col = (index % self.rows) + 1
-    [row, col]
+  def area
+    rows * cols
   end
 
   def nonvoid_letter_count
     self.letters.gsub(/ |_/, '').length
   end
 
-  def letters_a
-    self.letters.split('')
-  end
-
   def is_void_at?(row, col)
-    self.letters.present? ? ([' ','_'].include? self.letters[self.rc_to_index(row,col)]) : nil
+    self.letters.present? ? ([' ','_'].include? self.letters[self.rc_to_index(row,col)]) : false
   end
 
   def check_solution(solution_letters)
@@ -125,10 +126,10 @@ class Crossword < ActiveRecord::Base
   def number_cells
     counter = 1
     #order by index
-    self.cells.each do |cell|
+    cells.each do |cell|
       cell.update_starts!
     end
-    self.cells.order('index ASC').each do |cell|
+    cells.order('index ASC').each do |cell|
       if cell.should_be_numbered?
         cell.cell_num = counter
         counter += 1
@@ -142,30 +143,36 @@ class Crossword < ActiveRecord::Base
 
   #populates blank letters
   def populate_letters
-    self.letters = ' '*(self.rows*self.cols)
+    if letters.blank?
+      self.letters = ' '*(rows * cols)
+    else
+      raise "This crossword's letters are not blank!"
+    end
   end
 
   def populate_cells
-    index = 1
-    cell_num = 1
-    row = 1
-    while row <= self.rows
-      col = 1
-      while col <= self.cols
-        if (row == 1 or col == 1)
-          temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1, cell_num: cell_num)
-          cell_num += 1
-        else
+    if cells.empty?
+      index = 1
+      cell_num = 1
+      row = 1
+      while row <= self.rows
+        col = 1
+        while col <= self.cols
           temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
+          if (row == 1 or col == 1)
+            temp_cell.cell_num = cell_num
+            cell_num += 1
+          end
+          self.cells << temp_cell
+          # p "Populating (#{row},#{col}) with a across: #{temp_cell.is_across_start} , down: #{temp_cell.is_down_start} cell"
+          index += 1
+          col += 1
         end
-        self.cells << temp_cell
-        # p "Populating (#{row},#{col}) with a across: #{temp_cell.is_across_start} , down: #{temp_cell.is_down_start} cell"
-        index += 1
-        col += 1
+        row += 1
       end
-      row += 1
+    else
+      raise "This crossword already has cells!"
     end
-    # p self.cells
   end
 
   def link_cells_to_neighbors
@@ -267,7 +274,7 @@ class Crossword < ActiveRecord::Base
 
     preview = Magick::Image.new(width_cw, height_cw)
 
-    #Make the black drawing pencil 
+    #Make the black drawing pencil
     gc = Magick::Draw.new
     gc.stroke('black')
     gc.stroke_width(1)
@@ -304,11 +311,11 @@ class Crossword < ActiveRecord::Base
 
   # CLASS METHODS
 
-  def self.read_list
-    puzzle_array = JSON.parse(IO.read('lib/assets/nytimes.json'))
-    puzzle_array.each do |pz|
-      Crossword.add_nyt_puzzle(pz)
-    end
+  def self.random_row_or_col
+    (1..Crossword::MAX_DIMENSION).to_a.sample
   end
 
+  def self.random_dimension
+    (Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION).to_a.sample
+  end
 end

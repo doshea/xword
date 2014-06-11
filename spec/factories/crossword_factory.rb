@@ -18,11 +18,21 @@
 #
 
 FactoryGirl.define do
-  factory :unpublished_crossword do
-    published false
+  factory :crossword do
+    rows {Crossword.random_dimension}
+    cols {Crossword.random_dimension}
+    title Faker::Lorem.characters((Crossword::MIN_TITLE_LENGTH..Crossword::MAX_TITLE_LENGTH).to_a.sample)
+    # letters {Faker::Lorem.characters(rows * cols)}
+    description Faker::Lorem.paragraph(2)
+
+    user
+
+    trait :published do
+      published true
+      published_at {Time.at(rand * Time.now.to_f)}
+    end
+
   end
 
-  factory :published_crossword do
-    published true
-  end
+
 end

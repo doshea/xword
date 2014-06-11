@@ -30,6 +30,8 @@ class Cell < ActiveRecord::Base
   scope :down_start_cells, -> { where(is_down_start: true)}
   scope :asc_indices, -> {order(index: :asc)}
   scope :desc_indices, -> {order(index: :desc)}
+  scope :published, -> {where(published: true)}
+  scope :unpublished, -> {where(published: false)}
 
   belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells
   belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells
@@ -47,6 +49,7 @@ class Cell < ActiveRecord::Base
   delegate :across_word, to: :across_clue, allow_nil: true
   delegate :down_word, to: :down_clue, allow_nil: true
   delegate :user, to: :crossword, allow_nil: true
+  delegate :published, to: :crossword
 
   #do not include is_void and other booleans in this validation -- false counts as blank
   validates_presence_of :row, :col, :index

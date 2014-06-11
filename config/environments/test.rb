@@ -34,3 +34,7 @@ Xword::Application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 end
+
+class ActiveRecord::Base
+  cattr_accessor :skip_callbacks
+end

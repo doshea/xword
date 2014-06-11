@@ -1,11 +1,13 @@
-= form_tag '/login' do
+= form_tag '/login', id: 'login' do
   = label_tag :username
   = text_field_tag :username, nil, :autofocus => true
   = label_tag :password
   = password_field_tag :password
-  = label_tag :remember_me, 'Remember me'
-  = check_box_tag :remember_me, 1, params[:remember_me], checked: true
-  %br
-  = submit_tag 'Log In', :class => 'button tiny radius success'
-  = link_to forgot_password_users_path, class: 'right' do
-    Forgot your password?
+  .small-8.columns
+    = label_tag :remember_me, 'Remember me'
+    = check_box_tag :remember_me, 1, params[:remember_me], checked: true      
+  .small-4.columns
+    = submit_tag 'Log in', :class => 'button radius success'
+%br
+.left
+  = link_to 'Forgot your password?', forgot_password_users_path

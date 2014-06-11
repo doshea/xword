@@ -23,6 +23,32 @@
 
 FactoryGirl.define do
   factory :cell do
+    letter {Faker::Lorem.charcters(1)}
+    row { Crossword.random_row_or_col }
+    col { Crossword.random_row_or_col }
+    index { (col..Crossword::MAX_DIMENSION).to_a.sample * (row-1) + col }
+    cell_num { (1..index).to_a.sample }
 
+    trait :void do
+      is_void true
+    end
+
+    trait :with_across_clue do
+      is_across_start true
+      association across_clue, factory: :clue
+    end
+
+    trait :with_down_clue do
+      is_down_start true
+      association down_clue, factory: :clue
+    end
+
+    trait :in_crossword do
+      association :crossword, circled: true
+    end
+
+    factory :circled_cell do
+      circled true
+    end
   end
 end

@@ -9,7 +9,6 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'capybara/rspec'
 require 'launchy'
-require 'database_cleaner'
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 RSpec.configure do |config|
@@ -19,12 +18,30 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
   end
 
-  config.before(:each) do
+  #Clean unless tagged with :dirty_inside
+  #For more info on around hooks, check out http://spin.atomicobject.com/2013/03/24/using-the-rspec-around-hook/
+  config.around(:each) do |example|
+    unless (example.metadata[:dirty_inside])
+      DatabaseCleaner.cleaning do
+        example.run
+      end
+    end
+  end
+
+  config.before(:all, dirty_inside: true) do
     DatabaseCleaner.start
   end
 
-  config.after(:each) do
+  config.after(:all, dirty_inside: true) do
     DatabaseCleaner.clean
+  end
+
+  #allows me to skip callbacks when I want to using the skip_callbacks metadata tag
+  config.before(:all, skip_callbacks: true) do
+    ActiveRecord::Base.skip_callbacks = true
+  end
+  config.after(:all, skip_callbacks: true) do
+    ActiveRecord::Base.skip_callbacks = nil
   end
 
   # config.color_enabled = true

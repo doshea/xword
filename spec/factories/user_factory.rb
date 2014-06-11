@@ -22,15 +22,15 @@ FactoryGirl.define do
 
   #TODO DRY up these factories with inheritance: https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md#inheritance
   factory :user do
-    username Faker::Internet.user_name
-    email Faker::Internet.email
-    password Faker::Lorem.characters((User::MIN_PASSWORD_LENGTH..User::MAX_PASSWORD_LENGTH).to_a.sample)
+    username {Faker::Lorem.characters((User::MIN_USERNAME_LENGTH..User::MAX_USERNAME_LENGTH).to_a.sample)}
+    email {Faker::Internet.email}
+    password {Faker::Lorem.characters((User::MIN_PASSWORD_LENGTH..User::MAX_PASSWORD_LENGTH).to_a.sample)}
     password_confirmation { "#{password}" }
 
     factory :full_user do
-      first_name Faker::Name.first_name
-      last_name Faker::Name.last_name
-      location 'Bobville'
+      first_name {Faker::Name.first_name}
+      last_name {Faker::Name.last_name}
+      location {"#{Faker::Address.street_address}, #{Faker::Address.city}, #{Faker::Address.state_abbr}"}
     end
 
     factory :admin do
