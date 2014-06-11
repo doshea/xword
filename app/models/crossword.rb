@@ -150,7 +150,7 @@ class Crossword < ActiveRecord::Base
     cells.each do |cell|
       cell.update_starts!
     end
-    cells.order('index ASC').each do |cell|
+    cells.each do |cell|
       if cell.should_be_numbered?
         cell.cell_num = counter
         counter += 1
@@ -159,7 +159,6 @@ class Crossword < ActiveRecord::Base
       end
       cell.save
     end
-
   end
 
   #populates blank letters
@@ -359,6 +358,25 @@ class Crossword < ActiveRecord::Base
           cell.save
         end
       end
+    end
+    self
+  end
+
+  def to_s(highlight_index=nil)
+    letters_a = letters.split('')
+    index = 1
+    until letters_a.empty? do
+      if highlight_index && index == highlight_index
+        print Rainbow(letters_a.shift).green
+      else
+        print letters_a.shift
+      end
+      if (index % cols == 0)
+        puts
+      else
+        print ' '
+      end
+      index += 1
     end
   end
 

@@ -21,7 +21,9 @@ RSpec.configure do |config|
   #Clean unless tagged with :dirty_inside
   #For more info on around hooks, check out http://spin.atomicobject.com/2013/03/24/using-the-rspec-around-hook/
   config.around(:each) do |example|
-    unless (example.metadata[:dirty_inside])
+    if (example.metadata[:dirty_inside])
+      example.run
+    else
       DatabaseCleaner.cleaning do
         example.run
       end

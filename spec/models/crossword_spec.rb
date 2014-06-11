@@ -165,12 +165,6 @@ describe Crossword do
       describe '#populate_cells', dirty_inside: true, skip_callbacks: true do
         subject {temp = create(:crossword); temp.populate_cells; temp}
 
-        before :all do
-          @crossword = create(:crossword)
-          @crossword.populate_cells
-          @crossword.cells
-        end
-
         it 'numbers all cells in top row' do
           top_row_cells = subject.cells.where(row: 1)
           expect(top_row_cells).to_not be_empty
@@ -182,7 +176,6 @@ describe Crossword do
           left_column_cells = subject.cells.where(col: 1).where.not(row: 1)
           expect(left_column_cells).to_not be_empty
           left_column_cells.each do |cell|
-            binding.pry if cell.cell_num != (cell.index/subject.cols + subject.cols)
             expect(cell.cell_num).to eq (cell.index/subject.cols + subject.cols)
           end
         end
@@ -200,13 +193,39 @@ describe Crossword do
       end
       describe '#number_cells' do
         subject {create(:crossword)}
-        before :each do
-          subject.randomize_letters_and_voids(true, true)
+        before {subject.randomize_letters_and_voids(true, true).save}
+
+        context 'before numbering' do
+          let(:need_numbers){subject.cells.select{|cell| cell.should_be_numbered?}}
+          let(:no_numbers){subject.cells.select{|cell| !cell.should_be_numbered?}}
+          it 'cells are not properly numbered beforehand' do
+            expect(need_numbers.map(&:cell_num)).to include(nil)
+          end
+        end
+        context 'after numbering' do
+          before :each do
+            subject.number_cells
+            @need_numbers = subject.cells.select{|cell| cell.should_be_numbered?}
+            @no_numbers = subject.cells.select{|cell| !cell.should_be_numbered?}
+          end
+          it 'numbers cells that need numbers' do
+            cell_nums = @need_numbers.map(&:cell_num)
+            expect(cell_nums).to_not include(nil)
+          end
+          it 'de-numbers cells that do not need numbers' do
+            cell_nums = @no_numbers.map(&:cell_num)
+            expect(cell_nums).to eq [nil]*cell_nums.length
+          end
+          it 'numbers in order' do
+            cell_nums = @need_numbers.map(&:cell_num)
+            cell_nums[].each_with_index do |num, i|
+              unless i == 0
+                expect(num).to eq (cell_nums[i-1] +1)
+              end
+            end
+          end
         end
 
-        it 'numbers cells properly' do
-          
-        end
       end
     end
   end

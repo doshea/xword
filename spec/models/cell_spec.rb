@@ -24,10 +24,6 @@ describe Cell do
     it {should belong_to(:across_clue).class_name('Clue').with_foreign_key(:across_clue_id)}
     it {should belong_to(:down_clue).class_name('Clue').with_foreign_key(:down_clue_id)}
     it {should belong_to :crossword}
-    it {should have_one(:right_cell).class_name('Cell').with_foreign_key('left_cell_id')}
-    it {should have_one(:below_cell).class_name('Cell').with_foreign_key('above_cell_id')}
-    it {should belong_to(:left_cell).class_name('Cell').with_foreign_key('left_cell_id')}
-    it {should belong_to(:above_cell).class_name('Cell').with_foreign_key('above_cell_id')}
     it {should have_one(:cell_edit).dependent(:destroy)}
 
     context 'delegation' do
