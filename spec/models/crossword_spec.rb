@@ -18,6 +18,10 @@
 #
 
 describe Crossword do
+  it 'has a valid factory' do
+    create(:crossword).should be_valid
+  end
+
   describe 'associations' do
     it {should belong_to :user}
     it {should have_many(:comments).order(created_at: :desc).dependent(:destroy)}
@@ -38,7 +42,14 @@ describe Crossword do
   end
 
   describe 'validations' do
-
+    it { should validate_presence_of(:rows)}
+    it { should validate_numericality_of(:rows).only_integer}
+    it { should ensure_inclusion_of(:rows).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
+    it { should validate_presence_of(:cols)}
+    it { should validate_numericality_of(:cols).only_integer}
+    it { should ensure_inclusion_of(:cols).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
+    it { should validate_presence_of(:title)}
+    it { should ensure_length_of(:title).is_at_least(Crossword::MIN_TITLE_LENGTH).is_at_most(Crossword::MAX_TITLE_LENGTH) }
   end
 
   describe 'INSTANCE METHODS' do
@@ -187,50 +198,111 @@ describe Crossword do
           end
         end
         it 'throws error if already populated' do
+          subject.cells.count.should be > 0
           expect {subject.populate_cells}.to raise_error
+        end
+        context 'if published' do
+          subject {temp = create(:crossword, :published); temp.populate_cells; temp}
+          it 'errors' do
+            expect {subject.populate_cells}.to raise_error
+          end
         end
 
       end
       describe '#number_cells' do
-        subject {create(:crossword)}
-        before {subject.randomize_letters_and_voids(true, true).save}
+        context 'on an unpublished crossword' do
+          subject {create(:crossword)}
+          before {subject.randomize_letters_and_voids(true, true).save}
 
-        context 'before numbering' do
-          let(:need_numbers){subject.cells.select{|cell| cell.should_be_numbered?}}
-          let(:no_numbers){subject.cells.select{|cell| !cell.should_be_numbered?}}
-          it 'cells are not properly numbered beforehand' do
-            expect(need_numbers.map(&:cell_num)).to include(nil)
-          end
-        end
-        context 'after numbering' do
-          before :each do
-            subject.number_cells
-            @need_numbers = subject.cells.select{|cell| cell.should_be_numbered?}
-            @no_numbers = subject.cells.select{|cell| !cell.should_be_numbered?}
-          end
-          it 'numbers cells that need numbers' do
-            cell_nums = @need_numbers.map(&:cell_num)
-            expect(cell_nums).to_not include(nil)
-          end
-          it 'de-numbers cells that do not need numbers' do
-            cell_nums = @no_numbers.map(&:cell_num)
-            expect(cell_nums).to eq [nil]*cell_nums.length
-          end
-          it 'numbers in order' do
-            cell_nums = @need_numbers.map(&:cell_num)
-            cell_nums[].each_with_index do |num, i|
-              unless i == 0
-                expect(num).to eq (cell_nums[i-1] +1)
-              end
+          context 'before numbering' do
+            let(:need_numbers){subject.cells.select{|cell| cell.should_be_numbered?}}
+            let(:no_numbers){subject.cells.select{|cell| !cell.should_be_numbered?}}
+            it 'cells are not properly numbered beforehand' do
+              expect(need_numbers.map(&:cell_num)).to include(nil)
             end
           end
+          context 'after numbering' do
+            before :each do
+              subject.number_cells
+              @need_numbers = subject.cells.select{|cell| cell.should_be_numbered?}
+              @no_numbers = subject.cells.select{|cell| !cell.should_be_numbered?}
+            end
+            it 'numbers cells that need numbers' do
+              cell_nums = @need_numbers.map(&:cell_num)
+              expect(cell_nums).to_not include(nil)
+            end
+            it 'de-numbers cells that do not need numbers' do
+              cell_nums = @no_numbers.map(&:cell_num)
+              expect(cell_nums).to eq [nil]*cell_nums.length
+            end
+            it 'numbers in order, starting at 1 and incrementing by 1' do
+              cell_nums = @need_numbers.map(&:cell_num)
+              expect(cell_nums).to eq (1..@need_numbers.length).to_a
+            end
+
+          end
         end
 
+        context 'on a published crossword' do
+          subject{create(:crossword, :published)}
+          it 'raises an error' do
+            expect{subject.number_cells}.to raise_error
+          end
+        end
       end
+
+      describe '#across/down_start_cells' do
+        subject {create(:crossword)}
+        its(:across_start_cells){should eq subject.cells.select(&:is_across_start)}
+        its(:down_start_cells){should eq subject.cells.select(&:is_down_start)}
+      end
+
+      describe '#set_contents!', in_prog: true do
+        subject {create(:crossword)}
+        let(:random_letters){Faker::Lorem.characters(subject.reload.area)}
+
+        context 'before running' do
+          it 'its cells are not set' do
+            expect(subject.string_from_cells).to_not eq random_letters
+          end
+          it 'its letters attribute is not set' do
+            expect(subject.letters).to_not eq random_letters
+          end
+        end
+        context 'after running' do
+          before {subject.set_contents!(random_letters)}
+          it 'its cells are set to the argument string' do
+            expect(subject.string_from_cells).to eq random_letters
+          end
+          it 'its letters attribute is set to the argument string' do
+            expect(subject.letters).to eq random_letters
+          end
+        end
+        context 'on a published crossword' do
+          subject {create(:crossword, :published)}
+          it 'raises an error' do
+            expect{subject.set_contents(random_letters)}.to raise_error
+          end
+        end
+        context 'on an invalid crossword (cannot be saved)' do
+          it 'raises an error' do
+            subject.rows = 0
+            expect{subject.set_contents(random_letters)}.to raise_error
+          end
+        end
+        it 'raises Argument Error on short argument' do
+          expect{subject.set_contents!(random_letters[0...-1])}.to raise_error ArgumentError
+        end
+        it 'raises Argument Error on long argument' do
+          expect{subject.set_contents!(random_letters+Faker::Lorem.characters(1))}.to raise_error ArgumentError
+        end
+      end
+
+
     end
   end
 
-  context 'CLASS METHODS' do
+  describe 'CLASS METHODS' do
     describe '#new' do
       subject(:crossword) {build(:crossword)}
       it {should be_a_new(Crossword)}
@@ -266,7 +338,5 @@ describe Crossword do
       its(:random_dimension){ should be_in (Crossword::MIN_DIMENSION  ..Crossword::MAX_DIMENSION)}
       its(:random_dimension){ should be_an Integer}
     end
-    
-
   end
 end

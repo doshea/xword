@@ -60,22 +60,22 @@ class Crossword < ActiveRecord::Base
 
   validates :rows,
     presence: true,
-    numericality: { only_integer: true , message: ': Must be an integer'},
-    inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
+    numericality: { only_integer: true },
+    inclusion: {in: MIN_DIMENSION..MAX_DIMENSION}
 
-    validates :cols,
+  validates :cols,
     presence: true,
-    numericality: { only_integer: true , message: ': Must be an integer'},
-    inclusion: {in: MIN_DIMENSION..MAX_DIMENSION, message: ": Dimensions must be #{MIN_DIMENSION}-#{MAX_DIMENSION} in length"}
+    numericality: { only_integer: true },
+    inclusion: {in: MIN_DIMENSION..MAX_DIMENSION}
 
-    MIN_TITLE_LENGTH = 3
+  MIN_TITLE_LENGTH = 3
   MAX_TITLE_LENGTH = 35
 
   validates :title,
     presence: true,
-    length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH, message: ": Must be #{MIN_TITLE_LENGTH}-#{MAX_TITLE_LENGTH} characters long"}
+    length: { minimum: MIN_TITLE_LENGTH, maximum: MAX_TITLE_LENGTH}
 
-    #INSTANCE METHODS
+  #INSTANCE METHODS
   def random_row
     (1..rows).to_a.sample
   end
@@ -117,7 +117,7 @@ class Crossword < ActiveRecord::Base
   end
 
   def nonvoid_letter_count
-    self.letters.delete(' _').length
+    letters.delete(' _').length
   end
 
   def is_void_at?(row, col)
@@ -128,6 +128,18 @@ class Crossword < ActiveRecord::Base
     end
   end
 
+  def string_from_cells
+    cells.map(&:formatted_letter).join
+  end
+
+  #TODO Keep looking for ways to turn this into a pure scope instead of a function/scope mix?
+  def across_start_cells
+    cells.across_start_cells
+  end
+
+  def down_start_cells
+    cells.down_start_cells
+  end
 
   def get_mismatches(solution_letters)
     if solution_letters.length == letters.length
@@ -145,6 +157,7 @@ class Crossword < ActiveRecord::Base
 
   # This can be made more efficient by only updating if the values are different
   def number_cells
+    error_if_published
     counter = 1
     #order by index
     cells.each do |cell|
@@ -157,28 +170,35 @@ class Crossword < ActiveRecord::Base
       else
         cell.cell_num = nil
       end
-      cell.save
+      if cell.changed?
+        cell.save
+      end
     end
+    self
   end
 
   #populates blank letters
   def populate_letters
+    error_if_published
     if letters.empty?
       self.letters = ' '*(rows * cols)
+      self
     else
       raise "This crossword has letters (even if they are blank)"
     end
   end
 
   #Refactored to use a single SQL statement and run at light speed
+  #Read https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/
   def populate_cells
+    error_if_published
     if cells.empty?
       row = cell_num = index = 1
-      
+
       #make clues_first
       clue_inserts = ["('ENTER CLUE')"]*area*2
       clues_sql = "INSERT INTO clues (content) VALUES #{clue_inserts.join(", ")}"
-      
+
       next_clue_id = Clue.next_index #TODO This may cause a race condition!!!
       ActiveRecord::Base.connection.execute(clues_sql)
 
@@ -206,89 +226,69 @@ class Crossword < ActiveRecord::Base
       end
       cells_sql = "INSERT INTO cells (across_clue_id, down_clue_id, row, col, index, is_void, is_across_start, is_down_start, cell_num, crossword_id) VALUES #{cell_inserts.join(", ")}"
       ActiveRecord::Base.connection.execute(cells_sql)
-
+      self
     else
       raise "This crossword already has cells!"
     end
   end
 
-  def across_start_cells
-    self.cells.across_start_cells
-  end
+  #TODO get a better name
+  def set_contents!(letters_string)
 
-  def down_start_cells
-    self.cells.down_start_cells
-  end
-
-  def set_letters(letter_string)
-    if letter_string.length == (self.rows * self.cols) &&  letter_string.length == self.cells.count
-      self.cells.asc_indices.each_with_index do |cell, index|
-        letter = letter_string[index]
-        unless [' ', '_'].include? letter
-          cell.letter = letter
-          cell.is_not_void!
-        else
-          cell.is_void!
-        end
-        cell.save
+    if letters_string.length == area
+      error_if_published
+      self.letters = letters_string
+      if save
+        update_cells_from_letters
+      else
+        raise 'Save failed!'
       end
     else
-      raise "String length does not equal dimensions or cell count"
+      raise ArgumentError
     end
-  end
-
-  def update_letters
-    output = ''
-    self.cells.asc_indices.each do |cell|
-      output += cell.letter ? cell.letter : '_'
-    end
-    self.letters = output
-    self.save
   end
 
   def set_clue(across, cell_num, content)
-    cell = self.cells.find_by_cell_num(cell_num)
+    error_if_published
+    cell = cells.find_by_cell_num(cell_num)
     clue = across ? cell.across_clue : cell.down_clue
     clue.update_attribute(:content, content)
   end
 
   def build_seed(pseudonym)
-    output = "\n#Generated seed for \"#{self.title}\" crossword\n"
+    output = "\n#Generated seed for \"#{title}\" crossword\n"
     #Basic
-    output += "#{pseudonym} = Crossword.create(title: '#{self.title}', description: '#{self.description}', rows: #{self.rows}, cols: #{self.cols})\n"
+    output += "#{pseudonym} = Crossword.create(title: '#{title}', description: '#{description}', rows: #{rows}, cols: #{cols})\n"
     #Letters
-    output += "#{pseudonym}.set_letters('#{self.letters}')\n\n"
+    output += "#{pseudonym}.set_letters('#{letters}')\n\n"
     output += "#Across clues for #{pseudonym}\n"
     #Clues
-    self.across_start_cells.asc_indices.each do |cell|
+    across_start_cells.each do |cell|
       output += "#{pseudonym}.set_clue(true, #{cell.cell_num}, '#{cell.across_clue.content.gsub("\\","\\\\\\\\").gsub("'","\\\\'")}')\n"
     end
     output += "\n#Down clues for #{pseudonym}\n"
-    self.down_start_cells.asc_indices.each do |cell|
+    down_start_cells.each do |cell|
       output += "#{pseudonym}.set_clue(true, #{cell.cell_num}, '#{cell.down_clue.content.gsub("\\","\\\\\\\\").gsub("'","\\\\'")}')\n"
     end
     output += "\n"
     puts output
+    output
   end
 
   def add_circles_by_array(circle_nums)
-    if circle_nums.length == self.rows*self.cols
+    if circle_nums.length == area
       circle_needers = []
       circle_nums.each_with_index do |potential_circle, index|
         if potential_circle == 1
-          id_number = self.cells.find_by_index(index+1).id
+          id_number = cells.find_by_index(index+1).id
           circle_needers << id_number
         end
       end
       Cell.where(id: circle_needers).update_all(circled: true)
-      self.update_attributes(circled: true)
+      update_attributes(circled: true)
     else
-      puts "Too many circles"
+      raise "Circles length (#{circle_nums.length}) did not match crossword size (#{area})"
     end
-  end
-
-  def string_from_cells
-    self.cells.order(:index).map{|cell| cell.is_void ? '_' : cell.letter }.join
   end
 
   def generate_preview
@@ -314,7 +314,7 @@ class Crossword < ActiveRecord::Base
     end
 
     #Fill in void cells with black squares
-    self.cells.each do |cell|
+    cells.each do |cell|
       gc.rectangle(
         (cell.col-1)*cell_dim,
         (cell.row-1)*cell_dim,
@@ -324,15 +324,16 @@ class Crossword < ActiveRecord::Base
     end
 
     gc.draw(preview)
-    file_name = "tmp/preview_#{self.id}.png"
+    file_name = "tmp/preview_#{id}.png"
     preview.write(file_name)
     self.preview = File.open(file_name)
-    self.save
+    save
     File.delete(file_name)
-    puts "Generated preview for Crossword \##{self.id}, \"#{self.title}\""
+    puts "Generated preview for Crossword \##{id}, \"#{title}\""
   end
 
   def randomize_letters_and_voids(symmetrical=true, modify_cells=false)
+    error_if_published
     self.letters = Faker::Lorem.characters(area)
     upper_limit = (symmetrical ? (area/2.0).ceil : area)
     (1..upper_limit).each do |i|
@@ -365,7 +366,7 @@ class Crossword < ActiveRecord::Base
   def to_s(highlight_index=nil)
     letters_a = letters.split('')
     index = 1
-    until letters_a.empty? do
+    until letters_a.empty?
       if highlight_index && index == highlight_index
         print Rainbow(letters_a.shift).green
       else
@@ -380,6 +381,59 @@ class Crossword < ActiveRecord::Base
     end
   end
 
+  #Takes an existing crossword puzzle and figures out all of the words in that crossword by cell.
+  #Then constructs a hash whose keys are the words and whose values are the clues to those words
+  def get_words_hsh
+    word_clues = {}
+    across_starts = self.cells.across_start_cells.asc_indices
+    across_starts.each do |across_start|
+      word = ''
+      current = across_start
+      clue = current.across_clue
+      while current && !current.is_void do
+        word += current.letter
+        current = current.right_cell
+      end
+      word_clues[word] = clue
+    end
+    down_starts = self.cells.down_start_cells.asc_indices
+    down_starts.each do |down_start|
+      word = ''
+      current = down_start
+      clue = current.down_clue
+      while current && !current.is_void do
+        word += current.letter
+        current = current.below_cell
+      end
+      word_clues[word] = clue
+    end
+    word_clues
+  end
+
+  def generate_words_and_link_clues
+    words_hsh = self.get_words_hsh
+
+    words_hsh.each do |word, clue|
+      the_word = Word.find_or_create_by(content: word)
+      the_word.clues << clue
+    end
+  end
+
+  def publish!
+    error_if_published
+    letters = self.string_from_cells
+    if self.update_attributes(published: true, published_at: Time.now, letters: letters)
+      #remove extraneous clues
+      self.cells.each do |cell|
+        cell.delete_extraneous_cells!
+      end
+      self.number_cells
+      self.generate_words_and_link_clues
+    else
+      raise 'Updating attributes failed -- task aborted!'
+    end
+  end
+
   # CLASS METHODS
 
   def self.random_row_or_col
@@ -391,4 +445,45 @@ class Crossword < ActiveRecord::Base
   end
 
 
+  private
+  def error_if_published
+    if published
+      raise 'Published crosswords cannot perform that action.'
+    end
+  end
+
+  def update_letters_from_cells
+    self.letters = string_from_cells
+    if save
+      self
+    else
+      raise 'Save failed!'
+    end
+  end
+
+  def update_cells_from_letters
+    Cell.transaction do
+      cells.each_with_index do |cell, i|
+        changed = false
+        letter = letters[i]
+
+        if [' ', '_'].include? letter
+          if !cell.is_void?
+            cell.is_void!
+            changed = true
+          end
+        else
+          if cell.letter != letter
+            cell.letter = letter
+            cell.is_not_void!
+            changed = true
+          end
+        end
+        if changed
+          cell.save
+        end
+      end
+    end
+    self
+  end
 end

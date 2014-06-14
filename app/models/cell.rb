@@ -61,6 +61,11 @@ class Cell < ActiveRecord::Base
     "#{self.id}. Cell at [#{self.row}, #{self.col}], #{self.index.ordinalize} cell in Crossword #{self.crossword.id}#{" with cell number #{self.cell_num}" if self.cell_num}. #{"Is across start. " if self.is_across_start}#{"Is down start. " if self.is_down_start}"
   end
 
+  #TODO find a better name for this method
+  def formatted_letter
+    is_void ? '_' : letter
+  end
+
   def should_be_across_start?
     !self.is_void && (self.left_cell.nil? || self.left_cell.is_void)
     # (self.col == 1) || (self.crossword.cells.where("row = ? AND col = ?", self.row, self.col - 1).first.is_void)
