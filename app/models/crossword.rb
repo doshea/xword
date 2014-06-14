@@ -163,15 +163,17 @@ class Crossword < ActiveRecord::Base
     cells.each do |cell|
       cell.update_starts!
     end
-    cells.each do |cell|
-      if cell.should_be_numbered?
-        cell.cell_num = counter
-        counter += 1
-      else
-        cell.cell_num = nil
-      end
-      if cell.changed?
-        cell.save
+    Cell.transaction do
+      cells.each do |cell|
+        if cell.should_be_numbered?
+          cell.cell_num = counter
+          counter += 1
+        else
+          cell.cell_num = nil
+        end
+        if cell.changed?
+          cell.save
+        end
       end
     end
     self
@@ -462,7 +464,7 @@ class Crossword < ActiveRecord::Base
   end
 
   def update_cells_from_letters
-    cell.transaction do
+    Cell.transaction do
       cells.each_with_index do |cell, i|
         changed = false
         letter = letters[i]
