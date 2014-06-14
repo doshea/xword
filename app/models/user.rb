@@ -6,7 +6,7 @@
 #  first_name             :string(18)
 #  last_name              :string(24)
 #  username               :string(16)       not null
-#  email                  :string(40)       not null
+#  email                  :string(254)      not null
 #  image                  :text
 #  location               :string(255)
 #  is_admin               :boolean          default(FALSE)
@@ -63,12 +63,12 @@ class User < ActiveRecord::Base
   validates_presence_of :password, on: :change_password
 
   MIN_EMAIL_LENGTH = 5
-  MAX_EMAIL_LENGTH = 40 #hard-coded in database
+  MAX_EMAIL_LENGTH = 254 #hard-coded in database
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email,
     presence: true,
     uniqueness: true,
-    length: { minimum: MIN_EMAIL_LENGTH, maximum: MAX_EMAIL_LENGTH, message: ": That's just too long. Your email shouldn't be above #{MAX_EMAIL_LENGTH} characters" },
+    length: { minimum: MIN_EMAIL_LENGTH, maximum: MAX_EMAIL_LENGTH},
     format: { with: VALID_EMAIL_REGEX, message: ": Only real email addresses, please" }
 
   MIN_USERNAME_LENGTH = 4

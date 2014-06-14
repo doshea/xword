@@ -257,7 +257,7 @@ describe Crossword do
         its(:down_start_cells){should eq subject.cells.select(&:is_down_start)}
       end
 
-      describe '#set_contents!', in_prog: true do
+      describe '#set_contents!' do
         subject {create(:crossword)}
         let(:random_letters){Faker::Lorem.characters(subject.reload.area)}
 

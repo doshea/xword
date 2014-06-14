@@ -6,7 +6,7 @@
 #  first_name             :string(18)
 #  last_name              :string(24)
 #  username               :string(16)       not null
-#  email                  :string(40)       not null
+#  email                  :string(254)      not null
 #  image                  :text
 #  location               :string(255)
 #  is_admin               :boolean          default(FALSE)

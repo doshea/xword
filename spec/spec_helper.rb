@@ -1,5 +1,4 @@
 require 'simplecov'
-require 'spec_methods'
 
 #using the 'rails' profile prevents files outside /app from being checked
 SimpleCov.start 'rails'

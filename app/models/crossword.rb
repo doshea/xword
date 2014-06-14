@@ -462,7 +462,7 @@ class Crossword < ActiveRecord::Base
   end
 
   def update_cells_from_letters
-    Cell.transaction do
+    cell.transaction do
       cells.each_with_index do |cell, i|
         changed = false
         letter = letters[i]
