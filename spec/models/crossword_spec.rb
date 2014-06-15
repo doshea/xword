@@ -174,7 +174,7 @@ describe Crossword do
     context 'requiring cells' do
 
       describe '#populate_cells', dirty_inside: true, skip_callbacks: true do
-        subject {temp = create(:crossword); temp.populate_cells; temp}
+        subject {temp = create(:crossword, :smaller); temp.populate_cells; temp}
 
         it 'numbers all cells in top row' do
           top_row_cells = subject.cells.where(row: 1)
@@ -211,7 +211,7 @@ describe Crossword do
       end
       describe '#number_cells' do
         context 'on an unpublished crossword' do
-          subject {create(:crossword)}
+          subject {create(:crossword, :smaller)}
           before {subject.randomize_letters_and_voids(true, true).save}
 
           context 'before numbering' do
@@ -257,46 +257,133 @@ describe Crossword do
         its(:down_start_cells){should eq subject.cells.select(&:is_down_start)}
       end
 
-      describe '#set_contents!' do
-        subject {create(:crossword)}
-        let(:random_letters){Faker::Lorem.characters(subject.reload.area)}
+      describe '#set_contents' do
+        subject {create(:crossword, :smaller)}
+        let(:random_string){Faker::Lorem.characters(subject.reload.area)}
 
         context 'before running' do
           it 'its cells are not set' do
-            expect(subject.string_from_cells).to_not eq random_letters
+            expect(subject.string_from_cells).to_not eq random_string
           end
           it 'its letters attribute is not set' do
-            expect(subject.letters).to_not eq random_letters
+            expect(subject.letters).to_not eq random_string
           end
         end
         context 'after running' do
-          before {subject.set_contents!(random_letters)}
+          before {subject.set_contents(random_string)}
           it 'its cells are set to the argument string' do
-            expect(subject.string_from_cells).to eq random_letters
+            expect(subject.string_from_cells).to eq random_string
           end
           it 'its letters attribute is set to the argument string' do
-            expect(subject.letters).to eq random_letters
+            expect(subject.letters).to eq random_string
+          end
+        end
+        context 'with void cells' do
+          let(:void_indices){[]}
+          let(:normal_indices){[]}
+          before :each do
+            void_indices = []
+            normal_indices = []
+
+            random_string.split('').each_with_index do |letter, i|
+              die_roll = (rand*6).ceil
+              case die_roll 
+              when 1
+                random_string[i] = '_'
+                void_indices << (i+1)
+              when 2
+                random_string[i] = ' '
+                void_indices << (i+1)
+              else
+                normal_indices << (i+1)
+              end
+            end
+            subject.set_contents(random_string)
+          end
+          it 'has properly set is_void attributes' do
+            cells = subject.cells.where(index: void_indices)
+            expect(cells.map(&:is_void)).to eq [true]*cells.length
+          end
+          it 'does not have improperly set is_void values' do
+            cells = subject.cells.where(index: normal_indices)
+            expect(cells.map(&:is_void)).to eq [false]*cells.length
+          end
+          it 'sets the void cell letters to nil' do
+            cells = subject.cells.where(index: void_indices)
+            expect(cells.map(&:letters)).to eq [nil]*cells.length
           end
         end
         context 'on a published crossword' do
           subject {create(:crossword, :published)}
           it 'raises an error' do
-            expect{subject.set_contents(random_letters)}.to raise_error
+            expect{subject.set_contents(random_string)}.to raise_error
           end
         end
         context 'on an invalid crossword (cannot be saved)' do
           it 'raises an error' do
-            subject.rows = 0
-            expect{subject.set_contents(random_letters)}.to raise_error
+            subject.stub(:save){false}
+            expect{subject.set_contents(random_string)}.to raise_error 'Save failed!'
           end
         end
         it 'raises Argument Error on short argument' do
-          expect{subject.set_contents!(random_letters[0...-1])}.to raise_error ArgumentError
+          expect{subject.set_contents(random_string[0...-1])}.to raise_error ArgumentError
         end
         it 'raises Argument Error on long argument' do
-          expect{subject.set_contents!(random_letters+Faker::Lorem.characters(1))}.to raise_error ArgumentError
+          expect{subject.set_contents(random_string+Faker::Lorem.characters(1))}.to raise_error ArgumentError
         end
       end
+
+      describe '#set_clue' do
+        subject {create(:crossword)}
+        let(:cell){subject.cells.where.not(cell_num: nil).sample}
+        let(:clue){cell.clues.sample}
+        let(:random_string){Faker::Lorem.characters((1..Clue::CONTENT_LENGTH_MAX).to_a.sample)}
+        let(:across){clue == cell.across_clue}
+        
+        it 'changes the clue text' do
+          subject.set_clue(across, cell.cell_num, random_string)
+          expect(clue.reload.content).to eq random_string
+        end
+
+        it 'errors when cell not found' do
+          bad_cell_num = subject.area + 1
+          expect{subject.set_clue(across, bad_cell_num, random_string)}.to raise_error ActiveRecord::RecordNotFound
+        end
+        it 'errors when clue not found' do
+          if across
+            cell.across_clue.destroy
+          else
+            cell.down_clue.destroy
+          end
+          expect{subject.set_clue(across, cell.cell_num, random_string)}.to raise_error ActiveRecord::RecordNotFound
+        end
+
+      end
+      describe '#build_seed' do
+
+      end
+      describe '#circles_from_array', in_prog: true do
+        subject {create(:crossword)}
+        let(:circle_count){rand(subject.area).ceil}
+        let(:circle_inputs){([0]*(subject.area-circle_count)+[1]*circle_count).shuffle}
+
+        context 'before circling' do
+          its(:circled){should be_false}
+        end
+        context 'after circling' do
+          before{subject.circles_from_array(circle_inputs)}
+          its(:circled){should be_true}
+          it 'should have circled the correct cells' do
+            circle_results = subject.cells.map{|cell| cell.circled ? 1 : 0}
+            expect(circle_results).to eq circle_inputs
+          end
+        end
+      end
+      describe '#generate_preview' do
+
+      end
+
+
 
 
     end

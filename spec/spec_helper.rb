@@ -1,4 +1,5 @@
 require 'simplecov'
+require 'benchmark'
 
 #using the 'rails' profile prevents files outside /app from being checked
 SimpleCov.start 'rails'

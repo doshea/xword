@@ -36,6 +36,12 @@ FactoryGirl.define do
       letters { Faker::Lorem.characters(area) }
     end
 
+    # Permits faster testing of size-independent features
+    trait :smaller do
+      rows {Crossword.random_dimension(15)}
+      cols {Crossword.random_dimension(15)}
+    end
+
   end
 
 

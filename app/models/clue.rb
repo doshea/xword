@@ -27,7 +27,9 @@ class Clue < ActiveRecord::Base
 
   self.per_page = 50
 
-  validates :content, presence: true, length: {maximum: 100}
+  CONTENT_LENGTH_MAX = 100
+
+  validates :content, presence: true, length: {maximum: CONTENT_LENGTH_MAX}
   validates :difficulty, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5}
 
   private

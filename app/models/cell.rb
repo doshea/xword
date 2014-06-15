@@ -31,6 +31,8 @@ class Cell < ActiveRecord::Base
   scope :desc_indices, -> {order(index: :desc)}
   scope :published, -> {where(published: true)}
   scope :unpublished, -> {where(published: false)}
+  scope :circled, -> {where(circled: true)}
+  scope :uncircled, -> {where(circled: true)}
 
   belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells
   belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells
@@ -56,6 +58,10 @@ class Cell < ActiveRecord::Base
   #   self.down_clue = Clue.create!(content: 'ENTER CLUE')
   #   self.save
   # end
+
+  def clues
+    [across_clue, down_clue]
+  end
 
   def to_s
     "#{self.id}. Cell at [#{self.row}, #{self.col}], #{self.index.ordinalize} cell in Crossword #{self.crossword.id}#{" with cell number #{self.cell_num}" if self.cell_num}. #{"Is across start. " if self.is_across_start}#{"Is down start. " if self.is_down_start}"

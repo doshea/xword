@@ -155,7 +155,7 @@ class Crossword < ActiveRecord::Base
     end
   end
 
-  # This can be made more efficient by only updating if the values are different
+  # The transaction in this method does not seem to help. Maaaybe 1% speed improvement.
   def number_cells
     error_if_published
     counter = 1
@@ -235,8 +235,8 @@ class Crossword < ActiveRecord::Base
   end
 
   #TODO get a better name
-  def set_contents!(letters_string)
-
+  def set_contents(letters_string)
+    error_if_published
     if letters_string.length == area
       error_if_published
       self.letters = letters_string
@@ -253,8 +253,17 @@ class Crossword < ActiveRecord::Base
   def set_clue(across, cell_num, content)
     error_if_published
     cell = cells.find_by_cell_num(cell_num)
-    clue = across ? cell.across_clue : cell.down_clue
-    clue.update_attribute(:content, content)
+    if cell
+      clue = across ? cell.across_clue : cell.down_clue
+      if clue
+        clue.content = content
+        clue.save
+      else
+        raise ActiveRecord::RecordNotFound
+      end
+    else
+      raise ActiveRecord::RecordNotFound
+    end
   end
 
   def build_seed(pseudonym)
@@ -277,17 +286,19 @@ class Crossword < ActiveRecord::Base
     output
   end
 
-  def add_circles_by_array(circle_nums)
+  #Takes an array of 0s and 1s. A 1 indicates there should be a circle at that index
+  def circles_from_array(circle_nums)
     if circle_nums.length == area
-      circle_needers = []
-      circle_nums.each_with_index do |potential_circle, index|
-        if potential_circle == 1
-          id_number = cells.find_by_index(index+1).id
-          circle_needers << id_number
-        end
+      #make an array of the indices that are non-zero
+      indices = circle_nums.each_with_index.select{|e, i| e != 0}.map{|e,i| i+1}
+      
+      need_circles = cells.where(index: indices)
+      if need_circles.count == indices.length
+        need_circles.update_all(circled: true)
+        update_attributes(circled: true)
+      else
+        raise(ActiveRecord::RecordNotFound, 'Not all cells that needed circles were found.')
       end
-      Cell.where(id: circle_needers).update_all(circled: true)
-      update_attributes(circled: true)
     else
       raise "Circles length (#{circle_nums.length}) did not match crossword size (#{area})"
     end
@@ -392,7 +403,7 @@ class Crossword < ActiveRecord::Base
       word = ''
       current = across_start
       clue = current.across_clue
-      while current && !current.is_void do
+      while current && !current.is_void
         word += current.letter
         current = current.right_cell
       end
@@ -403,7 +414,7 @@ class Crossword < ActiveRecord::Base
       word = ''
       current = down_start
       clue = current.down_clue
-      while current && !current.is_void do
+      while current && !current.is_void
         word += current.letter
         current = current.below_cell
       end
@@ -442,8 +453,8 @@ class Crossword < ActiveRecord::Base
     (1..Crossword::MAX_DIMENSION).to_a.sample
   end
 
-  def self.random_dimension
-    (Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION).to_a.sample
+  def self.random_dimension(max_reduc=0)
+    (Crossword::MIN_DIMENSION..(Crossword::MAX_DIMENSION - max_reduc)).to_a.sample
   end
 
 
@@ -454,15 +465,7 @@ class Crossword < ActiveRecord::Base
     end
   end
 
-  def update_letters_from_cells
-    self.letters = string_from_cells
-    if save
-      self
-    else
-      raise 'Save failed!'
-    end
-  end
-
+  #Using a transaction cut down call times by 1.5x to 3.3x for this method
   def update_cells_from_letters
     Cell.transaction do
       cells.each_with_index do |cell, i|
@@ -488,4 +491,5 @@ class Crossword < ActiveRecord::Base
     end
     self
   end
+
 end
