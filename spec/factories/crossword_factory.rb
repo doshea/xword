@@ -42,6 +42,50 @@ FactoryGirl.define do
       cols {Crossword.random_dimension(15)}
     end
 
+    #from http://www.goobix.com/crosswords/0505/4/
+    factory :predefined_five_by_five do
+      #Should have 'AMIGO', 'VOLOW', 'ANION', 'IDOSE', 'LONER'
+      #and 'AVAIL', 'MONDO', 'ILION', 'GOOSE', 'OWNER'
+      rows 5
+      cols 5
+      title 'Predefined Puzzle'
+      
+      after(:create) do |crossword|
+        crossword.set_contents('AMIGOVOLOWANIONIDOSELONER')
+        crossword.set_clue(true, 1, 'A male friend')
+        crossword.set_clue(true, 6, 'To baptize')
+        crossword.set_clue(true, 7, 'A negative ion')
+        crossword.set_clue(true, 8, 'A sugar')
+        crossword.set_clue(true, 9, 'A solitary person')
+        crossword.set_clue(false, 1, 'Benefit; result')
+        crossword.set_clue(false, 2, 'A Zen question and answer method; extreme')
+        crossword.set_clue(false, 3, 'Ancient Troy')
+        crossword.set_clue(false, 4, "A water fowl; a pinch to the rear; tailor's iron")
+        crossword.set_clue(false, 5, 'A possesser')
+      end
+    end
+
+    #from http://www.rinkworks.com/brainfood/p/5box1.shtml
+    factory :repeating_five_by_five do
+      rows 5
+      cols 5
+      title 'Repeating Puzzle'
+
+      after(:create) do |crossword|
+        crossword.set_contents('WORLDOTHERRHYMELEMMADREAD')
+        crossword.set_clue(true, 1, 'complete environment')
+        crossword.set_clue(true, 6, 'not this one')
+        crossword.set_clue(true, 7, 'poetic device')
+        crossword.set_clue(true, 8, 'assumption')
+        crossword.set_clue(true, 9, 'foreboding')
+        crossword.set_clue(false, 1, 'planet')
+        crossword.set_clue(false, 2, 'alien')
+        crossword.set_clue(false, 3, 'similar sounder')
+        crossword.set_clue(false, 4, "with 'dil', a sticky situation")
+        crossword.set_clue(false, 5, 'apprehensive fear')
+      end
+    end
+
   end
 
 

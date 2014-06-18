@@ -362,15 +362,29 @@ describe Crossword do
       describe '#build_seed' do
 
       end
-      describe '#circles_from_array', in_prog: true do
+      describe '#circles_from_array' do
         subject {create(:crossword)}
         let(:circle_count){rand(subject.area).ceil}
         let(:circle_inputs){([0]*(subject.area-circle_count)+[1]*circle_count).shuffle}
 
-        context 'before circling' do
+        context 'before running' do
           its(:circled){should be_false}
         end
-        context 'after circling' do
+        context 'during running' do
+          it 'errors if argument length greater than crossword area' do
+            circle_inputs.push(circle_inputs[0])
+            expect{subject.circles_from_array(circle_inputs)}.to raise_error
+          end
+          it 'errors if argument length less than crossword area' do
+            circle_inputs.pop
+            expect{subject.circles_from_array(circle_inputs)}.to raise_error
+          end
+          it 'errors if some cells are missing' do
+            subject.cells.find_by_index(circle_inputs.index(1)+1).destroy
+            expect{subject.circles_from_array(circle_inputs)}.to raise_error(ActiveRecord::RecordNotFound, 'Not all cells that needed circles were found.')
+          end
+        end
+        context 'after running' do
           before{subject.circles_from_array(circle_inputs)}
           its(:circled){should be_true}
           it 'should have circled the correct cells' do
@@ -380,6 +394,33 @@ describe Crossword do
         end
       end
       describe '#generate_preview' do
+
+      end
+      describe '#get_words_hsh', in_prog: true do
+        context 'in a puzzle without repeated words' do
+          subject{create(:predefined_five_by_five)}
+          it 'works'
+        end
+        context 'in a puzzle with repeated words' do
+
+          subject{create(:repeating_five_by_five)}
+          it 'works' do
+            pending
+            binding.pry
+            expected_return = {
+              'WORLD' => [Clue.find_by_content('complete environment'), Clue.find_by_content('planet')],
+              'OTHER' => [Clue.find_by_content('not this one'), Clue.find_by_content('alien')],
+              'RHYME' => [Clue.find_by_content('poetic device'), Clue.find_by_content('similar sounder')],
+              'LEMMA' => [Clue.find_by_content('assumption'), Clue.find_by_content("with 'dil', a sticky situation")],
+              'DREAD' => [Clue.find_by_content('foreboding'), Clue.find_by_content('apprehensive fear)')]
+            }
+            actual_return = subject.get_words_hsh
+            # actual_return.each_key{|k| actual_return[k] = actual_return[k].map(&:content)}
+            actual_return.should eq expected_return
+          end
+        end
+      end
+      describe '#generate_words_and_link_clues' do
 
       end
 

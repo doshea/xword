@@ -291,7 +291,7 @@ class Crossword < ActiveRecord::Base
     if circle_nums.length == area
       #make an array of the indices that are non-zero
       indices = circle_nums.each_with_index.select{|e, i| e != 0}.map{|e,i| i+1}
-      
+
       need_circles = cells.where(index: indices)
       if need_circles.count == indices.length
         need_circles.update_all(circled: true)
@@ -396,10 +396,11 @@ class Crossword < ActiveRecord::Base
 
   #Takes an existing crossword puzzle and figures out all of the words in that crossword by cell.
   #Then constructs a hash whose keys are the words and whose values are the clues to those words
+
+  #TODO: This will not work if the same word is used multiple times in a puzzle!!!!
   def get_words_hsh
     word_clues = {}
-    across_starts = self.cells.across_start_cells.asc_indices
-    across_starts.each do |across_start|
+    cells.across_start_cells.each do |across_start|
       word = ''
       current = across_start
       clue = current.across_clue
@@ -407,10 +408,10 @@ class Crossword < ActiveRecord::Base
         word += current.letter
         current = current.right_cell
       end
-      word_clues[word] = clue
+      word_clues[word] ||= []
+      word_clues[word] += [clue]
     end
-    down_starts = self.cells.down_start_cells.asc_indices
-    down_starts.each do |down_start|
+    cells.down_start_cells.each do |down_start|
       word = ''
       current = down_start
       clue = current.down_clue
@@ -418,7 +419,8 @@ class Crossword < ActiveRecord::Base
         word += current.letter
         current = current.below_cell
       end
-      word_clues[word] = clue
+      word_clues[word] ||= []
+      word_clues[word] += [clue]
     end
     word_clues
   end
