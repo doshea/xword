@@ -6,10 +6,10 @@
         =text_field_tag 'crossword[title]', nil, placeholder: 'Untitled', required: true
       .large-2.columns
         =f.label :rows
-        =f.number_field :rows, max: 30, min: 4
+        =f.number_field :rows, min: 4, max: 30
       .large-2.columns
         =f.label :cols
-        =f.number_field :cols, max: 30, min: 4
+        =f.number_field :cols, min: 4, max: 30
     %row
       .large-12.columns
         =f.label :description

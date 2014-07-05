@@ -65,6 +65,29 @@ FactoryGirl.define do
       end
     end
 
+    factory :published_five_by_five do
+      #Should have 'AMIGO', 'VOLOW', 'ANION', 'IDOSE', 'LONER'
+      #and 'AVAIL', 'MONDO', 'ILION', 'GOOSE', 'OWNER'
+      rows 5
+      cols 5
+      title 'Predefined Puzzle'
+      
+      after(:create) do |crossword|
+        crossword.set_contents('AMIGOVOLOWANIONIDOSELONER')
+        crossword.set_clue(true, 1, 'A male friend')
+        crossword.set_clue(true, 6, 'To baptize')
+        crossword.set_clue(true, 7, 'A negative ion')
+        crossword.set_clue(true, 8, 'A sugar')
+        crossword.set_clue(true, 9, 'A solitary person')
+        crossword.set_clue(false, 1, 'Benefit; result')
+        crossword.set_clue(false, 2, 'A Zen question and answer method; extreme')
+        crossword.set_clue(false, 3, 'Ancient Troy')
+        crossword.set_clue(false, 4, "A water fowl; a pinch to the rear; tailor's iron")
+        crossword.set_clue(false, 5, 'A possesser')
+        crossword.publish!
+      end
+    end
+
     #from http://www.rinkworks.com/brainfood/p/5box1.shtml
     factory :repeating_five_by_five do
       rows 5

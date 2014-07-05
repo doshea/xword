@@ -23,4 +23,4 @@
       = f.label :letters
       = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, style: 'text-transform: uppercase;'
     .large-12.columns
-      = f.submit class: 'button', data: {disable_with: 'Updating...'}
+      = f.button class: 'button', data: {disable_with: 'Updating...'}

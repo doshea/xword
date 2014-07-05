@@ -21,6 +21,10 @@ window.new_cw =
 
   ready: ->
     $('form').on('submit', new_cw.generate_puzzle_overlay)
+    $('#crossword_rows, #crossword_cols').on('change', new_cw.regenerate_preview)
+    $('#preview-crossword').on 'mousedown', '.preview-cell', ->
+      $(this).toggleClass('void')
+    new_cw.hide_extra_cells()
 
   generate_puzzle_overlay: ->
     $('#body .row:not(.row-bookend)').first().children().animate
@@ -33,4 +37,16 @@ window.new_cw =
         $('<h2>').text('Generating Puzzle').prependTo($('.spin-target'))
         $('<h6>').text(new_cw.clever_processes[0]).appendTo($('.spin-target'))
 
+  regenerate_preview: ->
+    $('.preview-cell').show()
+    new_cw.hide_extra_cells()
+
+  hide_extra_cells: ->
+    rows = $('#crossword_rows').val()
+    cols = $('#crossword_cols').val()
+    extra_cells = $('.preview-cell').filter ->
+      return ($(this).data('col') > cols) or ($(this).data('row') > rows)
+    extra_cells.hide()
+
 $(document).ready(new_cw.ready)
+

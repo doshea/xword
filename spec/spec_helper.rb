@@ -11,9 +11,12 @@ require 'rspec/autorun'
 require 'capybara/rspec'
 require 'launchy'
 
+Capybara.default_selector = :css
+Capybara.ignore_hidden_elements = true #will not find hidden elements
+
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 RSpec.configure do |c|
-  c.fail_fast = true
+  # c.fail_fast = true
   c.include FactoryGirl::Syntax::Methods
 
   c.before(:suite) do

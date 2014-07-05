@@ -436,17 +436,14 @@ class Crossword < ActiveRecord::Base
 
   def publish!
     error_if_published
-    letters = self.string_from_cells
-    if self.update_attributes(published: true, published_at: Time.now, letters: letters)
-      #remove extraneous clues
-      self.cells.each do |cell|
-        cell.delete_extraneous_cells!
-      end
-      self.number_cells
-      self.generate_words_and_link_clues
-    else
-      raise 'Updating attributes failed -- task aborted!'
+    letters = string_from_cells
+    cells.each do |cell|
+      cell.delete_extraneous_cells!
     end
+    number_cells
+    generate_words_and_link_clues
+    update_attributes(published: true, published_at: Time.now, letters: letters)
+    self
   end
 
   # CLASS METHODS

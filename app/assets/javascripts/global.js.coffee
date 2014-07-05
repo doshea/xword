@@ -2,6 +2,8 @@ window.global =
   ready: ->
     $('body').on('click', '.fi-magnifying-glass', global.submit_closest_form)
     $('#top-search').on('keyup', '#query', global.live_search)
+    $('#dropdown-login').on 'click', (e)->
+      e.stopPropagation()
 
   submit_closest_form: ->
     $(this).closest('form').submit()

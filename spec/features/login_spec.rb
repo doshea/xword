@@ -72,18 +72,37 @@ feature 'Login' do
       end
       scenario 'can see Forgot Password link and navigate using it' do
         forgot_password_text = 'Forgot your password?'
-        page.find_link(forgot_password_text).visible?.should be_true
+        page.should have_link(forgot_password_text)
         click_link(forgot_password_text)
         current_path.should eq forgot_password_users_path
       end
     end
 
     context 'using dropdown login' do
-      scenario 'it is on the page'
-      scenario 'it is not initially visible'
-      scenario 'it is visible after clicking dropdown'
-      scenario 'it logs the user in properly with good credentials'
-      scenario 'it does not log the user in with bad credentials'
+      before :each do 
+        visit user_path(User.first)
+      end
+      scenario 'dropdown is on the page' do
+        page.should have_link('Login')
+      end
+      scenario 'it logs the user in properly with good credentials' do
+        within('#login-button') do
+          fill_in :username, with: @user.username
+          fill_in :password, with: @user.password
+          click_button 'Log in'
+        end
+        page.should_not have_link('Login')
+      end
+      scenario 'it does not log the user in with bad credentials' do
+        within('#login-button') do
+          fill_in :username, with: @user.username
+          fill_in :password, with: 'BADPASSWORD'
+          click_button 'Log in'
+        end
+
+        page.should have_link('Login')
+        page.should have_text("Username/password combination did not match our records")
+      end
     end
   end
 end

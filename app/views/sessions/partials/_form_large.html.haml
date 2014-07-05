@@ -7,7 +7,7 @@
     = label_tag :remember_me, 'Remember me'
     = check_box_tag :remember_me, 1, params[:remember_me], checked: true      
   .small-4.columns
-    = submit_tag 'Log in', :class => 'button radius success'
+    = button_tag 'Log in', class: 'button radius success'
 %br
 .left
   = link_to 'Forgot your password?', forgot_password_users_path
