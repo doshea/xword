@@ -110,6 +110,7 @@ Xword::Application.routes.draw do
     get '/nyt/:year/:month/:day' => :nyt
     get :nyt
     namespace :users do
+      get '/' => :index
       get :search
     end
   end
