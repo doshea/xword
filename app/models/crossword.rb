@@ -457,7 +457,7 @@ class Crossword < ActiveRecord::Base
   end
 
   def format_for_api(include_comments)
-    acceptable_keys = [:title, :letters, :description, :created_at]
+    acceptable_keys = [:title, :rows, :cols, :letters, :description, :circled, :published_at, :created_at]
     hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
     hash[:creator] = user.username
     if include_comments && !(include_comments.downcase.in?(['false', 'f', '0']))
