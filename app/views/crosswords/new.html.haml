@@ -12,7 +12,6 @@
         Preview
       .row
         .large-12.columns
-          =# render partial: 'crosswords/partials/mini_pic_canvas2', locals: {rows: @crossword.rows, cols: @crossword.cols}
           #preview-crossword
             - Crossword::MAX_DIMENSION.times do |row|
               .preview-row

@@ -113,6 +113,9 @@ Xword::Application.routes.draw do
       get '/' => :index
       get :search
     end
+    namespace :crosswords do
+      get :search
+    end
   end
 
 end

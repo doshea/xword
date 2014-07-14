@@ -456,6 +456,17 @@ class Crossword < ActiveRecord::Base
     (Crossword::MIN_DIMENSION..(Crossword::MAX_DIMENSION - max_reduc)).to_a.sample
   end
 
+  def format_for_api(include_comments)
+    acceptable_keys = [:title, :letters, :description, :created_at]
+    hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
+    hash[:creator] = user.username
+    if include_comments && !(include_comments.downcase.in?(['false', 'f', '0']))
+      hash[:comment_count] = comments.count
+      hash[:comments] = comments.map{|c| c.format_for_api}
+    end
+    hash
+  end
+
 
   private
   def error_if_published

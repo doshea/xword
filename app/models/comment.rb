@@ -64,6 +64,15 @@ class Comment < ActiveRecord::Base
     ]
   }
 
+  def format_for_api 
+    acceptable_keys = [:content, :flagged]
+    hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
+    hash[:commenter] = user.username
+    hash[:reply_count] = replies.count
+    hash[:replies] = replies.map{|r| r.format_for_api}
+    hash
+  end
+
   def self.random_wine_comment
     structure = @@wine_vocab[:starts].sample + @@wine_vocab[:lists].sample
     structure.gsub(/\*adv/){|a| @@wine_vocab[:advs].sample}.gsub(/\*adj/){|a| @@wine_vocab[:adjs].sample}.gsub(/\*noun/){|a| @@wine_vocab[:nouns].sample}.gsub(/\*amt/){|a| @@wine_vocab[:amts].sample}.humanize + '...'
