@@ -1,13 +1,13 @@
 feature 'Solve' do
   before :each do
     create(:published_five_by_five)
+    visit crossword_path(Crossword.first)
   end
   context 'with anonymous user' do
-    scenario '' do
-      visit crossword_path(Crossword.first)
-      save_and_open_page
-      binding.pry
+    scenario 'arrives on the page' do
+      current_path.should eq crossword_path(Crossword.first)
     end
+    
   end
 
   context 'with logged in user' do

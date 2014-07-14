@@ -11,7 +11,8 @@
             - cell = @cells[index]
             - if cell.circled
               .circle
-            .cell-num
+            - if cell.cell_num
+              .cell-num
             .cell-flag
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}

@@ -30,6 +30,8 @@ class ApiController < ApplicationController
   
   end
 
+  
+
   private
   def date_from_params
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
