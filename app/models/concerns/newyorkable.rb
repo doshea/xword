@@ -41,7 +41,8 @@ module Newyorkable
           cols: pz['size']['cols'],
           published: true,
           published_at: pz_date,
-          description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz."
+          description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz.",
+          created_at: DateTime.now
         )
 
         new_nytimes_crossword.set_contents(pz_letters)

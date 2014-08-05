@@ -157,7 +157,8 @@ class Crossword < ActiveRecord::Base
 
   # The transaction in this method does not seem to help. Maaaybe 1% speed improvement.
   def number_cells
-    error_if_published
+    #Again...make this work for NYT
+    # error_if_published
     counter = 1
     #order by index
     cells.each do |cell|
@@ -238,9 +239,11 @@ class Crossword < ActiveRecord::Base
 
   #TODO get a better name
   def set_contents(letters_string)
-    error_if_published
+    # MAKE THIS WORK FOR NYT PUZZLES
+    # error_if_published
     if letters_string.length == area
-      error_if_published
+      #WHY WOULD IT DO THIS TWICE
+      # error_if_published
       self.letters = letters_string
       if save
         update_cells_from_letters
@@ -253,7 +256,8 @@ class Crossword < ActiveRecord::Base
   end
 
   def set_clue(across, cell_num, content)
-    error_if_published
+    #Make this work for NYT
+    # error_if_published
     cell = cells.find_by_cell_num(cell_num)
     if cell
       clue = across ? cell.across_clue : cell.down_clue
