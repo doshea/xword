@@ -194,7 +194,8 @@ class Crossword < ActiveRecord::Base
   #Refactored to use a single SQL statement and run at light speed
   #Read https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/
   def populate_cells
-    error_if_published
+    # NEED A WAY TO CHECK THIS THAT DOESN'T AFFECT NYT CROSSWORDS
+    # error_if_published
     if cells.empty?
       row = cell_num = index = 1
 
