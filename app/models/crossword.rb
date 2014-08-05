@@ -181,7 +181,8 @@ class Crossword < ActiveRecord::Base
 
   #populates blank letters
   def populate_letters
-    error_if_published
+    # NEED A WAY TO CHECK THIS THAT DOESN'T AFFECT NYT CROSSWORDS
+    # error_if_published 
     if letters.empty?
       self.letters = ' '*(rows * cols)
       self
@@ -376,21 +377,31 @@ class Crossword < ActiveRecord::Base
     self
   end
 
-  def to_s(highlight_index=nil)
+  def to_s(highlight_index=nil, spoil=true, blocks=true)
     letters_a = letters.split('')
+    output = ''
     index = 1
     until letters_a.empty?
-      if highlight_index && index == highlight_index
-        print Rainbow(letters_a.shift).green
-      else
-        print letters_a.shift
+      letter = letters_a.shift
+      if !spoil && letter != '_'
+        letter = '?'
       end
+      if highlight_index && (index == highlight_index)
+        letter = Rainbow(letter).green
+      end
+      output += letter
       if (index % cols == 0)
-        puts
+        output += "\n"
       else
-        print ' '
+        output += ' '
       end
       index += 1
+    end
+    output
+    if blocks
+      output.gsub!('_', "\u2588")
+      output.gsub('?', "_")
+
     end
   end
 
@@ -456,7 +467,7 @@ class Crossword < ActiveRecord::Base
     (Crossword::MIN_DIMENSION..(Crossword::MAX_DIMENSION - max_reduc)).to_a.sample
   end
 
-  def format_for_api(include_comments)
+  def format_for_api(include_comments=false)
     acceptable_keys = [:title, :rows, :cols, :letters, :description, :circled, :published_at, :created_at]
     hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
     hash[:creator] = user.username

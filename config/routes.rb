@@ -115,6 +115,7 @@ Xword::Application.routes.draw do
     end
     namespace :crosswords do
       get :search
+      get :simple
     end
   end
 

@@ -65,7 +65,7 @@ class Comment < ActiveRecord::Base
   }
 
   def format_for_api 
-    acceptable_keys = [:content, :flagged]
+    acceptable_keys = [:content, :flagged, :created_at, :updated_at]
     hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
     hash[:commenter] = user.username
     hash[:reply_count] = replies.count
