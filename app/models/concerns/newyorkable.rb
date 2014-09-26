@@ -79,11 +79,13 @@ module Newyorkable
       Crossword.add_nyt_puzzle(latest)
     end
 
+    #NOTE: This will return pure JSON by default. For a Ruby hash, set the format parameter to null.
     def get_nyt_from_date(date = Date.today, format = 'json')
       url = "http://www.xwordinfo.com/JSON/Data.aspx?date=#{date.month}/#{date.day}/#{date.year}"
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s) 
     end
 
+    #NOTE: This will return pure JSON by default. For a Ruby hash, set the format parameter to null.
     def get_github_nyt_from_date(date = Date.today, format = 'json')
       url = "https://raw.githubusercontent.com/doshea/nyt_crosswords/master/#{date.year}/#{date.month.left_digits(2)}/#{date.day.left_digits(2)}.json"
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)

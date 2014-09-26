@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '2.1.1'
-gem 'rails', '4.0.2'
+gem 'rails', '4.1.5'
 gem 'coffee-rails'
 gem 'json'
 
@@ -18,10 +18,8 @@ gem 'haml'
 gem 'bcrypt-ruby'
 
 # asset gems
-gem 'sass-rails', '~> 4.0.1'
-gem 'uglifier', '>= 1.3.0'
-
-gem 'foundation-icons-sass-rails'
+gem 'sass-rails'
+gem 'uglifier'
 
 # AWS image upload gems
 gem 'carrierwave'
@@ -74,6 +72,7 @@ end
 group :development do
   #causes problem in conjunction with rspec test
   gem 'better_errors' #do not put this in production or everyone will be able to mess around with variables
+  gem 'spring'
 end
 
 group :production do
