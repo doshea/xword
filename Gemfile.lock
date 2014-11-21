@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    CFPropertyList (2.2.8)
     actionmailer (4.1.5)
       actionpack (= 4.1.5)
       actionview (= 4.1.5)
@@ -72,7 +73,7 @@ GEM
       debugger-linecache (~> 1.2.0)
       debugger-ruby_core_source (~> 1.3.5)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.3.6)
+    debugger-ruby_core_source (1.3.7)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     excon (0.41.0)
@@ -85,20 +86,28 @@ GEM
     faker (1.4.3)
       i18n (~> 0.5)
     ffi (1.9.6)
-    fog (1.24.0)
-      fog-brightbox
-      fog-core (~> 1.23)
+    fission (0.5.0)
+      CFPropertyList (~> 2.2)
+    fog (1.25.0)
+      fog-brightbox (~> 0.4)
+      fog-core (~> 1.25)
       fog-json
+      fog-profitbricks
       fog-radosgw (>= 0.0.2)
       fog-sakuracloud (>= 0.0.4)
       fog-softlayer
+      fog-terremark
+      fog-vmfusion
+      fog-voxel
+      fog-xml (~> 0.1.1)
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
+      opennebula
     fog-brightbox (0.6.1)
       fog-core (~> 1.22)
       fog-json
       inflecto
-    fog-core (1.24.0)
+    fog-core (1.25.0)
       builder
       excon (~> 0.38)
       formatador (~> 0.2)
@@ -107,6 +116,10 @@ GEM
       net-ssh (>= 2.1.3)
     fog-json (1.0.0)
       multi_json (~> 1.0)
+    fog-profitbricks (0.0.1)
+      fog-core
+      fog-xml
+      nokogiri
     fog-radosgw (0.0.3)
       fog-core (>= 1.21.0)
       fog-json
@@ -117,6 +130,15 @@ GEM
     fog-softlayer (0.3.24)
       fog-core
       fog-json
+    fog-terremark (0.0.3)
+      fog-core
+      fog-xml
+    fog-vmfusion (0.0.1)
+      fission
+      fog-core
+    fog-voxel (0.0.1)
+      fog-core
+      fog-xml
     fog-xml (0.1.1)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
@@ -137,7 +159,7 @@ GEM
     httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    httpclient (2.5.3.2)
+    httpclient (2.5.3.3)
     i18n (0.6.11)
     inflecto (0.0.2)
     ipaddress (0.8.0)
@@ -150,7 +172,7 @@ GEM
     json (1.8.1)
     launchy (2.4.3)
       addressable (~> 2.3)
-    listen (2.7.11)
+    listen (2.8.0)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -173,6 +195,10 @@ GEM
     net-ssh (2.9.1)
     nokogiri (1.6.4.1)
       mini_portile (~> 0.6.0)
+    opennebula (4.10.1)
+      json
+      nokogiri
+      rbvmomi
     pg (0.17.1)
     pg_search (0.7.8)
       activerecord (>= 3.1)
@@ -229,6 +255,10 @@ GEM
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
+    rbvmomi (1.8.2)
+      builder
+      nokogiri (>= 1.4.1)
+      trollop
     rdoc (4.1.2)
       json (~> 1.4)
     remotipart (1.2.1)
@@ -284,6 +314,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
+    trollop (2.0)
     turbolinks (2.5.2)
       coffee-rails
     tzinfo (1.2.2)
