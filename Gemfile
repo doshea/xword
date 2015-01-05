@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.1'
+ruby '2.2.0'
 gem 'rails', '4.1.5'
 gem 'coffee-rails'
 gem 'json'
@@ -80,6 +80,6 @@ group :production do
 end
 
 group :production, :development do
-    gem 'pry-debugger'
+    gem 'pry-byebug'
     gem 'pry-stack_explorer'
 end
