@@ -4,9 +4,20 @@
  *
  *= require foundation5/normalize
  *= require foundation5/foundation.min
- *= require foundation_overrides
  *= require foundation-icons/foundation-icons
+ *= require foundation_overrides
  *
  *= require global
  *= require layouts
  */
+
+ @font-face {
+  font-family: "foundation-icons";
+  src: url(asset_path('foundation-icons/foundation-icons.eot'));
+  src: url(asset_path('foundation-icons/foundation-icons.eot?#iefix')) format("embedded-opentype"),
+       url(asset_path('foundation-icons/foundation-icons.woff')) format("woff"),
+       url(asset_path('foundation-icons/foundation-icons.ttf')) format("truetype"),
+       url(asset_path('foundation-icons/foundation-icons.svg#fontcustom')) format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
