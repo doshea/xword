@@ -5,10 +5,8 @@
 
   %ul.dropdown
     %li.divider
-    %li
       = link_to 'Account', account_users_path
     %li
       = link_to 'Public Profile', @current_user
     %li.divider
-    %li
       = link_to 'Log out', logout_path, method: 'delete'
