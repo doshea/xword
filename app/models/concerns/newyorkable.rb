@@ -35,15 +35,16 @@ module Newyorkable
           fixed_title = pz['title'].split.map(&:capitalize).join(' ')
         end 
 
-        new_nytimes_crossword = Crossword.create(
+        new_nytimes_crossword = Crossword.new(
           title: fixed_title,
           rows: pz['size']['rows'],
           cols: pz['size']['cols'],
           published: true,
           published_at: pz_date,
           description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz.",
-          created_at: DateTime.now
+          created_at: Time.now
         )
+        new_nytimes_crossword.save
 
         new_nytimes_crossword.set_contents(pz_letters)
         new_nytimes_crossword.number_cells

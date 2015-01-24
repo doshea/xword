@@ -8,15 +8,13 @@
 #  col             :integer          not null
 #  index           :integer          not null
 #  cell_num        :integer
-#  is_void         :boolean          default(FALSE), not null
-#  is_across_start :boolean          default(FALSE), not null
-#  is_down_start   :boolean          default(FALSE), not null
+#  is_void         :boolean          default("false"), not null
+#  is_across_start :boolean          default("false"), not null
+#  is_down_start   :boolean          default("false"), not null
 #  crossword_id    :integer
 #  across_clue_id  :integer
 #  down_clue_id    :integer
-#  created_at      :datetime
-#  updated_at      :datetime
-#  circled         :boolean          default(FALSE)
+#  circled         :boolean          default("false")
 #
 
 FactoryGirl.define do

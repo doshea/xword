@@ -6,14 +6,14 @@
 #  title        :string(255)      default("Untitled"), not null
 #  letters      :text             default(""), not null
 #  description  :text
-#  rows         :integer          default(15), not null
-#  cols         :integer          default(15), not null
-#  published    :boolean          default(FALSE), not null
+#  rows         :integer          default("15"), not null
+#  cols         :integer          default("15"), not null
+#  published    :boolean          default("false"), not null
 #  published_at :datetime
 #  user_id      :integer
 #  created_at   :datetime
 #  updated_at   :datetime
-#  circled      :boolean          default(FALSE)
+#  circled      :boolean          default("false")
 #  preview      :text
 #
 
@@ -202,7 +202,7 @@ class Crossword < ActiveRecord::Base
 
       #make clues_first
       clue_inserts = ["('ENTER CLUE')"]*area*2
-      clues_sql = "INSERT INTO clues (content) VALUES #{clue_inserts.join(", ")}"
+      clues_sql = "INSERT INTO clues (content) VALUES #{clue_inserts.join(", ")};"
 
       next_clue_id = Clue.next_index #TODO This may cause a race condition!!!
       ActiveRecord::Base.connection.execute(clues_sql)

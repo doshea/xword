@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140614091004) do
+ActiveRecord::Schema.define(version: 20150124065836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "cell_edits", force: true do |t|
+  create_table "cell_edits", force: :cascade do |t|
     t.text     "across_clue_content"
     t.text     "down_clue_content"
     t.integer  "cell_id"
@@ -24,34 +24,30 @@ ActiveRecord::Schema.define(version: 20140614091004) do
     t.datetime "updated_at"
   end
 
-  create_table "cells", force: true do |t|
-    t.string   "letter"
-    t.integer  "row",                             null: false
-    t.integer  "col",                             null: false
-    t.integer  "index",                           null: false
-    t.integer  "cell_num"
-    t.boolean  "is_void",         default: false, null: false
-    t.boolean  "is_across_start", default: false, null: false
-    t.boolean  "is_down_start",   default: false, null: false
-    t.integer  "crossword_id"
-    t.integer  "across_clue_id"
-    t.integer  "down_clue_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "circled",         default: false
+  create_table "cells", force: :cascade do |t|
+    t.string  "letter",          limit: 255
+    t.integer "row",                                         null: false
+    t.integer "col",                                         null: false
+    t.integer "index",                                       null: false
+    t.integer "cell_num"
+    t.boolean "is_void",                     default: false, null: false
+    t.boolean "is_across_start",             default: false, null: false
+    t.boolean "is_down_start",               default: false, null: false
+    t.integer "crossword_id"
+    t.integer "across_clue_id"
+    t.integer "down_clue_id"
+    t.boolean "circled",                     default: false
   end
 
-  create_table "clues", force: true do |t|
-    t.text     "content",    default: "ENTER CLUE"
-    t.integer  "difficulty", default: 1
-    t.integer  "user_id"
-    t.integer  "word_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "phrase_id"
+  create_table "clues", force: :cascade do |t|
+    t.text    "content",    default: "ENTER CLUE"
+    t.integer "difficulty", default: 1
+    t.integer "user_id"
+    t.integer "word_id"
+    t.integer "phrase_id"
   end
 
-  create_table "comments", force: true do |t|
+  create_table "comments", force: :cascade do |t|
     t.text     "content",                         null: false
     t.boolean  "flagged",         default: false, null: false
     t.integer  "user_id"
@@ -61,76 +57,76 @@ ActiveRecord::Schema.define(version: 20140614091004) do
     t.datetime "updated_at"
   end
 
-  create_table "crosswords", force: true do |t|
-    t.string   "title",        default: "Untitled", null: false
-    t.text     "letters",      default: "",         null: false
+  create_table "crosswords", force: :cascade do |t|
+    t.string   "title",        limit: 255, default: "Untitled", null: false
+    t.text     "letters",                  default: "",         null: false
     t.text     "description"
-    t.integer  "rows",         default: 15,         null: false
-    t.integer  "cols",         default: 15,         null: false
-    t.boolean  "published",    default: false,      null: false
+    t.integer  "rows",                     default: 15,         null: false
+    t.integer  "cols",                     default: 15,         null: false
+    t.boolean  "published",                default: false,      null: false
     t.datetime "published_at"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "circled",      default: false
+    t.boolean  "circled",                  default: false
     t.text     "preview"
   end
 
-  create_table "favorite_puzzles", force: true do |t|
+  create_table "favorite_puzzles", force: :cascade do |t|
     t.integer  "crossword_id", null: false
     t.integer  "user_id",      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "phrases", force: true do |t|
+  create_table "phrases", force: :cascade do |t|
     t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "potential_crosswords_potential_words", id: false, force: true do |t|
+  create_table "potential_crosswords_potential_words", id: false, force: :cascade do |t|
     t.integer "crossword_id"
     t.integer "word_id"
   end
 
-  create_table "solution_partnerings", force: true do |t|
+  create_table "solution_partnerings", force: :cascade do |t|
     t.integer  "user_id",     null: false
     t.integer  "solution_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "solutions", force: true do |t|
-    t.text     "letters",      default: "",    null: false
-    t.boolean  "is_complete",  default: false, null: false
+  create_table "solutions", force: :cascade do |t|
+    t.text     "letters",                  default: "",    null: false
+    t.boolean  "is_complete",              default: false, null: false
     t.integer  "user_id"
     t.integer  "crossword_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "team",         default: false, null: false
-    t.string   "key"
+    t.boolean  "team",                     default: false, null: false
+    t.string   "key",          limit: 255
     t.datetime "solved_at"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "first_name",             limit: 18
     t.string   "last_name",              limit: 24
     t.string   "username",               limit: 16,                  null: false
     t.string   "email",                  limit: 254,                 null: false
     t.text     "image"
-    t.string   "location"
+    t.string   "location",               limit: 255
     t.boolean  "is_admin",                           default: false
-    t.string   "password_digest"
-    t.string   "auth_token"
+    t.string   "password_digest",        limit: 255
+    t.string   "auth_token",             limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "password_reset_token"
+    t.string   "password_reset_token",   limit: 255
     t.datetime "password_reset_sent_at"
   end
 
-  create_table "words", force: true do |t|
-    t.string   "content"
+  create_table "words", force: :cascade do |t|
+    t.string   "content",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
