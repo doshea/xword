@@ -1,4 +1,5 @@
 class SolutionsController < ApplicationController
+  before_action :find_solution, only: [:update, :get_incorrect, :check_correctness]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
   #GET /solutions/:id or solution_path
@@ -17,14 +18,12 @@ class SolutionsController < ApplicationController
 
   #PATCH/PUT /solutions/:id or solution_path
   def update
-    solution = Solution.find(params[:id])
-    solution.letters = params[:letters]
-    solution.save
+    @solution.letters = params[:letters]
+    @solution.save
   end
 
   #POST /solutions/:id/get_incorrect or get_incorrect_solution_path
   def get_incorrect
-    @solution = Solution.find(params[:id])
     @mismatches = @solution.crossword.get_mismatches(params[:letters])
     if @mismatches.empty?
       @solution.update_attributes(is_complete: true)
@@ -33,7 +32,6 @@ class SolutionsController < ApplicationController
 
   #POST /solutions/:id/check_correctness or check_correctness_solution_path
   def check_correctness
-    @solution = Solution.find(params[:id])
     @correctness = @solution.crossword.letters == params[:letters]
   end
 
@@ -57,21 +55,19 @@ class SolutionsController < ApplicationController
   #POST /solutions/:id/join_team or join_team_solution_path
   def join_team
     data = {
-                display_name: params[:display_name],
-                solver_id: params[:solver_id],
-                red: params[:red],
-                green: params[:green],
-                blue: params[:blue]
-                }
+            display_name: params[:display_name],
+            solver_id: params[:solver_id],
+            red: params[:red],
+            green: params[:green],
+            blue: params[:blue]
+            }
     Pusher.trigger(params[:channel], 'join_puzzle', data)
     render nothing: true
   end
 
   #POST /solutions/:id/leave_team or leave_team_solution_path
   def leave_team
-    data = {
-                solver_id: params[:solver_id]
-                }
+    data = {solver_id: params[:solver_id]}
     Pusher.trigger(params[:channel], 'leave_puzzle', data)
     render nothing: true
   end
@@ -116,6 +112,9 @@ class SolutionsController < ApplicationController
   end
 
   private
+  def find_solution
+    @solution = Solution.find(params[:id])
+  end
   def ensure_owner_or_partner
     @solution = Solution.find(params[:id])
     @solution_partnering = SolutionPartnering.find_by_user_id_and_solution_id(@current_user.id, @solution.id)

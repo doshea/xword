@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
   has_many :solution_partnerings, inverse_of: :user, dependent: :destroy
   has_many :team_solutions, through: :solution_partnerings, source: :user
 
-  before_create { generate_token(:auth_token) }
+  before_create { generate_token(:auth_token); generate_token(:verification_token); }
 
   include PgSearch
   pg_search_scope :starts_with,

@@ -69,6 +69,20 @@ Xword::Application.routes.draw do
     end
   end
 
+  namespace :account do
+    get '/', to: :show
+    patch :update
+    patch :change_password
+    
+    get :forgot
+    get :forgot_username
+    get :forgot_password
+    get :reset_password
+
+    get :verify
+    get :verified
+  end
+
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150124065836) do
+ActiveRecord::Schema.define(version: 20150125012539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,6 +123,8 @@ ActiveRecord::Schema.define(version: 20150124065836) do
     t.datetime "updated_at"
     t.string   "password_reset_token",   limit: 255
     t.datetime "password_reset_sent_at"
+    t.boolean  "verified",                           default: false
+    t.string   "verification_token"
   end
 
   create_table "words", force: :cascade do |t|

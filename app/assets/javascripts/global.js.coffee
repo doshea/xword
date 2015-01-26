@@ -10,7 +10,7 @@ window.global =
 
   live_search: ->
     query = $('#query').val()
-    if query is ''
+    if query.length < 3
       $('#live-results').hide()
     else
       settings =

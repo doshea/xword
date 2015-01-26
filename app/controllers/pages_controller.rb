@@ -66,9 +66,8 @@ class PagesController < ApplicationController
 
   #GET /live_search or live_search_path
   def live_search
-    max_results = 15
-
     query = params[:query]
+    max_results = 15
     @users = User.starts_with(query).limit(max_results)
     @crosswords = Crossword.starts_with(query).limit(max_results)
     @words = Word.starts_with(query).limit(max_results)
@@ -80,7 +79,7 @@ class PagesController < ApplicationController
     @crosswords = @crosswords.limit(split_results)
     @words = @words.limit(split_results)
 
-    @result_count = @users.count + @crosswords.count + @words.count
+    @result_count = @users.count(:all) + @crosswords.count(:all) + @words.count(:all)
   end
 
   #GET /welcome or welcome_path
