@@ -80,6 +80,11 @@ module Newyorkable
       Crossword.add_nyt_puzzle(latest)
     end
 
+    def add_puzzle_from_date(year, month, day)
+      crossword_from_date = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?date=#{month}/#{day}/#{year}")
+      Crossword.add_nyt_puzzle(crossword_from_date)
+    end
+
     #NOTE: This will return pure JSON by default. For a Ruby hash, set the format parameter to null.
     def get_nyt_from_date(date = Date.today, format = 'json')
       url = "http://www.xwordinfo.com/JSON/Data.aspx?date=#{date.month}/#{date.day}/#{date.year}"
