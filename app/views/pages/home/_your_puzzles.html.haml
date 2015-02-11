@@ -10,7 +10,7 @@
       %h5
         Published
       %ul
-        - @published.each do |crossword|
+        - @owned.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
 - else
   .large-12.columns
