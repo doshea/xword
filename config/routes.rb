@@ -34,6 +34,16 @@ Xword::Application.routes.draw do
     end
   end
 
+  resources :unpublished_crosswords do
+    member do
+      get :edit
+      patch :update
+      patch :publish
+      patch :add_potential_word
+      delete :remove_potential_word
+    end
+  end
+
   resources :solutions, only: [:show, :update] do
     member do
       post :get_incorrect

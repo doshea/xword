@@ -1,5 +1,6 @@
 class ApiController < ApplicationController
 
+  #GET /api/nyt/:year/:month/:date
   def nyt
     date_from_params
     @data = Crossword.get_github_nyt_from_date(@date)
@@ -15,6 +16,7 @@ class ApiController < ApplicationController
   
   end
 
+  #GET /api/nyt_source/:year/:month/:date or api_path
   def nyt_source
     date_from_params
     @data = Crossword.get_nyt_from_date(@date)
@@ -31,7 +33,6 @@ class ApiController < ApplicationController
   end
 
   
-
   private
   def date_from_params
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)

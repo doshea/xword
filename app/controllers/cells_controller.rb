@@ -1,5 +1,5 @@
 class CellsController < ApplicationController
-  before_action :find_cell
+  before_action :find_object
 
   #PATCH/PUT /cells/:id or cell_path
   def update
@@ -15,10 +15,6 @@ class CellsController < ApplicationController
   end
 
   private
-  def find_cell
-    @cell = Cell.find(params[:id])
-  end
-
   def cell_params
     params.require(:cell).permit(:letter)
   end

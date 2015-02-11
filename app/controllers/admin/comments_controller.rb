@@ -1,6 +1,6 @@
 class Admin::CommentsController < ApplicationController
   before_action :ensure_admin
-  before_action :find_comment, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy]
 
   #GET /admin/comments or admin_comments_path
   def index
@@ -14,7 +14,7 @@ class Admin::CommentsController < ApplicationController
   #PATCH/PUT /admin/comments/:id or admin_comment_path
   # AJAX #
   def update
-    if @comment.update_attributes(params[:comment])
+    if @comment.update_attributes(update_comment_params)
       alert_js('SUCCESS comment updated.')
     else
       alert_js('ERROR updating comment.')
@@ -33,10 +33,8 @@ class Admin::CommentsController < ApplicationController
 
   private
 
-  def find_comment
-    @comment = Comment.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that comment could not be found.'}
+  def update_comment_params
+    params.require(:comment).permit(:content, :flagged)
   end
 
 end

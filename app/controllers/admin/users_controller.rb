@@ -1,6 +1,6 @@
 class Admin::UsersController < ApplicationController
   before_action :ensure_admin
-  before_action :find_user, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy]
 
   #GET /admin/users or admin_users_path
   def index
@@ -14,7 +14,7 @@ class Admin::UsersController < ApplicationController
   #PATCH/PUT /admin/users/:id or admin_user_path
   # AJAX #
   def update
-    if @user.update_attributes(params[:user])
+    if @user.update_attributes(update_user_params)
       alert_js('SUCCESS user updated.')
     else
       alert_js('!!!ERROR updating user!!!')
@@ -32,11 +32,8 @@ class Admin::UsersController < ApplicationController
   end
 
   private
-
-  def find_user
-    @user = User.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that user could not be found.'}
+  def update_user_params
+    params.require(:user).permit(:username, :email, :image, :remote_image_url, :is_admin, :location)
   end
 
 end

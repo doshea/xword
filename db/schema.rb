@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150125012539) do
+ActiveRecord::Schema.define(version: 20150210201327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,11 +85,6 @@ ActiveRecord::Schema.define(version: 20150125012539) do
     t.datetime "updated_at"
   end
 
-  create_table "potential_crosswords_potential_words", id: false, force: :cascade do |t|
-    t.integer "crossword_id"
-    t.integer "word_id"
-  end
-
   create_table "solution_partnerings", force: :cascade do |t|
     t.integer  "user_id",     null: false
     t.integer  "solution_id", null: false
@@ -107,6 +102,21 @@ ActiveRecord::Schema.define(version: 20150125012539) do
     t.boolean  "team",                     default: false, null: false
     t.string   "key",          limit: 255
     t.datetime "solved_at"
+  end
+
+  create_table "unpublished_crosswords", force: :cascade do |t|
+    t.string   "title",           default: "Untitled", null: false
+    t.text     "letters",         default: [],                      array: true
+    t.text     "description"
+    t.integer  "rows"
+    t.integer  "cols"
+    t.integer  "user_id"
+    t.text     "circles",         default: [],                      array: true
+    t.text     "potential_words", default: [],                      array: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "across_clues",    default: [],                      array: true
+    t.text     "down_clues",      default: [],                      array: true
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,4 +1,4 @@
-- if @owned_puzzles.any?
+- if @owned.any? || @unpublished.any?
   .large-6.columns
     -if @unpublished.any?
       %h5 Unpublished

@@ -1,5 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_action :find_crossword, only: [:show, :team, :favorite, :unfavorite, :solution_choice]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice]
   before_action :ensure_logged_in, only: [:create]
   before_action :ensure_owner_or_admin, only: [:edit, :update, :publish, :add_potential_word, :remove_potential_word]
 
@@ -23,7 +23,7 @@ class CrosswordsController < ApplicationController
 
   #POST /crosswords or crosswords_path
   def create
-    @crossword = Crossword.new(params[:crossword])
+    @crossword = Crossword.new(create_crossword_params)
     @crossword.user = @current_user
     if @crossword.save
       redirect_to edit_crossword_path(@crossword)
@@ -42,13 +42,13 @@ class CrosswordsController < ApplicationController
       @down_cells = @crossword.down_start_cells.includes(:across_clue).asc_indices
       @across_clues = Clue.joins(:across_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
       @down_clues = Clue.joins(:down_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
-      @potential_words = @crossword.potential_words.desc_length
+      @potential_words = @crossword.potential_words
     end
   end
 
   #PATCH/PUT /crosswords/:id or crossword_path
   def update
-    crossword.update_attributes(params[:crossword])
+    crossword.update_attributes(update_crossword_params)
     render nothing: true
   end
 
@@ -173,18 +173,11 @@ class CrosswordsController < ApplicationController
   end
 
   private
-
-  def ensure_owner_or_admin
-    @crossword = Crossword.find(params[:id])
-    if !(@current_user.is_admin or @current_user == @crossword.user)
-      redirect_to :back, flash: {warning: 'You do not own that crossword.'}
-    end
+  def create_crossword_params
+    params.require(:crossword).permit(:title, :description, :rows, :cols)
   end
-
-  def find_crossword
-    @crossword = Crossword.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that crossword could not be found.'}
+  def update_crossword_params
+    params.require(:crossword).permit(:title, :description, :letters)
   end
 
 end

@@ -11,7 +11,6 @@
 #
 
 class Clue < ActiveRecord::Base
-  attr_accessible :content, :difficulty, :user_id, :word_id, :crossword_ids, :phrase_id, :created_at
   before_save :strip_tags
 
   has_many :across_cells, class_name: 'Cell', foreign_key: 'across_clue_id', inverse_of: :across_clue, dependent: :nullify

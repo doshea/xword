@@ -29,4 +29,27 @@ class ApplicationController < ActionController::Base
   def alert_js(s)
     render js: "alert('#{s}');"
   end
+
+  #For use in finding generic classes and objects
+  def associated_class_string
+    controller_name.classify
+  end
+  def associated_class
+    associated_class_string.constantize
+  end
+  def find_object
+    instance_variable_set("@#{associated_class_string.downcase}", associated_class.find(params[:id]))
+    rescue ActiveRecord::RecordNotFound
+    redirect_to :back, flash: {error: "Sorry, that #{associated_class_string.downcase} could not be found."}
+  end
+  def found_object
+    instance_variable_get("@#{associated_class_string.downcase}")
+  end
+  #
+  def ensure_owner_or_admin
+    if !(@current_user.is_admin or @current_user == found_object.user)
+      redirect_to :back, flash: {warning: "You do not own that #{associated_class_string.downcase}."}
+    end
+  end
+
 end

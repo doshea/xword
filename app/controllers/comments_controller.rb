@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :find_comment, only: [:reply, :destroy]
+  before_action :find_object, only: [:reply, :destroy]
 
   #POST /comments/:id/add_comment or add_comment_path
   def add_comment
@@ -33,13 +33,6 @@ class CommentsController < ApplicationController
     else
       
     end
-  end
-
-
-  private
-
-  def find_comment
-    @comment = Comment.find(params[:id])
   end
 
 end

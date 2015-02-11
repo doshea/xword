@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 
   #POST /users or users_path
   def create
-    @user = User.new(params[:user])
+    @user = User.new(create_user_params)
     if @user.save
       session[:user_id] = @user.id unless session[:user_id]
       redirect_to root_path
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   #PATCH/PUT /users/:id or user_path
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(params[:user])
+    if @user.update_attributes(update_user_params)
       respond_to do |format|
         format.html { render :account }
         format.js
@@ -109,8 +109,11 @@ class UsersController < ApplicationController
   end
 
   private
-  # def user_not_found
-  #   redirect_to error_path, flash: { error: "User \##{params[:id]} not found. :-("}
-  # end
+  def create_user_params
+    params.require(:user).permit(:username, :email, :password, :password_confirmation)
+  end
+  def update_user_params
+    params.require(:user).permit(:first_name, :last_name, :password, :password_confirmation)
+  end
 
 end

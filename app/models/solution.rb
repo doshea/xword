@@ -15,8 +15,6 @@
 #
 
 class Solution < ActiveRecord::Base
-  attr_accessible :letters, :is_complete, :user_id, :crossword_id, :solved_at
-
   belongs_to :user, inverse_of: :solutions
   belongs_to :crossword, inverse_of: :solutions
 

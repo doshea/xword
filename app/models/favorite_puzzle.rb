@@ -10,7 +10,6 @@
 #
 
 class FavoritePuzzle < ActiveRecord::Base
-  attr_accessible :crossword_id, :user_id
   belongs_to :crossword, inverse_of: :favorite_puzzles
   belongs_to :user, inverse_of: :favorite_puzzles
 end

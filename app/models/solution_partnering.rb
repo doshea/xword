@@ -10,7 +10,6 @@
 #
 
 class SolutionPartnering < ActiveRecord::Base
-  attr_accessible :user_id, :solution_id
 
   belongs_to :user
   belongs_to :solution

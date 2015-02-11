@@ -13,8 +13,6 @@
 #
 
 class Comment < ActiveRecord::Base
-  attr_accessible :content, :flagged, :user_id, :crossword_id
-
   belongs_to :user, inverse_of: :comments
   belongs_to :crossword, inverse_of: :comments
   belongs_to :base_comment, class_name: 'Comment'

@@ -10,10 +10,11 @@ class PagesController < ApplicationController
     if @current_user.nil?
       redirect_to(welcome_path)
     else
-      @owned_puzzles = @current_user.crosswords
+      @owned = @current_user.crosswords
+      @unpublished = @current_user.unpublished_crosswords
 
-      unowned_published = Crossword.published.standard - @owned_puzzles
-      @nonstandard = Crossword.published.nonstandard
+      unowned_published = Crossword.standard - @owned
+      @nonstandard = Crossword.nonstandard
 
       @solved_solo = Crossword.standard.solved(@current_user.id).solo.unowned(@current_user).distinct
       not_solved_solo = unowned_published - @solved_solo
@@ -32,11 +33,6 @@ class PagesController < ApplicationController
 
       @unstarted = available_in_progress_team - @in_progress_team
 
-
-      if @owned_puzzles.any?
-        @unpublished = @owned_puzzles.unpublished
-        @published = @owned_puzzles.published
-      end
     end
   end
 

@@ -9,8 +9,6 @@
 #
 
 class Word < ActiveRecord::Base
-  attr_accessible :content, :clue_ids, :crossword_ids
-
   scope :desc_length, -> {order('length(content) DESC')}
 
   include PgSearch

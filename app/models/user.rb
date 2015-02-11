@@ -16,13 +16,15 @@
 #  updated_at             :datetime
 #  password_reset_token   :string(255)
 #  password_reset_sent_at :datetime
+#  verified               :boolean          default("false")
+#  verification_token     :string
 #
 
 class User < ActiveRecord::Base
   has_secure_password
-  attr_accessible :first_name, :last_name, :username, :email, :password, :password_confirmation, :crossword_ids, :comment_ids, :solution_ids, :clue_ids, :remote_image_url, :image, :location, :auth_token
 
   has_many :crosswords, inverse_of: :user
+  has_many :unpublished_crosswords, inverse_of: :user
   has_many :comments, inverse_of: :user
   has_many :solutions, inverse_of: :user
   has_many :clues, inverse_of: :user

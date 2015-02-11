@@ -1,9 +1,8 @@
 class WordsController < ApplicationController
+  before_action :find_object, only: [:show]
   
   #GET /words/:id or word_path
   def show
-    @word = Word.find(params[:id])
-
     across_crosswords = @word.across_crosswords
     down_crosswords = @word.down_crosswords
     @count = across_crosswords.length + down_crosswords.length

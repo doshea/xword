@@ -1,5 +1,5 @@
 class SolutionsController < ApplicationController
-  before_action :find_solution, only: [:update, :get_incorrect, :check_correctness]
+  before_action :find_object, only: [:update, :get_incorrect, :check_correctness]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
   #GET /solutions/:id or solution_path
@@ -112,9 +112,6 @@ class SolutionsController < ApplicationController
   end
 
   private
-  def find_solution
-    @solution = Solution.find(params[:id])
-  end
   def ensure_owner_or_partner
     @solution = Solution.find(params[:id])
     @solution_partnering = SolutionPartnering.find_by_user_id_and_solution_id(@current_user.id, @solution.id)

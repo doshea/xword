@@ -1,6 +1,6 @@
 class Admin::SolutionsController < ApplicationController
   before_action :ensure_admin
-  before_action :find_solution, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy]
 
   #GET /admin/solutions or admin_solutions_path
   def index
@@ -14,7 +14,7 @@ class Admin::SolutionsController < ApplicationController
   #PATCH/PUT /admin/solutions/:id or admin_solution_path
   # AJAX #
   def update
-    if @solution.update_attributes(params[:solution])
+    if @solution.update_attributes(update_solution_params)
       alert_js('SUCCESS solution updated.')
     else
       alert_js('!!!ERROR updating solution!!!')
@@ -32,11 +32,8 @@ class Admin::SolutionsController < ApplicationController
   end
 
   private
-
-  def find_solution
-    @solution = Solution.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that solution could not be found.'}
+  def update_solution_params
+    params.require(:solution).permit(:lterrs, :is_complete, :team, :key)
   end
 
 end

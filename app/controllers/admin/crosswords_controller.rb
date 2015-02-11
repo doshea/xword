@@ -1,6 +1,6 @@
 class Admin::CrosswordsController < ApplicationController
   before_action :ensure_admin
-  before_action :find_crossword, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy]
 
   #GET /admin/crosswords or admin_crosswords_path
   def index
@@ -14,7 +14,7 @@ class Admin::CrosswordsController < ApplicationController
   #PATCH/PUT /admin/crosswords/:id or admin_crossword_path
   # AJAX #
   def update
-    if @crossword.update_attributes(params[:crossword])
+    if @crossword.update_attributes(update_crossword_params)
       alert_js('SUCCESS crossword updated.')
     else
       alert_js('!!!ERROR updating crossword!!!')
@@ -32,11 +32,8 @@ class Admin::CrosswordsController < ApplicationController
   end
 
   private
-
-  def find_crossword
-    @crossword = Crossword.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that crossword could not be found.'}
+  def update_crossword_params
+    params.require(:crossword).permit(:title, :rows, :cols, :published, :circled, :description, :letters)
   end
 
 end

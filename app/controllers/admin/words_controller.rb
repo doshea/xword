@@ -1,6 +1,6 @@
 class Admin::WordsController < ApplicationController
   before_action :ensure_admin
-  before_action :find_word, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy]
 
   #GET /admin/words or admin_words_path
   def index
@@ -14,7 +14,7 @@ class Admin::WordsController < ApplicationController
   #PATCH/PUT /admin/words/:id or admin_word_path
   # AJAX #
   def update
-    if @word.update_attributes(params[:word])
+    if @word.update_attributes(update_word_params)
       alert_js('SUCCESS word updated.')
     else
       alert_js('!!!ERROR updating word!!!')
@@ -32,11 +32,8 @@ class Admin::WordsController < ApplicationController
   end
 
   private
-
-  def find_word
-    @word = Word.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that word could not be found.'}
+  def update_word_params
+    params.require(:word).permit(:content)
   end
 
 end

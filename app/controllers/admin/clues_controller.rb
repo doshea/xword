@@ -1,6 +1,6 @@
 class Admin::CluesController < ApplicationController
   before_action :ensure_admin
-  before_action :find_clue, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy]
 
   #GET /admin/clues or admin_clues_path
   def index
@@ -17,7 +17,7 @@ class Admin::CluesController < ApplicationController
   #PATCH/PUT /admin/clues/:id or admin_clue_path
   # AJAX #
   def update
-    if @clue.update_attributes(params[:clue])
+    if @clue.update_attributes(update_clue_params)
       alert_js('SUCCESS clue updated.')
     else
       alert_js('!!!ERROR updating clue!!!')
@@ -35,10 +35,7 @@ class Admin::CluesController < ApplicationController
   end
 
   private
-
-  def find_clue
-    @clue = Clue.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: 'Sorry, that clue could not be found.'}
+  def update_clue_params
+    params.require(:clue).permit(:content, :difficulty)
   end
 end

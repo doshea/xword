@@ -11,7 +11,7 @@ gem 'multi_json', '1.7.8' #Necessary because 1.7.9 breaks the adapter specificat
 
 gem 'pusher'
 
-gem 'protected_attributes' #Until I fix things to properly use Rails 4. UPGRADE THIS PLEASE.
+# gem 'protected_attributes' #Until I fix things to properly use Rails 4. UPGRADE THIS PLEASE.
 
 gem 'pg'
 gem 'haml'
@@ -31,6 +31,8 @@ gem 'unf'
 
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.
 gem 'pg_search'
+
+gem 'nilify_blanks' #TODO use this
 
 #JS gems
 gem 'jquery-rails'
