@@ -6,7 +6,7 @@
         - @unpublished.each do |crossword|
           = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword, unpublished: true}
   .large-6.columns
-    - if @published.any?
+    - if @owned.any?
       %h5
         Published
       %ul
