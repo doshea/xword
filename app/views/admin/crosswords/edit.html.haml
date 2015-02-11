@@ -24,3 +24,5 @@
       = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, style: 'text-transform: uppercase;'
     .large-12.columns
       = f.button class: 'button', data: {disable_with: 'Updating...'}
+  .large-12.columns
+    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch, remote: true

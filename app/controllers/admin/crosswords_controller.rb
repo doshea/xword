@@ -1,6 +1,6 @@
 class Admin::CrosswordsController < ApplicationController
   before_action :ensure_admin
-  before_action :find_object, only: [:edit, :update, :destroy]
+  before_action :find_object, only: [:edit, :update, :destroy, :generate_preview]
 
   #GET /admin/crosswords or admin_crosswords_path
   def index
@@ -29,6 +29,10 @@ class Admin::CrosswordsController < ApplicationController
     else
       alert_js('!!!ERROR deleting crossword!!!')
     end
+  end
+
+  def generate_preview
+    @crossword.generate_preview
   end
 
   private

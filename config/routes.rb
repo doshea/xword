@@ -117,7 +117,9 @@ Xword::Application.routes.draw do
     post :clone_user
     get :wine_comment
 
-    resources :crosswords, only: [:index, :edit, :update, :destroy]
+    resources :crosswords, only: [:index, :edit, :update, :destroy] do
+      patch :generate_preview, on: :member
+    end
     resources :clues, only: [:index, :edit, :update, :destroy]
     resources :words, only: [:index, :edit, :update, :destroy]
     resources :comments, only: [:index, :edit, :update, :destroy]
