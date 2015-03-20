@@ -214,10 +214,10 @@ elements of the table#crossword
     (@get_letter() is "") or (@get_letter() is " ") or (@get_letter().replace(/\n/g, "").replace(RegExp("  +", "g"), " ") is " ")
 
   $.fn.corresponding_across_clue = ->
-    (if @data("id") then $(".across-clue[data-cell-id=" + @data("id") + "]") else $(".across-clue[data-cell-num=" + @data("cell") + "]"))
+    (if @data("id") then $(".across-clue[data-cell-id=" + @data('id') + "]") else $(".across-clue[data-index=" + @data('index') + "]"))
 
   $.fn.corresponding_down_clue = ->
-    (if @data("id") then $(".down-clue[data-cell-id=" + @data("id") + "]") else $(".down-clue[data-cell-num=" + @data("cell") + "]"))
+    (if @data("id") then $(".down-clue[data-cell-id=" + @data('id') + "]") else $(".down-clue[data-index=" + @data('index') + "]"))
 
   $.fn.corresponding_clue = ->
     (if cw.select_across then @corresponding_across_clue() else @corresponding_down_clue())

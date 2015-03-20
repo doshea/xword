@@ -1,14 +1,15 @@
-if(<%= @new_word %>){
-  var li_to_insert = $("<%=j render partial: 'crosswords/partials/potential_word', locals: {word: @word} %>");
+if(<%= @added != false  %>){
+  var li_to_insert = $("<%=j render partial: 'unpublished_crosswords/partials/potential_word', locals: {word: @word} %>");
+  li_to_insert.addClass('added-word')
   var ul = $('#ideas ul');
   var lis = ul.children('li');
   if(lis.length > 0){
     var found_lower = false;
-    var new_length = <%= @word.content.length %>;
+    var new_length = <%= @word.length %>;
 
     for(var i = 0; i < lis.length; i++){
       var li = $(lis.get(i));
-      var length = parseInt(li.attr('length'));
+      var length = parseInt(li.data('length'));
       if(length < new_length){
         found_lower = true;
         li.before(li_to_insert);

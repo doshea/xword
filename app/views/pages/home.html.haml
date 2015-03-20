@@ -26,11 +26,6 @@
         %h5
           %i.fi-alert
           %span Non-Standard Puzzles
-    %dd
-      = link_to '#panel5' do
-        %h5
-          %i.fi-pencil
-          %span Your Puzzles
   :javascript
     var puzzles_remaining = {};
   .tabs-content
@@ -42,5 +37,3 @@
       = render partial: 'pages/home/solved_puzzles'
     #panel4.content
       = render partial: 'pages/home/nonstandard'
-    #panel5.content
-      = render partial: 'pages/home/your_puzzles'

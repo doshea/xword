@@ -1,0 +1,7 @@
+%li.word{data: {length: word.length, word: word}}
+  .row{style: 'margin: 0 auto;'}
+    .length.small-1.columns (#{word.length})
+    .small-10.columns= word
+    .small-1.columns
+      = link_to remove_potential_word_unpublished_crossword_path(@unpublished_crossword, word), method: :delete, remote: true do
+        %i.fi-x

@@ -1,0 +1,10 @@
+.clue-column
+  %h6= direction.titleize
+  %ol.clues{id: direction}
+    - directional_clues = (direction == 'across') ? @unpublished_crossword.across_clues : @unpublished_crossword.down_clues
+    - directional_clue_numbers = @clue_numbers[direction.to_sym]
+    - directional_clues.each_with_index do |clue, i|
+      - clue_number = directional_clue_numbers[i]
+      %li.clue{class: "#{direction}-clue #{'hidden' unless clue_number}", data: {index: i}}<
+        %span.clue-num #{clue_number}.
+        = text_field_tag nil, clue

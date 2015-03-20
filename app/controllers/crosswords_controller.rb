@@ -92,21 +92,6 @@ class CrosswordsController < ApplicationController
     end
   end
 
-  #POST /crosswords/:id/add_potential_word or add_potential_word_crossword_path
-  def add_potential_word
-    if @crossword
-      word_content = params[:word].upcase
-      @word = Word.find_or_create_by_content(word_content)
-      @new_word = !@crossword.potential_words.include?(@word)
-      if @new_word
-        @added = true
-        @crossword.potential_words << @word
-      end
-    else
-      render nothing: true
-    end
-  end
-
   #DELETE /crosswords/:id/remove_potential_word/:potential_word_id or remove_potential_word_crossword_path
   def remove_potential_word
     if @crossword

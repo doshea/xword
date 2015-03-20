@@ -1,18 +1,24 @@
-- if @owned.any? || @unpublished.any?
-  .large-6.columns
-    -if @unpublished.any?
-      %h5 Unpublished
-      %ul
-        - @unpublished.each do |crossword|
-          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword, unpublished: true}
-  .large-6.columns
-    - if @owned.any?
-      %h5
-        Published
-      %ul
-        - @owned.each do |crossword|
-          = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
-- else
-  .large-12.columns
+.content.unpublished
+  -if @unpublished.any?
+    %h5
+    Unpublished
+    (
+    %span#unpublished-count= @unpublished.count
+    )
+    %ul
+      - @unpublished.each do |cw|
+        = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
+%hr
+.content
+  %h5
+    Published
+    (
+    %span#published-count= @published.count
+    )
+  - if @published.any?
+    %ul
+      - @published.each do |cw|
+        = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
+  - else
     You haven't created any puzzles yet.
-    = link_to 'Want to try?', new_crossword_path, class: 'foundation'
+    = link_to 'Try it out!', new_unpublished_crossword_path

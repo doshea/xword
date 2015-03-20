@@ -14,7 +14,6 @@ window.solve_app =
   clock_updater: null
   last_save: null
   unsaved_changes: false
-  debug_mode: false
 
   ready: ->
     unless solve_app.anonymous

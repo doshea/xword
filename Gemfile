@@ -7,7 +7,7 @@ gem 'json'
 
 gem 'httparty'
 
-gem 'multi_json', '1.7.8' #Necessary because 1.7.9 breaks the adapter specification  http://stackoverflow.com/questions/18213286/did-not-recognize-your-adapter-specification-turbolinks-related-error-in-rails/18239501?noredirect=1#comment27522141_18239501
+gem 'multi_json'
 
 gem 'pusher'
 

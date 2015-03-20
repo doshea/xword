@@ -1,0 +1,20 @@
+%table#crossword.no-select{data: {id: @unpublished_crossword.id, rows: @unpublished_crossword.rows, cols: @unpublished_crossword.cols, :'auth-token' => form_authenticity_token}}
+  - i = 0
+  - for r in 1..@unpublished_crossword.rows
+    %tr{data: {row: r}}
+      - for c in 1..@unpublished_crossword.cols
+        - letter = @unpublished_crossword.letters[i]
+        %td.cell{class: "#{'void' if letter.nil?}", data: {row: r, col: c, index: i}}
+          .letter= letter
+          - if @unpublished_crossword.circles[i]
+            .circle
+          .cell-num= @clue_numbers[:across][i] || @clue_numbers[:down][i]
+          .cell-flag
+          - i += 1
+
+-# Edit Clue Columns
+- edit = true
+-# Across Clues
+= render(partial: 'unpublished_crosswords/partials/clue_column', locals: {direction: 'across', edit: edit})
+-# Down Clues
+= render(partial: 'unpublished_crosswords/partials/clue_column', locals: {direction: 'down', edit: edit})

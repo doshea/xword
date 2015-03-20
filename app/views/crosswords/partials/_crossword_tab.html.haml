@@ -1,10 +1,12 @@
 / If the crossword is published, links to it solution choice page. If unpublished, links to its edit page.
-= link_to ((defined?(unpublished)) && (unpublished == true) ? edit_crossword_path(crossword) : solution_choice_crossword_path(crossword)) do
+- unpublished = (defined?(unpublished) && unpublished == true)
+= link_to (unpublished ? edit_unpublished_crossword_path(cw) : solution_choice_crossword_path(cw)) do
   .large-3.columns.result-crossword
     .row
       .large-4.columns.minipic
-        = image_tag crossword.try(:preview), class: 'shadow thin-border', style: 'max-width: none;'
+        = image_tag cw.try(:preview) || asset_path('example_puzzle.jpg'), class: "shadow thin-border #{'unpublished' if unpublished}", style: 'max-width: none;'
       .large-8.columns.metadata
-        %p.title= crossword.title.html_safe
-        %p.byline= "by #{crossword.user.display_name}"
-        %p.dimensions= "#{crossword.rows} x #{crossword.cols}"
+        %p.title= cw.title.html_safe
+        - unless unpublished
+          %p.byline= "by #{cw.user.display_name}"
+        %p.dimensions= "#{cw.rows} x #{cw.cols}"

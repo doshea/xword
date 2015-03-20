@@ -67,6 +67,14 @@
     = render partial: 'crosswords/partials/solve_crossword'
 .row#meta-area
   .large-12.columns
+    #solve-controls
+      %button.button.warning.small#show-incorrect
+        %i.fi-alert
+        Show Incorrect
+      %button.button.success.small#check-correctness
+        %i.fi-check
+        Check Correctness
+  .large-12.columns
     .row
       .large-2.columns
         = link_to @crossword.user do

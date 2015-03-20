@@ -11,19 +11,24 @@ cw.editing = true
 
 window.edit_app =
   unsaved_changes: false
-  debug_mode: false
+  save_timer: null
+  last_save: null
+  SAVE_INTERVAL: 15000
   title_spinner: null
-
+  mirror_voids: true
+  save_counter: null
 
   ready: ->
+    edit_app.save_timer = window.setInterval(->
+      edit_app.save_puzzle() if edit_app.unsaved_changes
+    , edit_app.SAVE_INTERVAL)
     $('#title-status').show()
-    cw.number_cells()
-    edit_app.number_clues()
 
     $('#crossword').on('dblclick', '.cell', -> $(this).toggle_void(true))
 
     $('#title').on('change', edit_app.update_title)
     $('.clue').on('change', 'input', edit_app.update_clue)
+    $('.clue').on('click', -> $(".cell[data-index=#{$(this).data('index')}]").highlight())
     $('#description').on('change', edit_app.update_description)
 
     # $('.cell, .clue').on('click', (e) -> e.stopImmediatePropagation())
@@ -44,18 +49,7 @@ window.edit_app =
           $(this).val('')
 
   update_clue: (e) ->
-    id = $(this).parent().data('id')
-    token = $('#crossword').data('auth-token')
-
-    settings =
-      dataType: 'script'
-      type: 'PUT'
-      url: "/clues/#{id}"
-      data:
-        clue:
-          content: $(this).val()
-        authenticity_token: token
-    $.ajax(settings)
+    edit_app.update_unsaved()
 
   update_title: (e) ->
     unless $('#title-status').length > 0
@@ -71,9 +65,9 @@ window.edit_app =
     settings =
       dataType: 'script'
       type: 'PUT'
-      url: "/crosswords/#{id}"
+      url: "/unpublished_crosswords/#{id}"
       data:
-        crossword:
+        unpublished_crossword:
           title: $('#title').val()
         authenticity_token: token
       success: ->
@@ -93,9 +87,9 @@ window.edit_app =
     settings =
       dataType: 'script'
       type: 'PUT'
-      url: "/crosswords/#{id}"
+      url: "/unpublished_crosswords/#{id}"
       data:
-        crossword:
+        unpublished_crossword:
           description: $('#description').val()
         authenticity_token: token
       error: ->
@@ -104,6 +98,7 @@ window.edit_app =
 
   update_unsaved: ->
     edit_app.unsaved_changes = true
+    edit_app.save_counter = Math.random().toString()
     $('#save-status').text('Unsaved changes')
     $('#save-clock').empty()
 
@@ -132,14 +127,54 @@ window.edit_app =
   number_clues: ->
     $('.clue').each -> 
       clue_num = $(this).children('.clue-num')
-      cell_id = $(this).data('cell-id')
-      cell_num = parseInt($(".cell[data-id=#{cell_id}]").first().attr('data-cell'))
+      cell_index = $(this).data('index')
+      cell_num = parseInt($(".cell[data-index=#{cell_index}]").first().attr('data-cell'))
       clue_num.text("#{cell_num}.")
+
+  save_puzzle: ->
+    letters_array = []
+    $cells = $('.cell')
+    $.each $cells, (i, cell) ->
+      if $(cell).is_void()
+        letters_array[i] = 0
+      else
+        letters_array[i] = $(cell).get_letter()
+
+    across_clues = []
+    down_clues = []
+    $.each $('.across-clue'), -> 
+      across_clues.push $(this).children('input').val()
+    $.each $('.down-clue'), -> 
+      down_clues.push $(this).children('input').val() 
+
+    token = $('#crossword').data('auth-token')
+    id = $('#crossword').data('id')
+    settings =
+      dataType: 'script'
+      contentType: 'application/json'
+      type: 'PATCH'
+      url: "/unpublished_crosswords/#{id}/update_letters"
+      data: JSON.stringify({letters: letters_array, across_clues: across_clues, down_clues: down_clues, authenticity_token: token, save_counter: edit_app.save_counter}) #JSON monkey businesses required to get non-string values into this array
+      success: ->
+        console.log('Saved!')
+      error: ->
+        alert('Error updating letters!');
+    console.log('Saving...')
+    $.ajax(settings);
+    
+  log_save: ->
+    edit_app.last_save = moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
+    edit_app.unsaved_changes = false
+
+  update_clock: ->
+    if edit_app.last_save
+      $('#save-status').text('Saved ')
+      $('#save-clock').text(moment(edit_app.last_save).fromNow())
 
 # jQuery editing functions
 (($) ->
   $.fn.corresponding_clues = ->
-    $ ".clue[data-cell-id=" + @data("id") + "]"
+    $ ".clue[data-index=" + @data("index") + "]"
 
   $.fn.delete_letter = (letter) ->
     @children(".letter").first().empty()
@@ -166,46 +201,33 @@ window.edit_app =
   $.fn.toggle_void = (recursive) ->
 
     #Makes this cell void
-    @toggleClass "void"
+    @set_letter ''
+    @toggleClass 'void'
 
     #if this cell was made void, hides its clues and shows any clues below and right
-    if @hasClass("void")
+    if @hasClass('void')
       @corresponding_clues().hide()
-      @cell_below().corresponding_clues().filter(".down-clue").show()  if @cell_below()
-      @cell_to_right().corresponding_clues().filter(".across-clue").show()  if @cell_to_right()
+      @cell_below().corresponding_clues().filter(".down-clue").show() if @has_below()
+      @cell_to_right().corresponding_clues().filter(".across-clue").show() if @has_right()
     else
-
       #Otherwise, hides clues below and right and possibly shows this cell's clues
-      @cell_below().corresponding_clues().filter(".down-clue").hide()  if @cell_below()
-      @cell_to_right().corresponding_clues().filter(".across-clue").hide()  if @cell_to_right()
+
+      @cell_below().corresponding_clues().filter(".down-clue").hide() if @has_below()
+      @cell_to_right().corresponding_clues().filter(".across-clue").hide() if @has_right()
       @corresponding_clues().filter(".down-clue").show()  unless @cell_above()
       @corresponding_clues().filter(".across-clue").show()  unless @cell_to_left()
 
-    #Sends request to database to toggle void on the back end
-    token = $("#crossword").data("auth-token")
-    cell_id = @data("id")
-    settings =
-      dataType: "script"
-      type: "PUT"
-      url: "/cells/" + cell_id + "/toggle_void"
-      data:
-        authenticity_token: token
+    if recursive and edit_app.mirror_voids
+      mirror_cell = @get_mirror_cell()
+      unless this[0] is mirror_cell[0]
+        mirror_cell.toggle_void(false)
 
-      error: ->
-        alert "Error toggling void!"
-
-    $.ajax settings
-    mirror_cell = @get_mirror_cell()
-
-    #Does all the same for the mirror of this cell unless this cell is its own mirror
-    if recursive and (this[0] isnt mirror_cell[0])
-      mirror_cell.toggle_void false
-      cw.number_cells()
-      edit_app.number_clues()
-      if @hasClass("void")
-        @next_cell().highlight()
-      else
-        @highlight()
+    if recursive
+      next_cell = if cw.select_across then @cell_to_right() else @cell_below()
+      next_cell.highlight()
+    cw.number_cells()
+    edit_app.number_clues()
+    edit_app.update_unsaved()
 ) jQuery
 
 $(document).ready(edit_app.ready)

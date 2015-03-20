@@ -26,8 +26,6 @@ Xword::Application.routes.draw do
       delete 'favorite' => 'crosswords#unfavorite'
       get 'team/:key' => 'crosswords#team', as: 'team'
       get 'solution_choice'
-      post :add_potential_word
-      delete 'remove_potential_word/:potential_word_id' => 'crosswords#remove_potential_word', as: 'remove_potential_word'
     end
     collection do
       post :batch
@@ -36,11 +34,10 @@ Xword::Application.routes.draw do
 
   resources :unpublished_crosswords do
     member do
-      get :edit
-      patch :update
       patch :publish
       patch :add_potential_word
-      delete :remove_potential_word
+      patch :update_letters
+      delete 'remove_potential_word/:word' => 'unpublished_crosswords#remove_potential_word', as: 'remove_potential_word'
     end
   end
 

@@ -9,7 +9,7 @@
     %h3.large
       .row
         .large-1.columns.smaller Title:
-        .large-9.columns.end= text_field_tag 'title', @crossword.title
+        .large-9.columns.end= text_field_tag 'title', @unpublished_crossword.title
   .large-3.columns
     #puzzle-controls
       %span#save-status.smaller No changes yet
@@ -20,13 +20,16 @@
 
 .row#solve-area
   .large-12.columns
-    = render partial: 'crosswords/partials/edit_crossword'
+    = render partial: 'unpublished_crosswords/partials/edit_unpublished_crossword'
+.row#advanced
+  .large-12.columns
+    = label_tag :advanced
 .row#meta-area
   .large-12.columns
     %p
       = label_tag :description
-      = text_area_tag :description, @crossword.description
-  = link_to('Publish Puzzle', publish_crossword_path(@crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
+      = text_area_tag :description, @unpublished_crossword.description
+  = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
 
 -# NON-INLINE ELEMENTS
 
@@ -36,11 +39,11 @@
     %span.small Ideas
   #ideas
     .row
-      = form_tag add_potential_word_crossword_path(@crossword), remote: true do
+      = form_tag add_potential_word_unpublished_crossword_path(@unpublished_crossword), method: :patch, remote: true do
         = text_field_tag :word, nil, id: nil, autocomplete: 'off', placeholder: "Type a word you're considering"
     %ul
-      - @potential_words.each do |word|
-        = render partial: 'crosswords/partials/potential_word', locals: {word: word}
+      - @unpublished_crossword.potential_words.each do |word|
+        = render partial: 'unpublished_crosswords/partials/potential_word', locals: {word: word}
 
 %section#pattern-container.slide-up-container
   = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button', remote: true) do

@@ -38,17 +38,17 @@ class ApplicationController < ActionController::Base
     associated_class_string.constantize
   end
   def find_object
-    instance_variable_set("@#{associated_class_string.downcase}", associated_class.find(params[:id]))
+    instance_variable_set("@#{associated_class_string.underscore}", associated_class.find(params[:id]))
     rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: "Sorry, that #{associated_class_string.downcase} could not be found."}
+    redirect_to :back, flash: {error: "Sorry, that #{associated_class_string.underscore.humanize} could not be found."}
   end
   def found_object
-    instance_variable_get("@#{associated_class_string.downcase}")
+    instance_variable_get("@#{associated_class_string.underscore}")
   end
   #
   def ensure_owner_or_admin
     if !(@current_user.is_admin or @current_user == found_object.user)
-      redirect_to :back, flash: {warning: "You do not own that #{associated_class_string.downcase}."}
+      redirect_to :back, flash: {warning: "You do not own that #{associated_class_string.underscore.humanize}."}
     end
   end
 
