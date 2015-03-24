@@ -2,23 +2,23 @@
 #
 # Table name: unpublished_crosswords
 #
-#  id                :integer          not null, primary key
-#  title             :string           default("Untitled"), not null
-#  letters           :text             default([]), is an Array
-#  description       :text
-#  rows              :integer
-#  cols              :integer
-#  user_id           :integer
-#  circles           :text             default("{}")
-#  potential_words   :text             default([]), is an Array
-#  created_at        :datetime
-#  updated_at        :datetime
-#  across_clues      :text             default([]), is an Array
-#  down_clues        :text             default([]), is an Array
-#  mirror_voids      :boolean          default(TRUE)
-#  circle_on_click   :boolean          default(FALSE)
-#  one_click_void    :boolean          default(FALSE)
-#  multiletter_cells :boolean          default(FALSE)
+#  id               :integer          not null, primary key
+#  title            :string           default("Untitled"), not null
+#  letters          :text             default([]), is an Array
+#  description      :text
+#  rows             :integer
+#  cols             :integer
+#  user_id          :integer
+#  circles          :text             default("{}")
+#  potential_words  :text             default([]), is an Array
+#  created_at       :datetime
+#  updated_at       :datetime
+#  across_clues     :text             default([]), is an Array
+#  down_clues       :text             default([]), is an Array
+#  mirror_voids     :boolean          default(TRUE)
+#  circle_mode      :boolean          default(FALSE)
+#  one_click_void   :boolean          default(FALSE)
+#  multiletter_mode :boolean          default(FALSE)
 #
 
 class UnpublishedCrossword < ActiveRecord::Base

@@ -5,8 +5,14 @@
 
   %ul.dropdown
     %li.divider
-      = link_to 'Account', account_users_path
+      = link_to account_users_path do
+        %i.fi-torso
+        Account
     %li
-      = link_to 'Public Profile', @current_user
+      = link_to @current_user do
+        %i.fi-eye
+        Public Profile
     %li.divider
-      = link_to 'Log out', logout_path, method: 'delete'
+      = link_to logout_path, method: 'delete' do
+        %i.fi-power{style: 'color: #f55;'}
+        Log out

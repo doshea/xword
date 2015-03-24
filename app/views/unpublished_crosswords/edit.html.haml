@@ -38,9 +38,9 @@
       %li
         = switch_tag @unpublished_crossword, :one_click_void, '1-Click voids'
       %li
-        = switch_tag @unpublished_crossword, :circle_on_click
+        = switch_tag @unpublished_crossword, :circle_mode, 'Circle Mode'
       %li
-        = switch_tag @unpublished_crossword, :multiletter_cells
+        = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
   .large-6.columns
   .large-3.columns
     = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})

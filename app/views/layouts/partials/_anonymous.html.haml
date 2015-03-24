@@ -2,6 +2,8 @@
   = link_to('Register', new_user_path)
 %li.divider.hide-for-small
 %li.active.has-dropdown#login-button
-  =link_to 'Login', login_path
+  =link_to login_path do
+    %i.fi-power{style: 'color: #5f5;'}
+    Login
   .dropdown.dark-shadow
     = render partial: 'sessions/partials/form_small'
