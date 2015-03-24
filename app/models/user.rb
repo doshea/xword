@@ -9,14 +9,14 @@
 #  email                  :string(254)      not null
 #  image                  :text
 #  location               :string(255)
-#  is_admin               :boolean          default("false")
+#  is_admin               :boolean          default(FALSE)
 #  password_digest        :string(255)
 #  auth_token             :string(255)
 #  created_at             :datetime
 #  updated_at             :datetime
 #  password_reset_token   :string(255)
 #  password_reset_sent_at :datetime
-#  verified               :boolean          default("false")
+#  verified               :boolean          default(FALSE)
 #  verification_token     :string
 #
 

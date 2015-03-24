@@ -9,34 +9,47 @@
     %h3.large
       .row
         .large-1.columns.smaller Title:
-        .large-9.columns.end= text_field_tag 'title', @unpublished_crossword.title
+        .large-9.columns.end
+          = text_field_tag 'title', @unpublished_crossword.title
+          %i#title-status
   .large-3.columns
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
-      = link_to 'app.save_solution()', class: 'button tiny secondary rounded' do
+      %a#edit-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
         %i.fi-save
-
 
 .row#solve-area
   .large-12.columns
     = render partial: 'unpublished_crosswords/partials/edit_unpublished_crossword'
-.row#advanced
-  .large-12.columns
-    = label_tag :advanced
+
 .row#meta-area
   .large-12.columns
     %p
       = label_tag :description
       = text_area_tag :description, @unpublished_crossword.description
-  = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
-
+  %hr
+.row#advanced
+  %h5 Advanced Controls
+  .large-3.columns
+    %ul
+      %li
+        = switch_tag @unpublished_crossword, :mirror_voids
+      %li
+        = switch_tag @unpublished_crossword, :one_click_void, '1-Click voids'
+      %li
+        = switch_tag @unpublished_crossword, :circle_on_click
+      %li
+        = switch_tag @unpublished_crossword, :multiletter_cells
+  .large-6.columns
+  .large-3.columns
+    = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
 -# NON-INLINE ELEMENTS
 
 %section#idea-container.slide-up-container
   = link_to('#ideas', class: 'bottom-button', id: 'ideas-button', remote: true) do
-    %i.fi-list
-    %span.small Ideas
+    %i.fi-lightbulb
+    %span.small Notepad
   #ideas
     .row
       = form_tag add_potential_word_unpublished_crossword_path(@unpublished_crossword), method: :patch, remote: true do
@@ -50,7 +63,6 @@
     %i.fi-magnifying-glass
     %span.small
       Pattern Search
-      %sup Beta
   #pattern-search
     .row
       = form_tag match_words_path, method: :post, remote: true do

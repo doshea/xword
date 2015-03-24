@@ -1,3 +1,4 @@
+@import 'global_mixins';
 $bottomcolor: black;
 
 .side-button {
@@ -25,7 +26,7 @@ $bottomcolor: black;
   font-size: 1.25em;
   position: absolute;
   top: -1.5em;
-  width: 4.2em;
+  width: 6em;
   z-index: 1;
   border-top: 1px solid #444;
 }
@@ -69,10 +70,33 @@ $bottomcolor: black;
     top: 95px;
   }
 }
+#title {
+  margin: 0;
+}
+#title-status {
+  background-image: url("<%= asset_path 'spinner_small.gif' %>");
+  position: absolute;
+  top: 0;
+  right: 1em;
+  height: 100%;
+  padding: 0 0.5em 0;
+  color: black;
+  opacity: 0;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  display: block;
+  &.fi-x {
+    color: red;
+  }
+  &.fi-x, &.fi-check {
+    background-image: none;
+    padding: 0 0.2em 0;
+  }
+}
 
 #settings {
     color: whitesmoke;
-    border-radius: 1px whitesmoke;
+    @include border-radius(1px);
     background: $bottomcolor;
   }
 
@@ -155,7 +179,6 @@ $bottomcolor: black;
 
     li {
       font-size: smaller;
-      list-style-type: none;
       width: 100%;
       -webkit-transition: background 0.4s;
       -moz-transition: background 0.4s;
@@ -179,7 +202,69 @@ $bottomcolor: black;
     }
   }
 }
+$switch-height: 1.8em;
+$switch-width: 4em;
+$pip-diameter: $switch-width/3;
+$switch-on-color: lighten(limegreen, 20%);
+$switch-off-color: lighten(red, 20%);
 
+.switch-form {
+  display: inline-block;
+  margin: 0;
+  height: $switch-height;
+  position: relative;
+  .switch {
+    position: relative;
+    width: $switch-width;
+    background: white;
+    height: $switch-height;
+    display: inline-block;
+    border-width: 1px;
+    border-style: solid;
+    @include border-radius($pip-diameter);
+    @include transition(all, 0.2s);
+  }
+  .pip {
+    position: absolute;
+    display: inline-block;
+    height: $pip-diameter;
+    width: $pip-diameter;
+    margin-top: $switch-height/14;
+    @include border-radius($pip-diameter/2);
+    @include transition(all, 0.2s);
+  }
+  label {
+    margin: 0;
+    width: $switch-width*3;
+    &.on {
+      .switch {
+        border-color: $switch-on-color;
+      }
+      .pip {
+        left: $switch-width*3/5;
+        background: $switch-on-color;
+      }
+    }
+    &.off {
+      .switch {
+        border-color: $switch-off-color;
+      }
+      .pip {
+        left: $switch-width/15;
+        background: $switch-off-color;
+      }  
+    }
+  }
+  span {
+    height: 1em;
+    position: absolute;
+    top: 0;
+    left: $switch-width + 1em;
+  }
+  input[type=checkbox] {
+    display: none;
+  }
+}
 
 #tools {
   position: fixed;
@@ -211,7 +296,7 @@ $bottomcolor: black;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 8px;
+    @include border-radius(8px);
     border: 2px solid white; /* should match background, can't be transparent */
     background-color: rgba(0, 0, 0, .5);
 }

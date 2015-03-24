@@ -1,4 +1,5 @@
 @import 'dimensions';
+@import 'global_mixins';
 
 #nav {
   background: #111;
@@ -166,5 +167,8 @@ footer#footer {
         }
       }
     }
+  }
+  ul {
+    @include no-bullets;
   }
 }

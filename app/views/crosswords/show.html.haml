@@ -33,7 +33,6 @@
       max-height: 547px;
     }
 
-
 .row#credit-area
   .large-12.columns
     %h3
@@ -44,7 +43,7 @@
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       - if @current_user
-        %a#solve-save.button.tiny.secondary{href: '#', :'data-tooltip' => true, title: 'Quicksave'}
+        %a#solve-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
           %i.fi-save
         = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? ' hidden' : ''}", method: :post, id: 'favorite', remote: true) do
           %i.fi-star>
@@ -74,6 +73,7 @@
       %button.button.success.small#check-correctness
         %i.fi-check
         Check Correctness
+  %hr
   .large-12.columns
     .row
       .large-2.columns

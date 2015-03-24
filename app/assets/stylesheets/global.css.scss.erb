@@ -1,3 +1,7 @@
+@import 'global_mixins';
+*{
+  outline: 0 !important; //I hate these shitty outlines
+}
 .small-shadow {
   -moz-box-shadow: 1px 1px 2px #000;
   -ms-box-shadow: 1px 1px 2px #000;
@@ -44,7 +48,12 @@
 .no-margin {
   margin: 0;
 }
-
+ul {
+  @include no-bullets;
+  .bulleted {
+    @include bulleted;
+  }
+}
 html {
   background: url(<%= asset_path('wood_table.jpg') %>) no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -120,11 +129,5 @@ body {
 }
 input:focus::-webkit-input-placeholder
 {
-    color: transparent;
+  color: transparent;
 }
-
-
-.no-list-style {
-  list-style-type: none;
-}
-

@@ -8,13 +8,13 @@
 #  col             :integer          not null
 #  index           :integer          not null
 #  cell_num        :integer
-#  is_void         :boolean          default("false"), not null
-#  is_across_start :boolean          default("false"), not null
-#  is_down_start   :boolean          default("false"), not null
+#  is_void         :boolean          default(FALSE), not null
+#  is_across_start :boolean          default(FALSE), not null
+#  is_down_start   :boolean          default(FALSE), not null
 #  crossword_id    :integer
 #  across_clue_id  :integer
 #  down_clue_id    :integer
-#  circled         :boolean          default("false")
+#  circled         :boolean          default(FALSE)
 #
 
 class Cell < ActiveRecord::Base

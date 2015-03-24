@@ -25,12 +25,14 @@ window.edit_app =
     $('#title-status').show()
 
     $('#crossword').on('dblclick', '.cell', -> $(this).toggle_void(true))
-
+    $('#edit-save').on('click', edit_app.save_puzzle)
     $('#title').on('change', edit_app.update_title)
     $('.clue').on('change', 'input', edit_app.update_clue)
-    $('.clue').on('click', -> $(".cell[data-index=#{$(this).data('index')}]").highlight())
+    $('.clue').on('click', -> $(".cell[data-index=#{$(this).data('index')}]").highlight();)
     $('#description').on('change', edit_app.update_description)
 
+    # $('.switch-form').on('click','label', -> console.log($(this));console.log('hi');console.log($("input[type='checkbox'").val());)
+    $('.switch-form input').on('click', (e) -> $(this).parent().toggleClass('on off'))
     # $('.cell, .clue').on('click', (e) -> e.stopImmediatePropagation())
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
     # $('#tools').draggable({ containment: "body"})
@@ -46,21 +48,16 @@ window.edit_app =
         e.preventDefault()
         unless $(this).val() is ''
           $(this).parent().submit()
-          $(this).val('')
 
   update_clue: (e) ->
     edit_app.update_unsaved()
 
   update_title: (e) ->
-    unless $('#title-status').length > 0
-      spinbox = $('<i id="title-status">')
-      spinbox.addClass('fi-checkmark')
-      spinbox.insertAfter('#title')
+    title_status = $('#title-status')
+    title_status.css('opacity', 1)
 
-    edit_app.spin_title()
     token = $('#crossword').data('auth-token')
     id = $('#crossword').data('id')
-    edit_app.spin_title()
 
     settings =
       dataType: 'script'
@@ -71,13 +68,12 @@ window.edit_app =
           title: $('#title').val()
         authenticity_token: token
       success: ->
-        $('.spinner').remove()
-        $('#title-status').addClass('fi-check').removeClass('fi-x').css('color', 'black')
-        $('#title-status').fadeOut(1000, -> $(this).remove())
+        title_status.addClass('fi-check').removeClass('fi-x')
       error: ->
-        $('.spinner').remove()
-        $('#title-status').addClass('fi-x').removeClass('fi-check')
-        $('#title-status').fadeOut(3000, -> $(this).remove())
+        title_status.addClass('fi-x').removeClass('fi-check')
+      complete: ->
+        title_status.fadeTo 1500,0, ->
+          title_status.removeClass('fi-check fi-x')
     $.ajax(settings)
 
   update_description: (e) ->
@@ -131,7 +127,7 @@ window.edit_app =
       cell_num = parseInt($(".cell[data-index=#{cell_index}]").first().attr('data-cell'))
       clue_num.text("#{cell_num}.")
 
-  save_puzzle: ->
+  save_puzzle: (e) ->
     letters_array = []
     $cells = $('.cell')
     $.each $cells, (i, cell) ->
@@ -178,19 +174,19 @@ window.edit_app =
 
   $.fn.delete_letter = (letter) ->
     @children(".letter").first().empty()
-    token = $("#crossword").data("auth-token")
-    cell_id = @data("id")
-    settings =
-      dataType: "script"
-      type: "PUT"
-      url: "/cells/" + cell_id
-      data:
-        authenticity_token: token
-        cell:
-          letter: ""
-      error: ->
-        alert "Error toggling void!"
-    $.ajax settings
+  #   token = $("#crossword").data("auth-token")
+  #   cell_id = @data("id")
+  #   settings =
+  #     dataType: "script"
+  #     type: "PUT"
+  #     url: "/cells/" + cell_id
+  #     data:
+  #       authenticity_token: token
+  #       cell:
+  #         letter: ""
+  #     error: ->
+  #       alert "Error toggling void!"
+  #   $.ajax settings
 
   $.fn.get_mirror_cell = ->
     $cells = $(".cell")

@@ -20,5 +20,5 @@
       - @published.each do |cw|
         = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
   - else
-    You haven't created any puzzles yet.
+    You haven't finished any puzzles yet.
     = link_to 'Try it out!', new_unpublished_crossword_path

@@ -1,13 +1,13 @@
 @import 'dimensions';
 @import 'buttons';
-
+@import 'global_mixins';
 
 #body > .row {
   padding: 0.5em 1em 0 1em;
   max-width: $row-width+2em;
 }
 
-#credit-area, #solve-area, #meta-area {
+#credit-area, #solve-area, #meta-area, #advanced {
   background-image: url("<%= asset_path 'paper.jpeg' %>");
 }
 
@@ -25,16 +25,6 @@
     #creator-credit {
       font-size: large;
       font-weight: normal;
-    }
-    i {
-      position: absolute;
-      top: 0;
-      right: 1em;
-      padding: 0.3em 0.5em 0.3em 0;
-      color: white;
-      &.fi-x {
-        color: red;
-      }
     }
   }
   #puzzle-controls {
@@ -55,6 +45,7 @@
 table#crossword {
   border-spacing: 0;
   float: left;
+  margin-bottom: 0;
 
   tr {
 
@@ -127,14 +118,13 @@ table#crossword {
     text-align: center;
   }
   .clues {
-    list-style-type: none;
-    max-height: 415px;
     overflow: scroll;
     width: 250px;
     overflow-x: hidden;
     background: white;
     font-size: smaller;
     padding: 0.1em 0.25em;
+    height: 31em;
 
     .clue {
       border: 1px solid rgba(255,255,255,0);
@@ -337,6 +327,7 @@ table#crossword {
   }
   
   #keys {
+    @include no-bullets;
     li {
       text-align: right;
     }

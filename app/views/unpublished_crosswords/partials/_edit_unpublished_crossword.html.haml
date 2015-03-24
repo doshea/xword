@@ -6,7 +6,7 @@
         - letter = @unpublished_crossword.letters[i]
         %td.cell{class: "#{'void' if letter.nil?}", data: {row: r, col: c, index: i}}
           .letter= letter
-          - if @unpublished_crossword.circles[i]
+          - if @unpublished_crossword.circles[i] == 'o'
             .circle
           .cell-num= @clue_numbers[:across][i] || @clue_numbers[:down][i]
           .cell-flag

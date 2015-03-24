@@ -1,6 +1,5 @@
 /*
  *= require_self
- * require reset TODO REMOVE RESET IF IT IS NOT CAUSING PROBLEMS
  *
  *= require foundation5/normalize
  *= require foundation5/foundation.min
@@ -10,7 +9,7 @@
  *= require global
  *= require layouts
  */
-
+ 
  @font-face {
   font-family: "foundation-icons";
   src: url(asset_path('foundation-icons/foundation-icons.eot'));

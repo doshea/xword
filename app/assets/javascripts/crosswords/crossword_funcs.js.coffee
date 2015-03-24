@@ -166,19 +166,6 @@ window.cw =
               if cw.editing
                 cw.selected.set_letter letter, true
                 edit_app.update_unsaved()
-                token = $("#crossword").data("auth-token")
-                cell_id = cw.selected.data("id")
-                settings =
-                  dataType: "script"
-                  type: "PUT"
-                  url: "/cells/" + cell_id
-                  data:
-                    authenticity_token: token
-                    cell:
-                      letter: letter
-                  error: ->
-                    alert "Error toggling void!"
-                $.ajax(settings)
               else
                 check_for_finish = cw.selected.is_empty_cell()
                 cw.selected.set_letter letter, true

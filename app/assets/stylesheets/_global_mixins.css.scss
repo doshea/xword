@@ -1,0 +1,38 @@
+@mixin transition($style, $time){-webkit-transition: $style $time;-moz-transition: $style $time;-o-transition: $style $time;transition: $style $time;}
+
+@mixin no-select {
+  &::selection {background-color: transparent;}
+  &::moz-selection {background-color: transparent;}
+  &::webkit-selection {background-color: transparent;}
+  ::selection {background-color: transparent;}
+  ::moz-selection {background-color: transparent;}
+  ::webkit-selection {background-color: transparent;}
+}
+@mixin no-select-container {
+  @include no-select;
+  * {@include no-select;}
+}
+
+@mixin transform($transforms) {
+     -moz-transform: $transforms;
+       -o-transform: $transforms;
+      -ms-transform: $transforms;
+  -webkit-transform: $transforms;
+          transform: $transforms;
+}
+
+@mixin scale($scale) {
+   @include transform(scale($scale));
+}
+@mixin scaleX($scale) {
+   @include transform(scaleX($scale));
+} 
+@mixin box-shadow($x, $y, $blur, $color){-moz-box-shadow: $x $y $blur $color;-ms-box-shadow: $x $y $blur $color;-webkit-box-shadow: $x $y $blur $color;box-shadow: $x $y $blur $color;}
+@mixin border-radius($radius){-webkit-border-radius: $radius;-moz-border-radius: $radius;border-radius: $radius;}
+
+@mixin no-bullets {
+  list-style-type: none;
+}
+@mixin bulleted {
+  list-style-type: disc;
+}

@@ -2,19 +2,23 @@
 #
 # Table name: unpublished_crosswords
 #
-#  id              :integer          not null, primary key
-#  title           :string           default("Untitled"), not null
-#  letters         :text             default("{}"), is an Array
-#  description     :text
-#  rows            :integer
-#  cols            :integer
-#  user_id         :integer
-#  circles         :text             default("{}"), is an Array
-#  potential_words :text             default("{}"), is an Array
-#  created_at      :datetime
-#  updated_at      :datetime
-#  across_clues    :text             default("{}"), is an Array
-#  down_clues      :text             default("{}"), is an Array
+#  id                :integer          not null, primary key
+#  title             :string           default("Untitled"), not null
+#  letters           :text             default([]), is an Array
+#  description       :text
+#  rows              :integer
+#  cols              :integer
+#  user_id           :integer
+#  circles           :text             default("{}")
+#  potential_words   :text             default([]), is an Array
+#  created_at        :datetime
+#  updated_at        :datetime
+#  across_clues      :text             default([]), is an Array
+#  down_clues        :text             default([]), is an Array
+#  mirror_voids      :boolean          default(TRUE)
+#  circle_on_click   :boolean          default(FALSE)
+#  one_click_void    :boolean          default(FALSE)
+#  multiletter_cells :boolean          default(FALSE)
 #
 
 class UnpublishedCrossword < ActiveRecord::Base
@@ -102,6 +106,7 @@ class UnpublishedCrossword < ActiveRecord::Base
   private
   def populate_arrays
     self.letters = [''] * rows * cols
-    self.across_clues = self.down_clues = self.circles = [nil] * rows * cols
+    self.circles = ' ' * rows * cols
+    self.across_clues = self.down_clues = [nil] * rows * cols
   end
 end
