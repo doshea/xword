@@ -15,7 +15,6 @@ window.edit_app =
   last_save: null
   SAVE_INTERVAL: 15000
   title_spinner: null
-  mirror_voids: true
   save_counter: null
 
   ready: ->
@@ -32,7 +31,7 @@ window.edit_app =
     $('#description').on('change', edit_app.update_description)
 
     # $('.switch-form').on('click','label', -> console.log($(this));console.log('hi');console.log($("input[type='checkbox'").val());)
-    $('.switch-form input').on('click', (e) -> $(this).parent().toggleClass('on off'))
+    $('.switch-form input').on 'click', edit_app.flip_switch
     # $('.cell, .clue').on('click', (e) -> e.stopImmediatePropagation())
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
     # $('#tools').draggable({ containment: "body"})
@@ -40,6 +39,10 @@ window.edit_app =
     $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word)
     $('#settings-button').on('click', -> $('#edit-settings').foundation('reveal', 'open'))
     $('.bottom-button').on('click', -> $(this).closest('.slide-up-container').toggleClass('open'))
+
+  flip_switch: (e) ->
+    $(this).parent().toggleClass('on off')
+    $(this).closest('form').submit()
 
   add_potential_word: (e) ->
     unless e.metaKey
@@ -150,7 +153,7 @@ window.edit_app =
       contentType: 'application/json'
       type: 'PATCH'
       url: "/unpublished_crosswords/#{id}/update_letters"
-      data: JSON.stringify({letters: letters_array, across_clues: across_clues, down_clues: down_clues, authenticity_token: token, save_counter: edit_app.save_counter}) #JSON monkey businesses required to get non-string values into this array
+      data: JSON.stringify({letters: letters_array, circles: edit_app.circles, across_clues: across_clues, down_clues: down_clues, authenticity_token: token, save_counter: edit_app.save_counter}) #JSON monkey businesses required to get non-string values into this array
       success: ->
         console.log('Saved!')
       error: ->
@@ -174,19 +177,6 @@ window.edit_app =
 
   $.fn.delete_letter = (letter) ->
     @children(".letter").first().empty()
-  #   token = $("#crossword").data("auth-token")
-  #   cell_id = @data("id")
-  #   settings =
-  #     dataType: "script"
-  #     type: "PUT"
-  #     url: "/cells/" + cell_id
-  #     data:
-  #       authenticity_token: token
-  #       cell:
-  #         letter: ""
-  #     error: ->
-  #       alert "Error toggling void!"
-  #   $.ajax settings
 
   $.fn.get_mirror_cell = ->
     $cells = $(".cell")
@@ -194,8 +184,21 @@ window.edit_app =
     this_index = $.inArray(this[0], $cells)
     $ $cells[cell_count - this_index - 1]
 
-  $.fn.toggle_void = (recursive) ->
+  $.fn.toggleCircle = ->
+    existing_circles = $(this).children('.circle')
+    index = $(this).data('index')
+    circles_a = edit_app.circles.split('')
+    if existing_circles.length > 0
+      existing_circles.remove()
+      circles_a[index] = ' '
+    else
+      circle = $('<div>').addClass('circle')
+      $(this).append(circle)
+      circles_a[index] = 'o'
+    edit_app.circles = circles_a.join('')
+    edit_app.update_unsaved()
 
+  $.fn.toggle_void = (recursive) ->
     #Makes this cell void
     @set_letter ''
     @toggleClass 'void'
@@ -213,9 +216,9 @@ window.edit_app =
       @corresponding_clues().filter(".down-clue").show()  unless @cell_above()
       @corresponding_clues().filter(".across-clue").show()  unless @cell_to_left()
 
-    if recursive and edit_app.mirror_voids
+    if recursive and $('#unpublished_crossword_mirror_voids').prop('checked')
       mirror_cell = @get_mirror_cell()
-      unless this[0] is mirror_cell[0]
+      unless (this[0] is mirror_cell[0]) or (this.hasClass('void') is mirror_cell.hasClass('void'))
         mirror_cell.toggle_void(false)
 
     if recursive

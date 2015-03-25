@@ -203,7 +203,12 @@ $ ->
   $(document).on("keydown", cw.keypress)
   $(".cell").on "click", (e) ->
     e.stopPropagation()
-    $(this).highlight()
+    if $('#unpublished_crossword_one_click_void').prop('checked') 
+      $(this).toggle_void(true)
+    else if $('#unpublished_crossword_circle_mode').prop('checked')
+      $(this).toggleCircle();
+    else
+      $(this).highlight()
 
   $(".clue").on "click", (e) ->
     e.stopPropagation()

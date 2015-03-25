@@ -28,9 +28,8 @@ class UnpublishedCrosswordsController < ApplicationController
   def update_letters
     letters = params[:letters].map{|l| l unless l == 0}
     @save_counter = params[:save_counter]
-    found_object.update_attribute(:letters, letters)
-    found_object.update_attribute(:across_clues, params[:across_clues])
-    found_object.update_attribute(:down_clues, params[:down_clues])
+    puzzle_hash = {letters: letters, circles: params[:circles], across_clues: params[:across_clues], down_clues: params[:down_clues]}
+    found_object.update_attributes(puzzle_hash)
   end
 
   def publish
@@ -52,7 +51,7 @@ class UnpublishedCrosswordsController < ApplicationController
     params.require(:unpublished_crossword).permit(:title, :rows, :cols, :description)
   end
   def update_params
-    params.require(:unpublished_crossword).permit(:title, :rows, :cols, :description)
+    params.require(:unpublished_crossword).permit(:title, :rows, :cols, :description, :mirror_voids, :circle_mode, :one_click_void, :multiletter_mode)
   end
 
 end

@@ -4,7 +4,7 @@ module SwitchHelper
   def switch_tag(obj, attribute, label=false, hint=false)
     checked = obj.send(attribute)
     capture_haml do
-      form_for obj, html: {class: 'switch-form'} do |f|
+      form_for obj, remote: true, html: {class: 'switch-form'} do |f|
         f.label attribute, class: "#{checked ? 'on' : 'off'}" do
           haml_tag :div, class: 'switch' do
             haml_tag :div, class: 'pip'
