@@ -63,7 +63,7 @@ class Crossword < ActiveRecord::Base
       created_at: created_at,
       updated_at: updated_at,
       across_clues: across_clues.map{|ac| ac.content},
-      down_clues: down_clues.map{|ac| dc.content},
+      down_clues: down_clues.map{|dc| dc.content}
     )
   end
 
