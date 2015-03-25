@@ -52,21 +52,6 @@ class Crossword < ActiveRecord::Base
 
   #INSTANCE METHODS
 
-  def retroactive_unpublished!
-    upcw = UnpublishedCrossword.create(
-      user_id: user_id,
-      title: title,
-      rows: rows,
-      cols: cols,
-      letters: letters.split(''),
-      description: description,
-      created_at: created_at,
-      updated_at: updated_at,
-      across_clues: across_clues.map{|ac| ac.content},
-      down_clues: down_clues.map{|dc| dc.content}
-    )
-  end
-
   def nonvoid_letter_count
     letters.delete(' _').length
   end

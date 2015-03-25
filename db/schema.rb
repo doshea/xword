@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324005029) do
+ActiveRecord::Schema.define(version: 20150325210914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,17 +58,15 @@ ActiveRecord::Schema.define(version: 20150324005029) do
   end
 
   create_table "crosswords", force: :cascade do |t|
-    t.string   "title",        limit: 255, default: "Untitled", null: false
-    t.text     "letters",                  default: "",         null: false
+    t.string   "title",       limit: 255, default: "Untitled", null: false
+    t.text     "letters",                 default: "",         null: false
     t.text     "description"
-    t.integer  "rows",                     default: 15,         null: false
-    t.integer  "cols",                     default: 15,         null: false
-    t.boolean  "published",                default: false,      null: false
-    t.datetime "published_at"
+    t.integer  "rows",                    default: 15,         null: false
+    t.integer  "cols",                    default: 15,         null: false
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "circled",                  default: false
+    t.boolean  "circled",                 default: false
     t.text     "preview"
   end
 

@@ -3,9 +3,6 @@ module Publishable
 
   included do
     default_scope {order(published_at: :desc)}
-    scope :published, -> {where(published: true)}
-    scope :unpublished, -> {where(published: false)}
-
     scope :standard, -> {where(rows: 15, cols: 15)}
     scope :nonstandard, -> {where.not('(rows = 15) AND (cols = 15)')}
 
