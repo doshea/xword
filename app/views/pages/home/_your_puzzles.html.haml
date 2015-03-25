@@ -1,5 +1,5 @@
 .content.unpublished
-  -if @unpublished.any?
+  -if @unpublished.try(:any?)
     %h5
     Unpublished
     (
@@ -15,7 +15,7 @@
     (
     %span#published-count= @published.count
     )
-  - if @published.any?
+  - if @published.try(:any?)
     %ul
       - @published.each do |cw|
         = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
