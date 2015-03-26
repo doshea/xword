@@ -4,7 +4,6 @@
       %th ID
       %th Title
       %th Creator
-      %th Published
       %th Description
       %th Rows
       %th Columns
@@ -15,12 +14,9 @@
   %tbody
     - @crosswords.each do |crossword|
       = content_tag_for(:tr, crossword) do
-        %td= link_to crossword.id, crossword.published? ? crossword : edit_crossword_path(crossword)
-        %td= link_to crossword.title, crossword.published? ? crossword : edit_crossword_path(crossword)
+        %td= link_to crossword.id, crossword
+        %td= link_to crossword.title, crossword
         %td= link_to crossword.user.username, crossword.user
-        %td
-          -if crossword.published?
-            %i.fi-check
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.description
         %td= crossword.rows
         %td= crossword.cols
