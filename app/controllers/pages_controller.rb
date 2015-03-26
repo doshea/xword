@@ -27,7 +27,7 @@ class PagesController < ApplicationController
       my_partnerings_in_progress = my_partnerings.select{|par| !par[:sol].is_complete}.map{|par| par[:cw]}.uniq
 
       @solved_team = published_not_solo & (Crossword.standard.solved(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_solved)
-      @solved = (@solved_solo | @solved_team).sort{|x, y| y.published_at <=> x.published_at}
+      @solved = (@solved_solo | @solved_team)
       available_in_progress_team = published_not_solo - @solved_team
       @in_progress_team = available_in_progress_team & (Crossword.standard.in_progress(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_in_progress)
 

@@ -25,11 +25,6 @@ FactoryGirl.define do
 
     user
 
-    trait :published do
-      published true
-      published_at {Time.at(rand * Time.now.to_f)}
-    end
-
     trait :with_fake_solution do
       letters { Faker::Lorem.characters(area) }
     end
@@ -63,7 +58,7 @@ FactoryGirl.define do
       end
     end
 
-    factory :published_five_by_five do
+    factory :five_by_five do
       #Should have 'AMIGO', 'VOLOW', 'ANION', 'IDOSE', 'LONER'
       #and 'AVAIL', 'MONDO', 'ILION', 'GOOSE', 'OWNER'
       rows 5

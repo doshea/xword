@@ -133,19 +133,14 @@ class CrosswordsController < ApplicationController
 
   #GET /crosswords/:id/solution_choice or solution_choice_crossword_path
   def solution_choice
-    unless @crossword.published
-      redirect_to edit_crossword_path(@crossword)
-    else
+    @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
+    @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
+    @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_complete[:numerator], Time.current - x.updated_at]}
 
-      @solutions = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id)
-      @solutions += Solution.joins(:solution_partnerings).where(crossword_id: @crossword.id, solution_partnerings: {user_id: @current_user.id}).distinct
-      @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_complete[:numerator], Time.current - x.updated_at]}
-
-      if @solutions.count < 1
-        redirect_to @crossword
-      elsif @solutions.count == 1
-        redirect_to @solutions.first
-      end
+    if @solutions.count < 1
+      redirect_to @crossword
+    elsif @solutions.count == 1
+      redirect_to @solutions.first
     end
   end
 
