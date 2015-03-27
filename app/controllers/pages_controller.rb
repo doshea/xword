@@ -104,14 +104,14 @@ class PagesController < ApplicationController
   #TODO decide if this will be its own page or not
   def nytimes
     @nytimes_user = User.find_by_username('nytimes')
-    @nytimes_puzzles = @nytimes_user.crosswords.published
+    @nytimes_puzzles = @nytimes_user.crosswords
   end
 
   #GET /user_made or user_made_path
   #TODO decide if this will be its own page or not
   def user_made
     @nytimes_user = User.find_by_username('nytimes')
-    @user_puzzles = Crossword.where.not(user_id: @nytimes_user.id).published
+    @user_puzzles = Crossword.where.not(user_id: @nytimes_user.id)
   end
 
 

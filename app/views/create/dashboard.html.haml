@@ -1,25 +1,28 @@
+- title 'Create'
 = content_for :head do
   = stylesheet_link_tag :search
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
   %h3
     %i.fi-pencil
     %span Your Puzzles
-  %hr{style: 'margin-bottom: 0;'}
+  %hr
   :javascript
     var puzzles_remaining = {};
-  .content.unpublished
+  .content.unpublished.center
     -if @unpublished.try(:any?)
-      %h5
-      Unpublished
-      (
-      %span#unpublished-count= @unpublished.count
-      )
+      %h5.text-left
+        Unpublished
+        (
+        %span#unpublished-count= @unpublished.count
+        )
       %ul
         - @unpublished.each do |cw|
           = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
     - else
       You're not working on any puzzles right now. Why not start a...
-    = link_to new_unpublished_crossword_path, class: 'button success' do
+      %br
+      %br
+    = link_to new_unpublished_crossword_path, class: 'foundation button success' do
       %i.fi-pencil.larger
       New Puzzle
   - if @published.try(:any?)

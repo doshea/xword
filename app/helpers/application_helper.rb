@@ -12,4 +12,16 @@ module ApplicationHelper
     (65+rand(26) + rand(2)*32).chr
   end
 
+  def title(s, override=false)
+    content_for(:title){override ? s : "Crossword Café | #{s}"}
+  end
+
+  def title_backup
+    if content_for? :title
+      return nil
+    else
+      'Crossword Café'
+    end
+  end
+
 end

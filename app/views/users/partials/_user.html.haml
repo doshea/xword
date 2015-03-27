@@ -12,14 +12,14 @@
       Crosswords
       %ul.bulleted
         %li #{@user.solutions.complete.count} solved
-        %li #{@user.crosswords.published.count} created
-        %li #{@user.crosswords.unpublished.count} in the works
+        %li #{@user.crosswords.count} created
+        %li #{@user.unpublished_crosswords.count} in the works
     %li Clues written: #{@user.clues.count}
 .large-5.columns
 
 .large-4.columns
   %ul
-    - @user.crosswords.published.each do |cw|
+    - @user.crosswords.each do |cw|
       %li
         = link_to cw.title, cw
         = link_to cw do
