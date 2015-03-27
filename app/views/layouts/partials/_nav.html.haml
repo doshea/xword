@@ -22,6 +22,7 @@
       %li.divider
       %li.has-dropdown
         = link_to '#' do
+          %i.fi-pencil
           Solve
         %ul.dropdown
           %li.divider
@@ -40,20 +41,10 @@
               %i.fi-shuffle.larger
               Random
       %li.divider
-      %li.has-dropdown
-        = link_to '#' do
+      %li
+        = link_to create_dashboard_path do
+          %i.fi-lightbulb
           Create
-        %ul.dropdown
-          %li.divider
-          %li
-            = link_to new_unpublished_crossword_path do
-              %i.fi-pencil.larger
-              New
-          - if is_logged_in?
-            %li
-              = link_to create_dashboard_path do
-                %i.fi-results.larger
-                Dashboard
       %li.divider
       - if is_logged_in?
         = render partial: 'layouts/partials/user_dropdown'

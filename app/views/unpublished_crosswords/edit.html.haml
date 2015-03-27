@@ -29,7 +29,7 @@
   .large-12.columns
     %p
       = label_tag :description
-      = text_area_tag :description, @unpublished_crossword.description
+      = text_area_tag :description, @unpublished_crossword.description, placeholder: "Say something about the making of this crossword -- or anything interesting that doesn't spoil the puzzle!"
   %hr
 .row#advanced
   %h5 Advanced Controls
