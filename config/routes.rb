@@ -18,7 +18,7 @@ Xword::Application.routes.draw do
     end
   end
 
-  resources :crosswords, except: [:index, :destroy] do
+  resources :crosswords, only: [:show] do
     member do
       get :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'

@@ -16,42 +16,6 @@ class CrosswordsController < ApplicationController
     @cells = @crossword.cells.asc_indices
   end
 
-  #GET /crosswords/new or new_crossword_path
-  def new
-    @crossword = Crossword.new
-  end
-
-  #POST /crosswords or crosswords_path
-  def create
-    @crossword = Crossword.new(create_crossword_params)
-    @crossword.user = @current_user
-    if @crossword.save
-      redirect_to edit_crossword_path(@crossword)
-    else
-      render :new, flash: {error: 'There was a problem saving your crossword.'}
-    end
-  end
-
-  #GET /crosswords/:id/edit or edit_crossword_path
-  def edit
-    if @crossword.published?
-      redirect_to @crossword, flash: {secondary: 'Sorry, that puzzle has been published and cannot be further edited.'}
-    else
-      @cells = @crossword.cells.asc_indices
-      @across_cells = @crossword.across_start_cells.includes(:across_clue).asc_indices
-      @down_cells = @crossword.down_start_cells.includes(:across_clue).asc_indices
-      @across_clues = Clue.joins(:across_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
-      @down_clues = Clue.joins(:down_cells).where(cells: {crossword_id: @crossword.id}).order('cells.index')
-      @potential_words = @crossword.potential_words
-    end
-  end
-
-  #PATCH/PUT /crosswords/:id or crossword_path
-  def update
-    crossword.update_attributes(update_crossword_params)
-    render nothing: true
-  end
-
   #GET /crosswords/:id/publish or publish_crossword_path
   def publish
     @crossword.publish! unless @crossword.published?
