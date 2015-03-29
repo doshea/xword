@@ -7,6 +7,13 @@ module Newyorkable
     #has_many and belongs_to
   end
 
+  def get_new_created_date
+    if description
+      publish_date = description.split(' ')[6..8].join(' ').to_date
+      update_attribute(:created_at, publish_date)
+    end
+  end
+
   module ClassMethods
 
     def add_nyt_puzzle(pz)
