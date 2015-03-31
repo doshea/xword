@@ -47,7 +47,7 @@ class Crossword < ActiveRecord::Base
 
   has_many :solution_partnerings, through: :solutions, inverse_of: :crossword
 
-  self.per_page = 12
+  self.per_page = 36
 
   #INSTANCE METHODS
 
