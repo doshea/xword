@@ -13,7 +13,7 @@ module ApplicationHelper
   end
 
   def title(s, override=false)
-    content_for(:title){override ? s : "Crossword Café | #{s}"}
+    content_for(:title){override ? s : "#{s}| Crossword Café"}
   end
 
   def title_backup

@@ -53,36 +53,41 @@ class UnpublishedCrossword < ActiveRecord::Base
     down_a = []
 
     letter_voids.each_with_index do |v, i|
-      counted = false
-      #across
-      #check if in left column
-      if (i % cols > 0)
-        left_i = i-1
-        if letter_voids[left_i]
+      if v
+        across_a << nil
+        down_a << nil
+      else
+        counted = false
+        #across
+        #check if in left column
+        if (i % cols > 0)
+          left_i = i-1
+          if letter_voids[left_i]
+            across_a << counter
+            counted = true
+          else
+            across_a << nil
+          end
+        else
           across_a << counter
           counted = true
-        else
-          across_a << nil
         end
-      else
-        across_a << counter
-        counted = true
-      end
-      #down
-      #check if in top row
-      if i >= cols
-        top_i = i-cols
-        if letter_voids[top_i]
+        #down
+        #check if in top row
+        if i >= cols
+          top_i = i-cols
+          if letter_voids[top_i]
+            down_a << counter
+            counted = true
+          else
+            down_a << nil
+          end
+        else
           down_a << counter
           counted = true
-        else
-          down_a << nil
         end
-      else
-        down_a << counter
-        counted = true
+        counter += 1 if counted
       end
-      counter += 1 if counted
     end
 
     {across: across_a, down: down_a}

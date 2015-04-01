@@ -44,9 +44,6 @@
         = switch_tag @unpublished_crossword, :circle_mode, 'Circle Mode'
       %li
         = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
-    %input{type: :radio, name: :mode, value: 1}
-    %input{type: :radio, name: :mode, value: 2}
-    %input{type: :radio, name: :mode, value: 3}
   .large-6.columns
   .large-3.columns
     = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
