@@ -176,7 +176,14 @@ window.edit_app =
     $ ".clue[data-index=" + @data("index") + "]"
 
   $.fn.delete_letter = (letter) ->
-    @children(".letter").first().empty()
+    if @is_empty_cell()
+      unless @is_word_start()
+        unless @previous_cell().is_empty_cell()
+          @previous_cell().delete_letter true
+        @previous_cell().highlight()
+        false
+    else
+      @children(".letter").first().empty()
 
   $.fn.get_mirror_cell = ->
     $cells = $(".cell")

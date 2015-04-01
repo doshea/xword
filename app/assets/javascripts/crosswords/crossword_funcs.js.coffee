@@ -186,7 +186,7 @@ window.cw =
     if evt.keyCode is cw.BACKSPACE and not /input|textarea/i.test(target.nodeName)
       check_for_unfinish = not cw.selected.is_empty_cell()
       cw.selected.delete_letter true
-      cw.selected.uncheck_unfinisheds()  if check_for_unfinish
+      cw.selected.uncheck_unfinisheds() if check_for_unfinish
       return false
     false  if _.contains(cw.PAGE_NAV_KEYS, evt.keyCode) and not /input|textarea/i.test(target.nodeName)
 

@@ -1,4 +1,5 @@
 if(<%= @added != false  %>){
+  $('#idea-container input').val('')
   var li_to_insert = $("<%=j render partial: 'unpublished_crosswords/partials/potential_word', locals: {word: @word} %>");
   li_to_insert.addClass('added-word')
   var ul = $('#ideas ul');
