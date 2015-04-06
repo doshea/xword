@@ -47,7 +47,7 @@ module Newyorkable
           rows: pz['size']['rows'],
           cols: pz['size']['cols'],
           description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz.",
-          created_at: Time.now
+          created_at: pz_date
         )
         new_nytimes_crossword.save
 
