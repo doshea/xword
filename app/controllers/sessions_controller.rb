@@ -2,6 +2,7 @@ class SessionsController < ApplicationController
   
   # GET /login or login_path
   def new
+    @user = User.new
   end
 
   # POST /login or login_path

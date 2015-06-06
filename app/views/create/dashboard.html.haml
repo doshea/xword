@@ -2,37 +2,46 @@
 = content_for :head do
   = stylesheet_link_tag :search
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
-  %h3
-    %i.fi-pencil
-    %span Your Puzzles
-  %hr
-  :javascript
-    var puzzles_remaining = {};
-  .content.unpublished.center
-    -if @unpublished.try(:any?)
-      %h5.text-left
-        Unpublished
-        (
-        %span#unpublished-count= @unpublished.count
-        )
-      %ul
-        - @unpublished.each do |cw|
-          = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
-    - else
-      You're not working on any puzzles right now. Why not start a...
-      %br
-      %br
-    = link_to new_unpublished_crossword_path, class: 'foundation button success' do
-      %i.fi-pencil.larger
-      New Puzzle
-  - if @published.try(:any?)
+  -if is_logged_in?
+    %h3
+      %i.fi-pencil
+      %span Your Puzzles
     %hr
-    .content
-      %h5
-        Published
-        (
-        %span#published-count= @published.count
-        )
-      %ul
-        - @published.each do |cw|
-          = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
+    :javascript
+      var puzzles_remaining = {};
+    .content.unpublished.center
+      -if @unpublished.try(:any?)
+        %h5.text-left
+          Unpublished
+          (
+          %span#unpublished-count= @unpublished.count
+          )
+        %ul
+          - @unpublished.each do |cw|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
+      - else
+        You're not working on any puzzles right now. Why not start a...
+        %br
+        %br
+      = link_to new_unpublished_crossword_path, class: 'foundation button success' do
+        %i.fi-pencil.larger
+        New Puzzle
+    - if @published.try(:any?)
+      %hr
+      .content
+        %h5
+          Published
+          (
+          %span#published-count= @published.count
+          )
+        %ul
+          - @published.each do |cw|
+            = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
+  - else
+    %h2.center Oops! You're not logged in
+    %p.center
+      To create your own crosswords, you'll need to
+      = succeed '.' do
+        %u= link_to 'login or make a new account', login_path
+      Don't worry, it's free!
+    %br
