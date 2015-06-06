@@ -8,9 +8,9 @@
         = f.email_field :email, placeholder: "email", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_EMAIL_LENGTH
         = f.password_field :password, placeholder: "password", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
         = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
-        = f.submit "Sign up", class: 'chalkboard-button'
+        = f.submit "Sign up!", class: 'chalkboard-button'
       %span or
-      = link_to "#", class: "chalkboard-button button", id: "signup1" do
+      = link_to "#", class: "small chalkboard-button button", id: "signup1" do
         Log In
         %i.fi-arrow-right
 
@@ -23,6 +23,9 @@
           = label_tag :remember_me, 'remember me'
         = submit_tag "Log in" , :class => "chalkboard-button"
       %span or
-      = link_to '#', class: "chalkboard-button button", id: "signup2" do
+      = link_to '#', class: "small chalkboard-button button", id: "signup2" do
         %i.fi-arrow-left
         Sign Up
+      %br
+      %br
+      = link_to 'Forgot your password?', forgot_password_users_path

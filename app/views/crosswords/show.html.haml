@@ -35,7 +35,7 @@
     }
 
 .row#credit-area
-  .large-12.columns
+  .medium-12.columns
     %h3
       = @crossword.title.html_safe
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
@@ -63,10 +63,10 @@
 
 
 .row#solve-area
-  .large-12.columns
+  .medium-12.columns
     = render partial: 'crosswords/partials/solve_crossword'
 .row#meta-area
-  .large-12.columns
+  .medium-12.columns
     #solve-controls
       %button.button.warning.small#show-incorrect
         %i.fi-alert
@@ -75,12 +75,12 @@
         %i.fi-check
         Check Correctness
   %hr
-  .large-12.columns
+  .medium-12.columns
     .row
-      .large-2.columns
+      .medium-2.columns
         = link_to @crossword.user do
           = image_tag(@crossword.user.image.creator_pic, class: 'small-shadow thin-border')
-      .large-10.columns
+      .medium-10.columns
         %p
           %em= @crossword.description
           \--

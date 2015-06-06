@@ -2,7 +2,6 @@
   %a#profile-tease
     = image_tag @current_user.image.thumb, class: 'profile-pic-updateable'
     = @current_user.username
-
   %ul.dropdown
     %li.divider
       = link_to account_users_path do
@@ -14,5 +13,5 @@
         Public Profile
     %li.divider
       = link_to logout_path, method: 'delete' do
-        %i.fi-power{style: 'color: #f55;'}
+        %i.fi-power
         Log out

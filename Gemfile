@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.2.0'
+ruby '2.2.1'
 gem 'rails'
 gem 'coffee-rails'
 gem 'json'
@@ -25,7 +25,6 @@ gem 'uglifier'
 gem 'carrierwave'
 gem 'fog'
 gem 'rmagick'
-# gem 'rmagick', :require => 'RMagick' #This explicit specification prevents an unusual 'stack level too deep' error referenced here: https://github.com/carrierwaveuploader/carrierwave/issues/1330
 gem 'remotipart'
 gem 'unf'
 

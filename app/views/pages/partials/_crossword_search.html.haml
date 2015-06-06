@@ -1,5 +1,5 @@
-%h6= "#{pluralize(@crosswords.count, 'crossword')} found"
+%h6= "#{pluralize(@crosswords.length, 'crossword')} found"
 - @crosswords_sliced.each do |slice|
   .row
-    - slice.each do |crossword|
-      = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    - slice.each do |cw|
+      = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
