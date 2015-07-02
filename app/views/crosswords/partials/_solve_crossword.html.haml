@@ -7,13 +7,13 @@
         - letter = @crossword.letters[index]
         - unless letter == '_'
           %td.cell{:'data-row' => r, :'data-col' => c}
+            .flag
             .letter= @solution.letters[index] if @solution
             - cell = @cells[index]
             - if cell.circled
               .circle
             - if cell.cell_num
               .cell-num
-            .cell-flag
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
 

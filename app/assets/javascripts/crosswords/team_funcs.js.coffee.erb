@@ -93,7 +93,7 @@ window.team_app =
       unless (team_app.last_clack and (now-team_app.last_clack < 4000))
         team_app.last_clack = now
         team_app.cell_clack_sound.play()
-      $cell.children('.cell-flag').stop().css('background', "rgb(#{data.red}, #{data.green}, #{data.blue})").animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
+      $cell.children('.flag').stop().css('background', "rgb(#{data.red}, #{data.green}, #{data.blue})").animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
       if data.letter is ''
         $cell.delete_letter(false)
         # solve_app.update_unsaved()

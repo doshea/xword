@@ -1,6 +1,14 @@
 // All incorrect cells are marked with a class, their flags flash red, the class is removed
 _.each(<%= @mismatches %>, function(index){
-  $($(".cell")[index]).addClass('mismatch');
+  var temp = $($('.cell')[index]);
+  temp.addClass('flagged incorrect').removeClass('correct');
 })
-$('.mismatch .cell-flag').stop().css('background', 'rgb(255, 120, 120)').animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
-$('.mismatch').removeClass('mismatch');
+var flagged = _.chain($('.cell'))
+  .map(function(cell, index){ return $(cell).hasClass('flagged') ? index : null;})
+  .reject(function(cell){return cell == null;})
+  .value();
+var corrected = _.difference(flagged, <%= @mismatches %>);
+console.log(corrected);
+_.each(corrected, function(index){
+  $($('.cell')[index]).addClass('correct').removeClass('incorrect');
+});
