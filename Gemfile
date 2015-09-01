@@ -11,6 +11,9 @@ gem 'multi_json'
 
 gem 'pusher'
 
+#TODO TEMPORARY FIX --> http://stackoverflow.com/questions/31793791/push-to-heroku-fails-could-not-find-net-ssh-2-10-0-in-any-of-the-sources-faile
+gem 'net-ssh', '!= 2.10.0'
+
 # gem 'protected_attributes' #Until I fix things to properly use Rails 4. UPGRADE THIS PLEASE.
 
 gem 'pg'
