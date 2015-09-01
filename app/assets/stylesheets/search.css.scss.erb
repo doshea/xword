@@ -1,3 +1,5 @@
+$standard-img-dim: 75px;
+
 .row.puzzle-tabs {
   padding: 1em;
 
@@ -32,7 +34,6 @@
   -moz-transition: background 0.4s;
   -o-transition: background 0.4s;
   transition: background 0.4s;
-
   &:hover{
     background: lightgrey;
   }
@@ -44,7 +45,8 @@
         margin: 0;
         &.title {
           font-weight: bold;
-          margin-top: -0.5em;
+          font-size: smaller;
+          line-height: 1em;
         }
         &.byline {
           font-style: italic;
@@ -56,7 +58,19 @@
       }
     }
   }
+  .minipic img {
+    max-width: none;
+    width: $standard-img-dim;
+    height: $standard-img-dim;
+  }
 }
+// TODO: Delete this
+// $i: $min-dim;
+// @while $i <= $max-dim {
+//   .minipic img.cols-#{$i} { width: $standard-img-dim; }
+//   .minipic img.rows-#{$i} { height: $standard-img-dim; }
+//   $i: $i + 1;
+// }
 
 .puzzle-tabs {
   a:not(.foundation) {
