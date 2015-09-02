@@ -18,11 +18,6 @@ class PreviewUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  # end
-  # def default_url
-  #   asset_path('images/default_user_img.jpg');
-  # end
-
   def extension_white_list
     %w(jpg jpeg gif png)
   end

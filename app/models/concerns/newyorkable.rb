@@ -81,12 +81,12 @@ module Newyorkable
     end
 
     def add_latest_nyt_puzzle
-      latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx")
+      latest = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?format=text")
       Crossword.add_nyt_puzzle(latest)
     end
 
     def add_puzzle_from_date(year, month, day)
-      crossword_from_date = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?date=#{month}/#{day}/#{year}")
+      crossword_from_date = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?date=#{month}/#{day}/#{year}&format=text")
       Crossword.add_nyt_puzzle(crossword_from_date)
     end
 
