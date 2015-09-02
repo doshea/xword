@@ -22,11 +22,6 @@
         %h5
           %i.fi-clipboard-notes
           %span Solved Puzzles
-    %dd
-      = link_to '#panel4' do
-        %h5
-          %i.fi-alert
-          %span Non-Standard Puzzles
   :javascript
     var puzzles_remaining = {};
   .tabs-content
@@ -36,5 +31,3 @@
       = render partial: 'pages/home/in_progress'
     #panel3.content
       = render partial: 'pages/home/solved_puzzles'
-    #panel4.content
-      = render partial: 'pages/home/nonstandard'
