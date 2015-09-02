@@ -102,6 +102,37 @@ module Newyorkable
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)
     end
 
+    def record_today_on_github
+      puzzle_json = HTTParty.get("http://www.xwordinfo.com/JSON/Data.aspx?format=text")
+
+      unless puzzle_json.nil?
+        url_stem = 'https://api.github.com'
+        repo = 'nyt_crosswords'
+        username = 'doshea'
+
+        # date_underscores = Date.today.to_s.gsub('-', '_')
+        year = Date.today.year
+        month = sprintf('%02d', Date.today.month)
+        day = sprintf('%02d', Date.today.day)
+
+        auth = {username: ENV['GITHUB_USERNAME'], password: ENV['GITHUB_PASSWORD']}
+        create_url = url_stem + "/repos/#{username}/#{repo}/contents/#{year}/#{month}/#{day}.json"
+      
+        HTTParty.put(
+          create_url,
+          basic_auth: auth,
+          headers: {"User-Agent" => ENV['GITHUB_USERNAME']},
+          body: {
+            message: "NYT puzzle for #{date.strftime('%a, %b %d, %Y')}",
+            content: Base64.strict_encode64(puzzle_json)
+          }.to_json
+        )
+      else
+        #throw an error because there is no puzzle
+        nil
+      end
+    end
+
     def record_on_github(date)
       puzzle_json = get_nyt_from_date(date)
 
