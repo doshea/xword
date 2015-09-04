@@ -20,7 +20,7 @@ window.cw =
 
   # Removes highlighting from the selected cell, the selected word and the selected clue. Also sets the
   # selected boolean to false to disable keystroke events for the puzzle while it isn't in "focus"
-  unhighlight_all: ->
+  unhighlight_all: (e) ->
     if cw.selected
       cw.selected.removeClass("selected")
       cw.selected = null
@@ -50,8 +50,8 @@ window.cw =
 
   # Returns all of the letters of the selected word in order
   selected_word: ->
-    letters = ""
-    $.each $(".selected-word"), (index, value) ->
+    letters = ''
+    $.each $('.selected-word'), (index, value) ->
       letters += $(value).get_letter()
     return letters
 
@@ -69,8 +69,8 @@ window.cw =
 
   # Returns all of the letters of the puzzle in order, with voids replaced by underscores
   # EX: FOO_BAR...
-  get_letters: ->
-    letters = ""
+  get_puzzle_letters: ->
+    letters = ''
     $cells = $(".cell")
     $.each $cells, (index, cell) ->
       letters += (if $(cell).hasClass("void") then "_" else $(cell).get_letter())

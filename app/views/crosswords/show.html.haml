@@ -8,6 +8,7 @@
 
 :javascript
   solve_app.solution_id = #{@solution.try(:id)}
+  solve_app.crossword_id = #{@crossword.try(:id)}
   solve_app.anonymous = #{@current_user.nil?}
 
 - if (@current_user == @crossword.user)
@@ -68,12 +69,24 @@
 .row#meta-area
   .medium-12.columns
     #solve-controls
-      %button.button.warning.small#show-incorrect
-        %i.fi-alert
-        Show Incorrect
-      %button.button.success.small#check-correctness
+      -# %button.button.warning.small#show-incorrect
+      -#   %i.fi-alert
+      -#   Show Incorrect
+      %a.button.split.small.success.check-completion{data: {unhighlight: 'false'}}
         %i.fi-check
-        Check Correctness
+          Check
+        %span{data: {dropdown: 'drop'}}
+      %br
+      %ul#drop.f-dropdown{"data-dropdown-content": true}
+        %li
+          %a#check-cell{:href => "#"} Current Cell
+        %li
+          %a#check-word{:href => "#"} Current Word
+        %li
+          %a.check-puzzle{:href => "#"} Entire Puzzle
+        %hr
+        %li
+          %a.check-completion{:href => "#"} Completion
   %hr
   .medium-12.columns
     .row

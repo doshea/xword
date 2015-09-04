@@ -1,5 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :check_puzzle]
   before_action :ensure_logged_in, only: [:create]
   before_action :ensure_owner_or_admin, only: [:edit, :update, :publish, :add_potential_word, :remove_potential_word]
 
@@ -114,6 +114,33 @@ class CrosswordsController < ApplicationController
     @crosswords = Crossword.find(params[:ids])
     @crosswords_remaining = @crosswords[Crossword.per_page..-1]
     @crosswords = @crosswords[0...Crossword.per_page]
+  end
+
+  #GET /crosswords/:id/check_cell or check_cell_crossword_path
+  def check_cell
+    @mismatches = {}
+    letters = params[:letters]
+    indices = params[:indices].map(&:to_i)
+    params[:letters].each_with_index do |v,i|
+      corrected_i = indices[i]
+      @mismatches[corrected_i] = (v != @crossword.letters[corrected_i])
+    end
+  end
+
+  #GET /crosswords/:id/check_puzzle or check_puzzle_crossword_path
+  def check_puzzle
+    @correctness = (@crossword.letters == params[:letters])
+    if @current_user
+      @solution = Solution.find(params[:solution_id])  
+    end
+  end
+
+  #GET /crosswords/:id/check_completion or check_completion_crossword_path
+  def check_completion
+    @correctness = (@crossword.letters == params[:letters])
+    if @current_user
+      @solution = Solution.find(params[:solution_id])  
+    end
   end
 
   private

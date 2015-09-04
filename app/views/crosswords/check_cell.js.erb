@@ -1,0 +1,18 @@
+// All incorrect cells are marked with a class, their flags flash red, the class is removed
+var mismatches = new Object();
+<% @mismatches.each do |k, v| %>
+  mismatches[<%= k %>] = <%= v %>;
+<% end %>
+
+console.log(mismatches);
+
+_.each(mismatches, function(v, i, k){
+  console.log(i);
+  console.log(k);
+  var temp = $($('.cell')[i]);
+  if (v){
+    temp.addClass('flagged incorrect').removeClass('correct');
+  } else {
+    temp.addClass('flagged correct').removeClass('incorrect');
+  }
+})

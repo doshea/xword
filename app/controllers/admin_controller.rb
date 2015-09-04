@@ -13,6 +13,9 @@ class AdminController < ApplicationController
   def cloning_tank
   end
 
+  def cheat
+  end
+
   #POST /admin/user_search or admin_user_search_path
   def user_search
     @users = User.admin_search(params[:query])

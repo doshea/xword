@@ -31,6 +31,9 @@
     position: absolute;
     right: 0.5em;
     top: 0.5em;
+    .secondary {
+      border: 1px solid #ccc;
+    }
   }
 }
 #meta-area {
@@ -176,7 +179,6 @@ table#crossword {
 
 #solve-controls {
   position: relative;
-  overflow: auto;
   margin-left: 0.6em;
   margin: 0.2em;
   float: left;
@@ -194,8 +196,13 @@ table#crossword {
     &.warning {
       @include button-style(#FFC68D);
     }
+  }
+  .button {
     &.success {
       @include button-style(#83EDA3);
+      &.split span:before {
+        border-color: #333 transparent transparent transparent;
+      }
     }
   }
 }

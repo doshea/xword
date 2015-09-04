@@ -1,63 +1,63 @@
-= javascript_include_tag 'jquery.flightboard.min'
-%h2.center
-  %i.fi-trophy
-  SOLVED!
-  %i.fi-trophy
-%p.lead.center
-  Congratulations#{", #{@current_user.display_first_name}" if @current_user}!
-%p.lead.center
-  You completed
-  %i #{@solution.crossword.title}
-  in:
-- time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
-- day_s = '%03d' % time_difference[:days]
-- hour_s = '%02d' % time_difference[:hours]
-- minute_s = '%02d' % time_difference[:minutes]
-- second_s = '%02d' % time_difference[:seconds]
-- millisecond_s = '%03d' % time_difference[:milliseconds]
-- more_than_a_day = (time_difference[:days] > 0)
-- more_than_an_hour = (time_difference[:hours] > 0)
-
-.center
-  - if more_than_a_day
-    #days{style: 'display: inline-block'}
-    days, and
-  .clock{style: 'background: black; display: inline-block; padding: 1px 5px 0; color: #EEE; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; '}
-    -if more_than_an_hour
-      #hours{style: 'display: inline-block;'}
-      %span{style: 'vertical-align: top; line-height: 37px;'} :
-    #minutes{style: 'display: inline-block;'}
-    - unless more_than_a_day
-      %span{style: 'vertical-align: top; line-height: 37px;'} :
-      #seconds{style: 'display: inline-block;'}
-    - unless more_than_an_hour
-      %span{style: 'bottom: 7px; position: relative;'} .
-      #milliseconds{style: 'display: inline-block;'}
-= render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
-- if @current_user
-  - unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
-    %hr
-    = form_tag add_comment_path(@solution.crossword), remote: true, id: 'complete-form' do
-      %h5
-        %i.fi-comment
-        How was the crossword?
-      = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
-      :javascript
-        $('#complete-form').on('keypress', 'textarea', function(e){
-          if(!e.metaKey){
-            var key = e.which
-            if(key == cw.ENTER){
-              e.preventDefault();
-              if(!$(this).val() == ''){
-                $(this).parent().submit();
-                $(this).val('');
-                var thank_you = $('<h3 style="text-align: center; display: none;">');
-                thank_you.text('Thank you!');
-                $(this).parent().after(thank_you);
-                $(this).parent().fadeOut(500, function(){
-                  thank_you.fadeIn();
-                });
+- if @correctness
+  - if @current_user
+    = javascript_include_tag 'jquery.flightboard.min'
+    - time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
+    - day_s = '%03d' % time_difference[:days]
+    - hour_s = '%02d' % time_difference[:hours]
+    - minute_s = '%02d' % time_difference[:minutes]
+    - second_s = '%02d' % time_difference[:seconds]
+    - millisecond_s = '%03d' % time_difference[:milliseconds]
+    - more_than_a_day = (time_difference[:days] > 0)
+    - more_than_an_hour = (time_difference[:hours] > 0)
+  %h2.center
+    %i.fi-trophy
+    SOLVED!
+    %i.fi-trophy
+  %p.lead.center
+    Congratulations#{", #{@current_user.display_first_name}" if @current_user}!
+  %p.lead.center
+    You completed
+    %i #{@crossword.title}#{' in:' if @current_user}
+  - if @current_user
+    .center
+      - if more_than_a_day
+        #days{style: 'display: inline-block'}
+        days, and
+      .clock{style: 'background: black; display: inline-block; padding: 1px 5px 0; color: #EEE; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; '}
+        -if more_than_an_hour
+          #hours{style: 'display: inline-block;'}
+          %span{style: 'vertical-align: top; line-height: 37px;'} :
+        #minutes{style: 'display: inline-block;'}
+        - unless more_than_a_day
+          %span{style: 'vertical-align: top; line-height: 37px;'} :
+          #seconds{style: 'display: inline-block;'}
+        - unless more_than_an_hour
+          %span{style: 'bottom: 7px; position: relative;'} .
+          #milliseconds{style: 'display: inline-block;'}
+    = render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
+    - unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
+      %hr
+      = form_tag add_comment_path(@solution.crossword), remote: true, id: 'complete-form' do
+        %h5
+          %i.fi-comment
+          How was the crossword?
+        = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
+        :javascript
+          $('#complete-form').on('keypress', 'textarea', function(e){
+            if(!e.metaKey){
+              var key = e.which
+              if(key == cw.ENTER){
+                e.preventDefault();
+                if(!$(this).val() == ''){
+                  $(this).parent().submit();
+                  $(this).val('');
+                  var thank_you = $('<h3 style="text-align: center; display: none;">');
+                  thank_you.text('Thank you!');
+                  $(this).parent().after(thank_you);
+                  $(this).parent().fadeOut(500, function(){
+                    thank_you.fadeIn();
+                  });
+                }
               }
             }
-          }
-        })
+          })

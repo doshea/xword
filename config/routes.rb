@@ -25,7 +25,10 @@ Xword::Application.routes.draw do
       post :favorite
       delete 'favorite' => 'crosswords#unfavorite'
       get 'team/:key' => 'crosswords#team', as: 'team'
-      get 'solution_choice'
+      get :solution_choice
+      post :check_cell
+      post :check_puzzle
+      post :check_completion
     end
     collection do
       post :batch
@@ -44,7 +47,6 @@ Xword::Application.routes.draw do
   resources :solutions, only: [:show, :update] do
     member do
       post :get_incorrect
-      post :check_correctness
       patch :team_update
       post :join_team
       post :leave_team
@@ -108,6 +110,7 @@ Xword::Application.routes.draw do
 
   namespace :admin do
     get :email
+    get :cheat
     post :test_emails
     get :clone_user, action: :cloning_tank, as: :cloning_tank
     post :user_search

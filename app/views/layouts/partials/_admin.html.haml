@@ -17,3 +17,6 @@
       = link_to 'Emails', admin_email_path
     %li
       = link_to 'Clone User', admin_clone_user_path
+    - if @crossword
+      %li
+        = link_to 'Cheat (JS)', admin_cheat_path, remote: true

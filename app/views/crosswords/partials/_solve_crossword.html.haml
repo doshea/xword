@@ -1,21 +1,22 @@
 -# %table#crossword{:'data-id' => @crossword.id, :'data-rows' => @crossword.rows, :'data-cols' => @crossword.cols, :'data-auth-token' => form_authenticity_token}
 %table#crossword.no-select{data: {id: @crossword.id, rows: @crossword.rows, cols: @crossword.cols, :'auth-token' => form_authenticity_token}}
+  - i = 0
   - for r in 1..@crossword.rows
     %tr{:'data-row' => r}
       - for c in 1..@crossword.cols
-        - index = (r -1)*@crossword.cols + c - 1
-        - letter = @crossword.letters[index]
+        - letter = @crossword.letters[i]
         - unless letter == '_'
-          %td.cell{:'data-row' => r, :'data-col' => c}
+          %td.cell{:'data-row' => r, :'data-col' => c, :'data-index' => i}
             .flag
-            .letter= @solution.letters[index] if @solution
-            - cell = @cells[index]
+            .letter= @solution.letters[i] if @solution
+            - cell = @cells[i]
             - if cell.circled
               .circle
             - if cell.cell_num
               .cell-num
         -else
           %td.cell.void{:'data-row' => r, :'data-col' => c}
+        - i += 1
 
 -# Solve Clue Columns
 - edit = false

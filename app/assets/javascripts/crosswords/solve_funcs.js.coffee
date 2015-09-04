@@ -9,6 +9,7 @@ be called by any jQuery object.
 
 window.solve_app =
   logged_in: null
+  crossword_id: null
   solution_id: null
   save_timer: null
   clock_updater: null
@@ -30,16 +31,20 @@ window.solve_app =
       e.preventDefault()
       $('#controls-modal').foundation('reveal', 'open')
     )
-    $('#show-incorrect').on('click', solve_app.show_incorrect)
-    $('#check-correctness').on('click', solve_app.check_correctness)
-    $(':not(.cell, .cell *, .clue, .clue *)').on('click', -> cw.unhighlight_all())
+    # $('#show-incorrect').on('click', solve_app.show_incorrect)
+    $('#check-cell').on('click', solve_app.check_cell)
+    $('#check-word').on('click', solve_app.check_word)
+    $('#check-word').on('click', solve_app.check_puzzle)
+    $(".check-completion :not([data-dropdown='drop'])").on('click', solve_app.check_completion)
+    #may be able to use $(document.activeElement) http://stackoverflow.com/questions/967096/using-jquery-to-test-if-an-input-has-focus
+    $('input, textarea').on('click', -> cw.unhighlight_all()) #may need further tweaking on Edit
     solve_app.check_all_finished()
     true
 
   save_solution: (e) ->
     e.preventDefault() if e
     token = $('#crossword').data('auth-token')
-    letters = cw.get_letters();
+    letters = cw.get_puzzle_letters();
     settings =
       dataType: 'script'
       type: 'PUT'
@@ -62,26 +67,63 @@ window.solve_app =
       $('#save-status').text('Unsaved changes')
       $('#save-clock').empty()
 
-  show_incorrect: (e) ->
-    e.preventDefault()
-    solve_app.save_solution()
-    letters = cw.get_letters();
-    settings =
-      dataType: 'script'
-      type: 'POST'
-      url: "/solutions/#{solve_app.solution_id}/get_incorrect"
-      data: {letters: letters}
-    $.ajax(settings)
+  # show_incorrect: (e) ->
+  #   e.preventDefault()
+  #   solve_app.save_solution()
+  #   letters = cw.get_puzzle_letters();
+  #   settings =
+  #     dataType: 'script'
+  #     type: 'POST'
+  #     url: "/solutions/#{solve_app.solution_id}/get_incorrect"
+  #     data: {letters: letters}
+  #   $.ajax(settings)
 
-  check_correctness: (e) ->
+  check_cell: (e) ->
+    e.preventDefault()
+    if cw.selected
+      if cw.selected.is_empty_cell()
+        alert('This cell is empty.')
+      else
+        index = cw.selected.data('index')
+        letter = cw.selected.get_letter()
+        settings =
+          dataType: 'script'
+          type: 'POST'
+          url: "/crosswords/#{solve_app.crossword_id}/check_cell"
+          data: {letters: [letter], indices: []}
+        settings.data.indices.push(index)
+        $.ajax(settings)
+        solve_app.save_solution()
+
+  check_word: (e) ->
+    e.preventDefault()
+    if cw.selected
+      settings =
+          dataType: 'script'
+          type: 'POST'
+          url: "/crosswords/#{solve_app.crossword_id}/check_cell"
+          data: {letters: [], indices: []}
+      for cell in cw.selected.get_word_cells()
+        unless cell.is_empty_cell()
+          index = cell.data('index')
+          letter = cell.get_letter()
+          settings.data.indices.push(index)
+          settings.data.letters.push(letter)
+      unless settings.data.letters.length == 0
+        $.ajax(settings)
+        solve_app.save_solution()
+
+  check_completion: (e) ->
     e.preventDefault()
     solve_app.save_solution()
-    letters = cw.get_letters();
+    letters = cw.get_puzzle_letters();
     settings =
       dataType: 'script'
       type: 'POST'
-      url: "/solutions/#{solve_app.solution_id}/check_correctness"
+      url: "/crosswords/#{solve_app.crossword_id}/check_completion"
       data: {letters: letters}
+    unless solve_app.anonymous
+      settings.data['solution_id'] = solve_app.solution_id
     $.ajax(settings)
 
   add_comment_or_reply: (e) ->

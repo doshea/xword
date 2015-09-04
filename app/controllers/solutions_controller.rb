@@ -1,5 +1,5 @@
 class SolutionsController < ApplicationController
-  before_action :find_object, only: [:update, :get_incorrect, :check_correctness]
+  before_action :find_object, only: [:update, :get_incorrect]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
   #GET /solutions/:id or solution_path
@@ -28,11 +28,6 @@ class SolutionsController < ApplicationController
     if @mismatches.empty?
       @solution.update_attributes(is_complete: true)
     end
-  end
-
-  #POST /solutions/:id/check_correctness or check_correctness_solution_path
-  def check_correctness
-    @correctness = @solution.crossword.letters == params[:letters]
   end
 
   #PATCH /solutions/:id/team_update or team_update_solution_path
