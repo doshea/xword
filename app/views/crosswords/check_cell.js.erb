@@ -13,6 +13,8 @@ _.each(mismatches, function(v, i, k){
   if (v){
     temp.addClass('flagged incorrect').removeClass('correct');
   } else {
-    temp.addClass('flagged correct').removeClass('incorrect');
+    if (temp.hasClass('incorrect')){
+      temp.addClass('flagged correct').removeClass('incorrect');
+    }
   }
 })
