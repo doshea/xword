@@ -4,11 +4,7 @@ var mismatches = new Object();
   mismatches[<%= k %>] = <%= v %>;
 <% end %>
 
-console.log(mismatches);
-
 _.each(mismatches, function(v, i, k){
-  console.log(i);
-  console.log(k);
   var temp = $($('.cell')[i]);
   if (v){
     temp.addClass('flagged incorrect').removeClass('correct');
