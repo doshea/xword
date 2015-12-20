@@ -404,7 +404,6 @@ DEPENDENCIES
   launchy
   meta_request
   multi_json
-  net-ssh (!= 2.10.0)
   nilify_blanks
   pg
   pg_search
@@ -418,7 +417,7 @@ DEPENDENCIES
   rainbow
   remotipart
   rmagick
-  rspec-rails (= 2.14.2)
+  rspec-rails
   sass-rails
   sdoc
   shoulda-matchers
