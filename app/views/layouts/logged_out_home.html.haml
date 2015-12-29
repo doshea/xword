@@ -1,28 +1,14 @@
 !!!
 %html
   %head
-    %meta{charset: "utf-8"}/
-    %meta{content: "width=device-width", name: "viewport"}/
-    %meta{name: 'author', content: "Dylan O'Shea"}
-    %meta{name: 'keywords', content: "crossword, crosswords, cafe, café, crossword-café, crossword-cafe, crosswordcafe, crosswordcafé, puzzles, crossword puzzles, crossword puzzle, NYT crossword, New York Times crossword"}
-    %meta{name: 'description', content: @meta || "Grab a mug, take a seat, and solve the latest crosswords with your friends. In real-time. Welcome to Crossword Caf&eacute;."}
+    = render partial: 'layouts/partials/meta_tags'
+    = render partial: 'layouts/partials/knowledge_graph'
     %title Crossword Caf&eacute; | Welcome
     = stylesheet_link_tag    "application", media: "all"
     = stylesheet_link_tag    "welcome"
     = javascript_include_tag "application"
     = javascript_include_tag "welcome"
-    / Google Analytics tracking
-    :javascript
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-46607276-1']);
-      _gaq.push(['_setDomainName', 'crossword-cafe.com']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+    = render partial: 'layouts/partials/ga_tracking'
     = csrf_meta_tags
   %body
     #body
