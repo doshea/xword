@@ -25,6 +25,9 @@ class PreviewUploader < CarrierWave::Uploader::Base
   version :thumb do
     process :resize_to_fill => [27, 27]
   end
+  version :og do
+    process :resize_to_fill => [75, 75]
+  end
   version :large do
     process :resize_to_fill => [150, 150]
   end

@@ -7,9 +7,7 @@ class PagesController < ApplicationController
 
   #GET / or root_path
   def home
-    if @current_user.nil?
-      redirect_to(welcome_path)
-    else
+    if @current_user
       @owned = @current_user.crosswords
       @unpublished = @current_user.unpublished_crosswords
 
@@ -31,7 +29,8 @@ class PagesController < ApplicationController
       @in_progress_team = available_in_progress_team & (Crossword.in_progress(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_in_progress)
 
       @unstarted = available_in_progress_team - @in_progress_team
-
+    else
+      @unstarted = Crossword.all
     end
   end
 

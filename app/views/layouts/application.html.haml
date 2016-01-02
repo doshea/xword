@@ -3,6 +3,7 @@
   %head
     = render partial: 'layouts/partials/meta_tags'
     = render partial: 'layouts/partials/knowledge_graph'
+    = javascript_include_tag 'social/fb'
     = stylesheet_link_tag    "application", media: "all"
     = javascript_include_tag "application"
     %title
@@ -17,3 +18,4 @@
     %header#nav.dark-shadow= render partial: 'layouts/partials/nav'
     #body= render partial: 'layouts/partials/body'
     %footer#footer= render partial: 'layouts/partials/footer'
+    %div.fb-like{data: {share: 'true', width: '450', 'show-faces': 'true'}}

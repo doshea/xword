@@ -4,15 +4,19 @@
   = stylesheet_link_tag :search
 
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
-  %h2 Welcome back, #{@current_user.display_first_name}!
+  %h2
+    - if @current_user
+      Welcome back, #{@current_user.display_first_name}!
+    - else
+      Welcome to the Café!
   %hr{style: 'margin-bottom: 0;'}
   %dl.tabs{"data-tab" => ""}
-    %dd{class: @unstarted.any? ? 'active' : ''}
+    %dd.active
       = link_to '#panel1' do
         %h5
           %i.fi-clipboard
           %span New Puzzles
-    %dd{class: @unstarted.empty? ? 'active' : ''}
+    %dd
       = link_to '#panel2' do
         %h5
           %i.fi-clipboard-pencil
@@ -25,9 +29,9 @@
   :javascript
     var puzzles_remaining = {};
   .tabs-content
-    #panel1.content{class: @unstarted.any? ? 'active' : ''}
+    #panel1.content.active
       = render partial: 'pages/home/unstarted'
-    #panel2.content{class: @unstarted.empty? ? 'active' : ''}
+    #panel2.content
       = render partial: 'pages/home/in_progress'
     #panel3.content
       = render partial: 'pages/home/solved_puzzles'
