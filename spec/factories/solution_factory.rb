@@ -12,6 +12,7 @@
 #  team         :boolean          default(FALSE), not null
 #  key          :string(255)
 #  solved_at    :datetime
+#  partner_ids  :text             default([]), is an Array
 #
 
 FactoryGirl.define do

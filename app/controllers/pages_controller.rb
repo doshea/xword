@@ -9,13 +9,11 @@ class PagesController < ApplicationController
   def home
     if @current_user
       @owned = @current_user.crosswords
-      @unpublished = @current_user.unpublished_crosswords
+      unowned = Crossword.unowned(@current_user)
 
-      published = Crossword.all - @owned
-
-      @solved_solo = Crossword.solved(@current_user.id).solo.unowned(@current_user).distinct
-      not_solved_solo = published - @solved_solo
-      @in_progress_solo = Crossword.in_progress(@current_user.id).distinct & not_solved_solo
+      @solved_solo = Crossword.solved(@current_user).solo.unowned(@current_user).distinct
+      not_solved_solo = unowned - @solved_solo
+      @in_progress_solo = Crossword.in_progress(@current_user).distinct & not_solved_solo
       published_not_solo = not_solved_solo - @in_progress_solo
 
 
@@ -23,14 +21,15 @@ class PagesController < ApplicationController
       my_partnerings_solved = my_partnerings.select{|par| par[:sol].is_complete}.map{|par| par[:cw]}.uniq
       my_partnerings_in_progress = my_partnerings.select{|par| !par[:sol].is_complete}.map{|par| par[:cw]}.uniq
 
-      @solved_team = published_not_solo & (Crossword.solved(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_solved)
+      @solved_team = published_not_solo & (Crossword.solved(@current_user).teamed.unowned(@current_user).distinct | my_partnerings_solved)
       @solved = (@solved_solo | @solved_team)
       available_in_progress_team = published_not_solo - @solved_team
-      @in_progress_team = available_in_progress_team & (Crossword.in_progress(@current_user.id).teamed.unowned(@current_user).distinct | my_partnerings_in_progress)
+      @in_progress_team = available_in_progress_team & (Crossword.in_progress(@current_user).teamed.unowned(@current_user).distinct | my_partnerings_in_progress)
 
       @unstarted = available_in_progress_team - @in_progress_team
+
     else
-      @unstarted = Crossword.all
+      @unstarted = Crossword.all.paginate(page: params[:page])
     end
   end
 

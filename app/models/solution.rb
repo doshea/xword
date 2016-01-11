@@ -12,6 +12,7 @@
 #  team         :boolean          default(FALSE), not null
 #  key          :string(255)
 #  solved_at    :datetime
+#  partner_ids  :text             default([]), is an Array
 #
 
 class Solution < ActiveRecord::Base
@@ -72,6 +73,15 @@ class Solution < ActiveRecord::Base
       puts 'Mismatched letters length! Check the fill_letters method!'
       self.letters = self.crossword.letters.gsub(/[^_]/,' ')
       self.save
+    end
+  end
+
+  def add_participant(user)
+    if team
+      unless user.id.to_s.in? partner_ids
+        partner_ids  << user.id
+        save
+      end
     end
   end
 
