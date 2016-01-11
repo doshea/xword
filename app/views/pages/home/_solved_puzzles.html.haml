@@ -9,5 +9,7 @@
     - if solved_remaining && solved_remaining.any?
       .row.center
         = render partial: 'pages/home/load_next_button', locals: {remaining: solved_remaining}
+  - else
+    You haven't finished any puzzles yet -- go check out the New tab and try one!
 - else
   Make an account or log in and you'll be able to track which crosswords you've finished!

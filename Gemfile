@@ -20,6 +20,8 @@ gem 'pg'
 gem 'haml'
 gem 'bcrypt-ruby'
 
+gem 'active_record_union'
+
 # asset gems
 gem 'sass-rails'
 gem 'uglifier'

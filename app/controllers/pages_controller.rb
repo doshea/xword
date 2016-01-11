@@ -8,26 +8,9 @@ class PagesController < ApplicationController
   #GET / or root_path
   def home
     if @current_user
-      @owned = @current_user.crosswords
-      unowned = Crossword.unowned(@current_user)
-
-      @solved_solo = Crossword.solved(@current_user).solo.unowned(@current_user).distinct
-      not_solved_solo = unowned - @solved_solo
-      @in_progress_solo = Crossword.in_progress(@current_user).distinct & not_solved_solo
-      published_not_solo = not_solved_solo - @in_progress_solo
-
-
-      my_partnerings = @current_user.solution_partnerings.map{|par| {sol: par.solution, cw: par.crossword}}
-      my_partnerings_solved = my_partnerings.select{|par| par[:sol].is_complete}.map{|par| par[:cw]}.uniq
-      my_partnerings_in_progress = my_partnerings.select{|par| !par[:sol].is_complete}.map{|par| par[:cw]}.uniq
-
-      @solved_team = published_not_solo & (Crossword.solved(@current_user).teamed.unowned(@current_user).distinct | my_partnerings_solved)
-      @solved = (@solved_solo | @solved_team)
-      available_in_progress_team = published_not_solo - @solved_team
-      @in_progress_team = available_in_progress_team & (Crossword.in_progress(@current_user).teamed.unowned(@current_user).distinct | my_partnerings_in_progress)
-
-      @unstarted = available_in_progress_team - @in_progress_team
-
+      @in_progress = Crossword.all_in_progress(@current_user)
+      @solved = Crossword.all_solved(@current_user)
+      @unstarted = Crossword.new_to_user(@current_user)
     else
       @unstarted = Crossword.all.paginate(page: params[:page])
     end
