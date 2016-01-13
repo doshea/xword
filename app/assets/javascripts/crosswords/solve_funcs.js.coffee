@@ -34,7 +34,7 @@ window.solve_app =
     # $('#show-incorrect').on('click', solve_app.show_incorrect)
     $('#check-cell').on('click', solve_app.check_cell)
     $('#check-word').on('click', solve_app.check_word)
-    $('#check-word').on('click', solve_app.check_puzzle)
+    $('#check-puzzle').on('click', solve_app.check_puzzle)
     $(".check-completion :not([data-dropdown='drop'])").on('click', solve_app.check_completion)
     #may be able to use $(document.activeElement) http://stackoverflow.com/questions/967096/using-jquery-to-test-if-an-input-has-focus
     $('input, textarea').on('click', -> cw.unhighlight_all()) #may need further tweaking on Edit
@@ -109,9 +109,22 @@ window.solve_app =
           letter = cell.get_letter()
           settings.data.indices.push(index)
           settings.data.letters.push(letter)
-      unless settings.data.letters.length == 0
+      if settings.data.letters.length == 0
+        alert('The selected word is empty.')
+      else
         $.ajax(settings)
         solve_app.save_solution()
+
+  check_puzzle: (e) ->
+    e.preventDefault()
+    solve_app.save_solution()
+    settings =
+      dataType: 'script'
+      type: 'POST'
+      url: "/crosswords/#{solve_app.crossword_id}/check_cell"
+      data: {letters: cw.get_puzzle_letters()}
+    $.ajax(settings)
+    solve_app.save_solution()
 
   check_completion: (e) ->
     e.preventDefault()
@@ -121,7 +134,7 @@ window.solve_app =
       dataType: 'script'
       type: 'POST'
       url: "/crosswords/#{solve_app.crossword_id}/check_completion"
-      data: {letters: letters}
+      data: {letters: letters, return_flags: return_flags}
     unless solve_app.anonymous
       settings.data['solution_id'] = solve_app.solution_id
     $.ajax(settings)

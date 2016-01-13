@@ -120,10 +120,16 @@ class CrosswordsController < ApplicationController
   def check_cell
     @mismatches = {}
     letters = params[:letters]
-    indices = params[:indices].map(&:to_i)
-    params[:letters].each_with_index do |v,i|
-      corrected_i = indices[i]
-      @mismatches[corrected_i] = (v != @crossword.letters[corrected_i])
+    if params[:indices]
+      indices = params[:indices].map(&:to_i)
+      params[:letters].each_with_index do |v,i|
+        corrected_i = indices[i]
+        @mismatches[corrected_i] = (v != @crossword.letters[corrected_i])
+      end
+    else
+      params[:letters].split('').each_with_index do |v,i|
+        @mismatches[i] = ((v != ' ') && (v != '_') && (v != @crossword.letters[i]))
+      end
     end
   end
 
