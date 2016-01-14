@@ -17,6 +17,7 @@ window.team_app =
 
   toggle_chat: ->
     $('#team-chat').toggleClass('down')
+    $('#team-chat').css('bottom',''+ (-1*$('#team-chat').height()+$('#team-chat .row-topper').height()*1.7/1.5)+'px')
     unless $('#team-chat').hasClass 'down'
       team_app.unread_count = 0
       $('#unread-chat-count').text ''

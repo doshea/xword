@@ -36,4 +36,4 @@
     = hidden_field_tag 'display_name', display_name, id: nil
     = hidden_field_tag 'channel', channel, id: nil
     = hidden_field_tag 'avatar', @current_user ? @current_user.image.thumb : asset_path('default_images/user.jpg'), id: nil
-    = text_field_tag 'chat', nil, id: nil
+    = text_field_tag 'chat', nil, id: nil, autocomplete: :off
