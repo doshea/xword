@@ -125,16 +125,16 @@ window.team_app =
     new_chat.addClass('chat')
     new_chat.addClass('my-chat') if is_my_chat
 
-    avatar = $('<img>')
     display_name = $('<span>') unless is_my_chat
     chat_text = $('<span>')
 
-    avatar.attr('src', data['avatar']).addClass('avatar')
     display_name.text(data['display_name']+': ').addClass('display-name') unless is_my_chat
     chat_text.text(data['chat_text']).addClass('chat-text')
 
-    avatar.appendTo(new_chat)
     unless is_my_chat
+      avatar = $('<img>')
+      avatar.attr('src', data['avatar']).addClass('avatar')
+      avatar.appendTo(new_chat)
       display_name.appendTo(new_chat)
     if is_my_chat then chat_text.prependTo(new_chat) else chat_text.appendTo(new_chat)
     if chats_already_exist then $('<hr />').appendTo($('#chats'))

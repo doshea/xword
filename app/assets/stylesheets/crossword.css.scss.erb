@@ -286,34 +286,40 @@ table#crossword {
     padding: 0.1em;
 
     hr {
-      margin: 0.2em 0;
+      margin: 0;
     }
   }
   .chat {
+    padding: 0.2em 0.4em;
     width: 100%;
     font-size: 0.8em;
-    min-height: 27px;
+    min-height: 1.6em;
     -webkit-transition: all 0.5s linear;
     -moz-transition: all 0.5s linear;
     -o-transition: all 0.5s linear;
     transition: all 0.5s linear;
+    img {
+      height: 1.2em;
+      width: 1.2em;
+    }
     &.my-chat {
       text-align: right;
-    }
-    &:not(.my-chat) {
-      .avatar, .display-name, .chat-text {
-      }
+      background-color: #eee;
     }
     .avatar {
-      width: 27px;
-      height: 27px;
+      width: 1.2em;
+      height: 1.2em;
     }
     .display-name {
       font-weight: bold;
+      margin-left: 0.2em;
     }
     .chat-text {
       max-width: 100%;
       word-wrap: break-word;
+    }
+    span {
+      vertical-align: bottom;
     }
   }
 }
