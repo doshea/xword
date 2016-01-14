@@ -130,14 +130,7 @@ class CrosswordsController < ApplicationController
       params[:letters].split('').each_with_index do |v,i|
         @mismatches[i] = ((v != ' ') && (v != '_') && (v != @crossword.letters[i]))
       end
-    end
-  end
-
-  #GET /crosswords/:id/check_puzzle or check_puzzle_crossword_path
-  def check_puzzle
-    @correctness = (@crossword.letters == params[:letters])
-    if @current_user
-      @solution = Solution.find(params[:solution_id])  
+      puts @mismatches
     end
   end
 

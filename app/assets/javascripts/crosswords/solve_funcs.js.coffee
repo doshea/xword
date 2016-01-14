@@ -134,7 +134,7 @@ window.solve_app =
       dataType: 'script'
       type: 'POST'
       url: "/crosswords/#{solve_app.crossword_id}/check_completion"
-      data: {letters: letters, return_flags: return_flags}
+      data: {letters: letters}
     unless solve_app.anonymous
       settings.data['solution_id'] = solve_app.solution_id
     $.ajax(settings)
