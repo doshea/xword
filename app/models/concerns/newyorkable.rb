@@ -18,7 +18,10 @@ module Newyorkable
 
     def add_nyt_puzzle(pz)
       #account for multiples
-      pz_letters = pz['grid']
+      pz_letters = pz['grid'] || pz[:grid]
+      pz_title = pz['title'] || pz[:title]
+      pz_size = pz['size'] || pz[:size]
+      pz_clues = pz['clues'] || pz[:clues]
 
       pz_letters.each_with_index do |el, i|
         if el.length > 1
@@ -28,24 +31,24 @@ module Newyorkable
 
       pz_letters = pz_letters.join('').gsub('.','_')
       begin
-        pz_date = Date.parse(pz['title'])
+        pz_date = Date.parse(pz_title)
       rescue
-        alt_date = pz['date']
+        alt_date = pz['date'] || pz[:date]
         pz_date = Date.strptime(alt_date, '%m/%d/%Y')
       end
 
-      unless Crossword.where(title: pz['title']).any?
+      unless Crossword.where(title: pz_title).any?
         #fix the title capitalization
-        if pz['title'][0..2] == 'NY '
-          fixed_title = 'NY ' + pz['title'][3..-1].split.map(&:capitalize).join(' ')
+        if pz_title[0..2] == 'NY '
+          fixed_title = 'NY ' + pz_title[3..-1].split.map(&:capitalize).join(' ')
         else
-          fixed_title = pz['title'].split.map(&:capitalize).join(' ')
+          fixed_title = pz_title.split.map(&:capitalize).join(' ')
         end 
 
         new_nytimes_crossword = Crossword.new(
           title: fixed_title,
-          rows: pz['size']['rows'],
-          cols: pz['size']['cols'],
+          rows: (pz_size['rows'] || pz_size[:rows]),
+          cols: (pz_size['cols'] || pz_size[:cols]),
           description: "This puzzle was published on #{pz_date.strftime('%A, %b %d, %Y')} in the New York Times Crossword Puzzle. Edited by Will Shortz.",
           created_at: pz_date
         )
@@ -53,15 +56,16 @@ module Newyorkable
 
         new_nytimes_crossword.set_contents(pz_letters)
         new_nytimes_crossword.number_cells
-        new_nytimes_crossword.circles_from_array(pz['circles']) if pz['circles']
+        pz_circles = pz['circles'] || pz[:circles]
+        new_nytimes_crossword.circles_from_array(pz_circles) if pz_circles
 
         nytimes = User.find_by_username('nytimes')
 
         nytimes.crosswords << new_nytimes_crossword
 
         #adds the clues
-        across_clues = pz['clues']['across']
-        down_clues = pz['clues']['down']
+        across_clues = pz_clues['across'] || pz_clues[:across]
+        down_clues = pz_clues['down'] || pz_clues[:down]
 
         across_clues.each do |across_clue|
           split_clue = across_clue.split('. ', 2)
