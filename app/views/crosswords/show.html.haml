@@ -53,6 +53,8 @@
           %i.fi-star{style: 'color: #ff7878;'}>
         = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
           %i.fi-widget
+        = link_to(delete_solution_path(@solution), method: :delete, class: 'button tiny secondary', data: {confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?'}) do
+          %i.fi-trash
       - if @team
         .button.tiny.secondary
           %i.fi-torsos-all

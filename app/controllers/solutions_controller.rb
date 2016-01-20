@@ -103,7 +103,7 @@ class SolutionsController < ApplicationController
     else
       @solution.destroy
     end
-    redirect_to :back
+    redirect_to :root
   end
 
   private
