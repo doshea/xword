@@ -116,6 +116,8 @@ Xword::Application.routes.draw do
     post :user_search
     post :clone_user
     get :wine_comment
+    get :manual_nyt
+    post :create_manual_nyt
 
     resources :crosswords, only: [:index, :edit, :update, :destroy] do
       patch :generate_preview, on: :member

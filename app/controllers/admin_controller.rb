@@ -16,6 +16,14 @@ class AdminController < ApplicationController
   def cheat
   end
 
+  def manual_nyt
+
+  end
+
+  def create_manual_nyt
+    Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text])) if params[:nyt_text]
+  end
+
   #POST /admin/user_search or admin_user_search_path
   def user_search
     @users = User.admin_search(params[:query])

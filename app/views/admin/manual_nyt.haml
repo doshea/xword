@@ -1,0 +1,5 @@
+- title 'Admin | Manual NYT', true
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Manual NYT Tool', custom_columns: true} do
+  = form_tag admin_create_manual_nyt_path, method: :post, remote: true do
+    = text_area_tag :nyt_text
+    = submit_tag nil, class: 'button', data: {disable_with: 'Adding...'}
