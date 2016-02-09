@@ -198,7 +198,7 @@ elements of the table#crossword
 
   $.fn.set_letter = (letter, original) ->
     @children(".letter").first().text letter
-    unless typeof team_app is "undefined"
+    if team_app?
       if original
         team_app.send_team_cell this, letter
       else

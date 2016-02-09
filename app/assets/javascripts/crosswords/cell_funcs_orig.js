@@ -61,7 +61,7 @@ elements of the table#crossword
   $.fn.get_number = function(){var letter = this.children('.cell-num').text(); return letter.length > 0 ? letter : ' '};
   $.fn.set_number = function(number){this.children('.cell-num').text(number);};
   $.fn.get_letter = function(){var letter = this.children('.letter').first().text().replace(/\n/g,'').replace(/  +/g,''); return letter.length > 0 ? letter: ' '};
-  $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter);if((typeof team_app != 'undefined')){if(original){team_app.send_team_cell(this, letter);} else {this.check_finisheds();}}}
+  $.fn.set_letter = function(letter, original){this.children('.letter').first().text(letter);if(team_app?){if(original){team_app.send_team_cell(this, letter);} else {this.check_finisheds();}}}
 
   $.fn.is_last_letter_of_puzzle = function(){var word_cells = (cw.select_across ?  this.get_across_word_cells() : this.get_down_word_cells()); var last_index = word_cells.length - 1; return this[0] == word_cells[last_index][0];}
   $.fn.is_empty_cell = function(){return ((this.get_letter() == '') || (this.get_letter() == ' ') || (this.get_letter().replace(/\n/g,'').replace(/  +/g,' ') == ' '));};

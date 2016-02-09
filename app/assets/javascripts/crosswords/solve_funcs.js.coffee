@@ -180,7 +180,7 @@ window.solve_app =
         false
     else
       @children(".letter").first().empty()
-      unless typeof team_app is "undefined"
+      if team_app?
         if original
           team_app.send_team_cell this, ""
         else

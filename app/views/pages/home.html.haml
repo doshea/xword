@@ -15,17 +15,18 @@
       = link_to '#panel1' do
         %h5
           %i.fi-clipboard
-          %span New Puzzles (#{@unstarted.length})
-    %dd
-      = link_to '#panel2' do
-        %h5
-          %i.fi-clipboard-pencil
-          %span In Progress (#{@in_progress.length})
-    %dd
-      = link_to '#panel3' do
-        %h5
-          %i.fi-clipboard-notes
-          %span Solved Puzzles (#{@solved.length})
+          %span #{'New' if @current_user} Puzzles (#{@unstarted.length})
+    - if @current_user
+      %dd
+        = link_to '#panel2' do
+          %h5
+            %i.fi-clipboard-pencil
+            %span In Progress (#{@in_progress.length})
+      %dd
+        = link_to '#panel3' do
+          %h5
+            %i.fi-clipboard-notes
+            %span Solved Puzzles (#{@solved.length})
   :javascript
     var puzzles_remaining = {};
   .tabs-content

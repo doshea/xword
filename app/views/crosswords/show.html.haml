@@ -2,6 +2,7 @@
 = javascript_include_tag 'solve'
 = content_for :head do
   = stylesheet_link_tag "crossword"
+  %meta{property: 'og:image', content: @crossword.preview.large.url}
 
 - if @team
   = render partial: 'crosswords/partials/team'
