@@ -47,7 +47,7 @@ describe Crossword do
     it { should validate_numericality_of(:cols).only_integer}
     it { should ensure_inclusion_of(:cols).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
     it { should validate_presence_of(:title)}
-    it { should ensure_length_of(:title).is_at_least(Crossword::MIN_TITLE_LENGTH).is_at_most(Crossword::MAX_TITLE_LENGTH) }
+    it { should validate_length_of(:title).is_at_least(Crossword::MIN_TITLE_LENGTH).is_at_most(Crossword::MAX_TITLE_LENGTH) }
   end
 
   describe 'INSTANCE METHODS' do

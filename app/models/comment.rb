@@ -18,6 +18,8 @@ class Comment < ActiveRecord::Base
   belongs_to :base_comment, class_name: 'Comment'
   has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id', dependent: :destroy
 
+  MAX_PER_CROSSWORD = 2
+
   self.per_page = 50
 
   @@wine_vocab = {

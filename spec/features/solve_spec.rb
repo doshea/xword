@@ -1,6 +1,6 @@
 feature 'Solve' do
   before :each do
-    create(:published_five_by_five)
+    create(:predefined_five_by_five)
     visit crossword_path(Crossword.first)
   end
   context 'with anonymous user' do

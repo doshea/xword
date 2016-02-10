@@ -5,8 +5,9 @@ class CommentsController < ApplicationController
   def add_comment
     user = @current_user
     crossword = Crossword.find params[:id]
+    previous_comment_count = crossword.comments.where(user_id: user.id).count
 
-    if crossword && user
+    if crossword && user && (previous_comment_count < Comment::MAX_PER_CROSSWORD)
       @new_comment = Comment.new(content: params[:content])
       crossword.comments << @new_comment
       user.comments << @new_comment

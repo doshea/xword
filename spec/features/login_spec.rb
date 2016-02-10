@@ -9,8 +9,9 @@ feature 'Login' do
       before :each do
         visit root_path
       end
-      scenario 'are redirected to welcome page' do
-        current_path.should eq welcome_path
+      scenario 'arrive on home page successfully' do
+        current_path.should eq root_path
+        response.status.should eq :success
       end
 
       scenario 'can log in' do
