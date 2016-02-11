@@ -13,4 +13,7 @@
 #
 
 FactoryGirl.define do
+  factory :comment do
+    content {Faker::Lorem.sentences(3)}
+  end
 end

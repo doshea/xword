@@ -7,17 +7,27 @@ class CommentsController < ApplicationController
     crossword = Crossword.find params[:id]
     previous_comment_count = crossword.comments.where(user_id: user.id).count
 
-    if crossword && user && (previous_comment_count < Comment::MAX_PER_CROSSWORD)
-      @new_comment = Comment.new(content: params[:content])
-      crossword.comments << @new_comment
-      user.comments << @new_comment
+    if crossword
+      if user
+        if previous_comment_count < Comment::MAX_PER_CROSSWORD
+          @new_comment = Comment.new(content: params[:content])
+          crossword.comments << @new_comment
+          user.comments << @new_comment
+        else
+          render nothing: true, status: :forbidden
+        end
+      else
+        render nothing: true, status: :unauthorized
+      end
     else
+      render nothing: true, status: :bad_request
     end
   end
 
   #POST /comments/:id/reply or reply_to_comment
   def reply
     user = @current_user
+    base_comment = Comment.find(params[:id])
 
     if base_comment && user
       @new_reply = Comment.new(content: params[:content])
