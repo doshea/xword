@@ -21,7 +21,9 @@ class AdminController < ApplicationController
   end
 
   def create_manual_nyt
-    Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text])) if params[:nyt_text]
+    if params[:nyt_text]
+      Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text]))
+    end
   end
 
   #POST /admin/user_search or admin_user_search_path

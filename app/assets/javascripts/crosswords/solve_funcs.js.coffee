@@ -35,7 +35,7 @@ window.solve_app =
     $('#check-cell').on('click', solve_app.check_cell)
     $('#check-word').on('click', solve_app.check_word)
     $('#check-puzzle').on('click', solve_app.check_puzzle)
-    $(".check-completion :not([data-dropdown='drop'])").on('click', solve_app.check_completion)
+    $("#solve-controls").on('click', '.check-completion :not(span)', solve_app.check_completion)
     #may be able to use $(document.activeElement) http://stackoverflow.com/questions/967096/using-jquery-to-test-if-an-input-has-focus
     $('input, textarea').on('click', -> cw.unhighlight_all()) #may need further tweaking on Edit
     solve_app.check_all_finished()

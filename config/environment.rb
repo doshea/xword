@@ -14,4 +14,4 @@ class ActiveRecord::Base
 end
 
 # Initialize the Rails application.
-Xword::Application.initialize!
+Rails.application.initialize!

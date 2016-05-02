@@ -106,7 +106,12 @@ module Newyorkable
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)
     end
 
-    def record_on_github(date)
+    def record_date_on_github(date)
+      puzzle_json = get_nyt_from_date(date)
+      record_on_github(puzzle_json, date)
+    end
+
+    def record_on_github(puzzle_json, date)
       puzzle_json = get_nyt_from_date(date)
 
       unless puzzle_json.nil?

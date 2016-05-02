@@ -1,26 +1,19 @@
-development:
+default: &default
   adapter: postgresql
   encoding: unicode
-  database: xword_development
   host: localhost
   pool: 5
   username: dylanoshea
-  password:
+  password: 
+
+development:
+  <<: *default
+  database: xword_development
 
 test:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
   database: xword_test
-  host: localhost
-  pool: 5
-  username: dylanoshea
-  password:
 
 production:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
   database: xword_production
-  host: localhost
-  pool: 5
-  username: dylanoshea
-  password:

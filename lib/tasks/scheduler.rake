@@ -16,7 +16,7 @@ namespace :nyt do
   end
 
   task :latest_nyt_to_github => :environment do
-    Crossword.record_on_github(Date.today)
+    Crossword.record_date_on_github(Date.today)
   end
 
   task :remove_duplicate_nyt_puzzles => :environment do

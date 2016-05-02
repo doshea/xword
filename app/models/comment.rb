@@ -44,7 +44,7 @@ class Comment < ActiveRecord::Base
       'contains ',
       'displays ',
       'forces ',
-      'hits you with',
+      'hits you with ',
       'kicks you with ',
       'opens with ',
       'reminds one of ',
