@@ -24,7 +24,7 @@ gem 'active_record_union'
 
 # asset gems
 gem 'sass-rails'
-gem 'uglifier'
+
 
 # AWS image upload gems
 gem 'carrierwave'
@@ -62,6 +62,8 @@ group :development, :test do
   gem 'quiet_assets'
   gem 'binding_of_caller'
   gem 'meta_request'
+
+  gem 'uglifier' #SHOULD BE IN PRODUCTION LATER
 end
 
 group :test do
