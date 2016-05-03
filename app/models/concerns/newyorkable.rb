@@ -115,7 +115,7 @@ module Newyorkable
         alt_date = pz['date'] || pz[:date]
         pz_date = Date.strptime(alt_date, '%m/%d/%Y')
       end
-      record_on_github(puzzle_json, date)
+      record_on_github(puzzle_json, pz_date)
     end
 
     def record_date_on_github(date)
