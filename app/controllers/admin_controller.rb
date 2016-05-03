@@ -23,6 +23,7 @@ class AdminController < ApplicationController
   def create_manual_nyt
     if params[:nyt_text]
       Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text]))
+      Crossword.smart_record(params[:nyt_text])
     end
   end
 

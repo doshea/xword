@@ -106,6 +106,18 @@ module Newyorkable
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)
     end
 
+    def smart_record(puzzle_json)
+      pz = JSON.parse(puzzle_json)
+      pz_title = pz['title'] || pz[:title]
+      begin
+        pz_date = Date.parse(pz_title)
+      rescue
+        alt_date = pz['date'] || pz[:date]
+        pz_date = Date.strptime(alt_date, '%m/%d/%Y')
+      end
+      record_on_github(puzzle_json, date)
+    end
+
     def record_date_on_github(date)
       puzzle_json = get_nyt_from_date(date)
       record_on_github(puzzle_json, date)
