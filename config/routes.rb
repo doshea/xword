@@ -1,4 +1,5 @@
-Xword::Application.routes.draw do
+Rails.application.routes.draw do
+
   root to: 'pages#home'
   get '/welcome' => 'pages#welcome'
 
@@ -60,7 +61,7 @@ Xword::Application.routes.draw do
   resources :users, only: [:new, :create, :show, :update] do
     member do
       # TODO
-      # get :favorites 
+      # get :favorites
     end
     collection do
       get :account
@@ -71,7 +72,7 @@ Xword::Application.routes.draw do
       post :resetter
     end
   end
-  
+
   resources :words, only: [:show] do
     collection do
       post :match
@@ -82,7 +83,7 @@ Xword::Application.routes.draw do
     get '/', action: :show
     patch :update
     patch :change_password
-    
+
     get :forgot
     get :forgot_username
     get :forgot_password
@@ -146,5 +147,8 @@ Xword::Application.routes.draw do
       get :simple
     end
   end
+
+  # Serve websocket cable requests in-process
+  mount ActionCable.server => '/cable'
 
 end

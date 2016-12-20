@@ -30,11 +30,10 @@
       max-width: none;
       width: 1250px;
     }
-- if @crossword.rows > 15
-  :css
-    .clue-column .clues {
-      max-height: 547px;
-    }
+:css
+  .clue-column .clues {
+    height: #{@crossword.rows*2.175-22/16.0}em;
+  }
 
 .row#credit-area
   .medium-12.columns

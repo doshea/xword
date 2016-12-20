@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '2.3.1'
-gem 'rails'
+gem 'rails', '~> 5.0'
 gem 'coffee-rails'
 gem 'json'
 
@@ -14,7 +14,9 @@ gem 'pusher'
 #TODO TEMPORARY FIX --> http://stackoverflow.com/questions/31793791/push-to-heroku-fails-could-not-find-net-ssh-2-10-0-in-any-of-the-sources-faile
 # gem 'net-ssh', '!= 2.10.0'
 
-# gem 'protected_attributes' #Until I fix things to properly use Rails 4. UPGRADE THIS PLEASE.
+#required server for ActionCable
+gem 'puma'
+gem 'redis'
 
 gem 'pg'
 gem 'haml'
@@ -59,7 +61,6 @@ group :development, :test do
   gem 'annotate'
   gem 'rainbow'
 
-  gem 'quiet_assets'
   gem 'binding_of_caller'
   gem 'meta_request'
 
@@ -81,14 +82,11 @@ end
 group :development do
   #causes problem in conjunction with rspec test
   gem 'better_errors' #do not put this in production or everyone will be able to mess around with variables
-  gem 'spring'
+  # gem 'spring'
+  gem 'pry-byebug'
+  gem 'pry-stack_explorer'
 end
 
 group :production do
   gem 'rails_12factor'
-end
-
-group :production, :development do
-    gem 'pry-byebug'
-    gem 'pry-stack_explorer'
 end
