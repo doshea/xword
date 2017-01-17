@@ -50,6 +50,7 @@ gem 'will_paginate', '~> 3.0'
 
 #Moved out of development-only so that Heroku can use it
 gem 'pry-rails'
+gem 'uglifier' #used to only be dev and test but was causing issues in production...
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -63,8 +64,6 @@ group :development, :test do
 
   gem 'binding_of_caller'
   gem 'meta_request'
-
-  gem 'uglifier' #SHOULD BE IN PRODUCTION LATER
 end
 
 group :test do
