@@ -1,0 +1,180 @@
+/* line 2, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+* {
+  outline: 0 !important;
+}
+
+/* line 5, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.small-shadow {
+  -moz-box-shadow: 1px 1px 2px #000;
+  -ms-box-shadow: 1px 1px 2px #000;
+  -webkit-box-shadow: 1px 1px 2px #000;
+  box-shadow: 1px 1px 2px #000;
+}
+
+/* line 11, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.light-shadow {
+  -moz-box-shadow: 3px 3px 3px grey;
+  -ms-box-shadow: 3px 3px 3px grey;
+  -webkit-box-shadow: 3px 3px 3px grey;
+  box-shadow: 3px 3px 3px grey;
+}
+
+/* line 17, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.shadow {
+  -moz-box-shadow: 3px 3px 3px #222;
+  -ms-box-shadow: 3px 3px 3px #222;
+  -webkit-box-shadow: 3px 3px 3px #222;
+  box-shadow: 3px 3px 3px #222;
+}
+
+/* line 24, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.dark-shadow {
+  -moz-box-shadow: 3px 3px 3px black;
+  -ms-box-shadow: 3px 3px 3px black;
+  -webkit-box-shadow: 3px 3px 3px black;
+  box-shadow: 3px 3px 3px black;
+}
+
+/* line 30, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.thin-border {
+  border: 1px solid black;
+}
+
+/* line 33, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.borderless {
+  border: none !important;
+}
+
+/* line 36, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.relative {
+  position: relative;
+}
+
+/* line 39, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.hidden {
+  display: none;
+}
+
+/* line 42, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.ib {
+  display: inline-block;
+}
+
+/* line 45, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-margin {
+  margin: 0;
+}
+
+/* line 48, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+ul {
+  list-style-type: none;
+}
+/* line 50, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+ul .bulleted {
+  list-style-type: disc;
+}
+
+/* line 54, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+html {
+  background: url(/assets/wood_table-bf216f120a510039daf296cf22f35b8f3e469007c1c7ca9fab17d8d704cf3ea1.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100%;
+}
+
+/* line 62, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+body {
+  background: none;
+  min-height: 100%;
+  height: 100%;
+}
+
+/* line 67, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+#body {
+  margin-top: 1em;
+  min-height: 92%;
+}
+/* line 70, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+#body > .row {
+  background-color: white;
+}
+/* line 73, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+#body > .row-bookend {
+  min-height: 1.5em;
+  background: black;
+  text-align: center;
+}
+/* line 77, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+#body > .row-bookend p, #body > .row-bookend h1, #body > .row-bookend h2, #body > .row-bookend h3, #body > .row-bookend h4, #body > .row-bookend h5, #body > .row-bookend h6 {
+  color: white;
+}
+/* line 81, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+#body > .row-topper {
+  -webkit-border-radius: 1em 1em 0 0;
+  -moz-border-radius: 1em 1em 0 0;
+  border-radius: 1em 1em 0 0;
+  margin-top: 2em;
+}
+/* line 87, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+#body > .row-stopper {
+  -webkit-border-radius: 0 0 1em 1em;
+  -moz-border-radius: 0 0 1em 1em;
+  border-radius: 0 0 1em 1em;
+}
+
+/* line 95, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-select::selection {
+  background-color: transparent;
+}
+/* line 98, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-select::moz-selection {
+  background-color: transparent;
+}
+/* line 101, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-select::webkit-selection {
+  background-color: transparent;
+}
+/* line 104, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-select ::selection {
+  background-color: transparent;
+}
+/* line 107, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-select ::moz-selection {
+  background-color: transparent;
+}
+/* line 110, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.no-select ::webkit-selection {
+  background-color: transparent;
+}
+
+/* line 115, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.smaller {
+  font-size: smaller;
+}
+
+/* line 118, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.larger {
+  font-size: larger;
+}
+
+/* line 121, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.center {
+  text-align: center;
+}
+
+/* line 124, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.text-left {
+  text-align: left;
+}
+
+/* line 127, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+.text-right {
+  text-align: right;
+}
+
+/* line 130, /Users/dylanoshea/Documents/sites/rails/xword/app/assets/stylesheets/global.scss.erb */
+input:focus::-webkit-input-placeholder {
+  color: transparent;
+}
