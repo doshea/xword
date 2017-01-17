@@ -1,0 +1,1 @@
+(function(){window.account={ready:function(){return $(".slide-close").on("click",function(n){return n.preventDefault(),$(this).parent().slideUp()})}},$(document).ready(account.ready)}).call(this);
