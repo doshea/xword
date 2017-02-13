@@ -11,6 +11,8 @@ gem 'multi_json'
 
 gem 'pusher'
 
+gem 'record_tag_helper' #so that content_tag_for works
+
 #TODO TEMPORARY FIX --> http://stackoverflow.com/questions/31793791/push-to-heroku-fails-could-not-find-net-ssh-2-10-0-in-any-of-the-sources-faile
 # gem 'net-ssh', '!= 2.10.0'
 
