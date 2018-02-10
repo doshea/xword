@@ -41,7 +41,7 @@
       text-align: center;
     }
   }
-  
+
   #user-menu {
     #profile-tease {
       img {
@@ -111,6 +111,27 @@
         }
       }
     }
+  }
+}
+
+#nav-create, #nav-mail {
+  a {
+    padding: 0 1.5em;
+  }
+}
+#nav-mail.unread {
+  animation: unread-pulse 2s infinite;
+}
+
+@keyframes unread-pulse {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: lightblue;
+  }
+  100% {
+    background-color: inherit;
   }
 }
 

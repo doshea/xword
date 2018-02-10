@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
-gem 'rails', '~> 5.0'
+gem 'rails'
 gem 'coffee-rails'
 gem 'json'
 
@@ -20,7 +19,7 @@ gem 'record_tag_helper' #so that content_tag_for works
 gem 'puma'
 gem 'redis'
 
-gem 'pg'
+gem 'pg', '~> 0.20'
 gem 'haml'
 gem 'bcrypt-ruby'
 
@@ -47,7 +46,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder'
 gem 'will_paginate', '~> 3.0'
 
 #Moved out of development-only so that Heroku can use it

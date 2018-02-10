@@ -24,8 +24,8 @@
 .top-bar-section .has-form {
   background: inherit;
 }
-.top-bar-section > ul > .has-dropdown > a {
-  background: inherit;
+.top-bar-section ul a {
+  background: inherit !important;
 }
 .reveal-modal {
   z-index: 99999;

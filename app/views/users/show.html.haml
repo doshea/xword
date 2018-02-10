@@ -1,3 +1,5 @@
 - title "Profile | #{@user.display_name}", true
+= content_for :head do
+  = stylesheet_link_tag "profile", media: "all"
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "#{@user.username}'s Public Profile", custom_columns: true} do
   = render partial: 'users/partials/user'

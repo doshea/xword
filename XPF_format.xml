@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--XPF document for the Wednesday, September 2, 2015 New York Times crossword.-->
+<!--Conforms to Universal Crossword Puzzle Format XPF. See www.xwordinfo.com/XPF for details and licensing information.-->
+<Puzzles Version="1.0">
+  <Puzzle>
+    <Title>NY Times, Wed, Sep 02, 2015</Title>
+    <Author>Kevin Christian and Bradley Wilber</Author>
+    <CanonicalNames>
+      <Constructor>Kevin Christian</Constructor>
+      <Constructor>Brad Wilber</Constructor>
+    </CanonicalNames>
+    <Editor>Will Shortz</Editor>
+    <Publisher>The New York Times</Publisher>
+    <Date>9/2/2015</Date>
+    <Size>
+      <Rows>15</Rows>
+      <Cols>15</Cols>
+    </Size>
+    <Grid>
+      <Row>RISER.PFC.ACHES</Row>
+      <Row>ANIME.IRA.RHONE</Row>
+      <Row>PANTYRAID.CARVE</Row>
+      <Row>ITT.SENT.BARRON</Row>
+      <Row>DIAZ.MOODINDIGO</Row>
+      <Row>SEXES...WOE.BUT</Row>
+      <Row>...BOSSMAN.ALEE</Row>
+      <Row>..TRUTHORDARE..</Row>
+      <Row>RHEA.LAWFIRM...</Row>
+      <Row>EEL.NUN...KOJAK</Row>
+      <Row>HELLOKITTY.ROMA</Row>
+      <Row>ELMORE.TEEM.YIN</Row>
+      <Row>ATARI.NORSEGODS</Row>
+      <Row>TAMES.APR.SOUSA</Row>
+      <Row>SPANK.PSA.HOSTS</Row>
+    </Grid>
+    <Clues>
+      <Clue Row="1" Col="1" Num="1" Dir="Across" Ans="RISER">Platform for a drum set</Clue>
+      <Clue Row="1" Col="7" Num="6" Dir="Across" Ans="PFC">Army E-3</Clue>
+      <Clue Row="1" Col="11" Num="9" Dir="Across" Ans="ACHES">Rheumatic ills</Clue>
+      <Clue Row="2" Col="1" Num="14" Dir="Across" Ans="ANIME">Japanese genre with voice actors</Clue>
+      <Clue Row="2" Col="7" Num="15" Dir="Across" Ans="IRA">Portfolio part, for short</Clue>
+      <Clue Row="2" Col="11" Num="16" Dir="Across" Ans="RHONE">Arles's river</Clue>
+      <Clue Row="3" Col="1" Num="17" Dir="Across" Ans="PANTYRAID">College prank popular in the '50s</Clue>
+      <Clue Row="3" Col="11" Num="19" Dir="Across" Ans="CARVE">Do the honors on Thanksgiving</Clue>
+      <Clue Row="4" Col="1" Num="20" Dir="Across" Ans="ITT">"Ooky" cousin on TV</Clue>
+      <Clue Row="4" Col="5" Num="21" Dir="Across" Ans="SENT">Emailed, say</Clue>
+      <Clue Row="4" Col="10" Num="22" Dir="Across" Ans="BARRON">Surname on a financial weekly</Clue>
+      <Clue Row="5" Col="1" Num="23" Dir="Across" Ans="DIAZ">Cameron of "Charlie's Angels"</Clue>
+      <Clue Row="5" Col="6" Num="25" Dir="Across" Ans="MOODINDIGO">Classic Duke Ellington tune</Clue>
+      <Clue Row="6" Col="1" Num="27" Dir="Across" Ans="SEXES">They may be determined by sonograms</Clue>
+      <Clue Row="6" Col="9" Num="29" Dir="Across" Ans="WOE">Hand-wringer's word</Clue>
+      <Clue Row="6" Col="13" Num="30" Dir="Across" Ans="BUT">On the contrary</Clue>
+      <Clue Row="7" Col="4" Num="31" Dir="Across" Ans="BOSSMAN">Head honcho</Clue>
+      <Clue Row="7" Col="12" Num="35" Dir="Across" Ans="ALEE">How a ship's sails may be positioned</Clue>
+      <Clue Row="8" Col="3" Num="36" Dir="Across" Ans="TRUTHORDARE">Slumber party game</Clue>
+      <Clue Row="9" Col="1" Num="38" Dir="Across" Ans="RHEA">Perlman of "Cheers"</Clue>
+      <Clue Row="9" Col="6" Num="40" Dir="Across" Ans="LAWFIRM">Place where people practice</Clue>
+      <Clue Row="10" Col="1" Num="41" Dir="Across" Ans="EEL">Fish that's never served raw because its blood is poisonous</Clue>
+      <Clue Row="10" Col="5" Num="42" Dir="Across" Ans="NUN">Parochial school teacher, maybe</Clue>
+      <Clue Row="10" Col="11" Num="43" Dir="Across" Ans="KOJAK">Lollipop-loving character of 1970s TV</Clue>
+      <Clue Row="11" Col="1" Num="47" Dir="Across" Ans="HELLOKITTY">Japanese toon with a red bow</Clue>
+      <Clue Row="11" Col="12" Num="52" Dir="Across" Ans="ROMA">Oblong tomato</Clue>
+      <Clue Row="12" Col="1" Num="53" Dir="Across" Ans="ELMORE">Leonard who wrote "Get Shorty"</Clue>
+      <Clue Row="12" Col="8" Num="54" Dir="Across" Ans="TEEM">Abound (with)</Clue>
+      <Clue Row="12" Col="13" Num="56" Dir="Across" Ans="YIN">Dark half of a Chinese circle</Clue>
+      <Clue Row="13" Col="1" Num="57" Dir="Across" Ans="ATARI">Game console pioneer</Clue>
+      <Clue Row="13" Col="7" Num="58" Dir="Across" Ans="NORSEGODS">They're hidden in 17-, 25-, 36- and 47-Across</Clue>
+      <Clue Row="14" Col="1" Num="60" Dir="Across" Ans="TAMES">Breaks, as a stallion</Clue>
+      <Clue Row="14" Col="7" Num="61" Dir="Across" Ans="APR">Eliot's "cruellest" mo.</Clue>
+      <Clue Row="14" Col="11" Num="62" Dir="Across" Ans="SOUSA">Composer with a horn named for him</Clue>
+      <Clue Row="15" Col="1" Num="63" Dir="Across" Ans="SPANK">Hit bottom?</Clue>
+      <Clue Row="15" Col="7" Num="64" Dir="Across" Ans="PSA">"Don't text and drive" spot, for short</Clue>
+      <Clue Row="15" Col="11" Num="65" Dir="Across" Ans="HOSTS">Invitation senders</Clue>
+      <Clue Row="1" Col="1" Num="1" Dir="Down" Ans="RAPIDS">Rafter's challenge</Clue>
+      <Clue Row="1" Col="2" Num="2" Dir="Down" Ans="INATIE">Headed for overtime</Clue>
+      <Clue Row="1" Col="3" Num="3" Dir="Down" Ans="SINTAX">Cigarette levy, e.g.</Clue>
+      <Clue Row="1" Col="4" Num="4" Dir="Down" Ans="EMT">CPR expert</Clue>
+      <Clue Row="1" Col="5" Num="5" Dir="Down" Ans="REYS">Margret and Hans, who created Curious George</Clue>
+      <Clue Row="1" Col="7" Num="6" Dir="Down" Ans="PIANO">Alicia Keys's instrument, aptly</Clue>
+      <Clue Row="1" Col="8" Num="7" Dir="Down" Ans="FRITO">Crunchy corn chip</Clue>
+      <Clue Row="1" Col="9" Num="8" Dir="Down" Ans="CAD">No Mr. Right</Clue>
+      <Clue Row="1" Col="11" Num="9" Dir="Down" Ans="ARCANE">Understood by few</Clue>
+      <Clue Row="1" Col="12" Num="10" Dir="Down" Ans="CHARD">Certain salad green</Clue>
+      <Clue Row="1" Col="13" Num="11" Dir="Down" Ans="HORRIBLE">Really, really bad</Clue>
+      <Clue Row="1" Col="14" Num="12" Dir="Down" Ans="ENVOGUE">All-female group with the hit "Free Your Mind"</Clue>
+      <Clue Row="1" Col="15" Num="13" Dir="Down" Ans="SEENOTE">Cross-reference words</Clue>
+      <Clue Row="3" Col="6" Num="18" Dir="Down" Ans="REM">"Losing My Religion" group</Clue>
+      <Clue Row="4" Col="10" Num="22" Dir="Down" Ans="BIONDI">Matt with 11 Olympic swimming medals</Clue>
+      <Clue Row="5" Col="4" Num="24" Dir="Down" Ans="ZEBRA">N.F.L. ref, slangily</Clue>
+      <Clue Row="5" Col="9" Num="26" Dir="Down" Ans="DWARF">Tower over</Clue>
+      <Clue Row="6" Col="5" Num="28" Dir="Down" Ans="SOU">Nearly worthless old French coin</Clue>
+      <Clue Row="7" Col="6" Num="32" Dir="Down" Ans="STLUKE">Acts of the Apostles writer, by tradition</Clue>
+      <Clue Row="7" Col="7" Num="33" Dir="Down" Ans="SHANI">Olympic speed skater Davis</Clue>
+      <Clue Row="7" Col="8" Num="34" Dir="Down" Ans="MOW">Do a golf course job</Clue>
+      <Clue Row="7" Col="12" Num="35" Dir="Down" Ans="ARMOR">Cover of knight?</Clue>
+      <Clue Row="8" Col="3" Num="36" Dir="Down" Ans="TELLMAMA">1968 Etta James album</Clue>
+      <Clue Row="8" Col="11" Num="37" Dir="Down" Ans="ARK">Craft for couples</Clue>
+      <Clue Row="9" Col="1" Num="38" Dir="Down" Ans="REHEATS">Readies, as leftovers</Clue>
+      <Clue Row="9" Col="2" Num="39" Dir="Down" Ans="HEELTAP">Shoe lift</Clue>
+      <Clue Row="10" Col="5" Num="42" Dir="Down" Ans="NORISK">Without a downside</Clue>
+      <Clue Row="10" Col="13" Num="44" Dir="Down" Ans="JOYOUS">Happy, and then some</Clue>
+      <Clue Row="10" Col="14" Num="45" Dir="Down" Ans="AMIDST">In the heart of</Clue>
+      <Clue Row="10" Col="15" Num="46" Dir="Down" Ans="KANSAS">Setting for Capote's "In Cold Blood"</Clue>
+      <Clue Row="11" Col="4" Num="48" Dir="Down" Ans="LOREN">Best Actress for "Two Women"</Clue>
+      <Clue Row="11" Col="8" Num="49" Dir="Down" Ans="TTOPS">Some 'Vette roofs</Clue>
+      <Clue Row="11" Col="9" Num="50" Dir="Down" Ans="TERRA">Earth, in sci-fi tales</Clue>
+      <Clue Row="11" Col="10" Num="51" Dir="Down" Ans="YES">"What is it?"</Clue>
+      <Clue Row="12" Col="11" Num="55" Dir="Down" Ans="MESH">Fit together, as gears</Clue>
+      <Clue Row="13" Col="7" Num="58" Dir="Down" Ans="NAP">Spend time in a hammock, say</Clue>
+      <Clue Row="13" Col="12" Num="59" Dir="Down" Ans="GOO">Icky stuff</Clue>
+    </Clues>
+    <JeffNotes><![CDATA[<p>NORSE GODS hidden in colorful phrases. ODIN, THOR, LOKI, and &hellip; TYR? Apparently Kevin and Brad aren&#39;t afraid of getting on Baldur, Frigg, Freyja, and Sif&#39;s bad side. Seriously though, it&#39;s too bad BALDUR doesn&#39;t get his due, as he has a great story, the &quot;invincible&quot; one getting killed by his one downfall, mistletoe. Someone have a famous kid named ARCHIBALD URANUS or something.</p>
+
+<p><a href="https://en.wikipedia.org/wiki/T%C3%BDr"><img alt="Tyr? Anybody? Bueller?" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/IB_299_4to_Tyr.jpg/440px-IB_299_4to_Tyr.jpg" style="border:1px solid gray; float:right; height:250px; margin:6px 0px 6px 12px; width:180px" title="Tyr? Anybody? Bueller?" /></a></p>
+
+<p>Great construction. There was so much excellent fill that I had to stop and admire it a few times during the solve. Five themers with a central 11 is a tough arrangement, so it&#39;s really cool that Kevin and Brad worked in BOSSMAN and LAW FIRM adjacent to that central TRUTH OR DARE. Great bonus material! I also liked those big SW and NE corners, with the juicy HEEL TAP, TELL MAMA, and EN VOGUE. Even BARRON was fun for this financial type (although BARRONS would have been much better).</p>
+
+<p>Interesting to work in two Olympic figures, Matt BIONDI and SHANI Davis. I think the former is perfectly legit, with 11 medals, including five golds in one Games. SHANI Davis &hellip; I usually avoid that S???I pattern because SHANI is one of the few entries that works. But I read up more on him, and the fact that he&#39;s the first black athlete to win a Winter gold in an individual event is groundbreaking. Okay, he&#39;s perfectly fine too.</p>
+
+<p>Took me a while to figure out why PIANO was an apt instrument for Alicia Keys. Keys. Keys! D&#39;oh! Good one.</p>
+
+<p>Nice to know that an EEL&#39;s blood is poisonous. Eel&#39;s blood vs. mistletoe? I&#39;ll take my chances on the latter.</p>
+
+<p>Really strong execution. If TYR had been at ODIN, THOR, or LOKI&#39;s level, this would have been a serious contender for the POW.</p>]]></JeffNotes>
+    <ConNotes><![CDATA[<p><strong>KEVIN: </strong>This is the first puzzle that Brad and I collaborated on chronologically, even though our <a href="http://www.xwordinfo.com/Crossword?date=7/14/2015">Seuss-themed puzzle</a> was published last month. I first got the idea for this theme in early 2013 but I didn&#39;t do anything with it right away because I didn&#39;t have an ODIN theme answer that I liked. I considered GOOD IN MATH, but I thought it was kind of weak. I looked at other GOOD IN ???? possibilities, but never found anything that really grabbed me. I let the idea sit until one day I ran across MOOD INDIGO. </p>
+
+<p>The hardest part of the grid was the SW. I wanted to use BORA at 38-Across but Brad talked me out of it and ultimately we went with the grid that you see here.</p>
+
+<p><strong>BRAD</strong>: When Kevin and I decided to work together on something, he sent me a handful of theme ideas, and I zeroed in on this one pretty quickly, as being fully formed and ready to go without any tweaking to the theme entries. We only have a small handful of Norse gods who are household names (one maybe shading into crosswordese), and Kevin had settled on some common but lively relevant phrases. </p>
+
+<p>The original grid design had an excess of 3-letter words at the center, but we were able to add a pair of white squares back in and even jazz up some of the original fill in the swath from the NW to the SE. We did a bit of haggling over the NE and SE, but it was constructive and amiable, and the final result represents a nice melding of our styles. </p>]]></ConNotes>
+  </Puzzle>
+</Puzzles>

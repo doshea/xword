@@ -35,6 +35,12 @@ class User < ActiveRecord::Base
   has_many :solution_partnerings, inverse_of: :user, dependent: :destroy
   has_many :team_solutions, through: :solution_partnerings, source: :user
 
+  #Weird workaround to generate bidirectional HABTM with same model
+  has_many :friendship_ones, :class_name => 'Friendship', :foreign_key => :friend_id
+  has_many :friend_ones, class_name: 'User', through: :friendship_ones
+  has_many :friendship_twos, :class_name => 'Friendship', :foreign_key => :user_id
+  has_many :friend_twos, class_name: 'User', through: :friendship_twos
+
   before_create { generate_token(:auth_token); generate_token(:verification_token); }
 
   include PgSearch
@@ -110,6 +116,12 @@ class User < ActiveRecord::Base
   end
   def named_email_address
     self.full_name.blank? ? self.email : "#{self.full_name} <#{self.email}>"
+  end
+  def friends
+    friend_ones + friend_twos
+  end
+  def friends_with?(user)
+    friends.include?(user)
   end
   def self.rand_unowned_puzzle
     @current_user.present? ? Crossword.unowned(@current_user).order("RANDOM()").first : Crossword.order("RANDOM()").first

@@ -12,11 +12,15 @@
 #  updated_at      :datetime
 #
 
+include ActionView::Helpers::DateHelper
+
 class Comment < ActiveRecord::Base
   belongs_to :user, inverse_of: :comments
   belongs_to :crossword, inverse_of: :comments
   belongs_to :base_comment, class_name: 'Comment'
   has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id', dependent: :destroy
+
+  scope :order_recent, -> {order created_at: :desc}
 
   MAX_PER_CROSSWORD = 2
 
@@ -76,6 +80,20 @@ class Comment < ActiveRecord::Base
   def self.random_wine_comment
     structure = @@wine_vocab[:starts].sample + @@wine_vocab[:lists].sample
     structure.gsub(/\*adv/){|a| @@wine_vocab[:advs].sample}.gsub(/\*adj/){|a| @@wine_vocab[:adjs].sample}.gsub(/\*noun/){|a| @@wine_vocab[:nouns].sample}.gsub(/\*amt/){|a| @@wine_vocab[:amts].sample}.humanize + '...'
+  end
+
+  def base_crossword
+    temp_cw = crossword
+    temp_comment = self
+    while temp_cw.nil?
+      temp_comment = temp_comment.base_comment
+      temp_cw = temp_comment.crossword
+    end
+    temp_cw
+  end
+
+  def created_ago
+    "#{time_ago_in_words(created_at)} ago"
   end
 
 end

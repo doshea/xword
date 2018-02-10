@@ -23,7 +23,6 @@
       %li.has-dropdown
         = link_to '#' do
           %i.fi-pencil
-          Solve
         %ul.dropdown
           %li.divider
           %li
@@ -41,10 +40,13 @@
               %i.fi-shuffle.larger
               Random
       %li.divider
-      %li
+      %li#nav-create
         = link_to create_dashboard_path do
           %i.fi-lightbulb
-          Create
+      %li.divider
+      %li#nav-mail
+        = link_to '#' do
+          %i.fi-mail
       %li.divider
       - if is_logged_in?
         = render partial: 'layouts/partials/user_dropdown'

@@ -27,6 +27,5 @@ module Xword
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = true
-    config.active_record.raise_in_transactional_callbacks = true #just included to make the deprecation warning go away
   end
 end
