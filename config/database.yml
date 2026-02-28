@@ -1,19 +1,23 @@
-default: &default
+development:
   adapter: postgresql
   encoding: unicode
   host: localhost
   pool: 5
   username: dylanoshea
-  password: 
-
-development:
-  <<: *default
+  password:
   database: xword_development
 
 test:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  pool: 5
+  username: dylanoshea
+  password:
   database: xword_test
 
 production:
-  <<: *default
-  database: xword_production
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  url: <%= ENV['DATABASE_URL'] %>
