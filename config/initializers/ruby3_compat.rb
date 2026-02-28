@@ -64,5 +64,18 @@ module ActiveRecord
         PostgreSQL::TableDefinition.new(*args, **kwargs)
       end
     end
+
+    # Ruby 3.x fix: TableDefinition#new_column_definition(name, type, **options)
+    # is called from #column and AlterTable#add_column with a positional Hash.
+    # In Ruby 3.x that raises "given 3, expected 2".  Accept both conventions.
+    class TableDefinition
+      def new_column_definition(name, type, options_hash = {}, **kwargs)
+        options = options_hash.merge(kwargs)
+        type = aliased_types(type.to_s, type)
+        options[:primary_key] ||= type == :primary_key
+        options[:null] = false if options[:primary_key]
+        create_column_definition(name, type, options)
+      end
+    end
   end
 end
