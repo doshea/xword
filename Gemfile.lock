@@ -132,6 +132,7 @@ GEM
     faker (1.8.7)
       i18n (>= 0.7)
     ffi (1.17.3-arm64-darwin)
+    ffi (1.17.3-x86_64-linux-gnu)
     fog-aws (2.0.0)
       fog-core (~> 1.38)
       fog-json (~> 1.0)
@@ -239,11 +240,14 @@ GEM
     nio4r (2.7.5)
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-linux-gnu)
+      racc (~> 1.4)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
     observer (0.1.2)
     pg (1.6.3-arm64-darwin)
+    pg (1.6.3-x86_64-linux)
     pg_search (2.3.7)
       activerecord (>= 6.1)
       activesupport (>= 6.1)
@@ -409,6 +413,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-23
+  x86_64-linux
 
 DEPENDENCIES
   active_record_union
