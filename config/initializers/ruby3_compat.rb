@@ -107,6 +107,28 @@ module ActiveRecord
   end
 end
 
+# Ruby 3.x fix: template_exists? is delegated to lookup_context via ActiveSupport's delegate
+# macro, which generates (*args, &block).  In Ruby 3.x, calling
+#   template_exists?(name, prefixes, variants: request.variant)
+# causes the variants: kwarg to land in *args as a positional Hash.  That Hash is then passed
+# as the `partial` argument to exists?(name, prefixes, partial=false, keys=[], **options),
+# making partial truthy — so Rails looks for a _partial instead of the full template.
+# Fix: redefine template_exists? directly to call lookup_context.exists? with proper kwargs.
+require 'action_view/view_paths'
+
+module ActionView
+  module ViewPaths
+    def template_exists?(name, prefixes = [], partial = false, keys = [], **options)
+      # If partial received a Hash (Ruby 3.x delegate swallowing kwargs), treat it as options
+      if partial.is_a?(Hash)
+        options = partial.merge(options)
+        partial = false
+      end
+      lookup_context.exists?(name, prefixes, partial, keys, **options)
+    end
+  end
+end
+
 # Ruby 3.x fix: RealTransaction/SavepointTransaction#initialize take (*args) so
 # the run_commit_callbacks: keyword from begin_transaction lands in *args as a Hash.
 # super then passes that Hash as a 3rd positional arg to Transaction#initialize
