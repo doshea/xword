@@ -3,6 +3,15 @@ require_relative 'boot'
 # require 'rails/all'
 # Pick the frameworks you want:
 require "active_record/railtie"
+
+# Ruby 3.x fix: Rails 5.1.4's `delegate :add_modifier` doesn't forward keyword
+# arguments in Ruby 3.x, passing them as a 3rd positional hash instead.
+# Override the class method to properly handle kwargs before the PostgreSQL
+# adapter is loaded and calls add_modifier with `adapter: :postgresql`.
+ActiveRecord::Type.define_singleton_method(:add_modifier) do |options, klass, **kwargs|
+  registry.add_modifier(options, klass, **kwargs)
+end
+
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "sprockets/railtie"
