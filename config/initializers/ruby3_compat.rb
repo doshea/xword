@@ -76,6 +76,23 @@ module ActiveRecord
         options[:null] = false if options[:primary_key]
         create_column_definition(name, type, options)
       end
+
+      # Ruby 3.x fix: t.string :col, options_hash passes the Hash positionally.
+      # The generated methods use (*args, **options) so in Ruby 3.x the hash lands
+      # in *args as a second "column name" instead of as options.
+      # Redefine each generated column-type method to detect and extract a trailing
+      # positional Hash from args and treat it as the options hash.
+      [
+        :bigint, :binary, :boolean, :date, :datetime, :decimal, :float,
+        :integer, :primary_key, :string, :text, :time, :timestamp, :virtual,
+      ].each do |col_type|
+        define_method(col_type) do |*args, **options|
+          if args.last.is_a?(Hash)
+            options = args.pop.merge(options)
+          end
+          args.each { |name| column(name, col_type, options) }
+        end
+      end
     end
   end
 end
@@ -86,6 +103,22 @@ end
 # ActiveSupport's `delegate` macro which generates (*args, &block) — no **kwargs — so
 # the hash can never be splatted cleanly.  Patch both type_to_sql methods to also
 # accept a single positional Hash and extract the known keys.
+# Ruby 3.x fix: ActiveRecord::Base.transaction(options = {}) passes a positional
+# Hash to connection.transaction(requires_new:, isolation:, joinable:) which only
+# accepts keyword args → ArgumentError: given 1, expected 0.
+ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(Module.new do
+  def transaction(opts_or_kw = nil, requires_new: nil, isolation: nil, joinable: true, **rest, &block)
+    if opts_or_kw.is_a?(Hash)
+      super(requires_new: opts_or_kw.fetch(:requires_new, requires_new),
+            isolation:    opts_or_kw.fetch(:isolation,    isolation),
+            joinable:     opts_or_kw.fetch(:joinable,     joinable),
+            &block)
+    else
+      super(requires_new: requires_new, isolation: isolation, joinable: joinable, &block)
+    end
+  end
+end)
+
 ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(Module.new do
   def type_to_sql(type, options_or_limit = nil, limit: nil, precision: nil, scale: nil, **rest)
     if options_or_limit.is_a?(Hash)
