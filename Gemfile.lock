@@ -165,8 +165,9 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    haml (5.2.2)
-      temple (>= 0.8.0)
+    haml (6.4.0)
+      temple (>= 0.8.2)
+      thor
       tilt
     httparty (0.15.7)
       multi_xml (>= 0.5.2)
@@ -425,7 +426,7 @@ DEPENDENCIES
   faker
   fog-aws
   guard-rspec
-  haml (~> 5.2)
+  haml (~> 6.0)
   httparty
   jbuilder (~> 2.12)
   jquery-rails

@@ -14,7 +14,7 @@ gem 'puma', '~> 5.0'
 gem 'redis'
 
 gem 'pg', '~> 1.2'
-gem 'haml', '~> 5.2'
+gem 'haml', '~> 6.0'
 gem 'bcrypt'
 
 gem 'active_record_union'

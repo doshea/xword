@@ -41,7 +41,6 @@
     %h2.center Oops! You're not logged in
     %p.center
       To create your own crosswords, you'll need to
-      = succeed '.' do
-        %u= link_to 'login or make a new account', login_path
+      = (content_tag(:u, link_to('login or make a new account', login_path)) + '.').html_safe
       Don't worry, it's free!
     %br
