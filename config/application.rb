@@ -3,31 +3,7 @@ require_relative 'boot'
 # require 'rails/all'
 # Pick the frameworks you want:
 require "active_record/railtie"
-
-# Ruby 3.x fix: Rails 5.1.4's `delegate :add_modifier` doesn't forward keyword
-# arguments in Ruby 3.x, passing them as a 3rd positional hash instead.
-# Override the class method to properly handle kwargs before the PostgreSQL
-# adapter is loaded and calls add_modifier with `adapter: :postgresql`.
-ActiveRecord::Type.define_singleton_method(:add_modifier) do |options, klass, **kwargs|
-  registry.add_modifier(options, klass, **kwargs)
-end
-
 require "action_controller/railtie"
-
-# Ruby 3.x fix: ActionDispatch::MiddlewareStack::Middleware#build calls
-# klass.new(app, *args) where args may contain a trailing keyword hash
-# (stored that way in Ruby 3.x). Patch build to splat it as **kwargs.
-ActionDispatch::MiddlewareStack::Middleware.prepend(Module.new do
-  def build(app)
-    if !args.empty? && args.last.is_a?(Hash)
-      *pos_args, kw_hash = args
-      klass.new(app, *pos_args, **kw_hash, &block)
-    else
-      klass.new(app, *args, &block)
-    end
-  end
-end)
-
 require "action_mailer/railtie"
 require "sprockets/railtie"
 require "action_cable" #NECESSARY FOR ACTION CABLE

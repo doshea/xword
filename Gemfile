@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails'
-gem 'coffee-rails'
+gem 'rails', '~> 6.1.0'
 gem 'json'
 
 gem 'httparty'
@@ -10,24 +9,21 @@ gem 'multi_json'
 
 gem 'pusher'
 
-gem 'record_tag_helper' #so that content_tag_for works
-
-#TODO TEMPORARY FIX --> http://stackoverflow.com/questions/31793791/push-to-heroku-fails-could-not-find-net-ssh-2-10-0-in-any-of-the-sources-faile
-# gem 'net-ssh', '!= 2.10.0'
-
 #required server for ActionCable
-gem 'puma'
+gem 'puma', '~> 5.0'
 gem 'redis'
 
 gem 'pg', '~> 1.2'
-gem 'haml'
+gem 'haml', '~> 5.2'
 gem 'bcrypt'
 
 gem 'active_record_union'
 
 # asset gems
-gem 'sass-rails'
-
+gem 'sassc-rails'
+gem 'coffee-rails'
+gem 'sprockets', '~> 3.7'    # pin to Sprockets 3 to keep CoffeeScript working
+gem 'terser'                  # replaces uglifier
 
 # AWS image upload gems
 gem 'carrierwave'
@@ -37,9 +33,9 @@ gem 'remotipart'
 gem 'unf'
 
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.
-gem 'pg_search'
+gem 'pg_search', '~> 2.3'
 
-gem 'nilify_blanks' #TODO use this
+gem 'nilify_blanks'
 
 #JS gems
 gem 'jquery-rails'
@@ -51,16 +47,10 @@ gem 'will_paginate', '~> 3.0'
 
 #Moved out of development-only so that Heroku can use it
 gem 'pry-rails'
-gem 'uglifier' #used to only be dev and test but was causing issues in production...
-
-group :doc do
-  # bundle exec rake doc:rails generates the API under doc/api.
-  gem 'sdoc', require: false
-end
 
 group :development, :test do
   #testing gems
-  gem 'annotate'
+  gem 'annotate', '~> 3.2'
   gem 'rainbow'
 
   gem 'binding_of_caller'
@@ -69,14 +59,14 @@ end
 
 group :test do
   gem 'factory_bot_rails'
-  gem 'rspec-rails'
-  gem 'shoulda-matchers'
-  gem 'capybara'
+  gem 'rspec-rails', '~> 4.0'
+  gem 'shoulda-matchers', '~> 5.0'
+  gem 'capybara', '~> 3.0'
   gem 'launchy'
   gem 'database_cleaner'
   gem 'guard-rspec'
   gem 'faker'
-  gem 'simplecov','~> 0.7.1' , :require => false
+  gem 'simplecov', '~> 0.22', require: false
 end
 
 group :development do
