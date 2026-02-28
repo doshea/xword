@@ -166,6 +166,46 @@ ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(Module.new do
   end
 end)
 
+# Ruby 3.x fix: add_index_options calls quoted_columns_for_index(column_names, options) with a
+# positional Hash, but the method declares **options (kwargs-only).  Same issue cascades into
+# add_options_for_index_columns and add_index_sort_order.  Redefine all three to accept both.
+module ActiveRecord
+  module ConnectionAdapters
+    module SchemaStatements
+      private
+
+      def quoted_columns_for_index(column_names, opts = nil, **kwargs)
+        opts = opts.is_a?(Hash) ? opts.merge(kwargs) : kwargs
+        return [column_names] if column_names.is_a?(String)
+        quoted_columns = Hash[column_names.map { |name| [name.to_sym, quote_column_name(name).dup] }]
+        add_options_for_index_columns(quoted_columns, **opts).values
+      end
+
+      def add_options_for_index_columns(quoted_columns, opts = nil, **kwargs)
+        opts = opts.is_a?(Hash) ? opts.merge(kwargs) : kwargs
+        if supports_index_sort_order?
+          quoted_columns = add_index_sort_order(quoted_columns, **opts)
+        end
+        quoted_columns
+      end
+
+      def add_index_sort_order(quoted_columns, opts = nil, **kwargs)
+        opts = opts.is_a?(Hash) ? opts.merge(kwargs) : kwargs
+        if order = opts[:order]
+          case order
+          when Hash
+            order = order.symbolize_keys
+            quoted_columns.each { |name, column| column << " #{order[name].upcase}" if order[name].present? }
+          when String
+            quoted_columns.each { |name, column| column << " #{order.upcase}" if order.present? }
+          end
+        end
+        quoted_columns
+      end
+    end
+  end
+end
+
 # Ruby 3.x fix: ActiveRecord::Base.transaction(options = {}) passes a positional
 # Hash to connection.transaction(requires_new:, isolation:, joinable:) which only
 # accepts keyword args → ArgumentError: given 1, expected 0.
