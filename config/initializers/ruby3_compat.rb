@@ -36,3 +36,33 @@ module ActiveRecord
     end
   end
 end
+
+# Ruby 3.x fix: create_table_definition(*args) swallows trailing keyword args
+# (e.g. `comment: comment`) into the *args array as a plain Hash.  When that
+# array is then splatted into TableDefinition.new(*args) it arrives as an extra
+# positional argument, causing "given 5, expected 1..4".
+#
+# Fix both the abstract adapter and the PostgreSQL adapter so keyword args are
+# captured separately and forwarded with **.
+require 'active_record/connection_adapters/abstract/schema_statements'
+require 'active_record/connection_adapters/postgresql_adapter'
+
+module ActiveRecord
+  module ConnectionAdapters
+    module SchemaStatements
+      private
+
+      def create_table_definition(*args, **kwargs)
+        TableDefinition.new(*args, **kwargs)
+      end
+    end
+
+    class PostgreSQLAdapter
+      private
+
+      def create_table_definition(*args, **kwargs)
+        PostgreSQL::TableDefinition.new(*args, **kwargs)
+      end
+    end
+  end
+end
