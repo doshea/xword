@@ -23,9 +23,8 @@ Bundler.require(*Rails.groups)
 
 module Xword
   class Application < Rails::Application
-    # Initialize configuration defaults for Rails 7.2.
-    # new_framework_defaults_7_2.rb controls the gradual opt-in to 7.2 defaults.
-    config.load_defaults 7.2
+    # Initialize configuration defaults for Rails 8.0.
+    config.load_defaults 8.0
 
     # Autoload lib/ (exclude non-Ruby subdirectories)
     config.autoload_lib(ignore: %w[assets tasks custom_funcs.rb])

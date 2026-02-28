@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 8.0.0'
 gem 'json'
 gem 'csv'           # removed from Ruby 3.4 default gems
 
@@ -11,7 +11,7 @@ gem 'multi_json'
 gem 'pusher'
 
 #required server for ActionCable
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 gem 'redis'
 
 gem 'pg', '~> 1.2'
@@ -50,7 +50,6 @@ gem 'pry-rails'
 
 group :development, :test do
   #testing gems
-  gem 'annotate', '~> 3.2'
   gem 'rainbow'
 
   gem 'binding_of_caller'
