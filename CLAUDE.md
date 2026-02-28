@@ -16,17 +16,18 @@ A Rails web app for solving and creating crossword puzzles. Features include:
 | Component | Version | Notes |
 |-----------|---------|-------|
 | Ruby | 3.1.6 | Pinned in `.ruby-version` and `Gemfile` |
-| Rails | 5.1.4 | Very old — requires extensive monkey-patches for Ruby 3.x |
+| Rails | 7.2.3 | Upgraded from 5.1.4; `config.load_defaults 7.2` |
 | PostgreSQL | Any modern version | Uses `pg ~> 1.2` gem |
 | Redis | — | Required for ActionCable |
 
-**This is a Rails 5.1.4 app running on Ruby 3.1.6.** These versions are not natively compatible. The codebase contains ~300 lines of monkey-patches to bridge the kwargs incompatibilities between them. Those patches are complete and the app is fully deployed and running. See the "Ruby 3.x Compatibility Patches" section below.
+**The app runs Rails 7.2.3 on Ruby 3.1.6** with no monkey-patches. All Ruby 3.x
+compatibility fixes were eliminated when upgrading from Rails 5.1.4 → 6.1 → 7.2.
 
 ## Project Structure
 
 ```
 app/
-  assets/javascripts/    # CoffeeScript + plain JS (Sprockets pipeline)
+  assets/javascripts/    # CoffeeScript + plain JS (Sprockets 3 pipeline)
   channels/              # ActionCable channels (messages_channel.rb)
   controllers/
     admin/               # Admin CRUD controllers (crosswords, users, etc.)
@@ -41,21 +42,23 @@ app/
   views/                 # HAML templates
 config/
   initializers/
-    ruby3_compat.rb      # *** CRITICAL: 200+ lines of Rails 5.1 / Ruby 3.x patches ***
-    new_framework_defaults.rb  # Rails 5.0 migration defaults (not yet flipped)
-  application.rb         # More Ruby 3.x patches (ActiveRecord::Type, MiddlewareStack)
-  boot.rb                # pg gem version constraint hack
+    new_framework_defaults.rb       # Rails 5.0 defaults (all flipped to true)
+    new_framework_defaults_7_2.rb   # Rails 7.2 opt-in defaults (all commented out)
+    fog_init.rb                     # CarrierWave + fog-aws config (guarded by ENV check)
+  application.rb         # config.load_defaults 7.2, autoload_lib, time_zone
+  boot.rb                # require 'logger' for Ruby 3.1 compat with Rails 6.x+
   environment.rb         # ActiveRecord::Base extensions (skip_callbacks, next_index)
   routes.rb              # All routes
   cable.yml              # ActionCable config
   database.yml           # PostgreSQL config
 lib/
   custom_funcs.rb        # time_difference_hash(), missing_this_year(), Integer#left_digits
+                         # (manually required in application.rb; excluded from Zeitwerk)
 spec/                    # RSpec test suite
   controllers/           # 9 controller specs + admin/
   models/                # 9 model specs
   features/              # 2 integration specs (login, solve)
-  factories/             # FactoryGirl factories
+  factories/             # FactoryBot factories
 vendor/
   assets/                # Foundation 5 & 6 JS/CSS
 ```
@@ -79,50 +82,21 @@ Core entities and their relationships:
 - **Friendship** — bidirectional friendships (self-join, no primary key)
 - **FriendRequest** — pending friend requests (no primary key)
 
-## Ruby 3.x Compatibility Patches
+## Rails Upgrade History
 
-**This is the most important thing to understand about this codebase.**
+The app was upgraded from Rails 5.1.4 → 6.1 → 7.2 in Feb 2026.
 
-Rails 5.1.4 was written for Ruby 2.x, which allowed passing a Hash as the last positional argument to a method expecting keyword args. Ruby 3.0+ made this an error. The app patches Rails internals in four locations. **All patches are in place and the app runs correctly — no further Ruby 3.x fixes are needed.**
+### Key changes during upgrade
+- All `belongs_to` associations: added `optional: true` to those with nullable FK columns
+- `content_tag_for` → `content_tag + dom_id` (removed `record_tag_helper` dependency)
+- `render text:` → `render plain:` in 3 controllers
+- `include PgSearch` → `include PgSearch::Model` in 3 models (pg_search 2.3.x deprecation)
+- `cw.try(:preview)` → `cw.preview_url` in `_crossword_tab.html.haml` (Rails 7 `to_model` change)
+- `sass-rails` replaced by `sassc-rails`; `coffee-rails` kept with `sprockets ~> 3.7` pin
+- `uglifier` replaced by `terser`
 
-The core problem pattern appears in three forms:
-1. `method(hash)` where `method` declares only `**kwargs` — raises "given 1, expected 0"
-2. `method(*args)` captures a trailing kwargs hash into `*args`, then `super` passes it as a positional arg to a kwargs-only parent — raises "given N, expected N-1"
-3. ActiveSupport `delegate` and `helper_method` generate `(*args, &block)` wrappers, swallowing kwargs into positional args before forwarding
-
-### `config/boot.rb`
-- **PgGemVersionFix**: Rails 5.1.4 hardcodes `gem "pg", "~> 0.18"` which rejects pg 1.x. This intercepts `Kernel#gem` to relax the constraint to `>= 0.18, < 2.0`.
-
-### `config/application.rb`
-- **ActiveRecord::Type.add_modifier**: Fixes kwargs forwarding for the PostgreSQL adapter.
-- **ActionDispatch::MiddlewareStack::Middleware#build**: Splats trailing keyword hash from `*args`.
-
-### `config/initializers/ruby3_compat.rb` (~306 lines)
-Patches these Rails internals:
-- `ActiveModel::Type::Value#initialize` — positional Hash → kwargs (fixes all type subclasses)
-- `PostgreSQL::OID::SpecializedString#initialize` — `super(**options)`
-- `SchemaStatements#create_table_definition` — captures `**kwargs` separately
-- `PostgreSQLAdapter#create_table_definition` — same
-- `TableDefinition#new_column_definition` — accepts both positional Hash and kwargs
-- `TableDefinition` column type methods (string, integer, etc.) — extracts trailing Hash from `*args`
-- `TableDefinition#references` / `belongs_to` — splats kwargs to `ReferenceDefinition.new`
-- `Transaction#initialize` — handles extra positional Hash for `run_commit_callbacks`
-- `AbstractAdapter#create_table` — positional Hash → kwargs
-- `AbstractAdapter#add_index_options` — positional Hash → kwargs
-- `AbstractAdapter#transaction` — positional Hash → kwargs
-- `AbstractAdapter#type_to_sql` — positional Hash → kwargs
-- `PostgreSQLAdapter#type_to_sql` — same, with `array:` support
-- `SchemaStatements#quoted_columns_for_index` — positional Hash → kwargs
-- `SchemaStatements#add_options_for_index_columns` — same (called by above)
-- `SchemaStatements#add_index_sort_order` — same (called by above)
-- `AbstractController::Helpers::ClassMethods#helper_method` — overrides the generator to emit `(*args, **kwargs, &blk)` forwarders instead of `(*args, &blk)`, fixing all view helpers backed by kwargs-only controller methods (e.g. `form_authenticity_token`); re-registers all existing helpers
-- `ActionView::ViewPaths#template_exists?` — bypasses the `delegate`-generated `(*args, &block)` wrapper so `variants:` kwarg reaches `LookupContext#exists?` correctly instead of landing in the `partial` parameter
-
-### `config/environment.rb`
-- `ActiveRecord::Base.skip_callbacks` — class-level accessor used in tests
-- `ActiveRecord::Base.next_index` — queries PostgreSQL sequences directly via raw SQL
-
-**If upgrading Rails, all of these patches can and should be removed.** They exist solely to bridge the Ruby 2.x → 3.x kwargs gap in Rails 5.1.4.
+### Deleted files
+- `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches, no longer needed
 
 ## PostgreSQL-Specific Features
 
@@ -138,22 +112,22 @@ No JSONB, hstore, triggers, stored procedures, materialized views, or PostGIS.
 
 ## Frontend / Asset Pipeline
 
-Uses Rails 5.1 Sprockets pipeline:
+Uses Sprockets 3 pipeline (pinned to `~> 3.7` to keep CoffeeScript support):
 - **CoffeeScript** — 12 `.coffee` files (crossword interactions, ActionCable channels, account, global)
-- **SASS** via `sass-rails`
+- **SASS** via `sassc-rails`
 - **jQuery** via `jquery-rails`
-- **Turbolinks**
+- **Turbolinks** (effectively disabled in application.js)
 - **Foundation** 5 & 6 (vendored JS/CSS)
 - Plain JS files: `solve.js`, `edit.js`
 
 ## Testing
 
-- **Framework**: RSpec with `rspec-rails`
-- **Factories**: FactoryGirl (not FactoryBot — predates the rename)
+- **Framework**: RSpec with `rspec-rails ~> 4.0`
+- **Factories**: FactoryBot (renamed from FactoryGirl)
 - **Database cleaning**: DatabaseCleaner with truncation strategy (not transactions)
-- **Feature tests**: Capybara with CSS selectors
-- **Coverage**: SimpleCov ~0.7.1 (very old)
-- **Matchers**: shoulda-matchers
+- **Feature tests**: Capybara `~> 3.0` with CSS selectors
+- **Coverage**: SimpleCov `~> 0.22`
+- **Matchers**: shoulda-matchers `~> 5.0`
 - **Custom metadata tags**: `:dirty_inside` (skip DB cleaning), `:skip_callbacks`
 - **Transactional fixtures**: disabled
 
@@ -166,15 +140,17 @@ Run tests: `bundle exec rspec`
 | `pg ~> 1.2` | PostgreSQL adapter |
 | `pg_search` | Full-text search on Crossword, User, Word |
 | `active_record_union` | UNION queries in ActiveRecord |
-| `carrierwave` + `fog` + `rmagick` | Image uploads to S3 with resizing |
+| `carrierwave` + `fog-aws` + `rmagick` | Image uploads to S3 with resizing |
 | `pusher` | Real-time push notifications |
-| `puma` + `redis` | ActionCable WebSocket server |
-| `bcrypt-ruby` | Password hashing (old gem name; now just `bcrypt`) |
-| `haml` | View templates |
+| `puma ~> 5.0` + `redis` | ActionCable WebSocket server |
+| `bcrypt` | Password hashing |
+| `haml ~> 5.2` | View templates |
 | `will_paginate ~> 3.0` | Pagination |
 | `nilify_blanks` | Convert blank strings to NULL |
-| `record_tag_helper` | `content_tag_for` helper (removed in Rails 6) |
 | `httparty` | HTTP client (NYT puzzle fetching) |
+| `sassc-rails` | SASS/SCSS compilation (replaces sass-rails) |
+| `coffee-rails` | CoffeeScript compilation (with sprockets ~> 3.7) |
+| `terser` | JS minification in production (replaces uglifier) |
 
 ## Key Commands
 
@@ -192,7 +168,7 @@ rails console           # Interactive console
 - **App name**: `crosswordcafe`
 - **URL**: https://crosswordcafe.herokuapp.com/
 - **Stack**: Heroku-22 (Ruby 3.1.6)
-- **Status**: Live and running — all pages return 200
+- **Status**: Live on Rails 7.2.3 — home, welcome, about, faq, stats, contact, users/new all return 200
 
 Deploy and test workflow:
 ```bash
@@ -202,13 +178,11 @@ heroku run "bundle exec rails db:migrate 2>&1" --app crosswordcafe
 
 ## Known Technical Debt
 
-1. **Rails 5.1.4** — 8+ years old, EOL, requires extensive monkey-patching for Ruby 3.x
-2. **FactoryGirl** — renamed to FactoryBot years ago
-3. **CoffeeScript** — deprecated, should be converted to plain JS
-4. **SimpleCov ~0.7.1** — extremely old version
-5. **`fog`** — monolithic gem; should use `fog-aws` instead
-6. **`bcrypt-ruby`** — old name; modern gem is `bcrypt`
-7. **`record_tag_helper`** — removed from Rails 6+
-8. **`new_framework_defaults.rb`** — Rails 5.0 migration defaults never flipped to new values
-9. **No CI/CD** — no GitHub Actions, Travis, or other CI configuration
-10. **Last migration**: April 2017 (schema has been stable for years; all migrations run successfully on Heroku)
+1. **CoffeeScript** — 12 `.coffee` files should be converted to plain JS; blocked on `sprockets ~> 3.7` pin
+2. **Sprockets 3 pin** — upgrading to Sprockets 4 requires converting CoffeeScript first
+3. **HAML 5.2** — not yet upgraded to HAML 6 (waiting for Sprockets migration)
+4. **`remotipart`** — old jQuery UJS gem; compatibility with Rails 7 untested
+5. **No CI/CD** — no GitHub Actions, Travis, or other CI configuration
+6. **Last DB migration**: April 2017 (schema stable; all migrations run successfully)
+7. **Models inherit from `ActiveRecord::Base`** — not updated to `ApplicationRecord` pattern
+8. **`new_framework_defaults_7_2.rb`** — all 7.2 defaults commented out; can be enabled/deleted
