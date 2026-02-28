@@ -236,7 +236,7 @@ class Crossword < ActiveRecord::Base
       need_circles = cells.where(index: indices)
       if need_circles.count == indices.length
         need_circles.update_all(circled: true)
-        update_attributes(circled: true)
+        update(circled: true)
       else
         raise(ActiveRecord::RecordNotFound, 'Not all cells that needed circles were found.')
       end
@@ -393,7 +393,7 @@ class Crossword < ActiveRecord::Base
     end
     number_cells
     generate_words_and_link_clues
-    update_attributes(published: true, published_at: Time.now, letters: letters)
+    update(published: true, published_at: Time.now, letters: letters)
     self
   end
 

@@ -21,7 +21,7 @@ gem 'redis'
 
 gem 'pg', '~> 1.2'
 gem 'haml'
-gem 'bcrypt-ruby'
+gem 'bcrypt'
 
 gem 'active_record_union'
 
@@ -31,7 +31,7 @@ gem 'sass-rails'
 
 # AWS image upload gems
 gem 'carrierwave'
-gem 'fog'
+gem 'fog-aws'
 gem 'rmagick'
 gem 'remotipart'
 gem 'unf'
@@ -64,11 +64,11 @@ group :development, :test do
   gem 'rainbow'
 
   gem 'binding_of_caller'
-  gem 'meta_request'
+  gem 'meta_request', '~> 0.8'
 end
 
 group :test do
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'capybara'

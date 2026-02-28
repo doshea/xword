@@ -14,7 +14,7 @@ class Admin::SolutionsController < ApplicationController
   #PATCH/PUT /admin/solutions/:id or admin_solution_path
   # AJAX #
   def update
-    if @solution.update_attributes(update_solution_params)
+    if @solution.update(update_solution_params)
       alert_js('SUCCESS solution updated.')
     else
       alert_js('!!!ERROR updating solution!!!')

@@ -3,15 +3,15 @@ class CellsController < ApplicationController
 
   #PATCH/PUT /cells/:id or cell_path
   def update
-    @cell.update_attributes(cell_params)
-    render nothing: true
+    @cell.update(cell_params)
+    head :ok
   end
 
   #PUT /cells/:id/toggle_void or toggle_void_cell_path
   def toggle_void
     @cell.toggle_void
     @mirror_cell = @cell.get_mirror_cell
-    render nothing: true
+    head :ok
   end
 
   private

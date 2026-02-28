@@ -12,7 +12,7 @@
 #  updated_at      :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :comment do
     content {Faker::Lorem.sentences(3)}
   end

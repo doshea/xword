@@ -14,5 +14,5 @@
 #  solved_at    :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
 end

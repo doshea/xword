@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   #PATCH/PUT /users/:id or user_path
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(update_user_params)
+    if @user.update(update_user_params)
       respond_to do |format|
         format.html { render :account }
         format.js
@@ -78,7 +78,7 @@ class UsersController < ApplicationController
   def resetter
     user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
     if user
-      if user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
+      if user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
         user.password_reset_token = nil
         user.password_reset_sent_at = nil
         user.save
@@ -95,7 +95,7 @@ class UsersController < ApplicationController
   #POST /users/change_password or change_password_users_path
   def change_password
     if @current_user.authenticate(params[:old_password])
-      if @current_user.update_attributes(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
+      if @current_user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
         render :password_updated
       else
         # things to do when the new update doesn't work, likely because it is invalid

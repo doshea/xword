@@ -8,7 +8,7 @@
 #  updated_at :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   #NEED ASSOCIATED WORDS FOR CLUE FACTORY
 
 end

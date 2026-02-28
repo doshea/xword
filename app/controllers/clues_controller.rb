@@ -11,8 +11,8 @@ class CluesController < ApplicationController
 
   #PATCH/PUT /clue/:id or clue_path
   def update
-    @clue.update_attributes(clue_params)
-    render nothing: true
+    @clue.update(clue_params)
+    head :ok
   end
 
   private

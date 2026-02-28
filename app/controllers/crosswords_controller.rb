@@ -62,7 +62,7 @@ class CrosswordsController < ApplicationController
       @word = Word.find(params[:potential_word_id])
       @crossword.potential_words.delete(@word)
     else
-      render nothing: true
+      head :ok
     end
   end
 

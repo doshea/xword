@@ -14,7 +14,7 @@ class Admin::UsersController < ApplicationController
   #PATCH/PUT /admin/users/:id or admin_user_path
   # AJAX #
   def update
-    if @user.update_attributes(update_user_params)
+    if @user.update(update_user_params)
       alert_js('SUCCESS user updated.')
     else
       alert_js('!!!ERROR updating user!!!')

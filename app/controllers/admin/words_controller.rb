@@ -14,7 +14,7 @@ class Admin::WordsController < ApplicationController
   #PATCH/PUT /admin/words/:id or admin_word_path
   # AJAX #
   def update
-    if @word.update_attributes(update_word_params)
+    if @word.update(update_word_params)
       alert_js('SUCCESS word updated.')
     else
       alert_js('!!!ERROR updating word!!!')

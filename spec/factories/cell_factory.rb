@@ -17,7 +17,7 @@
 #  circled         :boolean          default(FALSE)
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :cell do
     letter {Faker::Lorem.charcters(1)}
     row { Crossword.random_row_or_col }

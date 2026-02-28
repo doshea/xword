@@ -15,7 +15,7 @@
 #  preview     :text
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :crossword do
     rows {Crossword.random_dimension}
     cols {Crossword.random_dimension}

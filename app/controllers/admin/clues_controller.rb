@@ -17,7 +17,7 @@ class Admin::CluesController < ApplicationController
   #PATCH/PUT /admin/clues/:id or admin_clue_path
   # AJAX #
   def update
-    if @clue.update_attributes(update_clue_params)
+    if @clue.update(update_clue_params)
       alert_js('SUCCESS clue updated.')
     else
       alert_js('!!!ERROR updating clue!!!')

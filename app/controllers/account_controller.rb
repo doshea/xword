@@ -5,13 +5,13 @@ class AccountController < ApplicationController
   end
 
   def update
-    @current_user.update_attributes(profile_params)
+    @current_user.update(profile_params)
     redirect_to account_path
   end
 
   def change_password
     if @current_user.authenticate(params[:old_password])
-      @current_user.update_attributes(password_params)
+      @current_user.update(password_params)
     end
     redirect_to account_path
   end

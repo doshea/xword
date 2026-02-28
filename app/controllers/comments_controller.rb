@@ -14,13 +14,13 @@ class CommentsController < ApplicationController
           crossword.comments << @new_comment
           user.comments << @new_comment
         else
-          render nothing: true, status: :forbidden
+          head :forbidden
         end
       else
-        render nothing: true, status: :unauthorized
+        head :unauthorized
       end
     else
-      render nothing: true, status: :bad_request
+      head :bad_request
     end
   end
 

@@ -20,7 +20,7 @@
 #  verification_token     :string
 #
 
-FactoryGirl.define do
+FactoryBot.define do
 
   #TODO DRY up these factories with inheritance: https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md#inheritance
   factory :user do

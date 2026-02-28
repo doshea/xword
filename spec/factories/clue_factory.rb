@@ -10,7 +10,7 @@
 #  phrase_id  :integer
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   #THESE CLUES NEED ASSOCIATED WORDS
   factory :clue, class: Clue do
     difficulty { rand(5) + 1}

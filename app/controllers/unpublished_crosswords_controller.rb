@@ -21,15 +21,15 @@ class UnpublishedCrosswordsController < ApplicationController
   end
 
   def update
-    found_object.update_attributes(update_params)
-    render nothing: true
+    found_object.update(update_params)
+    head :ok
   end
 
   def update_letters
     letters = params[:letters].map{|l| l unless l == 0}
     @save_counter = params[:save_counter]
     puzzle_hash = {letters: letters, circles: params[:circles], across_clues: params[:across_clues], down_clues: params[:down_clues]}
-    found_object.update_attributes(puzzle_hash)
+    found_object.update(puzzle_hash)
   end
 
   def publish

@@ -26,7 +26,7 @@ class SolutionsController < ApplicationController
   def get_incorrect
     @mismatches = @solution.crossword.get_mismatches(params[:letters])
     if @mismatches.empty?
-      @solution.update_attributes(is_complete: true)
+      @solution.update(is_complete: true)
     end
   end
 
@@ -44,7 +44,7 @@ class SolutionsController < ApplicationController
 
     Pusher.trigger(params[:channel], 'change_cell', data)
 
-    render nothing: true
+    head :ok
   end
 
   #POST /solutions/:id/join_team or join_team_solution_path
@@ -57,21 +57,21 @@ class SolutionsController < ApplicationController
             blue: params[:blue]
             }
     Pusher.trigger(params[:channel], 'join_puzzle', data)
-    render nothing: true
+    head :ok
   end
 
   #POST /solutions/:id/leave_team or leave_team_solution_path
   def leave_team
     data = {solver_id: params[:solver_id]}
     Pusher.trigger(params[:channel], 'leave_puzzle', data)
-    render nothing: true
+    head :ok
   end
 
   #POST /solutions/:id/roll_call or roll_call_solution_path
   def roll_call
     data = {}
     Pusher.trigger(params[:channel], 'roll_call', data)
-    render nothing: true
+    head :ok
   end
 
   #POST /solutions/:id/send_team_chat or send_team_chat_solution_path
@@ -92,7 +92,7 @@ class SolutionsController < ApplicationController
                 solver_id: params[:solver_id]
                 }
     Pusher.trigger(params[:channel], 'outline_team_clue', data)
-    render nothing: true
+    head :ok
   end
 
   # If the user is a partner on the solution, delete their partnership. If they are the owner, delete the solution.

@@ -14,7 +14,7 @@ class Admin::CrosswordsController < ApplicationController
   #PATCH/PUT /admin/crosswords/:id or admin_crossword_path
   # AJAX #
   def update
-    if @crossword.update_attributes(update_crossword_params)
+    if @crossword.update(update_crossword_params)
       alert_js('SUCCESS crossword updated.')
     else
       alert_js('!!!ERROR updating crossword!!!')

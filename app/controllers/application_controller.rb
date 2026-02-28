@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   def find_object
     instance_variable_set("@#{associated_class_string.underscore}", associated_class.find(params[:id]))
     rescue ActiveRecord::RecordNotFound
-    redirect_to :back, flash: {error: "Sorry, that #{associated_class_string.underscore.humanize} could not be found."}
+    redirect_back fallback_location: root_path, flash: {error: "Sorry, that #{associated_class_string.underscore.humanize} could not be found."}
   end
   def found_object
     instance_variable_get("@#{associated_class_string.underscore}")

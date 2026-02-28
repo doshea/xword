@@ -14,7 +14,7 @@ class Admin::CommentsController < ApplicationController
   #PATCH/PUT /admin/comments/:id or admin_comment_path
   # AJAX #
   def update
-    if @comment.update_attributes(update_comment_params)
+    if @comment.update(update_comment_params)
       alert_js('SUCCESS comment updated.')
     else
       alert_js('ERROR updating comment.')
