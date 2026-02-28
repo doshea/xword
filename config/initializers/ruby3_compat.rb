@@ -97,6 +97,29 @@ module ActiveRecord
   end
 end
 
+# Ruby 3.x fix: RealTransaction/SavepointTransaction#initialize take (*args) so
+# the run_commit_callbacks: keyword from begin_transaction lands in *args as a Hash.
+# super then passes that Hash as a 3rd positional arg to Transaction#initialize
+# which declares (connection, options, run_commit_callbacks: false) — only 2 positional.
+require 'active_record/connection_adapters/abstract/transaction'
+
+module ActiveRecord
+  module ConnectionAdapters
+    class Transaction
+      def initialize(connection, options, extra = nil, run_commit_callbacks: false)
+        if extra.is_a?(Hash)
+          run_commit_callbacks = extra.fetch(:run_commit_callbacks, run_commit_callbacks)
+        end
+        @connection            = connection
+        @state                 = TransactionState.new
+        @records               = []
+        @joinable              = options.fetch(:joinable, true)
+        @run_commit_callbacks  = run_commit_callbacks
+      end
+    end
+  end
+end
+
 # Ruby 3.x fix: SchemaCreation#visit_ColumnDefinition calls type_to_sql(type, options)
 # with a positional Hash.  type_to_sql on both AbstractAdapter and PostgreSQLAdapter
 # declares only keyword args (limit:, precision:, scale:, …).  The call goes through
