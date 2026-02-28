@@ -1,5 +1,5 @@
 class AccountController < ApplicationController
-  before_filter :ensure_logged_in, only: [:show, :update, :change_password]
+  before_action :ensure_logged_in, only: [:show, :update, :change_password]
 
   def show
   end
