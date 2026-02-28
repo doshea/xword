@@ -19,23 +19,23 @@
 
 FactoryBot.define do
   factory :cell do
-    letter {Faker::Lorem.charcters(1)}
+    letter { Faker::Lorem.characters(number: 1) }
     row { Crossword.random_row_or_col }
     col { Crossword.random_row_or_col }
     index { (col..Crossword::MAX_DIMENSION).to_a.sample * (row-1) + col }
     cell_num { (1..index).to_a.sample }
 
     trait :void do
-      is_void true
+      is_void { true }
     end
 
     trait :with_across_clue do
-      is_across_start true
+      is_across_start { true }
       association across_clue, factory: :clue
     end
 
     trait :with_down_clue do
-      is_down_start true
+      is_down_start { true }
       association down_clue, factory: :clue
     end
 
@@ -44,7 +44,7 @@ FactoryBot.define do
     end
 
     factory :circled_cell do
-      circled true
+      circled { true }
     end
   end
 end

@@ -6,7 +6,7 @@ describe UsersController do
   describe 'GET #show' do
     let(:user){create(:user)}
     context 'Existing user' do
-      before {get :show, id: user.id}
+      before { get :show, params: { id: user.id } }
 
       it 'has a 200 (OK) status code' do
         expect(response.status).to eq 200
@@ -14,7 +14,7 @@ describe UsersController do
       it 
     end
     context 'Nonexistent user' do
-      before {get :show, id: 9999}
+      before { get :show, params: { id: 9999 } }
 
       it 'has a 302 (redirect) status code' do
         expect(response.status).to eq 302

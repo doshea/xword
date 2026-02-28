@@ -17,32 +17,32 @@
 
 FactoryBot.define do
   factory :crossword do
-    rows {Crossword.random_dimension}
-    cols {Crossword.random_dimension}
-    title Faker::Lorem.characters((Crossword::MIN_TITLE_LENGTH..Crossword::MAX_TITLE_LENGTH).to_a.sample)
-    # letters {Faker::Lorem.characters(rows * cols)}
-    description Faker::Lorem.paragraph(2)
+    rows { Crossword.random_dimension }
+    cols { Crossword.random_dimension }
+    title { Faker::Lorem.characters(number: (Crossword::MIN_TITLE_LENGTH..Crossword::MAX_TITLE_LENGTH).to_a.sample) }
+    # letters { Faker::Lorem.characters(number: rows * cols) }
+    description { Faker::Lorem.paragraph(sentence_count: 2) }
 
     user
 
     trait :with_fake_solution do
-      letters { Faker::Lorem.characters(area) }
+      letters { Faker::Lorem.characters(number: area) }
     end
 
     # Permits faster testing of size-independent features
     trait :smaller do
-      rows {Crossword.random_dimension(15)}
-      cols {Crossword.random_dimension(15)}
+      rows { Crossword.random_dimension(15) }
+      cols { Crossword.random_dimension(15) }
     end
 
     #from http://www.goobix.com/crosswords/0505/4/
     factory :predefined_five_by_five do
       #Should have 'AMIGO', 'VOLOW', 'ANION', 'IDOSE', 'LONER'
       #and 'AVAIL', 'MONDO', 'ILION', 'GOOSE', 'OWNER'
-      rows 5
-      cols 5
-      title 'Predefined Puzzle'
-      
+      rows { 5 }
+      cols { 5 }
+      title { 'Predefined Puzzle' }
+
       after(:create) do |crossword|
         crossword.set_contents('AMIGOVOLOWANIONIDOSELONER')
         crossword.set_clue(true, 1, 'A male friend')
@@ -61,10 +61,10 @@ FactoryBot.define do
     factory :five_by_five do
       #Should have 'AMIGO', 'VOLOW', 'ANION', 'IDOSE', 'LONER'
       #and 'AVAIL', 'MONDO', 'ILION', 'GOOSE', 'OWNER'
-      rows 5
-      cols 5
-      title 'Predefined Puzzle'
-      
+      rows { 5 }
+      cols { 5 }
+      title { 'Predefined Puzzle' }
+
       after(:create) do |crossword|
         crossword.set_contents('AMIGOVOLOWANIONIDOSELONER')
         crossword.set_clue(true, 1, 'A male friend')
@@ -83,9 +83,9 @@ FactoryBot.define do
 
     #from http://www.rinkworks.com/brainfood/p/5box1.shtml
     factory :repeating_five_by_five do
-      rows 5
-      cols 5
-      title 'Repeating Puzzle'
+      rows { 5 }
+      cols { 5 }
+      title { 'Repeating Puzzle' }
 
       after(:create) do |crossword|
         crossword.set_contents('WORLDOTHERRHYMELEMMADREAD')

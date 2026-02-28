@@ -24,55 +24,55 @@ FactoryBot.define do
 
   #TODO DRY up these factories with inheritance: https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md#inheritance
   factory :user do
-    username {Faker::Lorem.characters((User::MIN_USERNAME_LENGTH..User::MAX_USERNAME_LENGTH).to_a.sample)}
-    email {Faker::Internet.email}
-    password {Faker::Lorem.characters((User::MIN_PASSWORD_LENGTH..User::MAX_PASSWORD_LENGTH).to_a.sample)}
-    password_confirmation { "#{password}" }
+    username { Faker::Lorem.characters(number: (User::MIN_USERNAME_LENGTH..User::MAX_USERNAME_LENGTH).to_a.sample) }
+    email { Faker::Internet.email }
+    password { Faker::Lorem.characters(number: (User::MIN_PASSWORD_LENGTH..User::MAX_PASSWORD_LENGTH).to_a.sample) }
+    password_confirmation { password }
 
     factory :full_user do
-      first_name {Faker::Name.first_name}
-      last_name {Faker::Name.last_name}
-      location {"#{Faker::Address.street_address}, #{Faker::Address.city}, #{Faker::Address.state_abbr}"}
+      first_name { Faker::Name.first_name }
+      last_name { Faker::Name.last_name }
+      location { "#{Faker::Address.street_address}, #{Faker::Address.city}, #{Faker::Address.state_abbr}" }
     end
 
     factory :admin do
-      is_admin true
+      is_admin { true }
     end
 
     ### INVALID ###
 
     # Short_attributes
     trait :short_first_name do
-      first_name Faker::Lorem.characters(User::MIN_NAME_LENGTH - 1)
+      first_name { Faker::Lorem.characters(number: User::MIN_NAME_LENGTH - 1) }
     end
     trait :short_last_name do
-      last_name Faker::Lorem.characters(User::MIN_NAME_LENGTH - 1)
+      last_name { Faker::Lorem.characters(number: User::MIN_NAME_LENGTH - 1) }
     end
     trait :short_email do
-      email Faker::Lorem.characters(User::MIN_EMAIL_LENGTH - 1)
+      email { Faker::Lorem.characters(number: User::MIN_EMAIL_LENGTH - 1) }
     end
     trait :short_username do
-      username Faker::Lorem.characters(User::MIN_USERNAME_LENGTH - 1)
+      username { Faker::Lorem.characters(number: User::MIN_USERNAME_LENGTH - 1) }
     end
     trait :short_password do
-      password Faker::Lorem.characters(User::MIN_PASSWORD_LENGTH - 1)
+      password { Faker::Lorem.characters(number: User::MIN_PASSWORD_LENGTH - 1) }
     end
 
     # Long attributes
     trait :long_first_name do
-      first_name Faker::Lorem.characters(User::MAX_FIRST_NAME_LENGTH + 1)
+      first_name { Faker::Lorem.characters(number: User::MAX_FIRST_NAME_LENGTH + 1) }
     end
     trait :long_last_name do
-      last_name Faker::Lorem.characters(User::MAX_LAST_NAME_LENGTH + 1)
+      last_name { Faker::Lorem.characters(number: User::MAX_LAST_NAME_LENGTH + 1) }
     end
     trait :long_email do
-      email Faker::Lorem.characters(User::MAX_EMAIL_LENGTH + 1)
+      email { Faker::Lorem.characters(number: User::MAX_EMAIL_LENGTH + 1) }
     end
     trait :long_username do
-      username Faker::Lorem.characters(User::MAX_USERNAME_LENGTH + 1)
+      username { Faker::Lorem.characters(number: User::MAX_USERNAME_LENGTH + 1) }
     end
     trait :long_password do
-      password Faker::Lorem.characters(User::MAX_PASSWORD_LENGTH + 1)
+      password { Faker::Lorem.characters(number: User::MAX_PASSWORD_LENGTH + 1) }
     end
 
 

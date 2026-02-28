@@ -7,6 +7,7 @@ SimpleCov.start 'rails'
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'rspec/its'
 require 'capybara/rspec'
 require 'launchy'
 
@@ -52,8 +53,6 @@ RSpec.configure do |c|
 
   # c.color_enabled = true
   c.tty = true
-  c.fixture_path = "#{::Rails.root}/spec/fixtures"
   c.use_transactional_fixtures = false
-  c.infer_base_class_for_anonymous_controllers = false
   c.order = "random"
 end

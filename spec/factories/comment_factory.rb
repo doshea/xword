@@ -14,6 +14,6 @@
 
 FactoryBot.define do
   factory :comment do
-    content {Faker::Lorem.sentences(3)}
+    content { Faker::Lorem.sentences(number: 3).join(' ') }
   end
 end

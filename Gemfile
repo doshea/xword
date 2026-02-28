@@ -58,8 +58,9 @@ end
 
 group :test do
   gem 'factory_bot_rails'
-  gem 'rspec-rails', '~> 4.0'
-  gem 'shoulda-matchers', '~> 5.0'
+  gem 'rspec-rails', '~> 8.0'
+  gem 'rspec-its'
+  gem 'shoulda-matchers', '~> 7.0'
   gem 'capybara', '~> 3.0'
   gem 'launchy'
   gem 'database_cleaner'
