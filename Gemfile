@@ -91,4 +91,4 @@ group :production do
   # gem 'rails_12factor'
 end
 
-ruby '2.7.4'
+ruby '3.1.6'
