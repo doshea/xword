@@ -11,7 +11,7 @@ gem 'multi_json'
 gem 'pusher'
 
 #required server for ActionCable
-gem 'puma', '~> 6.0'
+gem 'puma', '~> 7.0'
 gem 'redis', '~> 5.0'
 
 gem 'pg', '~> 1.2'
