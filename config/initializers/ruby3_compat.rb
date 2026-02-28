@@ -82,6 +82,16 @@ module ActiveRecord
       # in *args as a second "column name" instead of as options.
       # Redefine each generated column-type method to detect and extract a trailing
       # positional Hash from args and treat it as the options hash.
+      # Ruby 3.x fix: references(*args, **options) calls
+      # ReferenceDefinition.new(ref_name, options) with a positional hash.
+      # ReferenceDefinition#initialize only accepts kwargs → given 2, expected 1.
+      def references(*args, **options)
+        args.each do |ref_name|
+          ReferenceDefinition.new(ref_name, **options).add_to(self)
+        end
+      end
+      alias :belongs_to :references
+
       [
         :bigint, :binary, :boolean, :date, :datetime, :decimal, :float,
         :integer, :primary_key, :string, :text, :time, :timestamp, :virtual,
