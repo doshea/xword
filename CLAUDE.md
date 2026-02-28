@@ -15,19 +15,20 @@ A Rails web app for solving and creating crossword puzzles. Features include:
 
 | Component | Version | Notes |
 |-----------|---------|-------|
-| Ruby | 3.1.6 | Pinned in `.ruby-version` and `Gemfile` |
-| Rails | 7.2.3 | Upgraded from 5.1.4; `config.load_defaults 7.2` |
+| Ruby | 3.4.8 | Pinned in `.ruby-version` and `Gemfile` |
+| Rails | 8.1.2 | `config.load_defaults 8.1` |
 | PostgreSQL | Any modern version | Uses `pg ~> 1.2` gem |
 | Redis | — | Required for ActionCable |
-
-**The app runs Rails 7.2.3 on Ruby 3.1.6** with no monkey-patches. All Ruby 3.x
-compatibility fixes were eliminated when upgrading from Rails 5.1.4 → 6.1 → 7.2.
+| Heroku | heroku-24 | Ubuntu 24.04 LTS |
+| Puma | 6.6.1 | Rack 3 compatible |
+| HAML | 6.4.0 | Views use HAML 6 |
+| Sprockets | 4.2.2 | Asset pipeline; manifest at `app/assets/config/manifest.js` |
 
 ## Project Structure
 
 ```
 app/
-  assets/javascripts/    # CoffeeScript + plain JS (Sprockets 3 pipeline)
+  assets/javascripts/    # Plain JS (converted from CoffeeScript Feb 2026)
   channels/              # ActionCable channels (messages_channel.rb)
   controllers/
     admin/               # Admin CRUD controllers (crosswords, users, etc.)
@@ -37,16 +38,15 @@ app/
   mailers/               # AdminMailer, UserMailer
   models/
     concerns/            # Crosswordable, Publishable, Examplable, Newyorkable
-    *.rb                 # 14 models (see Domain Model below)
+    *.rb                 # 14 models (all inherit from ActiveRecord::Base directly)
   uploaders/             # CarrierWave uploaders (AccountPicUploader, PreviewUploader)
   views/                 # HAML templates
 config/
   initializers/
-    new_framework_defaults.rb       # Rails 5.0 defaults (all flipped to true)
-    new_framework_defaults_7_2.rb   # Rails 7.2 opt-in defaults (all commented out)
-    fog_init.rb                     # CarrierWave + fog-aws config (guarded by ENV check)
-  application.rb         # config.load_defaults 7.2, autoload_lib, time_zone
-  boot.rb                # require 'logger' for Ruby 3.1 compat with Rails 6.x+
+    assets.rb            # Sprockets precompile globs (*.css, *.js)
+    fog_init.rb          # CarrierWave + fog-aws config (guarded by ENV check)
+  application.rb         # config.load_defaults 8.1, autoload_lib, time_zone
+  boot.rb                # require 'logger' (kept for clarity)
   environment.rb         # ActiveRecord::Base extensions (skip_callbacks, next_index)
   routes.rb              # All routes
   cable.yml              # ActionCable config
@@ -82,25 +82,42 @@ Core entities and their relationships:
 - **Friendship** — bidirectional friendships (self-join, no primary key)
 - **FriendRequest** — pending friend requests (no primary key)
 
-## Rails Upgrade History
+## Upgrade History
 
-The app was upgraded from Rails 5.1.4 → 6.1 → 7.2 in Feb 2026.
+The app was upgraded from Rails 5.1.4 through to 8.1.2 in Feb 2026:
+
+```
+Rails:  5.1.4 → 6.1 → 7.0 → 7.2 → 8.0 → 8.1
+Ruby:   2.x → 3.1.6 → 3.2.10 → 3.3.10 → 3.4.8
+Heroku: heroku-22 → heroku-24
+HAML:   5.2 → 6.4
+Sprockets: 3.7 → 4.2
+Puma:   5.x → 6.x
+```
 
 ### Key changes during upgrade
-- All `belongs_to` associations: added `optional: true` to those with nullable FK columns
+- All `belongs_to` with nullable FK columns: added `optional: true`
 - `content_tag_for` → `content_tag + dom_id` (removed `record_tag_helper` dependency)
 - `render text:` → `render plain:` in 3 controllers
-- `include PgSearch` → `include PgSearch::Model` in 3 models (pg_search 2.3.x deprecation)
-- `cw.try(:preview)` → `cw.preview_url` in `_crossword_tab.html.haml` (Rails 7 `to_model` change)
-- `sass-rails` replaced by `sassc-rails`; `coffee-rails` kept with `sprockets ~> 3.7` pin
-- `uglifier` replaced by `terser`
+- `include PgSearch` → `include PgSearch::Model` in 3 models
+- `cw.try(:preview)` → `cw.preview_url` in `_crossword_tab.html.haml`
+- `sass-rails` → `sassc-rails`; `uglifier` → `terser`
+- All 12 CoffeeScript files converted to plain JS
+- `haml succeed` helper → `content_tag` equivalent (removed in HAML 6)
+- `annotate` gem removed (incompatible with Rails 8, dev-only tool)
+- `puma ~> 5` → `~> 6` (required for Rack 3 / Rails 8)
+- `gem 'csv'` added explicitly (removed from Ruby 3.4 default gems)
+- `httparty` 0.15.7 → 0.24.2 (old version required csv directly)
+- `config.active_support.deprecation` removed from dev/test envs (Rails 8 API change)
+- `new_framework_defaults.rb` (Rails 5.0 era) and `new_framework_defaults_7_2.rb` deleted
 
 ### Deleted files
-- `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches, no longer needed
+- `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
+- `config/initializers/new_framework_defaults.rb` — Rails 5.0 defaults (all baked into load_defaults 8.1)
+- `config/initializers/new_framework_defaults_7_2.rb` — all options were commented out
 
 ## PostgreSQL-Specific Features
 
-The app uses these Postgres-specific features:
 - **Array columns** on `unpublished_crosswords` (letters, potential_words, across_clues, down_clues)
 - **PgSearch** full-text search (tsearch with prefix) on Crossword, User, and Word models
 - **RANDOM()** for random puzzle selection
@@ -108,49 +125,49 @@ The app uses these Postgres-specific features:
 - **plpgsql** extension enabled
 - Raw SQL bulk inserts in `Crossword#populate_cells`
 
-No JSONB, hstore, triggers, stored procedures, materialized views, or PostGIS.
-
 ## Frontend / Asset Pipeline
 
-Uses Sprockets 3 pipeline (pinned to `~> 3.7` to keep CoffeeScript support):
-- **CoffeeScript** — 12 `.coffee` files (crossword interactions, ActionCable channels, account, global)
+Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
+- **Plain JS** — 12 files (converted from CoffeeScript; crossword interactions, ActionCable, account, global)
 - **SASS** via `sassc-rails`
-- **jQuery** via `jquery-rails`
-- **Turbolinks** (effectively disabled in application.js)
+- **jQuery** via `jquery-rails` (also provides `jquery_ujs` for `remote: true` forms)
+- **Turbolinks 5.1** (effectively disabled in application.js)
 - **Foundation** 5 & 6 (vendored JS/CSS)
-- Plain JS files: `solve.js`, `edit.js`
+- Manifests: `application.js`, `solve.js`, `edit.js`
 
 ## Testing
 
-- **Framework**: RSpec with `rspec-rails ~> 4.0`
-- **Factories**: FactoryBot (renamed from FactoryGirl)
+- **Framework**: RSpec with `rspec-rails ~> 4.0` (4.1.2)
+- **Factories**: FactoryBot
 - **Database cleaning**: DatabaseCleaner with truncation strategy (not transactions)
 - **Feature tests**: Capybara `~> 3.0` with CSS selectors
 - **Coverage**: SimpleCov `~> 0.22`
 - **Matchers**: shoulda-matchers `~> 5.0`
-- **Custom metadata tags**: `:dirty_inside` (skip DB cleaning), `:skip_callbacks`
-- **Transactional fixtures**: disabled
 
 Run tests: `bundle exec rspec`
 
 ## Notable Gems and Their Roles
 
-| Gem | Purpose |
-|-----|---------|
-| `pg ~> 1.2` | PostgreSQL adapter |
-| `pg_search` | Full-text search on Crossword, User, Word |
-| `active_record_union` | UNION queries in ActiveRecord |
-| `carrierwave` + `fog-aws` + `rmagick` | Image uploads to S3 with resizing |
-| `pusher` | Real-time push notifications |
-| `puma ~> 5.0` + `redis` | ActionCable WebSocket server |
-| `bcrypt` | Password hashing |
-| `haml ~> 5.2` | View templates |
-| `will_paginate ~> 3.0` | Pagination |
-| `nilify_blanks` | Convert blank strings to NULL |
-| `httparty` | HTTP client (NYT puzzle fetching) |
-| `sassc-rails` | SASS/SCSS compilation (replaces sass-rails) |
-| `coffee-rails` | CoffeeScript compilation (with sprockets ~> 3.7) |
-| `terser` | JS minification in production (replaces uglifier) |
+| Gem | Version | Purpose |
+|-----|---------|---------|
+| `pg` | 1.6.3 | PostgreSQL adapter |
+| `pg_search` | 2.3.7 | Full-text search on Crossword, User, Word |
+| `active_record_union` | 1.3.0 | UNION queries in ActiveRecord |
+| `carrierwave` | 1.3.4 | Image uploads to S3 (old — needs upgrade to 3.x) |
+| `fog-aws` | 2.0.0 | AWS S3 backend for CarrierWave (needs upgrade to 3.x) |
+| `rmagick` | 5.5.0 | Image resizing |
+| `pusher` | 1.3.1 | Real-time push notifications |
+| `redis` | 4.0.1 | ActionCable WebSocket backend (needs upgrade to 5.x) |
+| `bcrypt` | 3.1.11 | Password hashing |
+| `haml` | 6.4.0 | View templates |
+| `will_paginate` | 3.3.1 | Pagination |
+| `nilify_blanks` | 1.3.0 | Convert blank strings to NULL |
+| `httparty` | 0.24.2 | HTTP client (NYT puzzle fetching) |
+| `sassc-rails` | — | SASS/SCSS compilation |
+| `terser` | — | JS minification in production |
+| `turbolinks` | 5.1.0 | Page navigation (effectively disabled) |
+| `remotipart` | 1.3.1 | Multipart AJAX file uploads via jQuery UJS |
+| `jbuilder` | 2.14.1 | JSON API views |
 
 ## Key Commands
 
@@ -167,22 +184,25 @@ rails console           # Interactive console
 
 - **App name**: `crosswordcafe`
 - **URL**: https://crosswordcafe.herokuapp.com/
-- **Stack**: Heroku-22 (Ruby 3.1.6)
-- **Status**: Live on Rails 7.2.3 — home, welcome, about, faq, stats, contact, users/new all return 200
+- **Stack**: heroku-24 (Ruby 3.4.8)
+- **Status**: Live on Rails 8.1.2
 
-Deploy and test workflow:
+Deploy workflow:
 ```bash
 git push origin master && git push heroku master
-heroku run "bundle exec rails db:migrate 2>&1" --app crosswordcafe
 ```
 
 ## Known Technical Debt
 
-1. **CoffeeScript** — 12 `.coffee` files should be converted to plain JS; blocked on `sprockets ~> 3.7` pin
-2. **Sprockets 3 pin** — upgrading to Sprockets 4 requires converting CoffeeScript first
-3. **HAML 5.2** — not yet upgraded to HAML 6 (waiting for Sprockets migration)
-4. **`remotipart`** — old jQuery UJS gem; compatibility with Rails 7 untested
-5. **No CI/CD** — no GitHub Actions, Travis, or other CI configuration
-6. **Last DB migration**: April 2017 (schema stable; all migrations run successfully)
-7. **Models inherit from `ActiveRecord::Base`** — not updated to `ApplicationRecord` pattern
-8. **`new_framework_defaults_7_2.rb`** — all 7.2 defaults commented out; can be enabled/deleted
+1. **Models inherit from `ActiveRecord::Base`** — should use `ApplicationRecord` pattern (easy cleanup)
+2. **`carrierwave` 1.3.4** — needs upgrade to 3.x; major breaking changes from 1→2→3
+3. **`fog-aws` 2.0.0** — upgrade to 3.x goes hand-in-hand with carrierwave
+4. **`redis` 4.0.1** — needs upgrade to 5.x; major API changes
+5. **`remotipart` 1.3.1** — old jQuery UJS gem; Rails 8 compatibility untested
+6. **`rspec-rails` 4.1.2** — current is 8.x; major version gap in test suite
+7. **`haml` 6.4** — 7.x available
+8. **`puma` 6.6.1** — 7.x available
+9. **`turbolinks`** — deprecated; Rails 8 ecosystem uses Hotwire/Turbo
+10. **No CI/CD** — no GitHub Actions or other CI configuration
+11. **Last DB migration**: April 2017 (schema stable)
+12. **`boot.rb`** — `require 'logger'` comment is stale (was needed for Ruby 3.1 + Rails 6.x)
