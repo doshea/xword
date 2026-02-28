@@ -29,7 +29,7 @@ gem 'terser'                  # replaces uglifier
 gem 'carrierwave', '~> 3.1'
 gem 'fog-aws', '~> 3.0'
 gem 'rmagick'
-gem 'remotipart'
+gem 'remotipart', '~> 1.4'
 gem 'unf'
 
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.
