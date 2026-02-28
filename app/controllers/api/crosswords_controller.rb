@@ -8,9 +8,9 @@ class Api::CrosswordsController < ApplicationController
   def simple
     crossword = Crossword.find_by(title: params[:title])
     if params[:spoil] && params[:spoil].downcase.in?('t', 'true')
-      render text: crossword.to_s(nil, params[:spoil])
+      render plain: crossword.to_s(nil, params[:spoil])
     else
-      render text: crossword.to_s(nil, false)
+      render plain: crossword.to_s(nil, false)
     end
   end
 

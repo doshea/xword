@@ -15,8 +15,8 @@
 #
 
 class Solution < ActiveRecord::Base
-  belongs_to :user, inverse_of: :solutions
-  belongs_to :crossword, inverse_of: :solutions
+  belongs_to :user, inverse_of: :solutions, optional: true
+  belongs_to :crossword, inverse_of: :solutions, optional: true
 
   has_many :solution_partnerings, inverse_of: :solution, dependent: :destroy
   has_many :teammates, through: :solution_partnerings, source: :user

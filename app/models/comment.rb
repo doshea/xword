@@ -15,9 +15,9 @@
 include ActionView::Helpers::DateHelper
 
 class Comment < ActiveRecord::Base
-  belongs_to :user, inverse_of: :comments
-  belongs_to :crossword, inverse_of: :comments
-  belongs_to :base_comment, class_name: 'Comment'
+  belongs_to :user, inverse_of: :comments, optional: true
+  belongs_to :crossword, inverse_of: :comments, optional: true
+  belongs_to :base_comment, class_name: 'Comment', optional: true
   has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id', dependent: :destroy
 
   scope :order_recent, -> {order created_at: :desc}

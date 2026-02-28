@@ -16,9 +16,9 @@ class Clue < ActiveRecord::Base
   has_many :across_cells, class_name: 'Cell', foreign_key: 'across_clue_id', inverse_of: :across_clue, dependent: :nullify
   has_many :down_cells, class_name: 'Cell', foreign_key: 'down_clue_id', inverse_of: :down_clue, dependent: :nullify
 
-  belongs_to :word, inverse_of: :clues
-  belongs_to :user, inverse_of: :clues
-  belongs_to :phrase, inverse_of: :clues
+  belongs_to :word, inverse_of: :clues, optional: true
+  belongs_to :user, inverse_of: :clues, optional: true
+  belongs_to :phrase, inverse_of: :clues, optional: true
   has_many :across_crosswords, through: :across_cells, inverse_of: :across_clues, source: :crossword
   has_many :down_crosswords, through: :down_cells, inverse_of: :down_clues, source: :crossword
 

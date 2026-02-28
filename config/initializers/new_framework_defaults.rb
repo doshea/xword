@@ -15,11 +15,10 @@ Rails.application.config.action_controller.forgery_protection_origin_check = tru
 ActiveSupport.to_time_preserves_timezone = true
 
 # Require `belongs_to` associations by default.
-# TODO Phase 2: flip to true once the test suite validates no optional belongs_to
-# associations are broken. Rails 7 enforces this.
-Rails.application.config.active_record.belongs_to_required_by_default = false
+# Require `belongs_to` associations by default (Rails 5.2+ default).
+# optional: true added to all associations with nullable FK columns.
+Rails.application.config.active_record.belongs_to_required_by_default = true
 
-# Do not halt callback chains when a callback returns false.
-# TODO Phase 2: flip to false (new behaviour) after auditing callbacks for
-# intentional `return false` halts. Rails 5.1+ behaviour is false.
-ActiveSupport.halt_callback_chains_on_return_false = true
+# Do not halt callback chains when a callback returns false (Rails 5.1+ default).
+# Callbacks must use throw(:abort) to halt. Audited: no callbacks return false.
+ActiveSupport.halt_callback_chains_on_return_false = false

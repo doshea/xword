@@ -13,7 +13,7 @@
       %th
   %tbody
     - @crosswords.each do |crossword|
-      = content_tag_for(:tr, crossword) do
+      = content_tag(:tr, id: dom_id(crossword)) do
         %td= link_to crossword.id, crossword
         %td= link_to crossword.title, crossword
         %td= link_to crossword.user.username, crossword.user

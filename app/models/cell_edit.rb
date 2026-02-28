@@ -11,6 +11,6 @@
 #
 
 class CellEdit < ActiveRecord::Base
-  belongs_to :cell, inverse_of: :cell_edit
+  belongs_to :cell, inverse_of: :cell_edit, optional: true
 
 end

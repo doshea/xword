@@ -5,7 +5,7 @@ module Crosswordable
     #attr_accessible
     #scopes
     #has_many and belongs_to
-    belongs_to :user
+    belongs_to :user, optional: true
     validates :rows,
       presence: true,
       numericality: { only_integer: true },

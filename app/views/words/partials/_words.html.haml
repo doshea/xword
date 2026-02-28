@@ -8,7 +8,7 @@
       %th
   %tbody
     - @words.each do |word|
-      = content_tag_for(:tr, word) do
+      = content_tag(:tr, id: dom_id(word)) do
         %td= link_to word.id, word
         %td= link_to word.content, word
         %td= word.clues.first.try(:content)

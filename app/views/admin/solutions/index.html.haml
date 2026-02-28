@@ -18,7 +18,7 @@
         %th
     %tbody
       - @solutions.each do |solution|
-        = content_tag_for(:tr, solution) do
+        = content_tag(:tr, id: dom_id(solution)) do
           %td= solution.id
           %td= link_to solution.crossword.try(:title) || 'NONE', solution.crossword
           %td= link_to solution.user.username, solution.user

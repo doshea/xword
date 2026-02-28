@@ -1,4 +1,4 @@
-= content_tag_for(:div, comment, class: 'row') do
+= content_tag(:div, id: dom_id(comment), class: 'row') do
   .large-1.columns.small-3
     = link_to (image_tag comment.user.image.comment_size), comment.user
   .large-11.columns

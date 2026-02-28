@@ -48,7 +48,7 @@ class AccountController < ApplicationController
     if @user
 
     else
-      render text: 'That password reset code has expired. Please request a new password reset email and click the email link within 24 hours.'
+      render plain: 'That password reset code has expired. Please request a new password reset email and click the email link within 24 hours.'
     end
   end
 

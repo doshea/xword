@@ -13,7 +13,7 @@
       %th
   %tbody
     - @users.each do |user|
-      = content_tag_for(:tr, user) do
+      = content_tag(:tr, id: dom_id(user)) do
         %td= user.id
         %td= user.first_name
         %td= user.last_name

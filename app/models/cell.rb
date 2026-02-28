@@ -30,9 +30,9 @@ class Cell < ActiveRecord::Base
   scope :circled, -> {where(circled: true)}
   scope :uncircled, -> {where(circled: true)}
 
-  belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells
-  belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells
-  belongs_to :crossword, inverse_of: :cells
+  belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells, optional: true
+  belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells, optional: true
+  belongs_to :crossword, inverse_of: :cells, optional: true
 
   has_one :cell_edit, inverse_of: :cell, dependent: :destroy #TODO decide whether to use cell_edits or maintain within the cell model
 
