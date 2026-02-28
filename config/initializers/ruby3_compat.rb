@@ -126,6 +126,21 @@ end
 # ActiveSupport's `delegate` macro which generates (*args, &block) — no **kwargs — so
 # the hash can never be splatted cleanly.  Patch both type_to_sql methods to also
 # accept a single positional Hash and extract the known keys.
+# Ruby 3.x fix: migration method_missing calls connection.send(:create_table, name, opts_hash)
+# with a positional Hash.  compatibility.rb also calls super(table_name, options).
+# create_table(table_name, comment: nil, **options) only accepts kwargs → given 2, expected 1.
+ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(Module.new do
+  def create_table(table_name, opts_hash = nil, comment: nil, **options, &block)
+    if opts_hash.is_a?(Hash)
+      merged = opts_hash.merge(options)
+      extracted_comment = merged.delete(:comment)
+      super(table_name, comment: extracted_comment || comment, **merged, &block)
+    else
+      super(table_name, comment: comment, **options, &block)
+    end
+  end
+end)
+
 # Ruby 3.x fix: ActiveRecord::Base.transaction(options = {}) passes a positional
 # Hash to connection.transaction(requires_new:, isolation:, joinable:) which only
 # accepts keyword args → ArgumentError: given 1, expected 0.
