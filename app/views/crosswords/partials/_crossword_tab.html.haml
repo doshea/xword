@@ -7,7 +7,7 @@
         = image_tag cw.try(:preview) || asset_path('example_puzzle.jpg'), class: "shadow thin-border cols-#{cw.cols} rows-#{cw.rows}#{'unpublished' if unpublished}"
       .large-8.columns.metadata
         %p.title= cw.title.html_safe
-        - unless unpublished or (cw.user&.username == 'nytimes')
+        - unless unpublished or cw.user.nil? or (cw.user.username == 'nytimes')
           %p.byline= "by #{cw.user.display_name}"
         %p.dimensions= "#{cw.rows} x #{cw.cols}"
       - if (cw.user&.username == 'nytimes')
