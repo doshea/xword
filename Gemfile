@@ -12,7 +12,7 @@ gem 'pusher'
 
 #required server for ActionCable
 gem 'puma', '~> 6.0'
-gem 'redis'
+gem 'redis', '~> 5.0'
 
 gem 'pg', '~> 1.2'
 gem 'haml', '~> 6.0'
