@@ -8,7 +8,7 @@
 #  updated_at :datetime
 #
 
-class Word < ActiveRecord::Base
+class Word < ApplicationRecord
   scope :desc_length, -> {order('length(content) DESC')}
 
   include PgSearch::Model

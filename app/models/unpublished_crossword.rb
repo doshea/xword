@@ -21,7 +21,7 @@
 #  multiletter_mode :boolean          default(FALSE)
 #
 
-class UnpublishedCrossword < ActiveRecord::Base
+class UnpublishedCrossword < ApplicationRecord
   include Crosswordable
 
   before_create :populate_arrays

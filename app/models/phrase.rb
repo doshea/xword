@@ -8,7 +8,7 @@
 #  updated_at :datetime
 #
 
-class Phrase < ActiveRecord::Base
+class Phrase < ApplicationRecord
 
   #TODO DECIDE HOW I WILL USE THIS MODEL IF AT ALL!!!
 

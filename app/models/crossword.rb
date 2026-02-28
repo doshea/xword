@@ -15,7 +15,7 @@
 #  preview     :text
 #
 
-class Crossword < ActiveRecord::Base
+class Crossword < ApplicationRecord
   include Crosswordable, Publishable, Newyorkable
 
   mount_uploader :preview, PreviewUploader

@@ -20,7 +20,7 @@
 #  verification_token     :string
 #
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_secure_password
 
   has_many :crosswords, inverse_of: :user

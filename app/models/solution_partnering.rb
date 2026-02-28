@@ -9,7 +9,7 @@
 #  updated_at  :datetime
 #
 
-class SolutionPartnering < ActiveRecord::Base
+class SolutionPartnering < ApplicationRecord
 
   belongs_to :user
   belongs_to :solution

@@ -17,7 +17,7 @@
 #  circled         :boolean          default(FALSE)
 #
 
-class Cell < ActiveRecord::Base
+class Cell < ApplicationRecord
   # Currently clues are populated using raw SQL. While dangerous, it works.
   # after_create :populate_clues
 

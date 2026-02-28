@@ -10,7 +10,7 @@
 #  updated_at          :datetime
 #
 
-class CellEdit < ActiveRecord::Base
+class CellEdit < ApplicationRecord
   belongs_to :cell, inverse_of: :cell_edit, optional: true
 
 end

@@ -9,7 +9,7 @@
 #  updated_at   :datetime
 #
 
-class FavoritePuzzle < ActiveRecord::Base
+class FavoritePuzzle < ApplicationRecord
   belongs_to :crossword, inverse_of: :favorite_puzzles
   belongs_to :user, inverse_of: :favorite_puzzles
 end

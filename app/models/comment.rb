@@ -14,7 +14,7 @@
 
 include ActionView::Helpers::DateHelper
 
-class Comment < ActiveRecord::Base
+class Comment < ApplicationRecord
   belongs_to :user, inverse_of: :comments, optional: true
   belongs_to :crossword, inverse_of: :comments, optional: true
   belongs_to :base_comment, class_name: 'Comment', optional: true

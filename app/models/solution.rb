@@ -14,7 +14,7 @@
 #  solved_at    :datetime
 #
 
-class Solution < ActiveRecord::Base
+class Solution < ApplicationRecord
   belongs_to :user, inverse_of: :solutions, optional: true
   belongs_to :crossword, inverse_of: :solutions, optional: true
 
