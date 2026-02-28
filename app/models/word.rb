@@ -11,7 +11,7 @@
 class Word < ActiveRecord::Base
   scope :desc_length, -> {order('length(content) DESC')}
 
-  include PgSearch
+  include PgSearch::Model
   pg_search_scope :starts_with,
                   against: :content,
                   using: {

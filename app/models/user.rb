@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
 
   before_create { generate_token(:auth_token); generate_token(:verification_token); }
 
-  include PgSearch
+  include PgSearch::Model
   pg_search_scope :starts_with,
                   against: [:first_name, :last_name, :username],
                   using: {

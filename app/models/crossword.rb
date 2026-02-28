@@ -27,7 +27,7 @@ class Crossword < ActiveRecord::Base
   scope :unowned, -> (user) { where.not(user_id: user.id)} # DEBUG only
 
   # Searchable by title using pg_search gem
-  include PgSearch
+  include PgSearch::Model
   pg_search_scope :starts_with,
     against: :title,
   using: {

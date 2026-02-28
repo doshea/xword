@@ -33,7 +33,7 @@ gem 'remotipart'
 gem 'unf'
 
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.
-gem 'pg_search', '~> 2.3'
+gem 'pg_search'
 
 gem 'nilify_blanks'
 
