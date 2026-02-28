@@ -80,4 +80,4 @@ group :production do
   # gem 'rails_12factor'
 end
 
-ruby '3.2.10'
+ruby '3.3.10'
