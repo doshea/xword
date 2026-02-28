@@ -23,8 +23,8 @@ Bundler.require(*Rails.groups)
 
 module Xword
   class Application < Rails::Application
-    # Initialize configuration defaults for Rails 8.0.
-    config.load_defaults 8.0
+    # Initialize configuration defaults for Rails 8.1.
+    config.load_defaults 8.1
 
     # Autoload lib/ (exclude non-Ruby subdirectories)
     config.autoload_lib(ignore: %w[assets tasks custom_funcs.rb])
