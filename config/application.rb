@@ -28,7 +28,7 @@ module Xword
     config.load_defaults 7.2
 
     # Autoload lib/ (exclude non-Ruby subdirectories)
-    config.autoload_lib(ignore: %w[assets tasks])
+    config.autoload_lib(ignore: %w[assets tasks custom_funcs.rb])
 
     config.time_zone = 'Pacific Time (US & Canada)'
     config.i18n.enforce_available_locales = true
