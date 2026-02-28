@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 7.2.0'
 gem 'json'
 
 gem 'httparty'
@@ -42,7 +42,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder'
+gem 'jbuilder', '~> 2.12'
 gem 'will_paginate', '~> 3.0'
 
 #Moved out of development-only so that Heroku can use it

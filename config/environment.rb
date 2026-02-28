@@ -1,5 +1,5 @@
 # Load the Rails application.
-require_relative 'application'
+require_relative "application"
 
 class ActiveRecord::Base
   cattr_accessor :skip_callbacks
