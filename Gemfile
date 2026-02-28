@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 7.2.0'
 gem 'json'
+gem 'csv'           # removed from Ruby 3.4 default gems
 
 gem 'httparty'
 
@@ -80,4 +81,4 @@ group :production do
   # gem 'rails_12factor'
 end
 
-ruby '3.3.10'
+ruby '3.4.8'
