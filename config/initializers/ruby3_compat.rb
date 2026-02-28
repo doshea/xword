@@ -65,6 +65,22 @@ module ActiveRecord
       end
     end
 
+    # Ruby 3.x fix: AbstractAdapter::SchemaCreation#visit_ColumnDefinition calls
+    # type_to_sql(o.type, o.options) with a positional Hash, but type_to_sql
+    # accepts only keyword args in Rails 5.1.4.  Splat the options hash.
+    class AbstractAdapter
+      class SchemaCreation
+        private
+
+        def visit_ColumnDefinition(o)
+          o.sql_type = type_to_sql(o.type, **(o.options || {}))
+          column_sql = "#{quote_column_name(o.name)} #{o.sql_type}"
+          add_column_options!(column_sql, column_options(o)) unless o.type == :primary_key
+          column_sql
+        end
+      end
+    end
+
     # Ruby 3.x fix: TableDefinition#new_column_definition(name, type, **options)
     # is called from #column and AlterTable#add_column with a positional Hash.
     # In Ruby 3.x that raises "given 3, expected 2".  Accept both conventions.
