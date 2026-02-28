@@ -2,12 +2,20 @@
 # calls `super(options)` (positional hash) instead of `super(**options)` (keyword args).
 # In Ruby 3.x, passing a hash as a positional arg to a kwargs-only method raises ArgumentError.
 #
-# We must require the file explicitly so the class exists before we prepend.
+# Reopen and redefine initialize so super(**options) goes to Value#initialize correctly.
 require 'active_record/connection_adapters/postgresql/oid/specialized_string'
 
-ActiveRecord::ConnectionAdapters::PostgreSQL::OID::SpecializedString.prepend(Module.new do
-  def initialize(type, **options)
-    @type = type
-    super(**options)
+module ActiveRecord
+  module ConnectionAdapters
+    module PostgreSQL
+      module OID
+        class SpecializedString
+          def initialize(type, **options)
+            @type = type
+            super(**options)
+          end
+        end
+      end
+    end
   end
-end)
+end
