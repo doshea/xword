@@ -4,11 +4,6 @@ class PreviewUploader < CarrierWave::Uploader::Base
 
   include CarrierWave::RMagick
 
-  # Include the Sprockets helpers for Rails 3.1+ asset pipeline compatibility:
-  # include Sprockets::Helpers::RailsHelper
-  # include Sprockets::Helpers::IsolatedHelper
-  include Sprockets::Rails::Helper
-
   # Choose what kind of storage to use for this uploader:
   storage :fog
 
@@ -18,7 +13,7 @@ class PreviewUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  def extension_white_list
+  def extension_allowlist
     %w(jpg jpeg gif png)
   end
 

@@ -77,8 +77,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.5.2)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.8.9)
+      public_suffix (>= 2.0.2, < 8.0)
     base64 (0.3.0)
     bcrypt (3.1.11)
     better_errors (2.4.0)
@@ -99,11 +99,13 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    carrierwave (1.3.4)
-      activemodel (>= 4.0.0)
-      activesupport (>= 4.0.0)
-      mime-types (>= 1.16)
-      ssrf_filter (~> 1.0, < 1.1.0)
+    carrierwave (3.1.2)
+      activemodel (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      addressable (~> 2.6)
+      image_processing (~> 1.1)
+      marcel (~> 1.0.0)
+      ssrf_filter (~> 1.0)
     coderay (1.1.3)
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
@@ -117,7 +119,8 @@ GEM
     drb (2.2.3)
     erb (6.0.2)
     erubi (1.13.1)
-    excon (0.60.0)
+    excon (1.3.2)
+      logger
     execjs (2.7.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
@@ -128,22 +131,24 @@ GEM
       i18n (>= 0.7)
     ffi (1.17.3-arm64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
-    fog-aws (2.0.0)
-      fog-core (~> 1.38)
-      fog-json (~> 1.0)
+    fog-aws (3.33.1)
+      base64 (>= 0.2, < 0.4)
+      fog-core (~> 2.6)
+      fog-json (~> 1.1)
       fog-xml (~> 0.1)
-      ipaddress (~> 0.8)
-    fog-core (1.45.0)
+    fog-core (2.6.0)
       builder
-      excon (~> 0.58)
-      formatador (~> 0.2)
-    fog-json (1.0.2)
-      fog-core (~> 1.0)
+      excon (~> 1.0)
+      formatador (>= 0.2, < 2.0)
+      mime-types
+    fog-json (1.2.0)
+      fog-core
       multi_json (~> 1.10)
-    fog-xml (0.1.3)
+    fog-xml (0.1.5)
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
-    formatador (0.2.5)
+    formatador (1.2.3)
+      reline
     globalid (1.3.0)
       activesupport (>= 6.1)
     guard (2.20.1)
@@ -172,8 +177,10 @@ GEM
     httpclient (2.8.3)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
+    image_processing (1.14.0)
+      mini_magick (>= 4.9.5, < 6)
+      ruby-vips (>= 2.0.17, < 3)
     io-console (0.8.2)
-    ipaddress (0.8.3)
     irb (1.17.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
@@ -204,7 +211,7 @@ GEM
       net-imap
       net-pop
       net-smtp
-    marcel (1.1.0)
+    marcel (1.0.4)
     matrix (0.4.3)
     meta_request (0.8.5)
       rack-contrib (>= 1.1, < 3)
@@ -214,6 +221,8 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2026.0224)
+    mini_magick (5.3.1)
+      logger
     mini_mime (1.1.5)
     minitest (6.0.2)
       drb (~> 2.0)
@@ -355,6 +364,9 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.13.7)
+    ruby-vips (2.3.0)
+      ffi (~> 1.12)
+      logger
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -381,7 +393,7 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
-    ssrf_filter (1.0.8)
+    ssrf_filter (1.3.0)
     stringio (3.2.0)
     temple (0.10.4)
     terser (1.2.6)
@@ -417,12 +429,12 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   capybara (~> 3.0)
-  carrierwave
+  carrierwave (~> 3.1)
   csv
   database_cleaner
   factory_bot_rails
   faker
-  fog-aws
+  fog-aws (~> 3.0)
   guard-rspec
   haml (~> 6.0)
   httparty

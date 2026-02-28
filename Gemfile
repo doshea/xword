@@ -26,8 +26,8 @@ gem 'sprockets', '~> 4.2'
 gem 'terser'                  # replaces uglifier
 
 # AWS image upload gems
-gem 'carrierwave'
-gem 'fog-aws'
+gem 'carrierwave', '~> 3.1'
+gem 'fog-aws', '~> 3.0'
 gem 'rmagick'
 gem 'remotipart'
 gem 'unf'
