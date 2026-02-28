@@ -151,6 +151,21 @@ ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(Module.new do
   end
 end)
 
+# Ruby 3.x fix: add_index(table_name, column_name, options={}) calls
+# add_index_options(table_name, column_name, options) with a positional Hash.
+# add_index_options only accepts kwargs → given 3, expected 2.
+ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(Module.new do
+  def add_index_options(table_name, column_name, opts_hash = nil, comment: nil, **options)
+    if opts_hash.is_a?(Hash)
+      merged = opts_hash.merge(options)
+      extracted_comment = merged.delete(:comment)
+      super(table_name, column_name, comment: extracted_comment || comment, **merged)
+    else
+      super(table_name, column_name, comment: comment, **options)
+    end
+  end
+end)
+
 # Ruby 3.x fix: ActiveRecord::Base.transaction(options = {}) passes a positional
 # Hash to connection.transaction(requires_new:, isolation:, joinable:) which only
 # accepts keyword args → ArgumentError: given 1, expected 0.
