@@ -21,8 +21,7 @@ gem 'active_record_union'
 
 # asset gems
 gem 'sassc-rails'
-gem 'coffee-rails'
-gem 'sprockets', '~> 3.7'    # pin to Sprockets 3 to keep CoffeeScript working
+gem 'sprockets', '~> 4.2'
 gem 'terser'                  # replaces uglifier
 
 # AWS image upload gems
