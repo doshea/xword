@@ -171,7 +171,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    haml (6.4.0)
+    haml (7.2.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -447,7 +447,7 @@ DEPENDENCIES
   faker
   fog-aws (~> 3.0)
   guard-rspec
-  haml (~> 6.0)
+  haml (~> 7.0)
   httparty
   jbuilder (~> 2.12)
   jquery-rails
