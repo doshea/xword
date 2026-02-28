@@ -107,6 +107,42 @@ module ActiveRecord
   end
 end
 
+# Ruby 3.x fix: helper_method generates def foo(*args, &blk) / controller.send(:foo, *args, &blk)
+# In Ruby 3.x, kwargs passed at the call site (e.g. form_authenticity_token(form_options: ...))
+# get captured in *args as a plain Hash, then forwarded positionally to a kwargs-only controller
+# method, raising "wrong number of arguments (given 1, expected 0)".
+#
+# Fix: override helper_method to generate (*args, **kwargs, &blk) forwarders.  Then re-register
+# all helper methods already defined on ActionController::Base so the old (*args, &blk) versions
+# are replaced.
+require 'abstract_controller/helpers'
+
+module AbstractController
+  module Helpers
+    module ClassMethods
+      def helper_method(*meths)
+        meths.flatten!
+        self._helper_methods += meths
+        meths.each do |meth|
+          _helpers.class_eval do
+            define_method(meth) do |*args, **kwargs, &blk|
+              if kwargs.empty?
+                controller.send(meth, *args, &blk)
+              else
+                controller.send(meth, *args, **kwargs, &blk)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+# Re-generate all helper methods already registered on ActionController::Base
+# (e.g. form_authenticity_token, protect_against_forgery?) with the new forwarder.
+ActionController::Base.helper_method(*ActionController::Base._helper_methods.uniq)
+
 # Ruby 3.x fix: template_exists? is delegated to lookup_context via ActiveSupport's delegate
 # macro, which generates (*args, &block).  In Ruby 3.x, calling
 #   template_exists?(name, prefixes, variants: request.variant)
