@@ -395,9 +395,7 @@ GEM
     turbolinks-source (5.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.5)
+    unf (0.2.0)
     useragent (0.16.11)
     webrick (1.9.2)
     websocket-driver (0.8.0)
