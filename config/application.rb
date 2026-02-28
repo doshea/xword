@@ -13,6 +13,21 @@ ActiveRecord::Type.define_singleton_method(:add_modifier) do |options, klass, **
 end
 
 require "action_controller/railtie"
+
+# Ruby 3.x fix: ActionDispatch::MiddlewareStack::Middleware#build calls
+# klass.new(app, *args) where args may contain a trailing keyword hash
+# (stored that way in Ruby 3.x). Patch build to splat it as **kwargs.
+ActionDispatch::MiddlewareStack::Middleware.prepend(Module.new do
+  def build(app)
+    if !args.empty? && args.last.is_a?(Hash)
+      *pos_args, kw_hash = args
+      klass.new(app, *pos_args, **kw_hash, &block)
+    else
+      klass.new(app, *args, &block)
+    end
+  end
+end)
+
 require "action_mailer/railtie"
 require "sprockets/railtie"
 require "action_cable" #NECESSARY FOR ACTION CABLE
