@@ -10,11 +10,8 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  host: localhost
   pool: 5
-  username: dylanoshea
-  password:
-  database: xword_test
+  url: <%= ENV['DATABASE_URL'] || 'postgres://dylanoshea@localhost/xword_test' %>
 
 production:
   adapter: postgresql
