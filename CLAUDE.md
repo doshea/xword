@@ -18,10 +18,10 @@ A Rails web app for solving and creating crossword puzzles. Features include:
 | Ruby | 3.4.8 | Pinned in `.ruby-version` and `Gemfile` |
 | Rails | 8.1.2 | `config.load_defaults 8.1` |
 | PostgreSQL | Any modern version | Uses `pg ~> 1.2` gem |
-| Redis | — | Required for ActionCable |
+| Redis | 5.4.1 | Required for ActionCable |
 | Heroku | heroku-24 | Ubuntu 24.04 LTS |
-| Puma | 6.6.1 | Rack 3 compatible |
-| HAML | 6.4.0 | Views use HAML 6 |
+| Puma | 7.2.0 | Declared in Procfile |
+| HAML | 7.2.0 | Views use HAML 7 |
 | Sprockets | 4.2.2 | Asset pipeline; manifest at `app/assets/config/manifest.js` |
 
 ## Project Structure
@@ -37,8 +37,9 @@ app/
   helpers/               # ApplicationHelper, SwitchHelper
   mailers/               # AdminMailer, UserMailer
   models/
-    concerns/            # Crosswordable, Publishable, Examplable, Newyorkable
-    *.rb                 # 14 models (all inherit from ActiveRecord::Base directly)
+    application_record.rb  # Abstract base class (primary_abstract_class)
+    concerns/              # Crosswordable, Publishable, Examplable, Newyorkable
+    *.rb                   # 14 models (all inherit from ApplicationRecord)
   uploaders/             # CarrierWave uploaders (AccountPicUploader, PreviewUploader)
   views/                 # HAML templates
 config/
@@ -87,12 +88,16 @@ Core entities and their relationships:
 The app was upgraded from Rails 5.1.4 through to 8.1.2 in Feb 2026:
 
 ```
-Rails:  5.1.4 → 6.1 → 7.0 → 7.2 → 8.0 → 8.1
-Ruby:   2.x → 3.1.6 → 3.2.10 → 3.3.10 → 3.4.8
-Heroku: heroku-22 → heroku-24
-HAML:   5.2 → 6.4
+Rails:     5.1.4 → 6.1 → 7.0 → 7.2 → 8.0 → 8.1
+Ruby:      2.x → 3.1.6 → 3.2.10 → 3.3.10 → 3.4.8
+Heroku:    heroku-22 → heroku-24
+HAML:      5.2 → 6.4 → 7.2
 Sprockets: 3.7 → 4.2
-Puma:   5.x → 6.x
+Puma:      5.x → 6.x → 7.x
+Redis:     4.0.1 → 5.4.1
+CarrierWave: 1.3.4 → 3.1.2
+fog-aws:   2.0.0 → 3.33.1
+rspec-rails: 4.1.2 → 8.0.3
 ```
 
 ### Key changes during upgrade
@@ -105,11 +110,17 @@ Puma:   5.x → 6.x
 - All 12 CoffeeScript files converted to plain JS
 - `haml succeed` helper → `content_tag` equivalent (removed in HAML 6)
 - `annotate` gem removed (incompatible with Rails 8, dev-only tool)
-- `puma ~> 5` → `~> 6` (required for Rack 3 / Rails 8)
+- `puma ~> 5` → `~> 6` (required for Rack 3 / Rails 8) → `~> 7` (Heroku Router 2.0)
 - `gem 'csv'` added explicitly (removed from Ruby 3.4 default gems)
 - `httparty` 0.15.7 → 0.24.2 (old version required csv directly)
 - `config.active_support.deprecation` removed from dev/test envs (Rails 8 API change)
 - `new_framework_defaults.rb` (Rails 5.0 era) and `new_framework_defaults_7_2.rb` deleted
+- All 14 models migrated from `ActiveRecord::Base` to `ApplicationRecord`
+- CarrierWave: `extension_white_list` → `extension_allowlist`; removed `config.fog_provider` (deprecated)
+- Factories: all static values wrapped in blocks; Faker positional args → keyword args
+- Controller specs: `get :action, id:` → `get :action, params: { id: }` (Rails 5+ style)
+- `rspec-its` gem added (extracted from rspec-core)
+- `Procfile` added (`web: bundle exec puma -C config/puma.rb`)
 
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
@@ -137,12 +148,13 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 
 ## Testing
 
-- **Framework**: RSpec with `rspec-rails ~> 4.0` (4.1.2)
-- **Factories**: FactoryBot
-- **Database cleaning**: DatabaseCleaner with truncation strategy (not transactions)
+- **Framework**: RSpec with `rspec-rails ~> 8.0` (8.0.3)
+- **Factories**: FactoryBot 6.5 (all attributes use block syntax)
+- **Database cleaning**: DatabaseCleaner 2.1 with truncation strategy (not transactions)
 - **Feature tests**: Capybara `~> 3.0` with CSS selectors
 - **Coverage**: SimpleCov `~> 0.22`
-- **Matchers**: shoulda-matchers `~> 5.0`
+- **Matchers**: shoulda-matchers `~> 7.0`
+- **its()**: rspec-its 2.0 (extracted from rspec-core)
 
 Run tests: `bundle exec rspec`
 
@@ -153,13 +165,13 @@ Run tests: `bundle exec rspec`
 | `pg` | 1.6.3 | PostgreSQL adapter |
 | `pg_search` | 2.3.7 | Full-text search on Crossword, User, Word |
 | `active_record_union` | 1.3.0 | UNION queries in ActiveRecord |
-| `carrierwave` | 1.3.4 | Image uploads to S3 (old — needs upgrade to 3.x) |
-| `fog-aws` | 2.0.0 | AWS S3 backend for CarrierWave (needs upgrade to 3.x) |
+| `carrierwave` | 3.1.2 | Image uploads to S3 |
+| `fog-aws` | 3.33.1 | AWS S3 backend for CarrierWave |
 | `rmagick` | 5.5.0 | Image resizing |
 | `pusher` | 1.3.1 | Real-time push notifications |
-| `redis` | 4.0.1 | ActionCable WebSocket backend (needs upgrade to 5.x) |
+| `redis` | 5.4.1 | ActionCable WebSocket backend |
 | `bcrypt` | 3.1.11 | Password hashing |
-| `haml` | 6.4.0 | View templates |
+| `haml` | 7.2.0 | View templates |
 | `will_paginate` | 3.3.1 | Pagination |
 | `nilify_blanks` | 1.3.0 | Convert blank strings to NULL |
 | `httparty` | 0.24.2 | HTTP client (NYT puzzle fetching) |
@@ -192,17 +204,13 @@ Deploy workflow:
 git push origin master && git push heroku master
 ```
 
+After any Ruby version change: `bundle lock --add-platform x86_64-linux` before pushing.
+
 ## Known Technical Debt
 
-1. **Models inherit from `ActiveRecord::Base`** — should use `ApplicationRecord` pattern (easy cleanup)
-2. **`carrierwave` 1.3.4** — needs upgrade to 3.x; major breaking changes from 1→2→3
-3. **`fog-aws` 2.0.0** — upgrade to 3.x goes hand-in-hand with carrierwave
-4. **`redis` 4.0.1** — needs upgrade to 5.x; major API changes
-5. **`remotipart` 1.3.1** — old jQuery UJS gem; Rails 8 compatibility untested
-6. **`rspec-rails` 4.1.2** — current is 8.x; major version gap in test suite
-7. **`haml` 6.4** — 7.x available
-8. **`puma` 6.6.1** — 7.x available
-9. **`turbolinks`** — deprecated; Rails 8 ecosystem uses Hotwire/Turbo
-10. **No CI/CD** — no GitHub Actions or other CI configuration
-11. **Last DB migration**: April 2017 (schema stable)
-12. **`boot.rb`** — `require 'logger'` comment is stale (was needed for Ruby 3.1 + Rails 6.x)
+1. **`remotipart` 1.3.1** — old jQuery UJS gem; Rails 8 compatibility untested
+2. **`turbolinks`** — deprecated; Rails 8 ecosystem uses Hotwire/Turbo
+3. **No CI/CD** — no GitHub Actions or other CI configuration
+4. **Last DB migration**: April 2017 (schema stable)
+5. **`boot.rb`** — `require 'logger'` comment is stale (was needed for Ruby 3.1 + Rails 6.x)
+6. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable releases
