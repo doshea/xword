@@ -19,7 +19,7 @@ gem 'record_tag_helper' #so that content_tag_for works
 gem 'puma'
 gem 'redis'
 
-gem 'pg', '~> 0.20'
+gem 'pg', '~> 1.2'
 gem 'haml'
 gem 'bcrypt-ruby'
 
@@ -90,3 +90,5 @@ end
 group :production do
   # gem 'rails_12factor'
 end
+
+ruby '2.7.4'
