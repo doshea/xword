@@ -1,5 +1,5 @@
 .clue-column
-  %h6= direction.titleize
+  %h3= direction.titleize
   %ol.clues{id: direction}
     - directional_clues = (direction == 'across') ? @unpublished_crossword.across_clues : @unpublished_crossword.down_clues
     - directional_clue_numbers = @clue_numbers[direction.to_sym]

@@ -6,21 +6,23 @@
   = javascript_include_tag 'jquery-ui-1.10.4.draggable.min'
 :javascript
   edit_app.circles = '#{@unpublished_crossword.circles}'
+:css
+  .clue-column .clues {
+    height: #{@unpublished_crossword.rows * 2.175 - 22/16.0}em;
+  }
 
 %header.xw-container.xw-grid#credit-area
-  .xw-col-12.xw-lg-9
-    %h3.large
-      .xw-grid
-        .xw-col-12.xw-lg-1.smaller Title:
-        .xw-col-12.xw-lg-9
-          = text_field_tag 'title', @unpublished_crossword.title
-          %i#title-status
-  .xw-col-12.xw-lg-3
-    #puzzle-controls
-      %span#save-status.smaller No changes yet
-      %span#save-clock.smaller
-      %a#edit-save.xw-btn.xw-btn--sm.xw-btn--secondary{href: '#', title: 'Quicksave', aria: {label: 'Quicksave'}}
-        = icon('save')
+  .xw-col-full
+    .xw-edit-header
+      %label.xw-edit-header__label{for: 'title'} Title:
+      .xw-edit-header__title
+        = text_field_tag 'title', @unpublished_crossword.title
+        %i#title-status
+      #puzzle-controls
+        %span#save-status.smaller No changes yet
+        %span#save-clock.smaller
+        %a#edit-save.xw-btn.xw-btn--sm.xw-btn--secondary{href: '#', title: 'Quicksave', aria: {label: 'Quicksave'}}
+          = icon('save')
 
 %section.xw-container.xw-grid#solve-area{aria: {label: 'Edit puzzle grid'}}
   .xw-col-full
@@ -28,14 +30,14 @@
 
 %section.xw-container.xw-grid#meta-area
   .xw-col-full
-    %p
-      = label_tag :description
-      = text_area_tag :description, @unpublished_crossword.description, placeholder: "Say something about the making of this crossword -- or anything interesting that doesn't spoil the puzzle!"
+    .xw-field
+      %label.xw-label{for: 'description'} Description
+      = text_area_tag :description, @unpublished_crossword.description, class: 'xw-textarea', rows: 4, placeholder: "Say something about the making of this crossword — or anything interesting that doesn't spoil the puzzle!"
   %hr
 %section.xw-container.xw-grid#advanced{aria: {labelledby: 'advanced-heading'}}
   %h2.xw-col-full#advanced-heading Advanced Controls
-  .xw-col-12.xw-lg-3
-    %ul
+  .xw-col-12.xw-lg-6
+    %ul.xw-edit-switches
       %li
         = switch_tag @unpublished_crossword, :mirror_voids
       %li
@@ -44,8 +46,7 @@
         = switch_tag @unpublished_crossword, :circle_mode, 'Circle Mode'
       %li
         = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
-  .xw-col-12.xw-lg-6
-  .xw-col-12.xw-lg-3
+  .xw-col-12.xw-lg-6.xw-flex.xw-items-end.xw-justify-end
     = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'xw-btn', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
 -# NON-INLINE ELEMENTS
 

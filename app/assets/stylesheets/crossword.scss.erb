@@ -111,6 +111,22 @@ table#crossword {
   border-color: transparent var(--color-success) transparent transparent;
 }
 
+.xw-puzzle-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+
+  .clue-column {
+    flex: 1;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .clues {
+    width: 100%;
+  }
+}
+
 .clue-column {
   float: left;
   background: var(--color-surface-alt);
