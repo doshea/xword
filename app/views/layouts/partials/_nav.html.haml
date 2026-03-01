@@ -1,55 +1,74 @@
-%nav.top-bar.no-select{role: 'navigation',data: {topbar: true, options: 'is_hover: false'}}
-  %ul.title-area
-    %li.name
-      %h1
-        = link_to image_tag('header_icon.png', height: "35%", alt: "Crossword Café | Home", id: 'header-icon'), root_url
-    %li.toggle-topbar.menu-icon
-      = link_to '#' do
-        %span Menu
-  %section.top-bar-section
-    %ul.left
-      - if is_admin?
-        =render partial: 'layouts/partials/admin'
-      %li.divider
-    %ul.right
-      %li.has-form
-        = form_tag search_path, method: 'get', id: 'top-search', class: 'relative' do
-          .row.collapse
-            .small-12.columns
-              = search_field_tag 'query', nil, class: 'round', autocomplete: 'off'
-              %i.fi-magnifying-glass
-          %ul#live-results
-      %li.divider
-      %li.has-dropdown
-        = link_to '#' do
-          %i.fi-pencil
-        %ul.dropdown
-          %li.divider
-          %li
-            = link_to nytimes_path do
-              = image_tag 'nyt_white.png', style: 'max-width: 18px; max-height: 18px;' #TODO remove this junky CSS
+-# Phase 1: replaces Foundation .top-bar with .xw-nav (flexbox, Stimulus nav/dropdown controllers)
+-# IDs #top-search, #live-results, #nav-create, #nav-mail preserved for JS/CSS compatibility
+
+%nav.xw-nav{ role: 'navigation', data: { controller: 'nav' } }
+  .xw-nav__inner
+    / ── Brand ──────────────────────────────────────────────────────────────
+    = link_to root_url, class: 'xw-nav__brand' do
+      = image_tag 'header_icon.png', alt: 'Crossword Café', id: 'header-icon'
+      %span.xw-nav__brand-name Crossword Café
+
+    / ── Hamburger (mobile only) ─────────────────────────────────────────────
+    %button.xw-nav__hamburger{ type: 'button',
+                               aria: { label: 'Menu', expanded: 'false' },
+                               data: { action: 'nav#toggle', nav_target: 'hamburger' } }
+      %span
+      %span
+      %span
+
+    / ── Menu (flex row on desktop, collapsible panel on mobile) ────────────
+    .xw-nav__menu{ data: { nav_target: 'menu' } }
+
+      / Left: admin links (shown only to admins)
+      .xw-nav__left
+        - if is_admin?
+          = render partial: 'layouts/partials/admin'
+
+      / Right: search, browse, create, mail, user menu
+      .xw-nav__right
+
+        / Search — #top-search preserved for global.js keyup event delegation
+        .xw-nav__item
+          = form_tag search_path, method: 'get', id: 'top-search', class: 'xw-nav__search' do
+            = search_field_tag 'query', nil,
+                               class: 'xw-nav__search-input',
+                               autocomplete: 'off',
+                               placeholder: 'Search…'
+            %i.fi-magnifying-glass.xw-nav__search-icon
+            %ul#live-results.xw-nav__live-results
+
+        / Browse dropdown: NY Times, User-Made, Random
+        .xw-nav__item{ data: { controller: 'dropdown' } }
+          %button.xw-nav__icon-btn{ type: 'button',
+                                    aria: { label: 'Browse puzzles' },
+                                    data: { action: 'dropdown#toggle',
+                                            xw_tooltip: 'Browse' } }
+            %i.fi-pencil
+          .xw-nav__dropdown{ data: { dropdown_target: 'menu' } }
+            = link_to nytimes_path, class: 'xw-nav__dropdown-item' do
+              = image_tag 'nyt_white.png', class: 'xw-nav__dropdown-icon', alt: ''
               NY Times
-          %li.divider
-          %li
-            = link_to user_made_path do
-              %i.fi-torso.larger
+            = link_to user_made_path, class: 'xw-nav__dropdown-item' do
+              %i.fi-torso
               User-Made
-          %li.divider
-          %li
-            = link_to User.rand_unowned_puzzle do
-              %i.fi-shuffle.larger
+            = link_to User.rand_unowned_puzzle, class: 'xw-nav__dropdown-item' do
+              %i.fi-shuffle
               Random
-      %li.divider
-      %li#nav-create
-        = link_to create_dashboard_path do
-          %i.fi-lightbulb
-      %li.divider
-      %li#nav-mail
-        = link_to '#' do
-          %i.fi-mail
-      %li.divider
-      - if is_logged_in?
-        = render partial: 'layouts/partials/user_dropdown'
-      -else
-        = render partial: 'layouts/partials/anonymous'
-      %li.divider
+
+        / Create a puzzle — #nav-create preserved (CSS unread animation)
+        .xw-nav__item#nav-create
+          = link_to create_dashboard_path, class: 'xw-nav__icon-btn',
+                    data: { xw_tooltip: 'Create' } do
+            %i.fi-lightbulb
+
+        / Messages — #nav-mail preserved (CSS unread pulse animation)
+        .xw-nav__item#nav-mail
+          = link_to '#', class: 'xw-nav__icon-btn',
+                    data: { xw_tooltip: 'Messages' } do
+            %i.fi-mail
+
+        / User menu or login button
+        - if is_logged_in?
+          = render partial: 'layouts/partials/user_dropdown'
+        - else
+          = render partial: 'layouts/partials/anonymous'

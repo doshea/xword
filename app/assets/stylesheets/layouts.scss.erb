@@ -1,158 +1,7 @@
-@import 'dimensions';
+// Phase 1: all nav styles moved to _nav.scss
+// Phase 5: footer styles will be migrated to _components.scss / _footer.scss
+
 @import 'global_mixins';
-
-#nav {
-  background: #111;
-}
-
-.top-bar {
-  max-width: 80em;
-  margin: auto;
-  input[type='text'], input[type='password']{
-    line-height: 1em;
-    // background: broken noise, dark leather, black mamba, black paper (this one is cool), noisy net, asfalt;
-  }
-  .row {
-    max-width: $header-width;
-  }
-  #login-button {
-    text-align: center;
-    & > .dropdown {
-      width: 200%;
-      border: 1px solid #333;
-      right: -2px;
-      padding-bottom: 0.5em;
-      background: white;
-
-      -webkit-border-bottom-left-radius: 0.5em;
-      -webkit-border-bottom-right-radius: 0.5em;
-
-      -moz-border-radius-bottomleft: 0.5em;
-      -moz-border-radius-bottomright: 0.5em;
-
-      border-bottom-left-radius: 0.5em;
-      border-bottom-right-radius: 0.5em;
-    }
-    .button {
-      top: 0;
-      margin-top: 1em;
-    }
-    input[type='text'], input[type='password'] {
-      text-align: center;
-    }
-  }
-
-  #user-menu {
-    #profile-tease {
-      img {
-        max-width: 2.08em;
-        max-height: 60%;
-        vertical-align: middle;
-      }
-    }
-    & > .dropdown {
-      top: 98%;
-      right: -2px;
-    }
-    .fi-power {
-      color: #f55; //makes the logout red
-    }
-  }
-
-  #top-search {
-    input[type='text'], input[type='search'] {
-      border-radius: 0.8em;
-      text-align: left;
-      height: 2.2em;
-    }
-    .fi-magnifying-glass {
-      position: absolute;
-      top: 0.6em;
-      right: 0.6em;
-      cursor: pointer;
-      // backwards magnifying glass
-      -webkit-transform:scaleX(-1);
-      -moz-transform:scaleX(-1);
-      -ms-transform:scaleX(-1);
-      -o-transform:scaleX(-1);
-      transform:scaleX(-1);
-    }
-    #live-results {
-      font-size: 0.75em;
-      position: absolute;
-      z-index: 1;
-      top: 3.3em;
-      right: 0;
-      margin: 0;
-      width: 13em;
-      background-color: white;
-      border: 1px solid #ccc;
-      display: none;
-      background: black;
-      hr {
-        margin: 0;
-      }
-      h6 {
-        color: white;
-        padding-left: 0.3em;
-      }
-      a {
-        padding: 0;
-
-        li {
-          padding-left: 0.5em;
-          line-height: 1.5em;
-          width: 100%;
-          background: white;
-
-          &:hover {
-            background-color: #ccc;
-          }
-        }
-      }
-    }
-  }
-}
-
-#nav-create, #nav-mail {
-  a {
-    padding: 0 1.5em;
-  }
-}
-#nav-mail.unread {
-  animation: unread-pulse 2s infinite;
-}
-
-@keyframes unread-pulse {
-  0% {
-    background-color: inherit;
-  }
-  50% {
-    background-color: lightblue;
-  }
-  100% {
-    background-color: inherit;
-  }
-}
-
-.title-area {
-
-  .name {
-
-    h1 {
-      height: inherit;
-
-      a {
-        height: inherit;
-
-        #header-icon {
-          height: 90%;
-          margin: 0.1rem 0;
-        }
-      }
-    }
-  }
-}
 
 footer#footer {
   position: relative;
@@ -160,7 +9,7 @@ footer#footer {
   margin-top: 4em;
   padding-top: 0.75em;
   width: 100%;
-  // background: texturetastic grey, wild olivia, Light Sketch, cross scratches, white plaster, light aluminum, wine cork, cardboard flat, paper 2, leather 1, natural paper, dark wall, light toast, cream paper;
+
   .row {
     a {
       color: #333;
@@ -173,12 +22,14 @@ footer#footer {
         color: #2795b6;
       }
     }
+
     .subheader {
       margin-bottom: 0;
       position: absolute;
       right: 1em;
       bottom: 0.2em;
     }
+
     #social-links {
       i {
         color: #333;
@@ -193,6 +44,7 @@ footer#footer {
       }
     }
   }
+
   ul {
     @include no-bullets;
   }

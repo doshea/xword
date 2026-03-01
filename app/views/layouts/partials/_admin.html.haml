@@ -1,25 +1,23 @@
-%li.divider
-%li.has-dropdown
-  %a
+-# Admin dropdown: indices (flattened), email, clone, manual NYT, cheat.
+-# Replaces: Foundation nested .has-dropdown with Stimulus dropdown controller.
+-# "Indices" sub-dropdown flattened to a labeled group in a single dropdown.
+
+.xw-nav__item{ data: { controller: 'dropdown' } }
+  %button.xw-nav__icon-btn{ type: 'button',
+                             data: { action: 'dropdown#toggle' } }
     %i.fi-sheriff-badge
     Admin
-  %ul.dropdown
-    %li.has-dropdown
-      = link_to 'Indices', '#'
-      %ul.dropdown
-        %li= link_to 'Clues', admin_clues_path
-        %li= link_to 'Comments', admin_comments_path
-        %li= link_to 'Crosswords', admin_crosswords_path
-        %li= link_to 'Solutions', admin_solutions_path
-        %li= link_to 'Users', admin_users_path
-        %li= link_to 'Words', admin_words_path
-    %li
-      = link_to 'Emails', admin_email_path
-    %li
-      = link_to 'Clone User', admin_clone_user_path
-    %li
-      = link_to 'Manual NYT', admin_manual_nyt_path
+  .xw-nav__dropdown{ data: { dropdown_target: 'menu' } }
+    %span.xw-nav__dropdown-group Indices
+    = link_to 'Clues',      admin_clues_path,      class: 'xw-nav__dropdown-item'
+    = link_to 'Comments',   admin_comments_path,   class: 'xw-nav__dropdown-item'
+    = link_to 'Crosswords', admin_crosswords_path, class: 'xw-nav__dropdown-item'
+    = link_to 'Solutions',  admin_solutions_path,  class: 'xw-nav__dropdown-item'
+    = link_to 'Users',      admin_users_path,      class: 'xw-nav__dropdown-item'
+    = link_to 'Words',      admin_words_path,      class: 'xw-nav__dropdown-item'
+    %hr.xw-nav__dropdown-divider
+    = link_to 'Emails',     admin_email_path,      class: 'xw-nav__dropdown-item'
+    = link_to 'Clone User', admin_clone_user_path, class: 'xw-nav__dropdown-item'
+    = link_to 'Manual NYT', admin_manual_nyt_path, class: 'xw-nav__dropdown-item'
     - if @crossword
-      / Cheat link: cheat.js.erb removed (was broken — controller never set @crossword). Now redirects to admin crosswords.
-      %li
-        = link_to 'Cheat (JS)', admin_cheat_path
+      = link_to 'Cheat (JS)', admin_cheat_path,    class: 'xw-nav__dropdown-item'
