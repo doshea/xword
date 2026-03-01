@@ -5,20 +5,18 @@
 
 footer#footer {
   position: relative;
-  background-color: gray;
+  background-color: var(--color-footer-bg);
+  color: var(--color-footer-text);
   margin-top: 4em;
   padding-top: 0.75em;
   width: 100%;
 
   a {
-    color: #333;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -o-transition: all 0.3s;
+    color: var(--color-footer-link);
     transition: all 0.3s;
 
     &:hover {
-      color: #2795b6;
+      color: var(--color-footer-link-hover);
     }
   }
 
@@ -28,14 +26,11 @@ footer#footer {
 
   #social-links {
     i {
-      color: #333;
+      color: var(--color-footer-link);
       font-size: 1.5em;
-      -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -o-transition: all 0.3s;
       transition: all 0.3s;
       &:hover {
-        color: #2795b6;
+        color: var(--color-footer-link-hover);
       }
     }
   }

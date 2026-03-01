@@ -1,8 +1,8 @@
 = form_tag '/login', id: 'login' do
   = label_tag :username
-  = text_field_tag :username, nil, :autofocus => true
+  = text_field_tag :username, nil, autofocus: true, autocomplete: 'username'
   = label_tag :password
-  = password_field_tag :password
+  = password_field_tag :password, nil, autocomplete: 'current-password'
   .xw-grid
     .xw-col-6
       = label_tag :remember_me, 'Remember me'

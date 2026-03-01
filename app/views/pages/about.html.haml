@@ -1,11 +1,9 @@
 - title 'About'
-= render layout: 'layouts/partials/topper_stopper' do
-  %h2 About Crossword Café
-  %hr
-  %h5 What
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'About Crossword Café'} do
+  %h2 What
   %p
     Crossword Café is a place for crossword enthusiasts to create, solve and share puzzles for free. No subscriptions or hassle.
-  %h5 Why
+  %h2 Why
   %p
     This site exists because I
     %del was
@@ -15,14 +13,12 @@
   %p
     My friend emailed me a crossword that he'd written, and I couldn't print it to solve it. So I built the first iteration of Crossword Café, a simple Javascript site to recreate his puzzle.
   %p
-    I began looking for sites and applications that would help me write my own crossword puzzles and couldn't find anything. Well, nothing that wasn't expensive, ugly and/or
-    missing features.
+    I began looking for sites and applications that would help me write my own crossword puzzles and couldn't find anything. Well, nothing that wasn't expensive, ugly and/or missing features.
   %p
     So I kept working on Crossword Café.
 
-  %h5 Who
+  %h2 Who
   %p
-    Meet the team!
+    \...it's just me. My name's Dylan — I'm a developer who enjoys crosswords more than I'm good at them. My goal is for Will Shortz to one day disdainfully say "Crossword Café? Doesn't ring a bell."
 
-  %p
-    \...it's just me. My name's Dylan and I'm a medical student at the University of Washington. I'm not a particularly good puzzle creator or solver, but that doesn't stop me from trying. My goal is for Will Shortz to one day distainfully say "Crossword Café? Doesn't ring a bell."
+  = link_to 'Browse Puzzles', root_path, class: 'xw-btn'

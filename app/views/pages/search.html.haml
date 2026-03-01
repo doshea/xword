@@ -1,8 +1,8 @@
-- title "Search Results for '#{@query}'", true
+- title (@query.blank? ? 'Search' : "Search Results for '#{@query}'")
 = content_for :head do
   = stylesheet_link_tag :search
 
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: @query.blank? ? 'Site Search' : 'Search Results',row_class: 'puzzle-tabs'} do  
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: @query.blank? ? 'Site Search' : 'Search Results', row_class: 'puzzle-tabs'} do
   - if @crosswords.any?
     = render partial: 'pages/partials/crossword_search'
     %hr
@@ -12,8 +12,8 @@
   - if @words.any?
     = render partial: 'pages/partials/word_search'
     %hr
-  - if @query.blank?
-    %form
-      %input#search2{placeholder: 'A puzzle title, username, clue or word...'}
-      %br
-      %button Go!
+  = form_tag search_path, method: :get do
+    = label_tag :query, 'Search', class: 'sr-only'
+    = search_field_tag :query, @query, id: 'search2', class: 'xw-nav__search-input', placeholder: 'A puzzle title, username, clue or word...'
+    %br
+    = submit_tag 'Search', class: 'xw-btn xw-btn--success'

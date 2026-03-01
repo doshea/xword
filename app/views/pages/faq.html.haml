@@ -1,7 +1,21 @@
 - title 'FAQ'
-= render layout: 'layouts/partials/topper_stopper' do
-  %h2 Frequently Asked Questions
-  %hr
-  %h5 Why isn't there more on this page?
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Frequently Asked Questions'} do
+  %h2 Can I solve puzzles without an account?
+  %p
+    Yes — you can solve any puzzle as a guest. Creating an account lets you save your progress, track solved puzzles, leave comments, and create your own crosswords.
+
+  %h2 How does team solving work?
+  %p
+    On any puzzle page, click the Team button to generate a shareable team key. Anyone who joins with that key will see your edits in real time. You can chat with teammates in the side panel.
+
+  %h2 How do I create a crossword?
+  %p
+    Log in, then click the lightbulb icon in the nav bar to go to the create dashboard. You can build a grid from scratch, fill in clues, and publish when you're ready.
+
+  %h2 Can I delete my account?
+  %p
+    Yes. Go to your account settings page and scroll to the bottom. If you have questions or run into trouble, #{mail_to 'dylan@crossword-cafe.org', 'email me'}.
+
+  %h2 Why isn't there more on this page?
   %p
     Well, I haven't been asked many questions yet. If you have questions, #{mail_to 'dylan@crossword-cafe.org', 'email me'}!

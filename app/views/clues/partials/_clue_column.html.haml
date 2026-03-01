@@ -1,5 +1,5 @@
 .clue-column
-  %h6= across ? 'Across' : 'Down'
+  %h3= across ? 'Across' : 'Down'
   %ol.clues{id: across ? 'across' : 'down'}
     - if edit
       - directional_clues = across ? @across_clues : @down_clues
