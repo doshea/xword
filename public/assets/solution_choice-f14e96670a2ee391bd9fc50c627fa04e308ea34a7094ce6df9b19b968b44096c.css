@@ -1,0 +1,119 @@
+/* line 2, app/assets/stylesheets/solution_choice.scss.erb */
+tr:hover button {
+  -webkit-transform: scale(1.4, 1) translateX(-12%);
+  -moz-transform: scale(2, 1) translateX(-12%);
+  -o-transform: scale(2, 1) translateX(-12%);
+  transform: scale(2, 1) translateX(-12%);
+}
+
+/* line 8, app/assets/stylesheets/solution_choice.scss.erb */
+tr:hover .hidden-canvas {
+  background-color: rgba(0, 0, 0, 0);
+  -webkit-border-radius: 0em;
+  -moz-border-radius: 0em;
+  border-radius: 0em;
+}
+
+/* line 16, app/assets/stylesheets/solution_choice.scss.erb */
+tr:not(:hover) .hidden-canvas {
+  opacity: 0;
+  top: 0 !important;
+  left: 0 !important;
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -o-transform: scale(0);
+  transform: scale(0);
+  visibility: hidden;
+}
+
+/* line 26, app/assets/stylesheets/solution_choice.scss.erb */
+tr:not(:hover) a {
+  color: inherit;
+}
+
+/* line 29, app/assets/stylesheets/solution_choice.scss.erb */
+tr:not(:hover) button {
+  opacity: 0.5;
+}
+
+/* line 33, app/assets/stylesheets/solution_choice.scss.erb */
+.hidden-canvas {
+  position: absolute;
+  margin: 0;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  background-color: rgba(43, 166, 203, 0.5);
+}
+
+/* line 42, app/assets/stylesheets/solution_choice.scss.erb */
+table {
+  margin: 0.5em 0 1.5em 1em;
+}
+
+/* line 45, app/assets/stylesheets/solution_choice.scss.erb */
+button, form {
+  margin: 0;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+/* line 52, app/assets/stylesheets/solution_choice.scss.erb */
+button {
+  padding: 0.5em 1em;
+}
+
+/* line 55, app/assets/stylesheets/solution_choice.scss.erb */
+i {
+  font-size: larger;
+  transition: all 0.3s;
+}
+
+/* line 59, app/assets/stylesheets/solution_choice.scss.erb */
+i.fi-trash:hover {
+  color: #f04124;
+}
+
+/* line 64, app/assets/stylesheets/solution_choice.scss.erb */
+a {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+/* line 70, app/assets/stylesheets/solution_choice.scss.erb */
+a.not-blue {
+  color: inherit;
+}
+
+/* line 73, app/assets/stylesheets/solution_choice.scss.erb */
+tbody td {
+  cursor: pointer;
+  position: relative;
+}
+
+/* line 76, app/assets/stylesheets/solution_choice.scss.erb */
+tbody td .delete-td {
+  cursor: inherit;
+}
+
+/* line 80, app/assets/stylesheets/solution_choice.scss.erb */
+canvas {
+  float: left;
+  margin: 1em 1em 0;
+}
+
+/* line 84, app/assets/stylesheets/solution_choice.scss.erb */
+hr {
+  border-width: 0 0 1px;
+  padding-top: 1em;
+}
+
+/* line 88, app/assets/stylesheets/solution_choice.scss.erb */
+.metadata {
+  padding-top: 0.5em;
+}

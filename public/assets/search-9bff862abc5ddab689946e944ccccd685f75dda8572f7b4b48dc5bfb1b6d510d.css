@@ -1,0 +1,126 @@
+/* line 3, app/assets/stylesheets/search.scss.erb */
+.row.puzzle-tabs {
+  padding: 1em;
+}
+
+/* line 6, app/assets/stylesheets/search.scss.erb */
+.row.puzzle-tabs .result-user {
+  text-align: center;
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+  -webkit-filter: grayscale(80%);
+  -webkit-transition: all 0.6s;
+  -moz-transition: all 0.6s;
+  -o-transition: all 0.6s;
+  transition: all 0.6s;
+}
+
+/* line 16, app/assets/stylesheets/search.scss.erb */
+.row.puzzle-tabs .result-user:hover {
+  -webkit-filter: grayscale(0%);
+  background: lightgrey;
+}
+
+/* line 20, app/assets/stylesheets/search.scss.erb */
+.row.puzzle-tabs .result-user img {
+  margin-top: 0.5em;
+}
+
+/* line 23, app/assets/stylesheets/search.scss.erb */
+.row.puzzle-tabs .result-user p.name {
+  text-align: center;
+}
+
+/* line 29, app/assets/stylesheets/search.scss.erb */
+.result-crossword {
+  border: 1px dotted lightgrey;
+  -webkit-transition: background 0.4s;
+  -moz-transition: background 0.4s;
+  -o-transition: background 0.4s;
+  transition: background 0.4s;
+}
+
+/* line 38, app/assets/stylesheets/search.scss.erb */
+.result-crossword:hover {
+  background: lightgrey;
+}
+
+/* line 40, app/assets/stylesheets/search.scss.erb */
+.result-crossword:hover .fi-refresh {
+  opacity: 1;
+}
+
+/* line 42, app/assets/stylesheets/search.scss.erb */
+.result-crossword:hover .fi-refresh:hover {
+  color: #2ba6cb;
+  transition: color 0.3s;
+}
+
+/* line 48, app/assets/stylesheets/search.scss.erb */
+.result-crossword .row {
+  padding: 0.5em 0;
+}
+
+/* line 50, app/assets/stylesheets/search.scss.erb */
+.result-crossword .row .metadata {
+  padding-left: 1.2em;
+}
+
+/* line 52, app/assets/stylesheets/search.scss.erb */
+.result-crossword .row .metadata p {
+  margin: 0;
+}
+
+/* line 54, app/assets/stylesheets/search.scss.erb */
+.result-crossword .row .metadata p.title {
+  font-weight: bold;
+  font-size: smaller;
+  line-height: 1em;
+}
+
+/* line 59, app/assets/stylesheets/search.scss.erb */
+.result-crossword .row .metadata p.byline {
+  font-style: italic;
+  font-size: smaller;
+}
+
+/* line 63, app/assets/stylesheets/search.scss.erb */
+.result-crossword .row .metadata p.dimensions {
+  font-size: smaller;
+}
+
+/* line 69, app/assets/stylesheets/search.scss.erb */
+.result-crossword .fi-refresh {
+  position: absolute;
+  bottom: 0.5em;
+  right: 1em;
+  opacity: 0;
+  transition: opacity 0.4s;
+  font-size: larger;
+}
+
+/* line 77, app/assets/stylesheets/search.scss.erb */
+.result-crossword .minipic img {
+  max-width: none;
+  width: 75px;
+  height: 75px;
+}
+
+/* line 85, app/assets/stylesheets/search.scss.erb */
+.puzzle-tabs a:not(.foundation) {
+  color: inherit;
+}
+
+/* line 88, app/assets/stylesheets/search.scss.erb */
+.puzzle-tabs p {
+  margin: 0;
+}
+
+/* line 93, app/assets/stylesheets/search.scss.erb */
+.nyt-watermark {
+  position: absolute;
+  right: 1em;
+  bottom: 0.5em;
+  height: 1.5em;
+}

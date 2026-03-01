@@ -1,0 +1,10 @@
+/* line 1, app/assets/stylesheets/site_stats.scss */
+canvas {
+  width: 80%;
+  margin: 1em 10% 0;
+}
+
+/* line 5, app/assets/stylesheets/site_stats.scss */
+h4 {
+  text-align: center;
+}

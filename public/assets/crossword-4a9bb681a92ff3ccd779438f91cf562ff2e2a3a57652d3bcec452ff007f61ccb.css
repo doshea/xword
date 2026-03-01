@@ -1,0 +1,495 @@
+/* line 5, app/assets/stylesheets/crossword.scss.erb */
+#body > .row {
+  padding: 0.5em 1em 0 1em;
+  max-width: 64.5em;
+}
+
+/* line 10, app/assets/stylesheets/crossword.scss.erb */
+#credit-area, #solve-area, #meta-area, #advanced {
+  background-image: url(/assets/paper-7b9f6598138b53b65cc415603a3d981bd61560f3f7d8498007ff5559c86f9226.jpeg);
+}
+
+/* line 14, app/assets/stylesheets/crossword.scss.erb */
+#credit-area {
+  margin-top: 2.5em;
+  margin-bottom: 0;
+  -webkit-border-top-left-radius: 0.3em;
+  -webkit-border-top-right-radius: 0.3em;
+  -moz-border-radius-topleft: 0.3em;
+  -moz-border-radius-topright: 0.3em;
+  border-top-left-radius: 0.3em;
+  border-top-right-radius: 0.3em;
+}
+
+/* line 23, app/assets/stylesheets/crossword.scss.erb */
+#credit-area h3 {
+  margin-bottom: 0.2em;
+}
+
+/* line 25, app/assets/stylesheets/crossword.scss.erb */
+#credit-area h3 #creator-credit {
+  font-size: large;
+  font-weight: normal;
+}
+
+/* line 30, app/assets/stylesheets/crossword.scss.erb */
+#credit-area #puzzle-controls {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+}
+
+/* line 34, app/assets/stylesheets/crossword.scss.erb */
+#credit-area #puzzle-controls .secondary {
+  border: 1px solid #ccc;
+}
+
+/* line 39, app/assets/stylesheets/crossword.scss.erb */
+#meta-area {
+  -webkit-border-bottom-left-radius: 0.3em;
+  -webkit-border-bottom-right-radius: 0.3em;
+  -moz-border-radius-bottomleft: 0.3em;
+  -moz-border-radius-bottomright: 0.3em;
+  border-bottom-left-radius: 0.3em;
+  border-bottom-right-radius: 0.3em;
+}
+
+/* line 48, app/assets/stylesheets/crossword.scss.erb */
+table#crossword {
+  border-spacing: 0;
+  float: left;
+  margin-bottom: 0;
+}
+
+/* line 53, app/assets/stylesheets/crossword.scss.erb */
+table#crossword tr {
+  background: black;
+}
+
+/* line 56, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell {
+  padding: 0;
+  margin: 0;
+  border: solid 0.0625em black;
+  font-size: 1.25em;
+  text-align: center;
+  text-transform: uppercase;
+  width: 1.5em;
+  height: 1.5em;
+  position: relative;
+  background: white;
+  overflow: hidden;
+}
+
+/* line 69, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell.void {
+  background-color: black !important;
+}
+
+/* line 72, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell:not(.void) {
+  cursor: text;
+}
+
+/* line 75, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell.selected {
+  background-color: #ffdc6e;
+}
+
+/* line 78, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell.selected-word:not(.selected) {
+  background-color: #ffffaa;
+}
+
+/* line 81, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell .letter {
+  line-height: 145%;
+  z-index: 1001;
+}
+
+/* line 85, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell .cell-num {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  font-size: 0.4em;
+  line-height: 1em;
+}
+
+/* line 92, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell .flag {
+  display: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 0;
+  right: 1px;
+  z-index: 1000;
+  border-style: solid;
+  border-width: 0 0.35em 0.35em 0;
+}
+
+/* line 104, app/assets/stylesheets/crossword.scss.erb */
+table#crossword .cell .circle {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  border: 1px solid black;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  top: 0;
+}
+
+/* line 116, app/assets/stylesheets/crossword.scss.erb */
+.flagged .flag {
+  display: block !important;
+}
+
+/* line 119, app/assets/stylesheets/crossword.scss.erb */
+.incorrect .flag {
+  border-color: transparent red transparent transparent;
+}
+
+/* line 122, app/assets/stylesheets/crossword.scss.erb */
+.correct .flag {
+  border-color: transparent green transparent transparent;
+}
+
+/* line 126, app/assets/stylesheets/crossword.scss.erb */
+.clue-column {
+  float: left;
+  background: lightgrey;
+  border: 1px solid lightgrey;
+  margin-left: 0.4em;
+  margin-right: 0;
+}
+
+/* line 132, app/assets/stylesheets/crossword.scss.erb */
+.clue-column h6 {
+  text-align: center;
+}
+
+/* line 135, app/assets/stylesheets/crossword.scss.erb */
+.clue-column .clues {
+  overflow: scroll;
+  width: 250px;
+  overflow-x: hidden;
+  background: white;
+  font-size: smaller;
+  padding: 0.1em 0.25em;
+  height: 31em;
+}
+
+/* line 144, app/assets/stylesheets/crossword.scss.erb */
+.clue-column .clues .clue {
+  border: 1px solid rgba(255, 255, 255, 0);
+  border-bottom: 1px solid lightgrey;
+  padding: 0 0.25em 0 2em;
+  text-indent: -1.7em;
+  cursor: pointer;
+}
+
+/* line 151, app/assets/stylesheets/crossword.scss.erb */
+.clue-column .clues .clue.crossed-off {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* line 156, app/assets/stylesheets/crossword.scss.erb */
+.clue-column .clues .clue.selected-clue {
+  background-color: #ffffaa;
+  border: 1px solid #999;
+}
+
+/* line 161, app/assets/stylesheets/crossword.scss.erb */
+.clue-column .clues input {
+  height: 1.5em;
+  display: inline-block;
+  border: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background: none;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+/* line 172, app/assets/stylesheets/crossword.scss.erb */
+.clue-column .clues input:focus {
+  cursor: text;
+}
+
+/* line 180, app/assets/stylesheets/crossword.scss.erb */
+#solve-controls {
+  position: relative;
+  margin-left: 0.6em;
+  margin: 0.2em;
+  float: left;
+  width: 32em;
+  padding: 0;
+  text-align: center;
+}
+
+/* line 188, app/assets/stylesheets/crossword.scss.erb */
+#solve-controls button {
+  display: inline-block;
+  height: inherit;
+  width: 49%;
+  margin: 0;
+  outline: none;
+}
+
+/* line 196, app/assets/stylesheets/crossword.scss.erb */
+#solve-controls button.warning {
+  background-color: #FFC68D;
+  border-color: #ffad5a;
+  color: #333;
+}
+
+/* line 137, app/assets/stylesheets/_buttons.scss */
+#solve-controls button.warning:hover, #solve-controls button.warning:focus {
+  background-color: #ffad5a;
+}
+
+/* line 143, app/assets/stylesheets/_buttons.scss */
+#solve-controls button.warning:hover, #solve-controls button.warning:focus {
+  color: #333;
+}
+
+/* line 201, app/assets/stylesheets/crossword.scss.erb */
+#solve-controls .button.success {
+  background-color: #83EDA3;
+  border-color: #56e782;
+  color: #333;
+}
+
+/* line 137, app/assets/stylesheets/_buttons.scss */
+#solve-controls .button.success:hover, #solve-controls .button.success:focus {
+  background-color: #56e782;
+}
+
+/* line 143, app/assets/stylesheets/_buttons.scss */
+#solve-controls .button.success:hover, #solve-controls .button.success:focus {
+  color: #333;
+}
+
+/* line 203, app/assets/stylesheets/crossword.scss.erb */
+#solve-controls .button.success.split span:before {
+  border-color: #333 transparent transparent transparent;
+}
+
+/* line 208, app/assets/stylesheets/crossword.scss.erb */
+#solve-controls hr {
+  margin: 0.2em 0;
+}
+
+/* line 213, app/assets/stylesheets/crossword.scss.erb */
+#preview {
+  text-align: center;
+}
+
+/* line 215, app/assets/stylesheets/crossword.scss.erb */
+#preview canvas {
+  display: inline-block;
+}
+
+/* line 219, app/assets/stylesheets/crossword.scss.erb */
+#teammates {
+  display: inline-block;
+}
+
+/* line 221, app/assets/stylesheets/crossword.scss.erb */
+#teammates .teammate-box {
+  width: 1em;
+  height: 1em;
+  -moz-box-shadow: 1px 1px 2px #444;
+  -ms-box-shadow: 1px 1px 2px #444;
+  -webkit-box-shadow: 1px 2px 1px #444;
+  box-shadow: 1px 1px 2px #444;
+  display: inline-block;
+  margin-right: 0.2em;
+}
+
+/* line 233, app/assets/stylesheets/crossword.scss.erb */
+#team-chat {
+  width: 300px;
+  position: fixed;
+  background: white;
+  right: 2em;
+  border: 1px solid black;
+  border-bottom: none;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  transition: bottom 0.2s;
+  z-index: 1;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px;
+  -ms-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px;
+}
+
+/* line 253, app/assets/stylesheets/crossword.scss.erb */
+#team-chat.down {
+  bottom: -2.7em;
+}
+
+/* line 256, app/assets/stylesheets/crossword.scss.erb */
+#team-chat:not(.down) {
+  bottom: 0 !important;
+}
+
+/* line 259, app/assets/stylesheets/crossword.scss.erb */
+#team-chat form {
+  margin: 0;
+  height: 2.5em;
+}
+
+/* line 264, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .row-topper {
+  height: 1.5em;
+  background: black;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding-top: 0.2em;
+  cursor: pointer;
+}
+
+/* line 279, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .row-topper #chat-minmax {
+  position: absolute;
+  right: 1em;
+}
+
+/* line 284, app/assets/stylesheets/crossword.scss.erb */
+#team-chat input {
+  position: absolute;
+  padding: 0 0.5em;
+  height: 2em;
+  bottom: 0.5em;
+  margin: 0;
+  width: 96%;
+  left: 2%;
+  right: 2%;
+}
+
+/* line 294, app/assets/stylesheets/crossword.scss.erb */
+#team-chat #chats {
+  overflow: scroll;
+  max-height: 330px;
+  padding: 0.1em;
+}
+
+/* line 299, app/assets/stylesheets/crossword.scss.erb */
+#team-chat #chats hr {
+  margin: 0;
+}
+
+/* line 303, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat {
+  padding: 0.2em 0.6em 0.2em 0.4em;
+  width: 100%;
+  font-size: 0.8em;
+  min-height: 1.6em;
+  -webkit-transition: all 0.5s linear;
+  -moz-transition: all 0.5s linear;
+  -o-transition: all 0.5s linear;
+  transition: all 0.5s linear;
+}
+
+/* line 312, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat img {
+  height: 1.2em;
+  width: 1.2em;
+}
+
+/* line 316, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat.my-chat {
+  text-align: right;
+  background-color: #eee;
+}
+
+/* line 320, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat .avatar {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+/* line 324, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat .display-name {
+  font-weight: bold;
+  margin-left: 0.2em;
+}
+
+/* line 328, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat .chat-text {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* line 332, app/assets/stylesheets/crossword.scss.erb */
+#team-chat .chat span {
+  vertical-align: bottom;
+}
+
+/* line 338, app/assets/stylesheets/crossword.scss.erb */
+#comments textarea {
+  resize: none;
+  overflow: auto;
+}
+
+/* line 343, app/assets/stylesheets/crossword.scss.erb */
+#comments .comment li {
+  width: 70%;
+}
+
+/* line 346, app/assets/stylesheets/crossword.scss.erb */
+#comments .comment textarea {
+  height: 1em;
+  min-height: 2.3em;
+}
+
+/* line 352, app/assets/stylesheets/crossword.scss.erb */
+.team-outline {
+  position: absolute;
+  z-index: 999;
+}
+
+/* line 357, app/assets/stylesheets/crossword.scss.erb */
+#controls-modal {
+  width: 40%;
+  margin-left: -20%;
+  min-width: 25em;
+}
+
+/* line 361, app/assets/stylesheets/crossword.scss.erb */
+#controls-modal h1 {
+  text-align: center;
+}
+
+/* line 364, app/assets/stylesheets/crossword.scss.erb */
+#controls-modal li {
+  font-size: 0.875em;
+}
+
+/* line 368, app/assets/stylesheets/crossword.scss.erb */
+#controls-modal #keys {
+  list-style-type: none;
+}
+
+/* line 370, app/assets/stylesheets/crossword.scss.erb */
+#controls-modal #keys li {
+  text-align: right;
+}

@@ -1,0 +1,222 @@
+/* line 4, app/assets/stylesheets/layouts.scss.erb */
+#nav {
+  background: #111;
+}
+
+/* line 8, app/assets/stylesheets/layouts.scss.erb */
+.top-bar {
+  max-width: 80em;
+  margin: auto;
+}
+
+/* line 11, app/assets/stylesheets/layouts.scss.erb */
+.top-bar input[type='text'], .top-bar input[type='password'] {
+  line-height: 1em;
+}
+
+/* line 15, app/assets/stylesheets/layouts.scss.erb */
+.top-bar .row {
+  max-width: 67.5em;
+}
+
+/* line 18, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #login-button {
+  text-align: center;
+}
+
+/* line 20, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #login-button > .dropdown {
+  width: 200%;
+  border: 1px solid #333;
+  right: -2px;
+  padding-bottom: 0.5em;
+  background: white;
+  -webkit-border-bottom-left-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
+  -moz-border-radius-bottomleft: 0.5em;
+  -moz-border-radius-bottomright: 0.5em;
+  border-bottom-left-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+}
+
+/* line 36, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #login-button .button {
+  top: 0;
+  margin-top: 1em;
+}
+
+/* line 40, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #login-button input[type='text'], .top-bar #login-button input[type='password'] {
+  text-align: center;
+}
+
+/* line 47, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #user-menu #profile-tease img {
+  max-width: 2.08em;
+  max-height: 60%;
+  vertical-align: middle;
+}
+
+/* line 53, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #user-menu > .dropdown {
+  top: 98%;
+  right: -2px;
+}
+
+/* line 57, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #user-menu .fi-power {
+  color: #f55;
+}
+
+/* line 63, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search input[type='text'], .top-bar #top-search input[type='search'] {
+  border-radius: 0.8em;
+  text-align: left;
+  height: 2.2em;
+}
+
+/* line 68, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search .fi-magnifying-glass {
+  position: absolute;
+  top: 0.6em;
+  right: 0.6em;
+  cursor: pointer;
+  -webkit-transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -ms-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+/* line 80, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search #live-results {
+  font-size: 0.75em;
+  position: absolute;
+  z-index: 1;
+  top: 3.3em;
+  right: 0;
+  margin: 0;
+  width: 13em;
+  background-color: white;
+  border: 1px solid #ccc;
+  display: none;
+  background: black;
+}
+
+/* line 92, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search #live-results hr {
+  margin: 0;
+}
+
+/* line 95, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search #live-results h6 {
+  color: white;
+  padding-left: 0.3em;
+}
+
+/* line 99, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search #live-results a {
+  padding: 0;
+}
+
+/* line 102, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search #live-results a li {
+  padding-left: 0.5em;
+  line-height: 1.5em;
+  width: 100%;
+  background: white;
+}
+
+/* line 108, app/assets/stylesheets/layouts.scss.erb */
+.top-bar #top-search #live-results a li:hover {
+  background-color: #ccc;
+}
+
+/* line 118, app/assets/stylesheets/layouts.scss.erb */
+#nav-create a, #nav-mail a {
+  padding: 0 1.5em;
+}
+
+/* line 122, app/assets/stylesheets/layouts.scss.erb */
+#nav-mail.unread {
+  animation: unread-pulse 2s infinite;
+}
+
+@keyframes unread-pulse {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: lightblue;
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+
+/* line 142, app/assets/stylesheets/layouts.scss.erb */
+.title-area .name h1 {
+  height: inherit;
+}
+
+/* line 145, app/assets/stylesheets/layouts.scss.erb */
+.title-area .name h1 a {
+  height: inherit;
+}
+
+/* line 148, app/assets/stylesheets/layouts.scss.erb */
+.title-area .name h1 a #header-icon {
+  height: 90%;
+  margin: 0.1rem 0;
+}
+
+/* line 157, app/assets/stylesheets/layouts.scss.erb */
+footer#footer {
+  position: relative;
+  background-color: gray;
+  margin-top: 4em;
+  padding-top: 0.75em;
+  width: 100%;
+}
+
+/* line 165, app/assets/stylesheets/layouts.scss.erb */
+footer#footer .row a {
+  color: #333;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+/* line 172, app/assets/stylesheets/layouts.scss.erb */
+footer#footer .row a:hover {
+  color: #2795b6;
+}
+
+/* line 176, app/assets/stylesheets/layouts.scss.erb */
+footer#footer .row .subheader {
+  margin-bottom: 0;
+  position: absolute;
+  right: 1em;
+  bottom: 0.2em;
+}
+
+/* line 183, app/assets/stylesheets/layouts.scss.erb */
+footer#footer .row #social-links i {
+  color: #333;
+  font-size: 1.5em;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+/* line 190, app/assets/stylesheets/layouts.scss.erb */
+footer#footer .row #social-links i:hover {
+  color: #2795b6;
+}
+
+/* line 196, app/assets/stylesheets/layouts.scss.erb */
+footer#footer ul {
+  list-style-type: none;
+}
