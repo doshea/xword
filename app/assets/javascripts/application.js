@@ -2,18 +2,18 @@
 // require jquery
 //= require foundation5/jquery
 //= require turbo_sprockets
-// jquery_ujs removed — Turbo now handles all form/link interception (replaces jquery_ujs remote: true)
-// Note: turbo_sprockets.js is a Sprockets-compatible copy of turbo.min.js with the ES module `export`
-// statement stripped. turbo-rails 2.x ships only ES module builds; the `export` at the top level of a
-// classic script causes a SyntaxError that prevents the entire bundle from executing.
+// turbo_sprockets.js: Sprockets-compatible build of turbo.min.js (ES module export stripped).
+// jquery_ujs removed — Turbo now handles all form/link interception.
 //
 // require turbolinks (removed — replaced by turbo above)
-// underscore-min removed — the two usages (_. contains, _.each) were replaced with
-// Array.prototype.includes and Object.keys().forEach() respectively.
+// underscore-min removed — usages replaced with Array.prototype.includes / Object.keys().forEach()
+// require foundation5/foundation.min (removed — Phase 4 replaces Foundation JS with Stimulus + native HTML)
+// require foundation5/modernizr (removed — not needed for modern browsers)
 //
-// require foundation5/foundation.min
-//
-// require foundation5/modernizr
+//= require stimulus_sprockets
+// stimulus_sprockets.js: Sprockets-compatible build of stimulus.min.js (ES module export replaced
+// with window.Stimulus = {Application, Controller}). Controllers live in app/assets/javascripts/controllers/.
+//= require_tree ./controllers
 //
 //= require moment.min
 //= require sugar.min

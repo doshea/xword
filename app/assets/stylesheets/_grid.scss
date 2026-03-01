@@ -1,0 +1,136 @@
+// =============================================================================
+// Grid System — xw- prefix
+// =============================================================================
+// CSS Grid replacement for Foundation 5's 12-column float grid.
+// The xw- prefix prevents collision with Foundation classes during the
+// coexistence period (Phases 1-5). Foundation is removed in Phase 6.
+//
+// Mapping reference (Foundation → xw-):
+//   .row                  → .xw-container (outer wrapper) or .xw-grid (column parent)
+//   .large-N.columns      → .xw-col-12.xw-lg-N
+//   .medium-N.columns     → .xw-col-12.xw-md-N
+//   .small-N.columns      → .xw-col-N
+//   .large-offset-N       → .xw-lg-offset-N
+//   .large-12.columns     → .xw-col-full
+//   .collapse             → .xw-grid--collapse
+//   .end                  → (remove — not needed with CSS Grid)
+// =============================================================================
+
+@import 'design_tokens';
+
+// Outer page wrapper — max-width + horizontal padding
+.xw-container {
+  width: 100%;
+  max-width: $max-content-width;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+// Grid parent — 12-column CSS Grid
+.xw-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+
+  &.xw-grid--collapse {
+    gap: 0;
+  }
+
+  &.xw-grid--dense {
+    grid-auto-flow: dense;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Column classes — mobile-first
+// ---------------------------------------------------------------------------
+// .xw-col-N spans N of 12 columns at all breakpoints (mobile-first default)
+// .xw-sm-N overrides at $bp-sm+
+// .xw-md-N overrides at $bp-md+
+// .xw-lg-N overrides at $bp-lg+
+
+@for $i from 1 through 12 {
+  .xw-col-#{$i}  { grid-column: span #{$i}; }
+}
+
+.xw-col-full { grid-column: 1 / -1; }  // spans all 12 columns
+
+@media (min-width: $bp-sm) {
+  @for $i from 1 through 12 {
+    .xw-sm-#{$i} { grid-column: span #{$i}; }
+  }
+  .xw-sm-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: $bp-md) {
+  @for $i from 1 through 12 {
+    .xw-md-#{$i} { grid-column: span #{$i}; }
+  }
+  .xw-md-full { grid-column: 1 / -1; }
+}
+
+@media (min-width: $bp-lg) {
+  @for $i from 1 through 12 {
+    .xw-lg-#{$i} { grid-column: span #{$i}; }
+  }
+  .xw-lg-full { grid-column: 1 / -1; }
+}
+
+// ---------------------------------------------------------------------------
+// Offset classes — push a column right by N columns
+// ---------------------------------------------------------------------------
+
+@media (min-width: $bp-lg) {
+  @for $i from 1 through 11 {
+    .xw-lg-offset-#{$i} { grid-column-start: #{$i + 1}; }
+  }
+}
+
+@media (min-width: $bp-md) {
+  @for $i from 1 through 11 {
+    .xw-md-offset-#{$i} { grid-column-start: #{$i + 1}; }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Flexbox utilities (for non-grid alignment needs)
+// ---------------------------------------------------------------------------
+
+.xw-flex        { display: flex; }
+.xw-flex-col    { display: flex; flex-direction: column; }
+.xw-flex-wrap   { flex-wrap: wrap; }
+.xw-items-start { align-items: flex-start; }
+.xw-items-center { align-items: center; }
+.xw-items-end   { align-items: flex-end; }
+.xw-justify-start   { justify-content: flex-start; }
+.xw-justify-center  { justify-content: center; }
+.xw-justify-end     { justify-content: flex-end; }
+.xw-justify-between { justify-content: space-between; }
+.xw-gap-2  { gap: var(--space-2); }
+.xw-gap-4  { gap: var(--space-4); }
+.xw-gap-6  { gap: var(--space-6); }
+.xw-gap-8  { gap: var(--space-8); }
+
+// ---------------------------------------------------------------------------
+// Display utilities
+// ---------------------------------------------------------------------------
+
+.xw-block  { display: block; }
+.xw-inline { display: inline; }
+.xw-inline-block { display: inline-block; }
+.xw-hidden { display: none; }
+
+@media (min-width: $bp-md) {
+  .xw-md-hidden { display: none; }
+  .xw-md-block  { display: block; }
+}
+
+@media (min-width: $bp-lg) {
+  .xw-lg-hidden { display: none; }
+  .xw-lg-block  { display: block; }
+}
+
+// Mobile-only visible (hide at md+)
+@media (min-width: $bp-md) {
+  .xw-mobile-only { display: none !important; }
+}

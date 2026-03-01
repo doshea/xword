@@ -1,10 +1,16 @@
 /*
  *= require_self
  *
+ * Foundation 5 (removed in Phase 6 — still loaded during coexistence period)
  *= require foundation5/normalize
  *= require foundation5/foundation.min
  *= require foundation-icons/foundation-icons
  *= require foundation_overrides
+ *
+ * New design system (xw- prefix, safe to load alongside Foundation)
+ *= require _design_tokens
+ *= require _grid
+ *= require _components
  *
  *= require global
  *= require layouts
