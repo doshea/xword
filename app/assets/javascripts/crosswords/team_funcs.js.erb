@@ -1,0 +1,259 @@
+// Converted from team_funcs.js.coffee.erb
+// Pusher-based real-time team solving: sends/receives cell updates, roster changes, chat, and clue highlights.
+// display_name and solver_id are pre-set on window.team_app by the view before this file loads.
+
+window.team_app = {
+  solver_red:            Math.floor(Math.random() * 266),  // random RGB color identifies this solver
+  solver_green:          Math.floor(Math.random() * 266),
+  solver_blue:           Math.floor(Math.random() * 266),
+  cell_clack_sound:      new Audio('<%= audio_path("chuck.mp3") %>'),
+  last_clack:            null,
+  message_received_sound: new Audio('<%= audio_path("submarine.m4a") %>'),
+  last_received:         null,
+  unread_count:          0,
+  display_name:          team_app.display_name,  // copied from view-injected stub
+  solver_id:             team_app.solver_id,
+  outline_timer:         null,
+
+  // Toggle the team chat tray open/closed; reset unread count when opening
+  toggle_chat: function() {
+    $('#team-chat').toggleClass('down');
+    $('#team-chat').css('bottom', '' + (-1 * $('#team-chat').height() + $('#team-chat .row-topper').height() * 1.7 / 1.5) + 'px');
+    if (!$('#team-chat').hasClass('down')) {
+      team_app.unread_count = 0;
+      $('#unread-chat-count').text('');
+    }
+    $('#chat-minmax').toggleClass('fi-minus fi-plus');
+  },
+
+  //------------------
+  // PUSHER SENDS
+  //------------------
+
+  // PATCH → server → Pusher: broadcasts this solver's cell change to all teammates
+  send_team_cell: function($cell, letter) {
+    var token = $('#crossword').data('auth-token');
+    $.ajax({
+      type: 'PATCH',
+      url:  '/solutions/' + solve_app.solution_id + '/team_update',
+      data: {
+        authenticity_token: token,
+        letter:    letter,
+        col:       $cell.data('col'),
+        row:       $cell.data('row'),
+        channel:   channel,
+        solver_id: team_app.solver_id,
+        red:       team_app.solver_red,
+        green:     team_app.solver_green,
+        blue:      team_app.solver_blue
+      }
+    });
+  },
+
+  // POST → server → Pusher: announces this solver joined; teammates add to roster
+  join_team: function() {
+    var token = $('#crossword').data('auth-token');
+    $.ajax({
+      type: 'POST',
+      url:  '/solutions/' + solve_app.solution_id + '/join_team',
+      data: {
+        authenticity_token: token,
+        channel:      channel,
+        display_name: team_app.display_name,
+        red:          team_app.solver_red,
+        green:        team_app.solver_green,
+        blue:         team_app.solver_blue,
+        solver_id:    team_app.solver_id
+      }
+    });
+  },
+
+  // POST → server → Pusher: announces departure; teammates remove from roster
+  leave_team: function() {
+    var token = $('#crossword').data('auth-token');
+    $.ajax({
+      type: 'POST',
+      url:  '/solutions/' + solve_app.solution_id + '/leave_team',
+      data: {
+        authenticity_token: token,
+        channel:   channel,
+        solver_id: team_app.solver_id
+      }
+    });
+  },
+
+  // POST → server → Pusher: asks all participants to re-announce themselves
+  // TODO: Figure out why this isn't properly getting all teammates
+  roll_call: function() {
+    var token = $('#crossword').data('auth-token');
+    $.ajax({
+      type: 'POST',
+      url:  '/solutions/' + solve_app.solution_id + '/roll_call',
+      data: { authenticity_token: token, channel: channel }
+    });
+  },
+
+  // POST → server → Pusher: broadcasts which clue this solver is currently viewing
+  // TODO: Figure out why this isn't properly getting all teammates
+  show_team_clue: function() {
+    var token    = $('#crossword').data('auth-token');
+    var cell_num = $(this).data('cell-num');
+    var across   = $(this).hasClass('across-clue');
+    $.ajax({
+      type: 'POST',
+      url:  '/solutions/' + solve_app.solution_id + '/show_team_clue/',
+      data: {
+        authenticity_token: token,
+        channel:   channel,
+        cell_num:  cell_num,
+        across:    across,
+        red:       team_app.solver_red,
+        green:     team_app.solver_green,
+        blue:      team_app.solver_blue,
+        solver_id: team_app.solver_id
+      }
+    });
+  },
+
+  //------------------
+  // PUSHER RECEIVES
+  //------------------
+
+  // Another solver typed a letter: update the cell and play a throttled clack sound
+  receive_team_cell: function(data) {
+    if (team_app.solver_id !== data.solver_id) {
+      var $cell = $(".cell[data-row=" + data.row + "][data-col=" + data.col + "]");
+      var now   = Date.now();
+      if (!(team_app.last_clack && (now - team_app.last_clack < 4000))) {
+        team_app.last_clack = now;
+        team_app.cell_clack_sound.play();
+      }
+      $cell.children('.flag').stop()
+        .css('background', 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')')
+        .animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
+      if (data.letter === '') {
+        $cell.delete_letter(false);
+      } else {
+        $cell.set_letter(data.letter, false);
+      }
+    }
+  },
+
+  // Teammate joined: add a colored square to the on-screen roster
+  welcome_teammate: function(data) {
+    if ($(".teammate-box[solver_id=" + data.solver_id + "]").length === 0) {
+      var teammate = $('<div>');
+      teammate.addClass('teammate-box has-tip')
+        .css('background', 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')')
+        .attr('data-tooltip', true)
+        .attr('title', data.display_name)
+        .attr('solver_id', data.solver_id);
+      $('#teammates').append(teammate);
+    }
+  },
+
+  // Teammate left: fade out and remove their roster square
+  farewell_teammate: function(data) {
+    console.log('So long, farewell');
+    $("#teammates .teammate-box[solver_id=" + data.solver_id + "]").fadeOut(1000, function() {
+      $(this).remove();
+    });
+  },
+
+  // Chat message received: render sender-styled or other-styled chat bubble and scroll to bottom
+  receive_chat: function(data) {
+    var is_my_chat        = (team_app.display_name === data['display_name']);
+    var chats_already_exist = ($('.chat').length > 0);
+    var chats    = $('#team-chat');
+    var new_chat = $('<div>').addClass('chat');
+    if (is_my_chat) new_chat.addClass('my-chat');
+
+    var chat_text = $('<span>').text(data['chat_text']).addClass('chat-text');
+    var display_name, avatar;
+
+    if (!is_my_chat) {
+      display_name = $('<span>').text(data['display_name'] + ': ').addClass('display-name');
+      avatar = $('<img>').attr('src', data['avatar']).addClass('avatar');
+      avatar.appendTo(new_chat);
+      display_name.appendTo(new_chat);
+    }
+    if (is_my_chat) {
+      chat_text.prependTo(new_chat);
+    } else {
+      chat_text.appendTo(new_chat);
+    }
+
+    if (chats_already_exist) $('<hr />').appendTo($('#chats'));
+    new_chat.appendTo($('#chats'));
+
+    if (!is_my_chat) {
+      new_chat.css({'background-color': '#ff7878'});
+      if (chats.hasClass('down')) {
+        team_app.unread_count += 1;
+        $('#unread-chat-count').text('(' + team_app.unread_count + ')');
+      }
+      var now = Date.now();
+      if (!(team_app.last_received && (now - team_app.last_received < 8000))) {
+        team_app.last_received = now;
+        team_app.message_received_sound.play();
+      }
+      // brief defer lets the browser paint the highlight before fading it out
+      window.setTimeout(function() { new_chat.css({'background-color': 'white'}); }, 0.4);
+    }
+    var scroll_height = $('#chats').get(0).scrollHeight;
+    $('#chats').stop().animate({scrollTop: scroll_height}, 'fast');
+  },
+
+  // Teammate clicked a clue: draw a dashed outline over those cells for 20 seconds
+  outline_team_clue: function(data) {
+    if (data.solver_id !== team_app.solver_id) {
+      var outline_width = 2;
+      var outline_id    = data.solver_id + '_word_highlight';
+      var outline_color = data.red + ', ' + data.green + ', ' + data.blue;
+      var the_outline   = $('#' + outline_id);
+
+      if (!the_outline.get(0)) {
+        the_outline = $("<div id='" + outline_id + "'>");
+        the_outline.addClass('team-outline').hide()
+          .css('border', outline_width + 'px dashed rgb(' + outline_color + ')')
+          .css('background-color', 'rgba(' + outline_color + ', 0.2)');
+        $('body').append(the_outline);
+      }
+
+      var across     = data['across'] === 'true';
+      var start_cell = $(".cell[data-cell=" + data.cell_num + "]");
+      var word_cells = across ? start_cell.get_across_word_cells() : start_cell.get_down_word_cells();
+      var n          = word_cells.length;
+      var h          = across ? word_cells[0].height() - 3 : word_cells[0].height() * n + 2 * n - 5;
+      var w          = across ? word_cells[0].width()  * n + 2 * n - 5 : word_cells[0].width()  - 3;
+
+      the_outline.height(h).width(w)
+        .offset({ top: word_cells[0].offset().top + 1, left: word_cells[0].offset().left + 1 })
+        .stop().css('opacity', 1).show();
+
+      if (team_app.outline_timer) clearInterval(team_app.outline_timer);
+      team_app.outline_timer = setTimeout(function() {
+        the_outline.animate({'opacity': 0}, 'fast');
+      }, 20000);
+    }
+  }
+};
+
+//------------------
+// DOCUMENT LOAD
+//------------------
+// Subscribe to the Pusher channel and bind all team event handlers
+$(function() {
+  $('#team-explanation').foundation('reveal', 'open');
+  var listening_channel = pusher.subscribe(channel);
+  listening_channel.bind('change_cell',       team_app.receive_team_cell);
+  listening_channel.bind('join_puzzle',       team_app.welcome_teammate);
+  listening_channel.bind('leave_puzzle',      team_app.farewell_teammate);
+  listening_channel.bind('roll_call',         team_app.join_team);
+  listening_channel.bind('chat_message',      team_app.receive_chat);
+  listening_channel.bind('outline_team_clue', team_app.outline_team_clue);
+  team_app.roll_call();
+  $('#team-chat .row-topper').on('click', team_app.toggle_chat);
+  $('.clue').on('click', team_app.show_team_clue);
+  $(window).on('unload', team_app.leave_team);
+});

@@ -1,0 +1,21 @@
+// Converted from welcome.js.coffee.erb
+// Animates the signup slider on the welcome/landing page.
+
+window.welcome = {
+  ready: function() {
+    $('#signup1').on('click', welcome.slide_left);
+    $('#signup2').on('click', welcome.slide_right);
+  },
+
+  slide_left: function(e) {
+    e.preventDefault();
+    $('.slider').animate({'marginLeft': "-=23.3em"});
+  },
+
+  slide_right: function(e) {
+    e.preventDefault();
+    $('.slider').animate({'marginLeft': "+=23.3em"});
+  }
+};
+
+$(document).ready(welcome.ready);
