@@ -8,9 +8,9 @@
   = render partial: 'crosswords/partials/team'
 
 :javascript
-  solve_app.solution_id = #{@solution.try(:id)}
-  solve_app.crossword_id = #{@crossword.try(:id)}
-  solve_app.anonymous = #{@current_user.nil?}
+  solve_app.solution_id = #{@solution.try(:id).to_json}
+  solve_app.crossword_id = #{@crossword.try(:id).to_json}
+  solve_app.anonymous = #{@current_user.nil?.to_json}
 
 - if (@current_user == @crossword.user)
   .alert-box.secondary{data: {alert: true}}

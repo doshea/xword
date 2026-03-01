@@ -43,6 +43,10 @@ window.solve_app = {
 
   save_solution: function(e) {
     if (e) e.preventDefault();
+    // Guard: solution_id is null for anonymous users or when solution hasn't been created yet.
+    // Without this, the auto-save timer would send PUT /solutions/null, which triggers a
+    // server-side flash error ("Solution could not be found") that persists across pages.
+    if (!solve_app.solution_id) return;
     var token = $('#crossword').data('auth-token');
     var letters = cw.get_puzzle_letters();
     var settings = {

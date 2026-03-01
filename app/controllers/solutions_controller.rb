@@ -1,4 +1,6 @@
 class SolutionsController < ApplicationController
+  # Guard runs before find_object so an invalid/null ID from stale JS never triggers a flash error
+  prepend_before_action :guard_null_solution_id, only: [:update]
   before_action :find_object, only: [:update, :get_incorrect]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
@@ -115,6 +117,13 @@ class SolutionsController < ApplicationController
   end
 
   private
+
+  # Silently absorbs PUT /solutions/null requests sent by stale JS when solution_id is not yet set.
+  # The JS guard in save_solution() should prevent this, but this is the server-side safety net.
+  def guard_null_solution_id
+    head :ok if params[:id].to_i <= 0
+  end
+
   def ensure_owner_or_partner
     @solution = Solution.find(params[:id])
     @solution_partnering = SolutionPartnering.find_by_user_id_and_solution_id(@current_user.id, @solution.id)
