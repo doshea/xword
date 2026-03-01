@@ -93,6 +93,30 @@
 }
 
 // ---------------------------------------------------------------------------
+// Centered column utilities — N-column block centered in 12 columns
+// Use instead of broken xw-*-N + xw-*-offset-N combinations.
+// (grid-column-start from offset overrides grid-column: span N, leaving a
+//  1-column-wide item.  These classes use the correct grid-column shorthand.)
+// ---------------------------------------------------------------------------
+
+@media (min-width: $bp-md) {
+  .xw-md-center-2  { grid-column:  6 / span 2; }
+  .xw-md-center-4  { grid-column:  5 / span 4; }
+  .xw-md-center-6  { grid-column:  4 / span 6; }
+  .xw-md-center-8  { grid-column:  3 / span 8; }
+  .xw-md-center-10 { grid-column:  2 / span 10; }
+}
+
+@media (min-width: $bp-lg) {
+  .xw-lg-center-2  { grid-column:  6 / span 2; }
+  .xw-lg-center-4  { grid-column:  5 / span 4; }
+  .xw-lg-center-6  { grid-column:  4 / span 6; }
+  .xw-lg-center-8  { grid-column:  3 / span 8; }
+  .xw-lg-center-10 { grid-column:  2 / span 10; }
+}
+
+
+// ---------------------------------------------------------------------------
 // Flexbox utilities (for non-grid alignment needs)
 // ---------------------------------------------------------------------------
 

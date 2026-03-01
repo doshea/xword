@@ -8,15 +8,26 @@ class AdminController < ApplicationController
   #POST /admin/test_emails or admin_test_emails_path
   def test_emails
     sent = []
+    errors = []
     if params[:reset_password]
-      UserMailer.reset_password_email(@current_user).deliver_now
-      sent << "reset_password"
+      begin
+        UserMailer.reset_password_email(@current_user).deliver_now
+        sent << "reset_password"
+      rescue StandardError => e
+        errors << "reset_password: #{e.message}"
+      end
     end
     if params[:nyt_upload_error]
-      AdminMailer.nyt_upload_error_email.deliver_now
-      sent << "nyt_upload_error"
+      begin
+        AdminMailer.nyt_upload_error_email.deliver_now
+        sent << "nyt_upload_error"
+      rescue StandardError => e
+        errors << "nyt_upload_error: #{e.message}"
+      end
     end
-    if sent.any?
+    if errors.any?
+      redirect_to admin_email_path, alert: "Delivery failed — #{errors.join('; ')}"
+    elsif sent.any?
       redirect_to admin_email_path, notice: "Sent: #{sent.join(', ')}"
     else
       redirect_to admin_email_path, alert: "No emails selected."

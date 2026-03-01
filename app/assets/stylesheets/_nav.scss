@@ -128,9 +128,11 @@
   gap: var(--space-1);
 }
 
-// Each item: relative for dropdown positioning
+// Each item: relative for dropdown positioning; flex so button vertically centers
 .xw-nav__item {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 
@@ -180,39 +182,41 @@
   position: relative;    // live-results panel is absolute to this
   display: flex;
   align-items: center;
-}
 
-.xw-nav__search-input {
-  background-color: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.20);
-  border-radius: var(--radius-full);
-  color: var(--color-nav-text);
-  font-family: var(--font-ui);
-  font-size: var(--text-sm);
-  padding: var(--space-1) var(--space-8) var(--space-1) var(--space-3);  // right pad clears icon
-  width: 10rem;
-  transition: width var(--duration-base) var(--ease-out),
-              background-color var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out);
+  // Nested to get specificity (0,2,0) — beats Foundation's input[type="search"] at (0,1,1)
+  .xw-nav__search-input {
+    background-color: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-radius: var(--radius-full);
+    color: var(--color-nav-text);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    padding: var(--space-1) var(--space-8) var(--space-1) var(--space-3);  // right pad clears icon
+    height: auto;
+    width: 10rem;
+    transition: width var(--duration-base) var(--ease-out),
+                background-color var(--duration-base) var(--ease-out),
+                border-color var(--duration-base) var(--ease-out);
 
-  &::placeholder { color: rgba(255, 255, 255, 0.45); }
+    &::placeholder { color: rgba(255, 255, 255, 0.45); }
 
-  &:focus {
-    outline: none;
-    width: 16rem;
-    background-color: rgba(255, 255, 255, 0.18);
-    border-color: var(--color-accent);
+    &:focus {
+      outline: none;
+      width: 16rem;
+      background-color: rgba(255, 255, 255, 0.18);
+      border-color: var(--color-accent);
+    }
   }
-}
 
-.xw-nav__search-icon {
-  position: absolute;
-  right: var(--space-3);
-  top: 50%;
-  transform: translateY(-50%) scaleX(-1);   // flip for correct orientation
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  pointer-events: all;
+  .xw-nav__search-icon {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%) scaleX(-1);   // flip for correct orientation
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    pointer-events: all;
+  }
 }
 
 // Live search popup: visibility controlled by global.js + live_search.js.erb

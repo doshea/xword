@@ -10,37 +10,32 @@ footer#footer {
   padding-top: 0.75em;
   width: 100%;
 
-  .row {
-    a {
+  a {
+    color: #333;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+
+    &:hover {
+      color: #2795b6;
+    }
+  }
+
+  .subheader {
+    margin-bottom: 0;
+  }
+
+  #social-links {
+    i {
       color: #333;
+      font-size: 1.5em;
       -webkit-transition: all 0.3s;
       -moz-transition: all 0.3s;
       -o-transition: all 0.3s;
       transition: all 0.3s;
-
       &:hover {
         color: #2795b6;
-      }
-    }
-
-    .subheader {
-      margin-bottom: 0;
-      position: absolute;
-      right: 1em;
-      bottom: 0.2em;
-    }
-
-    #social-links {
-      i {
-        color: #333;
-        font-size: 1.5em;
-        -webkit-transition: all 0.3s;
-        -moz-transition: all 0.3s;
-        -o-transition: all 0.3s;
-        transition: all 0.3s;
-        &:hover {
-          color: #2795b6;
-        }
       }
     }
   }

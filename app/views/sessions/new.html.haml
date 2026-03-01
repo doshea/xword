@@ -1,9 +1,10 @@
 - title 'Log In'
 
 = render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true} do
-  .xw-col-12.xw-md-6
-    %h2.text-center Log In
-    = render partial: 'sessions/partials/form_large'
-
-  .xw-col-12.xw-md-6
-    = render partial: 'users/partials/form'
+  .xw-col-full
+    .xw-flex{style: 'flex-wrap: wrap; justify-content: center; gap: 2rem; padding: 1rem 0;'}
+      %div{style: 'flex: 0 1 22rem; min-width: 15rem;'}
+        %h2.text-center Log In
+        = render partial: 'sessions/partials/form_large'
+      %div{style: 'flex: 0 1 22rem; min-width: 15rem;'}
+        = render partial: 'users/partials/form'

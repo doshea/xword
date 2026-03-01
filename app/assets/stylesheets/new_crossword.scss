@@ -1,4 +1,6 @@
-.row {
+// Phase 3 removed .row — the xw-grid wrapper in new.html.haml provides the
+// containing block for any absolutely-positioned children.
+.xw-grid {
   position: relative;
 }
 h2 {

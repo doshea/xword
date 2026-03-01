@@ -2,13 +2,13 @@
   %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
   %u
     %h1 Controls
-  .xw-grid
-    %ul.xw-col-3.xw-md-offset-3
+  .xw-flex{style: 'justify-content: center; gap: 3rem;'}
+    %ul
       %li Next word
       %li Next empty
       %li Change direction
       %li Cell navigation
-    %ul.xw-col-3#keys
+    %ul#keys
       %li
         %kbd Tab
       %li

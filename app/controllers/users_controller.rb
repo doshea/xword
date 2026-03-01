@@ -64,7 +64,13 @@ class UsersController < ApplicationController
     if user
       # Rails 8.1 has_secure_password generates password_reset_token automatically
       # (signed from password_salt — no DB storage needed; expiry handled by signed token)
-      UserMailer.reset_password_email(user).deliver_now
+      begin
+        UserMailer.reset_password_email(user).deliver_now
+      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPFatalError,
+             Net::SMTPSyntaxError, Net::SMTPUnknownError, Net::OpenTimeout,
+             Net::ReadTimeout, IOError, Errno::ECONNREFUSED => e
+        Rails.logger.error("[send_password_reset] Email delivery failed: #{e.class} — #{e.message}")
+      end
     end
     respond_to do |format|
       format.turbo_stream  # Renders users/send_password_reset.turbo_stream.erb (shows confirmation message)
