@@ -12,22 +12,22 @@ class Admin::UsersController < ApplicationController
   end
 
   #PATCH/PUT /admin/users/:id or admin_user_path
-  # AJAX #
+  # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @user.update(update_user_params)
-      alert_js('SUCCESS user updated.')
+      redirect_to admin_users_path, notice: 'User updated.'
     else
-      alert_js('!!!ERROR updating user!!!')
+      redirect_to edit_admin_user_path(@user), alert: 'Error updating user.'
     end
   end
 
   #DELETE /admin/users/:id or admin_user_path
-  # AJAX #
+  # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @user.destroy
-      alert_js('SUCCESS user deleted.')
+      redirect_to admin_users_path, notice: 'User deleted.'
     else
-      alert_js('!!!ERROR deleting user!!!')
+      redirect_to admin_users_path, alert: 'Error deleting user.'
     end
   end
 

@@ -49,7 +49,8 @@
             %td.smaller #{distance_of_time_in_words_to_now(solution.updated_at, {include_seconds: true})} ago
             %td.smaller #{distance_of_time_in_words_to_now(solution.created_at, {include_seconds: true})} ago
             %td.center.larger.trash-td
-              = link_to(delete_solution_path(solution), method: :delete, class: 'not-blue', data: {confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?'}) do
+              / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
+              = link_to(delete_solution_path(solution), class: 'not-blue', data: { turbo_method: :delete, turbo_confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }) do
                 %i.fi-trash.center
           - if !solution.team
             %tr

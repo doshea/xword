@@ -12,22 +12,22 @@ class Admin::SolutionsController < ApplicationController
   end
 
   #PATCH/PUT /admin/solutions/:id or admin_solution_path
-  # AJAX #
+  # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @solution.update(update_solution_params)
-      alert_js('SUCCESS solution updated.')
+      redirect_to admin_solutions_path, notice: 'Solution updated.'
     else
-      alert_js('!!!ERROR updating solution!!!')
+      redirect_to edit_admin_solution_path(@solution), alert: 'Error updating solution.'
     end
   end
 
   #DELETE /admin/solutions/:id or admin_solution_path
-  # AJAX #
+  # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @solution.destroy
-      alert_js('SUCCESS solution deleted.')
+      redirect_to admin_solutions_path, notice: 'Solution deleted.'
     else
-      alert_js('!!!ERROR deleting solution!!!')
+      redirect_to admin_solutions_path, alert: 'Error deleting solution.'
     end
   end
 

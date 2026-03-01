@@ -1,0 +1,16 @@
+<%# Replaces: batch.js.erb (jquery_ujs + jQuery append crossword tabs to list + replace/remove load-more button) %>
+<%# Turbo Stream: appends next page of crossword tabs and updates the load-more button %>
+<% @crosswords.each do |crossword| %>
+  <%= turbo_stream.append "crossword-tab-list" do %>
+    <%= render partial: 'crosswords/partials/crossword_tab', locals: { cw: crossword } %>
+  <% end %>
+<% end %>
+<% if @crosswords_remaining&.any? %>
+  <%# More pages remain — replace button with updated "load next" button %>
+  <%= turbo_stream.replace "load-more-button" do %>
+    <%= render partial: 'pages/home/load_next_button', locals: { remaining: @crosswords_remaining } %>
+  <% end %>
+<% else %>
+  <%# All crosswords loaded — remove the load-more button entirely %>
+  <%= turbo_stream.remove "load-more-button" %>
+<% end %>

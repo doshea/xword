@@ -1,6 +1,7 @@
 - title 'Admin | Email', true
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Email Testing Tool', custom_columns: true} do
-  = form_tag admin_test_emails_path, remote: true do
+  / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
+  = form_with(url: admin_test_emails_path) do |f|
     .large-6.columns
       %h5 User
       = label_tag :reset_password

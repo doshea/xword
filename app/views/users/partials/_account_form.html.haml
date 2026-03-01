@@ -14,13 +14,15 @@
         Password
   .tabs-content.vertical
     #panel1.content.active
-      = form_for user, html: {multipart: true}, remote: true do |f|
+      / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; multipart for file upload)
+      = form_with model: user, html: { multipart: true } do |f|
         = token_tag nil
         %fieldset
           %legend Profile Picture
           .row
             .large-5.columns
-              = image_tag user.image, class: 'profile-pic-updateable'
+              / id added so users/update.turbo_stream.erb can replace this element with the new image
+            = image_tag user.image, id: 'profile-pic', class: 'profile-pic-updateable'
             .large-7.columns
               %p
                 Upload an image from your computer:
@@ -57,7 +59,8 @@
           %a.slide-close{href: "#"} &times;
         #password-success.alert-box.success.hidden{data: {alert: true}} Password updated!
         %legend Change Password
-        = form_tag(change_password_users_path, method: :post, remote: true) do
+        / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
+        = form_with(url: change_password_users_path, method: :post) do |f|
           = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
           = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
           = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH

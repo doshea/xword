@@ -12,22 +12,22 @@ class Admin::WordsController < ApplicationController
   end
 
   #PATCH/PUT /admin/words/:id or admin_word_path
-  # AJAX #
+  # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @word.update(update_word_params)
-      alert_js('SUCCESS word updated.')
+      redirect_to admin_words_path, notice: 'Word updated.'
     else
-      alert_js('!!!ERROR updating word!!!')
+      redirect_to edit_admin_word_path(@word), alert: 'Error updating word.'
     end
   end
 
   #DELETE /admin/words/:id or admin_word_path
-  # AJAX #
+  # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @word.destroy
-      alert_js('SUCCESS word deleted.')
+      redirect_to admin_words_path, notice: 'Word deleted.'
     else
-      alert_js('!!!ERROR deleting word!!!')
+      redirect_to admin_words_path, alert: 'Error deleting word.'
     end
   end
 

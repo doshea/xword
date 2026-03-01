@@ -1,6 +1,7 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@crossword.title}</i>".html_safe, custom_columns: true} do
   %br
-  = form_for @crossword, url: url_for(controller: 'admin/crosswords', action: :update, id: @crossword.id), remote: true do |f|
+  / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
+  = form_with model: @crossword, url: url_for(controller: 'admin/crosswords', action: :update, id: @crossword.id) do |f|
     .large-5.columns
       = f.label :title
       = f.text_field :title
@@ -25,4 +26,5 @@
     .large-12.columns
       = f.button class: 'button', data: {disable_with: 'Updating...'}
   .large-12.columns
-    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch, remote: true
+    / Replaced: button_to with remote: true → button_to without (Turbo intercepts form; controller redirects)
+    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch

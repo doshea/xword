@@ -20,5 +20,6 @@
           = link_to edit_admin_clue_path(clue) do
             %i.fi-pencil
         %td
-          = link_to admin_clue_path(clue), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete this clue?"} do
+          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
+          = link_to admin_clue_path(clue), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this clue?" } do
             %i.fi-trash

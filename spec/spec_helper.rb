@@ -15,8 +15,17 @@ Capybara.default_selector = :css
 Capybara.ignore_hidden_elements = true #will not find hidden elements
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
 RSpec.configure do |c|
   # c.fail_fast = true
+  c.infer_spec_type_from_file_location!
   c.include FactoryBot::Syntax::Methods
 
   c.before(:suite) do

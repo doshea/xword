@@ -1,6 +1,7 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Solution", custom_columns: true} do
   %br
-  = form_for @solution, url: url_for(controller: 'admin/solutions', method: :update), remote: true do |f|
+  / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
+  = form_with model: @solution, url: url_for(controller: 'admin/solutions', method: :update) do |f|
     .large-8.columns
       = f.label :letters
       = f.text_area :letters, maxlength: @solution.crossword.try(:rows) * @solution.crossword.try(:cols), style: 'text-transform: uppercase;'

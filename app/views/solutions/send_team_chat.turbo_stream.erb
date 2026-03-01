@@ -1,0 +1,5 @@
+<%# Replaces: send_team_chat.js.erb (jquery_ujs + jQuery form[0].reset() to clear chat input) %>
+<%# Turbo Stream: replaces the team chat form with a fresh blank copy, clearing the input %>
+<%= turbo_stream.replace "team-chat-form" do %>
+  <%= render partial: 'crosswords/partials/team_chat_form', locals: { solution: @solution } %>
+<% end %>

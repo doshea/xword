@@ -1,0 +1,5 @@
+<%# Replaces: words/match.js.erb (jquery_ujs + jQuery $('#word-match-results').html(...)) %>
+<%# Turbo Stream: replaces the word match results area with the new search results %>
+<%= turbo_stream.replace "word-match-results" do %>
+  <%= render partial: 'matches' %>
+<% end %>

@@ -1,0 +1,9 @@
+/ Team chat input form — extracted as partial so send_team_chat.turbo_stream.erb can re-render it blank
+/ Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
+- chat_channel = "#{solution.crossword.id}_#{solution.key}"
+- chat_display_name = defined?(display_name) ? display_name : (@current_user ? (@current_user.first_name || @current_user.username) : 'anon')
+= form_with(url: send_team_chat_solution_path(solution)) do |f|
+  = hidden_field_tag 'display_name', chat_display_name, id: nil
+  = hidden_field_tag 'channel', chat_channel, id: nil
+  = hidden_field_tag 'avatar', @current_user ? @current_user.image.thumb : asset_path('default_images/user.jpg'), id: nil
+  = text_field_tag 'chat', nil, id: nil, autocomplete: :off

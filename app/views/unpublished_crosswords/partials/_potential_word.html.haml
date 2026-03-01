@@ -1,7 +1,9 @@
-%li.word{data: {length: word.length, word: word}}
+/ id="potential-word-#{word.downcase}" added so remove_potential_word.turbo_stream.erb can target this element
+%li.word{id: "potential-word-#{word.downcase}", data: {length: word.length, word: word}}
   .row{style: 'margin: 0 auto;'}
     .length.small-1.columns (#{word.length})
     .small-10.columns= word
     .small-1.columns
-      = link_to remove_potential_word_unpublished_crossword_path(@unpublished_crossword, word), method: :delete, remote: true do
+      / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (Turbo handles DELETE)
+      = link_to remove_potential_word_unpublished_crossword_path(@unpublished_crossword, word), data: { turbo_method: :delete } do
         %i.fi-x

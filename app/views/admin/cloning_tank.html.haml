@@ -2,7 +2,8 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Clone User Tool', custom_columns: true} do
   .large-4.large-offset-4
     %br
-    = form_tag(admin_user_search_path, class: 'center', remote: true, autocomplete: 'off') do
+    / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; renders user_search.turbo_stream.erb)
+    = form_with(url: admin_user_search_path, html: { class: 'center', autocomplete: 'off' }) do |f|
       = text_field_tag :query, nil, placeholder: 'ID, Name, Username or Email', class: 'center'
   .large-12.columns  
     = render partial: 'admin/partials/user_chooser'

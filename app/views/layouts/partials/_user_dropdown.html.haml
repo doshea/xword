@@ -12,6 +12,7 @@
         %i.fi-eye
         Public Profile
     %li.divider
-      = link_to logout_path, method: 'delete' do
+      / Replaced: link_to with method: 'delete' → turbo_method (Turbo handles DELETE for logout)
+      = link_to logout_path, data: { turbo_method: :delete } do
         %i.fi-power
         Log out

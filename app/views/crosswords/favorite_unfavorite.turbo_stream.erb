@@ -1,0 +1,5 @@
+<%# Replaces: favorite_unfavorite.js.erb (jquery_ujs + jQuery toggle() on #favorite and #unfavorite buttons) %>
+<%# Turbo Stream: re-renders the favorites toggle area to swap which button is visible %>
+<%= turbo_stream.replace "favorites-toggle" do %>
+  <%= render partial: 'crosswords/partials/favorites_toggle', locals: { crossword: @crossword, current_user: @current_user } %>
+<% end %>

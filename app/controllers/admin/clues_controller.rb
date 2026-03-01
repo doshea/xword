@@ -15,22 +15,22 @@ class Admin::CluesController < ApplicationController
   end
 
   #PATCH/PUT /admin/clues/:id or admin_clue_path
-  # AJAX #
+  # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @clue.update(update_clue_params)
-      alert_js('SUCCESS clue updated.')
+      redirect_to admin_clues_path, notice: 'Clue updated.'
     else
-      alert_js('!!!ERROR updating clue!!!')
+      redirect_to edit_admin_clue_path(@clue), alert: 'Error updating clue.'
     end
   end
 
   #DELETE /admin/clues/:id or admin_clue_path
-  # AJAX #
+  # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @clue.destroy
-      alert_js('SUCCESS clue deleted.')
+      redirect_to admin_clues_path, notice: 'Clue deleted.'
     else
-      alert_js('!!!ERROR deleting clue!!!')
+      redirect_to admin_clues_path, alert: 'Error deleting clue.'
     end
   end
 

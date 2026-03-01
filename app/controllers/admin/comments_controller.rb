@@ -12,23 +12,23 @@ class Admin::CommentsController < ApplicationController
   end
 
   #PATCH/PUT /admin/comments/:id or admin_comment_path
-  # AJAX #
+  # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @comment.update(update_comment_params)
-      alert_js('SUCCESS comment updated.')
+      redirect_to admin_comments_path, notice: 'Comment updated.'
     else
-      alert_js('ERROR updating comment.')
+      redirect_to edit_admin_comment_path(@comment), alert: 'Error updating comment.'
     end
   end
 
   #DELETE /admin/comments/:id or admin_comment_path
-  # AJAX #
+  # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @comment.destroy
-      alert_js('SUCCESS comment deleted.')
+      redirect_to admin_comments_path, notice: 'Comment deleted.'
     else
-      alert_js('ERROR deleting comment.')
-    end  
+      redirect_to admin_comments_path, alert: 'Error deleting comment.'
+    end
   end
 
   private

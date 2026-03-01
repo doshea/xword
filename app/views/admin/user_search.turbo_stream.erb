@@ -1,0 +1,5 @@
+<%# Replaces: admin/user_search.js.erb (jquery_ujs + jQuery insertAfter('#users').remove()) %>
+<%# Turbo Stream: replaces the user list/search area with the user chooser partial %>
+<%= turbo_stream.replace "users" do %>
+  <%= render partial: 'admin/partials/user_chooser' %>
+<% end %>

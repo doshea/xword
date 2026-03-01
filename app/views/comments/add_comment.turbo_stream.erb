@@ -1,0 +1,5 @@
+<%# Replaces: add_comment.js.erb (jquery_ujs + jQuery insertAfter('#comment-form') + fadeIn) %>
+<%# Turbo Stream: inserts the new comment into the page immediately after the comment form %>
+<%= turbo_stream.after "comment-form" do %>
+  <%= render partial: 'comments/partials/comment', locals: { comment: @new_comment } %>
+<% end %>

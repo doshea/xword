@@ -37,7 +37,8 @@
     = render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
     - unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
       %hr
-      = form_tag add_comment_path(@solution.crossword), remote: true, id: 'complete-form' do
+      / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
+      = form_with(url: add_comment_path(@solution.crossword), id: 'complete-form') do |f|
         %h5
           %i.fi-comment
           How was the crossword?

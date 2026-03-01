@@ -27,11 +27,12 @@ class CommentsController < ApplicationController
   #POST /comments/:id/reply or reply_to_comment
   def reply
     user = @current_user
-    base_comment = Comment.find(params[:id])
+    # @base_comment assigned as instance variable so reply.turbo_stream.erb can reference it for DOM IDs
+    @base_comment = Comment.find(params[:id])
 
-    if base_comment && user
+    if @base_comment && user
       @new_reply = Comment.new(content: params[:content])
-      base_comment.replies << @new_reply
+      @base_comment.replies << @new_reply
       user.comments << @new_reply
     else
     end

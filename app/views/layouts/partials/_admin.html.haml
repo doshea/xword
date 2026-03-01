@@ -20,5 +20,6 @@
     %li
       = link_to 'Manual NYT', admin_manual_nyt_path
     - if @crossword
+      / Cheat link: cheat.js.erb removed (was broken — controller never set @crossword). Now redirects to admin crosswords.
       %li
-        = link_to 'Cheat (JS)', admin_cheat_path, remote: true
+        = link_to 'Cheat (JS)', admin_cheat_path

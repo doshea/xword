@@ -1,0 +1,9 @@
+<%# Replaces: reply.js.erb (jquery_ujs + jQuery appendTo('.replying .replies') + update count + trigger cancel click) %>
+<%# Turbo Stream: appends the new reply and updates the reply count display %>
+<%# Note: cancel button auto-trigger is dropped; the user dismisses the reply form manually %>
+<%= turbo_stream.append "replies-#{@base_comment.id}" do %>
+  <%= render partial: 'comments/partials/reply', locals: { reply: @new_reply } %>
+<% end %>
+<%= turbo_stream.replace "reply-count-#{@base_comment.id}" do %>
+  <%= @base_comment.replies.count %> Replies
+<% end %>

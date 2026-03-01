@@ -32,8 +32,8 @@
     Team Chat
     %i.fi-plus#chat-minmax
   #chats
-  = form_tag(send_team_chat_solution_path(@solution), remote: true) do
-    = hidden_field_tag 'display_name', display_name, id: nil
-    = hidden_field_tag 'channel', channel, id: nil
-    = hidden_field_tag 'avatar', @current_user ? @current_user.image.thumb : asset_path('default_images/user.jpg'), id: nil
-    = text_field_tag 'chat', nil, id: nil, autocomplete: :off
+  / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
+  / Wrapped in #team-chat-form so send_team_chat.turbo_stream.erb can replace it to reset the form
+  / Extracted to partial so turbo_stream can re-render a blank copy
+  #team-chat-form
+    = render partial: 'crosswords/partials/team_chat_form', locals: { solution: @solution, display_name: display_name, channel: channel }

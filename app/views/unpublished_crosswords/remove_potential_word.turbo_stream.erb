@@ -1,0 +1,3 @@
+<%# Replaces: remove_potential_word.js.erb (jquery_ujs + jQuery css background + slideUp + remove) %>
+<%# Turbo Stream: removes the potential word list item from the DOM %>
+<%= turbo_stream.remove "potential-word-#{@word.downcase}" %>

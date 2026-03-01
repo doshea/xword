@@ -28,5 +28,6 @@
           = link_to edit_admin_crossword_path(crossword) do
             %i.fi-pencil
         %td
-          = link_to admin_crossword_path(crossword), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user.username}?"} do
+          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
+          = link_to admin_crossword_path(crossword), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user.username}?" } do
             %i.fi-trash

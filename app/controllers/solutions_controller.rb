@@ -23,11 +23,13 @@ class SolutionsController < ApplicationController
   end
 
   #POST /solutions/:id/get_incorrect or get_incorrect_solution_path
+  # get_incorrect.js.erb was all commented-out dead code; replaced with head :ok
   def get_incorrect
     @mismatches = @solution.crossword.get_mismatches(params[:letters])
     if @mismatches.empty?
       @solution.update(is_complete: true)
     end
+    head :ok
   end
 
   #PATCH /solutions/:id/team_update or team_update_solution_path
@@ -80,6 +82,12 @@ class SolutionsController < ApplicationController
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
     Pusher.trigger(params[:channel], 'chat_message', data)
+    # @solution set so send_team_chat.turbo_stream.erb can re-render the form partial with the correct path
+    @solution = Solution.find(params[:id])
+    respond_to do |format|
+      format.turbo_stream  # Renders solutions/send_team_chat.turbo_stream.erb (resets team chat form)
+      format.html { redirect_to team_crossword_path(@solution.crossword, @solution.key) }
+    end
   end
 
   #POST /solutions/:id/show_team_clue or show_team_clue_solution_path

@@ -1,11 +1,13 @@
 - if @unstarted.any?
   - unstarted_initial = @unstarted[0...Crossword.per_page] || []
-  %ul
+  / id added so batch.turbo_stream.erb can append new crossword tabs here
+  %ul#crossword-tab-list
     - unstarted_initial.each do |cw|
       = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
   - unstarted_remaining = @unstarted[Crossword.per_page..-1]
   - if unstarted_remaining && unstarted_remaining.any?
-    .row.center
+    / id added so batch.turbo_stream.erb can replace/remove the load-more button
+    .row.center#load-more-button
       = render partial: 'pages/home/load_next_button', locals: {remaining: unstarted_remaining}
 - else
   %p You're already working on all of the puzzles we've got!

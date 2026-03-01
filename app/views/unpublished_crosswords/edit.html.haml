@@ -46,29 +46,37 @@
         = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
   .large-6.columns
   .large-3.columns
-    = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
+    = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
 -# NON-INLINE ELEMENTS
 
 %section#idea-container.slide-up-container
-  = link_to('#ideas', class: 'bottom-button', id: 'ideas-button', remote: true) do
+  / Removed remote: true from anchor link (anchor-only links don't need AJAX)
+  = link_to('#ideas', class: 'bottom-button', id: 'ideas-button') do
     %i.fi-lightbulb
     %span.small Notepad
   #ideas
     .row
-      = form_tag add_potential_word_unpublished_crossword_path(@unpublished_crossword), method: :patch, remote: true do
-        = text_field_tag :word, nil, id: nil, autocomplete: 'off', placeholder: "Type a word you're considering"
-    %ul
-      - @unpublished_crossword.potential_words.each do |word|
+      / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
+      / id="ideas-input" added so add_potential_word.turbo_stream.erb can clear the field after add
+      = form_with(url: add_potential_word_unpublished_crossword_path(@unpublished_crossword), method: :patch) do |f|
+        = text_field_tag :word, nil, id: 'ideas-input', autocomplete: 'off', placeholder: "Type a word you're considering"
+    / id="ideas-error" added so add_potential_word.turbo_stream.erb can show duplicate-word error
+    %p#ideas-error.hidden
+    / id="potential-words-list" added so add_potential_word.turbo_stream.erb can replace the full sorted list
+    %ul#potential-words-list
+      - @unpublished_crossword.potential_words.sort_by { |w| -w.length }.each do |word|
         = render partial: 'unpublished_crosswords/partials/potential_word', locals: {word: word}
 
 %section#pattern-container.slide-up-container
-  = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button', remote: true) do
+  / Removed remote: true from anchor link (anchor-only links don't need AJAX)
+  = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button') do
     %i.fi-magnifying-glass
     %span.small
       Pattern Search
   #pattern-search
     .row
-      = form_tag match_words_path, method: :post, remote: true do
+      / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
+      = form_with(url: match_words_path, method: :post) do |f|
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
       #word-match-results
 
@@ -76,7 +84,8 @@
   %li{data: {id: 'credit-area', text: 'Next'}}
     %p Hello and welcome to the Joyride documentation page.
 
-= link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button', remote: true) do
+/ Removed remote: true from anchor link (anchor-only links don't need AJAX)
+= link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button') do
   %i.fi-widget
 
 

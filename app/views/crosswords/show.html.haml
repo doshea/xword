@@ -20,7 +20,7 @@
         %br
         = link_to('Edit Puzzle', edit_crossword_path(@crossword))
         or
-        = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: {confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.'})
+        = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
     %a.close{href: "#"} &times;
 
 -# Quick fix for sunday crosswords. TODO fix this.
@@ -47,20 +47,25 @@
       - if @current_user
         %a#solve-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
           %i.fi-save
-        = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? ' hidden' : ''}", method: :post, id: 'favorite', remote: true) do
-          %i.fi-star>
-        = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", method: :delete, id: 'unfavorite', remote: true) do
-          %i.fi-star{style: 'color: #ff7878;'}>
+        / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
+        / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
+        #favorites-toggle
+          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }) do
+            %i.fi-star>
+          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }) do
+            %i.fi-star{style: 'color: #ff7878;'}>
         = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
           %i.fi-widget
-        = link_to(delete_solution_path(@solution), method: :delete, class: 'button tiny secondary', data: {confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?'}) do
+        / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
+        = link_to(delete_solution_path(@solution), class: 'button tiny secondary', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }) do
           %i.fi-trash
       - if @team
         .button.tiny.secondary
           %i.fi-torsos-all
           #teammates
       - else
-        = link_to create_team_crossword_path(@crossword), method: 'post', class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively' do
+        / Replaced: link_to with method: 'post' → turbo_method (Turbo handles POST for non-GET links)
+        = link_to create_team_crossword_path(@crossword), class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively', data: { turbo_method: :post } do
           %i.fi-torsos-all
           Team
 
@@ -107,7 +112,8 @@
         Comments
       / Feed Entry
       -if @current_user
-        = form_tag(add_comment_path(@crossword), remote: true, id: 'comment-form') do
+        / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
+        = form_with(url: add_comment_path(@crossword), id: 'comment-form') do |f|
           = text_area_tag('content', nil, id: 'add-comment', placeholder: 'What did you think of this crossword?')
       -else
         =link_to 'Sign up', new_user_path

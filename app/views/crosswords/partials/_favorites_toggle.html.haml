@@ -1,0 +1,6 @@
+/ Favorites toggle buttons — extracted as partial so favorite_unfavorite.turbo_stream.erb can re-render them
+/ after a favorite or unfavorite action to swap visibility between the two buttons
+= link_to(favorite_crossword_path(crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{(current_user.favorites.include? crossword) ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }) do
+  %i.fi-star>
+= link_to(favorite_crossword_path(crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(current_user.favorites.include? crossword) ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }) do
+  %i.fi-star{style: 'color: #ff7878;'}>

@@ -13,17 +13,23 @@ class AdminController < ApplicationController
   def cloning_tank
   end
 
+  # Admin debug tool — removed cheat.js.erb (which relied on jquery_ujs remote: true + console.log)
   def cheat
+    redirect_to admin_crosswords_path
   end
 
   def manual_nyt
 
   end
 
+  # Replaced: create_manual_nyt.js.erb (jquery_ujs + jQuery form reset + alert) → redirect with flash #
   def create_manual_nyt
     if params[:nyt_text]
       Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text]))
       Crossword.smart_record(params[:nyt_text])
+      redirect_to admin_manual_nyt_path, notice: 'NYT puzzle added.'
+    else
+      redirect_to admin_manual_nyt_path, alert: 'No NYT text provided.'
     end
   end
 

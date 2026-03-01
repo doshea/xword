@@ -36,8 +36,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     if @user.update(update_user_params)
       respond_to do |format|
+        format.turbo_stream  # Renders users/update.turbo_stream.erb (replaces profile pic element)
         format.html { render :account }
-        format.js
       end
     else
       #HANDLE THE FAILURE CASE
@@ -67,6 +67,10 @@ class UsersController < ApplicationController
     else
       #IF THERE IS NO USER
     end
+    respond_to do |format|
+      format.turbo_stream  # Renders users/send_password_reset.turbo_stream.erb (shows confirmation message)
+      format.html { redirect_to forgot_password_users_path, notice: 'Password reset email sent if account found.' }
+    end
   end
 
   #GET /users/reset_password/:password_reset_token or reset_password_users_path
@@ -82,13 +86,20 @@ class UsersController < ApplicationController
         user.password_reset_token = nil
         user.password_reset_sent_at = nil
         user.save
-        render :password_updated
+        # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
+        # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
+        redirect_to account_users_path, notice: 'Password updated successfully.'
       else
         @errors = user.errors.full_messages.uniq
-        render :password_errors
+        respond_to do |format|
+          format.turbo_stream { render :password_errors }  # Renders users/password_errors.turbo_stream.erb
+          format.html { render :reset_password }
+        end
       end
     else
-      render :redirect_back
+      # Replaced: render :redirect_back (jquery_ujs JS window.location redirect)
+      # Now: HTTP redirect to reset password page — Turbo follows it
+      redirect_to reset_password_users_path(params[:password_reset_token])
     end
   end
 
@@ -96,15 +107,21 @@ class UsersController < ApplicationController
   def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
-        render :password_updated
+        # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
+        # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
+        redirect_to account_users_path, notice: 'Password updated successfully.'
       else
-        # things to do when the new update doesn't work, likely because it is invalid
         @errors = @current_user.errors.full_messages.uniq
-        render :password_errors
+        respond_to do |format|
+          format.turbo_stream { render :password_errors }  # Renders users/password_errors.turbo_stream.erb
+          format.html { render :account }
+        end
       end
     else
-      render :wrong_password
-      #things to do when the old password is incorrect
+      respond_to do |format|
+        format.turbo_stream { render :wrong_password }  # Renders users/wrong_password.turbo_stream.erb
+        format.html { render :account }
+      end
     end
   end
 

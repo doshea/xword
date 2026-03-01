@@ -1,0 +1,4 @@
+/ Potential words list — extracted as partial so add_potential_word.turbo_stream.erb can re-render
+/ the full sorted list after an add (server sorts by word length descending)
+- words.each do |word|
+  = render partial: 'unpublished_crosswords/partials/potential_word', locals: { word: word }

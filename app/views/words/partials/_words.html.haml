@@ -16,5 +16,6 @@
           = link_to edit_admin_word_path(word) do
             %i.fi-pencil
         %td
-          = link_to admin_word_path(word), method: :delete, remote: true, data: {confirm: "Are you SURE you want to delete #{word.content}?"} do
+          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
+          = link_to admin_word_path(word), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete #{word.content}?" } do
             %i.fi-trash

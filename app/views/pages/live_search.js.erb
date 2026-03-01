@@ -1,3 +1,5 @@
+// NOTE: Intentionally kept as .js.erb (not migrated to Turbo Stream).
+// Called via $.ajax({ dataType: 'script' }) from global.js — Turbo does not intercept this.
 <% if @result_count > 0 %>
   $('#live-results').empty().append("<%=j render partial: 'layouts/partials/live_results' %>");
   $('#live-results').show();

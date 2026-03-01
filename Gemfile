@@ -39,7 +39,8 @@ gem 'nilify_blanks'
 
 #JS gems
 gem 'jquery-rails'
-gem 'turbolinks'
+gem 'turbo-rails'
+gem 'stimulus-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.12'

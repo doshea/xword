@@ -1,0 +1,4 @@
+<%# Replaces: comments/destroy.js.erb (jquery_ujs + jQuery fadeOut/remove on comment + adjacent hr) %>
+<%# Turbo Stream: removes the comment block and its following separator from the DOM %>
+<%= turbo_stream.remove dom_id(@comment) %>
+<%= turbo_stream.remove "hr_#{dom_id(@comment)}" %>
