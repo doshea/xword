@@ -37,32 +37,30 @@ feature 'Login' do
       end
     end
 
-    # Dropdown login requires a JS driver (Foundation dropdown is JS-toggled).
-    # Re-enable once a Capybara JS driver (e.g. Cuprite/Selenium) is configured.
-    xcontext 'using dropdown login' do
+    context 'using nav login link', js: true do
       before :each do
-        visit user_path(User.first)
+        visit user_path(@user)
       end
-      scenario 'dropdown is on the page' do
-        page.should have_link('Login')
+      scenario 'Login link is in the nav' do
+        expect(page).to have_link('Login')
       end
-      scenario 'it logs the user in properly with good credentials' do
-        within('#login-button') do
+      scenario 'clicking Login navigates to login page and logs in with good credentials' do
+        click_link 'Login'
+        within('form#login') do
           fill_in :username, with: @user.username
           fill_in :password, with: @user.password
           click_button 'Log in'
         end
-        page.should_not have_link('Login')
+        expect(page).not_to have_link('Login')
       end
-      scenario 'it does not log the user in with bad credentials' do
-        within('#login-button') do
+      scenario 'bad credentials show error message' do
+        click_link 'Login'
+        within('form#login') do
           fill_in :username, with: @user.username
           fill_in :password, with: 'BADPASSWORD'
           click_button 'Log in'
         end
-
-        page.should have_link('Login')
-        page.should have_text("Username/password combination did not match our records")
+        expect(page).to have_text("Username/password combination did not match our records")
       end
     end
   end

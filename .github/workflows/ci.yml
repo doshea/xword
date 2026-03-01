@@ -38,6 +38,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@latest
+
       - name: Set up database
         run: bundle exec rails db:schema:load
 

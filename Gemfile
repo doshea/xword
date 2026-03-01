@@ -62,6 +62,7 @@ group :test do
   gem 'rspec-its'
   gem 'shoulda-matchers', '~> 7.0'
   gem 'capybara', '~> 3.0'
+  gem 'cuprite'
   gem 'launchy'
   gem 'database_cleaner'
   gem 'guard-rspec'

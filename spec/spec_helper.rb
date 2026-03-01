@@ -9,10 +9,16 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/its'
 require 'capybara/rspec'
+require 'capybara/cuprite'
 require 'launchy'
 
 Capybara.default_selector = :css
 Capybara.ignore_hidden_elements = true #will not find hidden elements
+
+Capybara.register_driver :cuprite do |app|
+  Capybara::Cuprite::Driver.new(app, headless: true, browser_options: { 'no-sandbox': nil })
+end
+Capybara.javascript_driver = :cuprite
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
