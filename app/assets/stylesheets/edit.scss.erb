@@ -1,4 +1,3 @@
-@import 'global_mixins';
 $bottomcolor: black;
 
 .side-button {
@@ -10,10 +9,6 @@ $bottomcolor: black;
     position: fixed;
     right: 0;
     top: 40%;
-    -webkit-border-top-left-radius: 0.4em;
-    -webkit-border-bottom-left-radius: 0.4em;
-    -moz-border-radius-topleft: 0.4em;
-    -moz-border-radius-bottomleft: 0.4em;
     border-top-left-radius: 0.4em;
     border-bottom-left-radius: 0.4em;
     padding: 0.3em 0.3em 0.2em 0.4em;
@@ -31,8 +26,6 @@ $bottomcolor: black;
   border-top: 1px solid #444;
 }
 #ideas-button {
-  -webkit-border-top-right-radius: 0.5em;
-  -moz-border-radius-topright: 0.5em;
   border-top-right-radius: 0.5em;
   padding: 0.3em 0.4em 0.2em 0.3em;
   border-right: 1px solid #444;
@@ -40,8 +33,6 @@ $bottomcolor: black;
 #pattern-search-button {
   width: 9em;
   left: 5.8em;
-  -webkit-border-top-left-radius: 0.5em;
-  -moz-border-radius-topleft: 0.5em;
   border-top-left-radius: 0.5em;
   padding: 0.3em 0.3em 0.2em 0.4em;
   border-left: 1px solid #444;
@@ -50,9 +41,6 @@ $bottomcolor: black;
 .slide-up-container {
   z-index: 70001;
   position: fixed;
-  -webkit-transition: top 0.4s;
-  -moz-transition: top 0.4s;
-  -o-transition: top 0.4s;
   transition: top 0.4s;
   top: 100%;
   bottom: 0;
@@ -98,7 +86,7 @@ $bottomcolor: black;
 
 #settings {
     color: whitesmoke;
-    @include border-radius(1px);
+    border-radius: 1px;
     background: $bottomcolor;
   }
 
@@ -117,7 +105,7 @@ $bottomcolor: black;
 
 #word-match-results {
   background: white;
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 25em;
 
   #match-header {
@@ -138,17 +126,8 @@ $bottomcolor: black;
   text-transform: uppercase;
   height: 2em;
 
-  &::-webkit-input-placeholder {
+  &::placeholder {
     text-transform: none;
-  }
-  &:-moz-placeholder { /* Firefox 18- */
-     text-transform: none;
-  }
-  &::-moz-placeholder {  /* Firefox 19+ */
-     text-transform: none;
-  }
-  &:-ms-input-placeholder {  
-     text-transform: none;
   }
 }
 
@@ -166,21 +145,15 @@ $bottomcolor: black;
 
   ul {
     background: white;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin: 0;
     width: 16.5em;
     max-height: 25em;
-    -webkit-transition: max-height 0.4s;
-    -moz-transition: max-height 0.4s;
-    -o-transition: max-height 0.4s;
     transition: max-height 0.4s;
 
     li {
       font-size: smaller;
       width: 100%;
-      -webkit-transition: background 0.4s;
-      -moz-transition: background 0.4s;
-      -o-transition: background 0.4s;
       transition: background 0.4s;
 
       &:nth-child(even) {
@@ -205,9 +178,6 @@ $switch-width: 4em;
 $pip-diameter: $switch-width/3;
 $switch-on-color: lighten(limegreen, 20%);
 $switch-off-color: lighten(red, 20%);
-.radio {
-  
-}
 .switch-form {
   display: inline-block;
   margin: 0;
@@ -221,8 +191,8 @@ $switch-off-color: lighten(red, 20%);
     display: inline-block;
     border-width: 1px;
     border-style: solid;
-    @include border-radius($pip-diameter);
-    @include transition(all, 0.2s);
+    border-radius: $pip-diameter;
+    transition: all 0.2s;
   }
   .pip {
     position: absolute;
@@ -230,8 +200,8 @@ $switch-off-color: lighten(red, 20%);
     height: $pip-diameter;
     width: $pip-diameter;
     margin-top: $switch-height/14;
-    @include border-radius($pip-diameter/2);
-    @include transition(all, 0.2s);
+    border-radius: $pip-diameter/2;
+    transition: all 0.2s;
   }
   label {
     margin: 0;
@@ -252,7 +222,7 @@ $switch-off-color: lighten(red, 20%);
       .pip {
         left: $switch-width/15;
         background: $switch-off-color;
-      }  
+      }
     }
   }
   span {
@@ -274,10 +244,6 @@ $switch-off-color: lighten(red, 20%);
   bottom: 0;
   z-index: 10000;
   background: rgba(30,30,30, 0.3);
-  -webkit-border-top-left-radius: 0.5em;
-  -webkit-border-top-right-radius: 0.5em;
-  -moz-border-radius-topleft: 0.5em;
-  -moz-border-radius-topright: 0.5em;
   border-top-left-radius: 0.5em;
   border-top-right-radius: 0.5em;
   overflow: hidden;
@@ -285,18 +251,19 @@ $switch-off-color: lighten(red, 20%);
 }
 
 .ui-draggable {
-  cursor: -webkit-grab;
+  cursor: grab;
   &.ui-draggable-dragging {
-    cursor: -webkit-grabbing;
+    cursor: grabbing;
   }
 }
 
 ::-webkit-scrollbar {
     -webkit-appearance: none;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-    @include border-radius(8px);
+    border-radius: 8px;
     border: 2px solid white; /* should match background, can't be transparent */
     background-color: rgba(0, 0, 0, .5);
 }

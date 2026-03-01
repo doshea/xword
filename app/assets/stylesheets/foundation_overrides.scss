@@ -1,7 +1,3 @@
-.tooltip {
-  font-size: 12px;
-  padding: 0.4em 0.5em;
-}
 .clue-column {
   ol {
     margin-left: 0;
@@ -9,20 +5,11 @@
   }
 }
 
-
 .puzzle-tabs {
   .xw-tabs__nav {
     a {
       padding: 0.5em 1.5em 0.3em;
     }
-  }
-  .tab-label {
-    display: block;
-    font-size: 1.125rem; // match Foundation 5 h5 (rem-calc(18))
-    font-weight: bold;
-  }
-  .content {
-    width: 100%;
   }
   ul {
     overflow: auto;

@@ -1,8 +1,6 @@
 // Phase 1: all nav styles moved to _nav.scss
 // Phase 5: footer styles will be migrated to _components.scss / _footer.scss
 
-@import 'global_mixins';
-
 footer#footer {
   position: relative;
   background-color: var(--color-footer-bg);
@@ -36,6 +34,6 @@ footer#footer {
   }
 
   ul {
-    @include no-bullets;
+    list-style-type: none;
   }
 }
