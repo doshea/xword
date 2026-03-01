@@ -30,7 +30,7 @@ window.solve_app = {
     }
     $('#controls-button').on('click', function(e) {
       e.preventDefault();
-      $('#controls-modal').foundation('reveal', 'open');
+      document.getElementById('controls-modal').showModal();
     });
     $('#check-cell').on('click', solve_app.check_cell);
     $('#check-word').on('click', solve_app.check_word);

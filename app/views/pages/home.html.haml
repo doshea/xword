@@ -10,29 +10,27 @@
     - else
       Welcome to the Café!
   %hr{style: 'margin-bottom: 0;'}
-  %dl.tabs{"data-tab" => ""}
-    %dd.active
-      = link_to '#panel1' do
+  .xw-tabs{data: {controller: 'tabs'}}
+    .xw-tabs__nav
+      = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         %span.tab-label
           = icon('clipboard')
           %span #{'New' if @current_user} Puzzles (#{@unstarted.length})
-    - if @current_user
-      %dd
-        = link_to '#panel2' do
+      - if @current_user
+        = link_to '#panel2', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
           %span.tab-label
             = icon('clipboard-pen')
             %span In Progress (#{@in_progress.length})
-      %dd
-        = link_to '#panel3' do
+        = link_to '#panel3', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
           %span.tab-label
             = icon('clipboard-list')
             %span Solved Puzzles (#{@solved.length})
   :javascript
     var puzzles_remaining = {};
-  .tabs-content
-    #panel1.content.active
+  .xw-tab-panels
+    #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
       = render partial: 'pages/home/unstarted'
-    #panel2.content
+    #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}
       = render partial: 'pages/home/in_progress'
-    #panel3.content
+    #panel3.xw-tab-panel{data: {tabs_target: 'panel'}}
       = render partial: 'pages/home/solved_puzzles'

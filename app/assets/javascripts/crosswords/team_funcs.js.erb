@@ -248,7 +248,7 @@ window.team_app = {
 //------------------
 // Subscribe to the Pusher channel and bind all team event handlers
 $(function() {
-  $('#team-explanation').foundation('reveal', 'open');
+  document.getElementById('team-explanation').showModal();
   var listening_channel = pusher.subscribe(channel);
   listening_channel.bind('change_cell',       team_app.receive_team_cell);
   listening_channel.bind('join_puzzle',       team_app.welcome_teammate);

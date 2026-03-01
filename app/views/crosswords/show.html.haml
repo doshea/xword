@@ -79,21 +79,21 @@
       -# %button.button.warning.small#show-incorrect
       -#   %i.fi-alert
       -#   Show Incorrect
-      %a.button.split.small.success.check-completion{data: {unhighlight: 'false'}}
-        = icon('check')
-        Check
-        %span{data: {dropdown: 'drop'}}
+      .xw-dropdown{data: {controller: 'dropdown'}}
+        %button.button.small.success.check-completion{data: {action: 'click->dropdown#toggle', unhighlight: 'false'}}
+          = icon('check')
+          Check ▾
+        %ul.xw-dropdown-menu{data: {dropdown_target: 'menu'}}
+          %li
+            %a#check-cell{:href => "#"} Current Cell
+          %li
+            %a#check-word{:href => "#"} Current Word
+          %li
+            %a#check-puzzle{:href => "#"} Entire Puzzle
+          %hr
+          %li.check-completion
+            %a{:href => "#"} Completion
       %br
-      %ul#drop.f-dropdown{"data-dropdown-content": true}
-        %li
-          %a#check-cell{:href => "#"} Current Cell
-        %li
-          %a#check-word{:href => "#"} Current Word
-        %li
-          %a#check-puzzle{:href => "#"} Entire Puzzle
-        %hr
-        %li.check-completion
-          %a{:href => "#"} Completion
   %hr
   .xw-col-full
     .xw-grid

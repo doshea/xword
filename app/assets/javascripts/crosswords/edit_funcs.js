@@ -34,7 +34,7 @@ window.edit_app = {
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', function() { cw.unhighlight_all(); });
 
     $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word);
-    $('#settings-button').on('click', function() { $('#edit-settings').foundation('reveal', 'open'); });
+    $('#settings-button').on('click', function() { document.getElementById('edit-settings').showModal(); });
     $('.bottom-button').on('click', function() { $(this).closest('.slide-up-container').toggleClass('open'); });
   },
 

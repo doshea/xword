@@ -10,7 +10,7 @@ if(<%= @correctness %>){
     var applause = new Audio('<%= audio_path('mod_applause.mp3') %>');
   }
   // applause.play();
-  $('#win-modal').foundation('reveal', 'open');
+  document.getElementById('win-modal').showModal();
 } else {
   alert("Your solution contains incorrect letters.");
 }

@@ -427,6 +427,52 @@
 
 
 // ---------------------------------------------------------------------------
+// DROPDOWN — .xw-dropdown / .xw-dropdown-menu (Stimulus dropdown_controller)
+// ---------------------------------------------------------------------------
+// Usage:
+//   .xw-dropdown{ data: { controller: 'dropdown' } }
+//     %button{ data: { action: 'click->dropdown#toggle' } } Trigger
+//     %ul.xw-dropdown-menu{ data: { dropdown_target: 'menu' } }
+//       %li= link_to ...
+
+.xw-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.xw-dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: var(--z-dropdown);
+  min-width: 10rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  list-style: none;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-1) 0;
+
+  &.is-open { display: block; }
+
+  li a {
+    display: block;
+    padding: var(--space-2) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    &:hover { background-color: var(--color-surface-alt); }
+  }
+
+  hr {
+    margin: var(--space-1) 0;
+    border-color: var(--color-border);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
 // FORMS — inputs, labels, fieldsets
 // ---------------------------------------------------------------------------
 

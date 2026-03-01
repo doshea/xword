@@ -89,12 +89,13 @@
   = icon('settings')
 
 
-#edit-settings.reveal-modal{:'data-reveal' => true, role: 'dialog', aria: {modal: 'true', labelledby: 'settings-heading'}}
+%dialog#edit-settings.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}, aria: {labelledby: 'settings-heading'}}
+  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
   %h2#settings-heading
     = icon('settings')
     Edit Settings
   #settings
-    
+
     %hr
     %input{type: 'checkbox'}
     %br

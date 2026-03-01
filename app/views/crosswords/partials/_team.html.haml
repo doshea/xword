@@ -12,7 +12,8 @@
 = javascript_include_tag 'crosswords/team_funcs'
 
 - if @current_user && @solution.user_id == @current_user.id
-  #team-explanation.reveal-modal{:'data-reveal' => true}
+  %dialog#team-explanation.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
+    %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
     %h2
       Crosswords: More Fun as a Team
       = icon('users')
@@ -24,7 +25,6 @@
     = icon('link', class: 'lead', style: 'font-size: large; padding: 0.2em 0.3em;')
     %p.lead
     %p Now to find some friends...
-    %a.close-reveal-modal ×
 
 #team-chat.down
   .row-topper.no-select

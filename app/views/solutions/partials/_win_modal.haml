@@ -1,2 +1,2 @@
-#win-modal.reveal-modal{:'data-reveal' => true, style: 'width: 60%; margin-left: -30%;'}
-  %a.close-reveal-modal ×
+%dialog#win-modal.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
+  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×

@@ -9,10 +9,6 @@ describe 'unpublished_crosswords/edit' do
     assign(:unpublished_crossword, ucw)
     assign(:current_user, user)
     assign(:clue_numbers, ucw.letters_to_clue_numbers)
-    # switch_tag uses HAML's haml_tag/capture_haml which aren't available in the
-    # view spec context (they're wired in only during real HAML template rendering).
-    # Stub it out since we're testing accessibility structure, not toggle widgets.
-    allow(view).to receive(:switch_tag).and_return('')
     render
   end
 
@@ -46,16 +42,12 @@ describe 'unpublished_crosswords/edit' do
   # -----------------------------------------------------------------------
   # Settings modal ARIA
   # -----------------------------------------------------------------------
-  it 'marks the settings modal as a dialog' do
-    expect(rendered).to have_selector('#edit-settings[role="dialog"]', visible: :all)
-  end
-
-  it 'marks the settings modal as modal via aria-modal' do
-    expect(rendered).to have_selector('#edit-settings[aria-modal="true"]', visible: :all)
+  it 'renders the settings modal as a native <dialog> element' do
+    expect(rendered).to have_selector('dialog#edit-settings', visible: :all)
   end
 
   it 'links the modal to its heading via aria-labelledby' do
-    expect(rendered).to have_selector('#edit-settings[aria-labelledby="settings-heading"]', visible: :all)
+    expect(rendered).to have_selector('dialog#edit-settings[aria-labelledby="settings-heading"]', visible: :all)
   end
 
   it 'renders the settings modal heading as h2 with the matching id' do

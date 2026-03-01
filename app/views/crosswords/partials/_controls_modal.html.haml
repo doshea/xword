@@ -1,5 +1,5 @@
-#controls-modal.reveal-modal{:'data-reveal' => true, style: 'width: 40%; margin-left: -20%;'}
-  %a.close-reveal-modal ×
+%dialog#controls-modal.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
+  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
   %u
     %h1 Controls
   .xw-grid
