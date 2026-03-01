@@ -39,6 +39,11 @@
   &.xw-grid--dense {
     grid-auto-flow: dense;
   }
+
+  // Auto-fill: items size themselves (min 15rem); use when children have no explicit column class
+  &.xw-grid--auto {
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  }
 }
 
 // ---------------------------------------------------------------------------
