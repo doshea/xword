@@ -1,6 +1,0 @@
-%td.cell{class: cell.is_void? ? 'void' : '', data: {row: cell.row, col: cell.col, index: cell.index, id: edit ? cell.id : false, num: edit ? false : cell.cell_num}}
-  .letter= edit ? cell.letter : (@solution.letters[index] if @solution)
-  - if cell.circled
-    .circle
-  .cell-num= cell.cell_num unless edit
-  .flag
