@@ -9,8 +9,12 @@ class ApplicationController < ActionController::Base
 
   private
   def authenticate
-    @current_user = User.find_by_auth_token( cookies[:auth_token]) if cookies[:auth_token]
-    @current_user ||= session[:user_id].present? ? User.find(session[:user_id]) : nil
+    # cookies.signed verifies the HMAC before returning the value; returns nil
+    # if the cookie is missing, expired, or has been tampered with.
+    token = cookies.signed[:auth_token]
+    @current_user = User.find_by_auth_token(token) if token
+    # Legacy fallback: session-based auth (kept in case any old code still sets it).
+    @current_user ||= User.find(session[:user_id]) if session[:user_id].present?
   end
 
   def ensure_logged_in

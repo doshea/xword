@@ -58,6 +58,9 @@ class User < ApplicationRecord
 
   self.per_page = 50
 
+  # Password reset tokens expire after one hour.
+  scope :with_valid_reset_token, -> { where('password_reset_sent_at > ?', 1.hour.ago) }
+
   mount_uploader :image, AccountPicUploader
 
   MIN_PASSWORD_LENGTH = 5

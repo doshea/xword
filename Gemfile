@@ -60,6 +60,7 @@ end
 group :test do
   gem 'factory_bot_rails'
   gem 'rspec-rails', '~> 8.0'
+  gem 'rails-controller-testing'  # required for get/post in controller specs (Rails 5+)
   gem 'rspec-its'
   gem 'shoulda-matchers', '~> 7.0'
   gem 'capybara', '~> 3.0'

@@ -4,7 +4,8 @@ class Admin::WordsController < ApplicationController
 
   #GET /admin/words or admin_words_path
   def index
-    @words = Word.all.paginate(:page => params[:page])
+    # includes(:clues) prevents N+1 from word.clues.first in _words.html.haml
+    @words = Word.all.includes(:clues).paginate(:page => params[:page])
   end
 
   #GET /admin/words/:id/edit or edit_admin_word_path

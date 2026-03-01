@@ -38,7 +38,7 @@ app/
   mailers/               # AdminMailer, UserMailer
   models/
     application_record.rb  # Abstract base class (primary_abstract_class)
-    concerns/              # Crosswordable, Publishable, Examplable, Newyorkable
+    concerns/              # Crosswordable, Publishable, Newyorkable (Examplable unused)
     *.rb                   # 14 models (all inherit from ApplicationRecord)
   uploaders/             # CarrierWave uploaders (AccountPicUploader, PreviewUploader)
   views/                 # HAML templates
@@ -74,7 +74,7 @@ Core entities and their relationships:
 - **Cell** — individual cells in a crossword grid
 - **Clue** — across/down clues linked to cells
 - **Word** — dictionary words with PgSearch full-text search
-- **Phrase** — related to words/clues
+- **Phrase** — related to words/clues (TODO: undecided usage, may be removed)
 - **Solution** — a user's solve attempt for a crossword
 - **SolutionPartnering** — links users to team solutions
 - **CellEdit** — tracks individual cell edits during solving
@@ -127,6 +127,17 @@ rspec-rails: 4.1.2 → 8.0.3
   - All `remote: true` forms → `form_with`; method:delete links → `data: { turbo_method: }`
   - `spec_helper.rb`: added `infer_spec_type_from_file_location!` + `Shoulda::Matchers.configure`
 
+### Changes (Mar 2026)
+- **Race conditions fixed**: `populate_cells` uses atomic `INSERT … RETURNING id`; team key uses
+  `SecureRandom.alphanumeric(12)` + unique DB index + `rescue RecordNotUnique; retry` in controller
+- **20 FK indexes added** (migration `20260301031639`): all foreign-key columns on cells, clues,
+  comments, crosswords, solutions, solution_partnerings, users (auth_token unique), etc.
+- **Signed auth cookies**: `cookies[:auth_token]` → `cookies.signed[:auth_token]` (HMAC-verified);
+  session-based auth still works as legacy fallback
+- **Test suite**: 0 failures, 15 pending (was 48 failures). Fixes: `belongs_to.optional`,
+  `validate_inclusion_of` (was `ensure_inclusion_of`), Faker keyword args, `be true/false` (was
+  `be_true/be_false`), `rails-controller-testing` gem added, `:should` syntax enabled in spec_helper
+
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
 - `config/initializers/new_framework_defaults.rb` — Rails 5.0 defaults (all baked into load_defaults 8.1)
@@ -138,6 +149,7 @@ rspec-rails: 4.1.2 → 8.0.3
 - **PgSearch** full-text search (tsearch with prefix) on Crossword, User, and Word models
 - **RANDOM()** for random puzzle selection
 - **Sequence queries** (`SELECT last_value FROM <table>_id_seq`) in `ActiveRecord::Base.next_index`
+  (defined in `config/environment.rb`; no longer used after populate_cells fix — candidate for removal)
 - **plpgsql** extension enabled
 - Raw SQL bulk inserts in `Crossword#populate_cells`
 
@@ -160,10 +172,13 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **Framework**: RSpec with `rspec-rails ~> 8.0` (8.0.3)
 - **Factories**: FactoryBot 6.5 (all attributes use block syntax)
 - **Database cleaning**: DatabaseCleaner 2.1 with truncation strategy (not transactions)
-- **Feature tests**: Capybara `~> 3.0` with CSS selectors
+- **Feature tests**: Capybara `~> 3.0` with CSS selectors (rack-test driver, no JS)
 - **Coverage**: SimpleCov `~> 0.22`
 - **Matchers**: shoulda-matchers `~> 7.0`
 - **its()**: rspec-its 2.0 (extracted from rspec-core)
+- **Controller specs**: require `rails-controller-testing` (installed)
+- **Pending tests (15)**: published-crossword flows (column removed), HABTM join tables removed,
+  login feature specs requiring JS driver
 
 Run tests: `bundle exec rspec`
 
@@ -190,6 +205,7 @@ Run tests: `bundle exec rspec`
 | `stimulus-rails` | 1.3.4 | Hotwire Stimulus JS framework |
 | `remotipart` | 1.4.4 | Multipart AJAX file uploads (requires jQuery) |
 | `jbuilder` | 2.14.1 | JSON API views |
+| `rails-controller-testing` | 1.0.5 | Enables get/post in RSpec controller specs |
 
 ## Key Commands
 
@@ -198,7 +214,7 @@ bundle install          # Install dependencies
 rails db:create         # Create dev + test databases
 rails db:migrate        # Run migrations
 rails server            # Start dev server (Puma)
-bundle exec rspec       # Run test suite
+bundle exec rspec       # Run test suite (0 failures, 15 pending)
 rails console           # Interactive console
 ```
 
@@ -219,7 +235,12 @@ After any Ruby version change: `bundle lock --add-platform x86_64-linux` before 
 ## Known Technical Debt
 
 1. **`remotipart` 1.4.4** — multipart AJAX file uploads (profile pic); Rails 8 + Turbo compatibility untested
-2. **Last DB migration**: April 2017 (schema stable)
-3. **`boot.rb`** — `require 'logger'` comment is stale (was needed for Ruby 3.1 + Rails 6.x)
-4. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable releases
-5. **Test suite**: 48 pre-existing failures (missing `published` column on Crossword, `rails-controller-testing` gem not installed, Capybara feature spec issues). CI added via GitHub Actions.
+2. **`published` column** removed from Crossword schema; `publish!` and `error_if_published` are no-ops;
+   all "published crossword" guards disabled until column is restored
+3. **`next_index`** in `config/environment.rb` — no longer used after `populate_cells` atomic SQL rewrite;
+   candidate for removal
+4. **`Examplable` concern** (`app/models/concerns/examplable.rb`) — not included by any model; dead code
+5. **`Phrase` model** (`app/models/phrase.rb`) — TODO: "DECIDE HOW I WILL USE THIS MODEL IF AT ALL!!!"
+6. **Feature specs** (login_spec.rb) — home-page and dropdown login flows need a JS-capable Capybara
+   driver (e.g. Cuprite); skipped for now
+7. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable

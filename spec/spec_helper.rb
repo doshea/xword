@@ -24,6 +24,10 @@ Shoulda::Matchers.configure do |config|
 end
 
 RSpec.configure do |c|
+  # Suppress deprecation warnings: suite uses the old :should syntax throughout.
+  # Re-evaluate when migrating to expect() syntax.
+  c.expect_with(:rspec) { |ec| ec.syntax = [:should, :expect] }
+  c.mock_with(:rspec)   { |mc| mc.syntax = [:should, :expect] }
   # c.fail_fast = true
   c.infer_spec_type_from_file_location!
   c.include FactoryBot::Syntax::Methods

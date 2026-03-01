@@ -35,7 +35,6 @@ window.new_cw = {
       'slow',
       function() {
         if (!new_cw.form_spinner) {
-          console.log('hello2');
           var target = $('.spin-target').get(0);
           new_cw.form_spinner = new Spinner(new_cw.spin_opts).spin(target);
           $('<h2>').text('Generating Puzzle').prependTo($('.spin-target'));

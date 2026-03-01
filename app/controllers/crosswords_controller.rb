@@ -12,7 +12,11 @@ class CrosswordsController < ApplicationController
         team: false
       )
       @solution.fill_letters
+      # Single EXISTS query instead of loading all favorites into memory twice in the view.
+      @is_favorited = @current_user.favorites.exists?(@crossword.id)
     end
+    # Preload comment authors and replies (+ reply authors) to avoid N+1 in _comment.html.haml.
+    @comments = @crossword.comments.includes(:user, replies: :user)
     @cells = @crossword.cells.asc_indices
   end
 
@@ -26,18 +30,25 @@ class CrosswordsController < ApplicationController
   def create_team
     @crossword = Crossword.find(params[:id])
     if @crossword && @current_user
-      preexisting_letters = @current_user.solutions.where(team: false, crossword_id: @crossword.id).first.try(:letters)
+      preexisting_letters = @current_user.solutions
+                              .where(team: false, crossword_id: @crossword.id)
+                              .first.try(:letters)
       @solution = Solution.new(
         crossword_id: @crossword.id,
-        user_id: @current_user.id,
-        letters: preexisting_letters || @crossword.letters.gsub(/[^_]/, ' ')
+        user_id:      @current_user.id,
+        team:         true,
+        letters:      preexisting_letters || @crossword.letters.gsub(/[^_]/, " ")
       )
-      @solution.key = Solution.generate_unique_key
-      @solution.team = true
-      @solution.save
+      # assign_team_key (before_create) sets key via SecureRandom.alphanumeric(12).
+      # Rescue handles the astronomically unlikely collision caught by the DB unique index.
+      begin
+        @solution.save!
+      rescue ActiveRecord::RecordNotUnique
+        retry
+      end
       redirect_to team_crossword_path(@crossword, @solution.key)
     else
-      # Redirecto to some error page
+      redirect_to root_path, flash: { error: "Unable to create team session." }
     end
   end
 
@@ -122,20 +133,8 @@ class CrosswordsController < ApplicationController
 
   #GET /crosswords/:id/check_cell or check_cell_crossword_path
   def check_cell
-    @mismatches = {}
-    letters = params[:letters]
-    if params[:indices]
-      indices = params[:indices].map(&:to_i)
-      params[:letters].each_with_index do |v,i|
-        corrected_i = indices[i]
-        @mismatches[corrected_i] = (v != @crossword.letters[corrected_i])
-      end
-    else
-      params[:letters].split('').each_with_index do |v,i|
-        @mismatches[i] = ((v != ' ') && (v != '_') && (v != @crossword.letters[i]))
-      end
-      puts @mismatches
-    end
+    indices = params[:indices]&.map(&:to_i)
+    @mismatches = @crossword.cell_mismatches(params[:letters], indices: indices)
   end
 
   #GET /crosswords/:id/check_completion or check_completion_crossword_path

@@ -77,10 +77,10 @@ module Newyorkable
           new_nytimes_crossword.set_clue(false, split_clue[0].to_i, split_clue[1])
         end
 
-        puts new_nytimes_crossword.letters
+        Rails.logger.info("[Newyorkable] imported puzzle: #{new_nytimes_crossword.title}")
         new_nytimes_crossword.generate_preview
       else
-        puts 'That puzzle has already been added! Woo a freebie!'
+        Rails.logger.info("[Newyorkable] skipped duplicate puzzle")
       end
     end
 

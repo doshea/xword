@@ -176,14 +176,11 @@ window.edit_app = {
       type: 'PATCH',
       url: "/unpublished_crosswords/" + id + "/update_letters",
       data: JSON.stringify({ letters: letters_array, circles: edit_app.circles, across_clues: across_clues, down_clues: down_clues, authenticity_token: token, save_counter: edit_app.save_counter }),
-      success: function() {
-        console.log('Saved!');
-      },
+      success: function() { /* saved */ },
       error: function() {
         alert('Error updating letters!');
       }
     };
-    console.log('Saving...');
     $.ajax(settings);
   },
 

@@ -14,9 +14,9 @@
 
 describe Comment do
   context 'associations' do
-    it {should belong_to :user}
-    it {should belong_to :crossword}
-    it {should belong_to(:base_comment).class_name('Comment')}
+    it {should belong_to(:user).optional}
+    it {should belong_to(:crossword).optional}
+    it {should belong_to(:base_comment).class_name('Comment').optional}
     it {should have_many(:replies).class_name('Comment').with_foreign_key('base_comment_id').dependent(:destroy)}
   end
 

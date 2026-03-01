@@ -75,12 +75,12 @@ class UsersController < ApplicationController
 
   #GET /users/reset_password/:password_reset_token or reset_password_users_path
   def reset_password
-    @user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
+    @user = User.with_valid_reset_token.find_by(password_reset_token: params[:password_reset_token])
   end
   
   #POST /users/resetter or resetter_users_path
   def resetter
-    user = User.where('password_reset_sent_at > ?', 1.hours.ago).find_by(password_reset_token: params[:password_reset_token])
+    user = User.with_valid_reset_token.find_by(password_reset_token: params[:password_reset_token])
     if user
       if user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
         user.password_reset_token = nil

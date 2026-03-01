@@ -24,26 +24,30 @@ class Solution < ApplicationRecord
   scope :complete, -> { where(is_complete: true)}
   scope :incomplete, -> { where(is_complete: false)}
   scope :order_recent, -> {order(updated_at: :desc)}
-  scope :abandoned, -> { where('updated_at <= ?', Time.now - 1.5.days) }
+  scope :abandoned, -> { where('updated_at <= ?', Time.current - 1.5.days) }
 
-  before_save :check_completion
+  before_create :assign_team_key, if: :team?
+  before_save   :check_completion
 
   def check_completion
-    if self.letters == self.crossword.letters and not self.is_complete?
+    if letters == crossword.letters && !is_complete?
       self.is_complete = true
-      self.solved_at = Time.now
+      self.solved_at   = Time.current  # use Time.current for time-zone awareness
     end
     true
   end
 
-  def self.generate_unique_key
-    valid = false
-    while !valid do
-      new_key = (0..5).map{(65+rand(26) + rand(2)*32).chr}.join
-      valid = Solution.where(key: new_key).empty?
-    end
-    new_key
+  private
+
+  # Assigns a cryptographically random URL-safe key for team solutions.
+  # 12 alphanumeric chars = 62^12 ≈ 3×10^21 combinations; collision is
+  # essentially impossible, but the DB unique index is the hard guarantee.
+  # CrosswordsController#create_team rescues RecordNotUnique as a safety net.
+  def assign_team_key
+    self.key = SecureRandom.alphanumeric(12)
   end
+
+  public
 
   def percent_complete
     letter_count = self.crossword.nonvoid_letter_count
@@ -68,10 +72,10 @@ class Solution < ApplicationRecord
   end
 
   def fill_letters
-    if self.letters.length != self.crossword.letters.length
-      puts 'Mismatched letters length! Check the fill_letters method!'
-      self.letters = self.crossword.letters.gsub(/[^_]/,' ')
-      self.save
+    if letters.length != crossword.letters.length
+      Rails.logger.warn("[Solution#fill_letters] id=#{id} length mismatch — re-initializing letters")
+      self.letters = crossword.letters.gsub(/[^_]/, " ")
+      save
     end
   end
 

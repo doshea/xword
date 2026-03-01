@@ -17,12 +17,23 @@ module Publishable
     scope :partnered_in_progress, -> (user) {partnered(user).merge(Solution.incomplete)}
 
     # Actually used by the home page
-    scope :all_in_progress, -> (user){ unowned(user).in_progress(user).union(partnered_in_progress(user)).distinct }
-    scope :all_solved, -> (user){ unowned(user).solved(user).union(partnered_solved(user)).distinct }
-    scope :new_to_user, -> (user){ unowned(user).unstarted(user).where.not("crosswords.id IN (?)", (partnered(user).pluck(:id).blank? ? [0] : partnered(user).pluck(:id))).distinct }
+    scope :all_in_progress, -> (user) { unowned(user).in_progress(user).union(partnered_in_progress(user)).distinct }
+    scope :all_solved,      -> (user) { unowned(user).solved(user).union(partnered_solved(user)).distinct }
 
-    scope :started, -> (user){ with_solution(user).union(partnered(user))}
-    scope :unstarted, -> (user){ unowned(user).where.not("crosswords.id IN (?)", (started(user).pluck(:id).blank? ? [0] : started(user).pluck(:id))).distinct}
+    scope :started,   -> (user) { with_solution(user).union(partnered(user)) }
+
+    # Pluck once and guard against empty IN() — the [0] sentinel was fragile and ran pluck twice.
+    scope :unstarted, -> (user) {
+      started_ids = started(user).pluck(:id)
+      base = unowned(user).distinct
+      started_ids.any? ? base.where.not(id: started_ids) : base
+    }
+
+    scope :new_to_user, -> (user) {
+      partnered_ids = partnered(user).pluck(:id)
+      base = unowned(user).unstarted(user).distinct
+      partnered_ids.any? ? base.where.not(id: partnered_ids) : base
+    }
   end
 
 

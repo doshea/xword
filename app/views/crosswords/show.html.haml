@@ -50,9 +50,9 @@
         / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
         / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
         #favorites-toggle
-          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }) do
+          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }) do
             %i.fi-star>
-          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{(@current_user.favorites.include? @crossword) ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }) do
+          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }) do
             %i.fi-star{style: 'color: #ff7878;'}>
         = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
           %i.fi-widget
@@ -121,7 +121,7 @@
         = link_to 'Log in', login_path
         to comment on this puzzle
       %hr
-      - @crossword.comments.each do |comment|
+      - @comments.each do |comment|
         = render partial: 'comments/partials/comment', locals: {comment: comment}
 
 = render partial: 'solutions/partials/win_modal'

@@ -4,7 +4,8 @@ class Admin::CommentsController < ApplicationController
 
   #GET /admin/comments or admin_comments_path
   def index
-    @comments = Comment.all.paginate(:page => params[:page])
+    # includes prevents N+1 from comment.user, comment.crossword, and comment.base_comment.crossword in _comments.html.haml
+    @comments = Comment.all.includes(:user, :crossword, base_comment: :crossword).paginate(:page => params[:page])
   end
 
   #GET /admin/comments/:id/edit or edit_admin_comment_path

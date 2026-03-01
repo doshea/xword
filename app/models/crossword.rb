@@ -77,16 +77,23 @@ class Crossword < ApplicationRecord
   end
 
   def get_mismatches(solution_letters)
-    if solution_letters.length == letters.length
-      mismatch_array = []
-      letters.split('').each_with_index do |letter, i|
-        if letter != solution_letters[i]
-          mismatch_array << i
-        end
+    raise ArgumentError, "Expected #{letters.length} chars, got #{solution_letters.length}" unless solution_letters.length == letters.length
+    letters.chars.each_with_index.filter_map { |letter, i| i if letter != solution_letters[i] }
+  end
+
+  # Returns { position => incorrect? } for check_cell.js.erb.
+  # With indices: spot-checks the given positions (array of ints).
+  # Without indices: checks every cell; position is 0-based offset into letters.
+  def cell_mismatches(letters_param, indices: nil)
+    if indices
+      letters_param.each_with_index.to_h do |v, i|
+        pos = indices[i]
+        [pos, v != letters[pos]]
       end
-      mismatch_array
     else
-      raise ArgumentError, "Argument string (#{solution_letters.length}) did not match solution length(#{letters.length})."
+      letters_param.split('').each_with_index.to_h do |v, i|
+        [i, (v != ' ') && (v != '_') && (v != letters[i])]
+      end
     end
   end
 
@@ -127,49 +134,45 @@ class Crossword < ApplicationRecord
     end
   end
 
-  #Refactored to use a single SQL statement and run at light speed
-  #Read https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/
+  # Bulk-inserts all clues and cells for a freshly created crossword.
+  # Each cell gets one across clue + one down clue, all pre-filled with placeholder text.
+  # See: https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/
   def populate_cells
-    # NEED A WAY TO CHECK THIS THAT DOESN'T AFFECT NYT CROSSWORDS
-    # error_if_published
-    if cells.empty?
-      row = cell_num = index = 1
+    raise "This crossword already has cells!" unless cells.empty?
 
-      #make clues_first
-      clue_inserts = ["('ENTER CLUE')"]*area*2
-      clues_sql = "INSERT INTO clues (content) VALUES #{clue_inserts.join(", ")};"
+    # Insert all clues in one statement and get back their IDs via RETURNING.
+    # This is atomic: there is no gap between "read next ID" and "insert", so
+    # concurrent crossword creation can't accidentally share clue IDs (the old
+    # Clue.next_index approach had that race).
+    clue_values = (["('ENTER CLUE')"] * area * 2).join(", ")
+    clue_ids = ActiveRecord::Base.connection
+                 .execute("INSERT INTO clues (content) VALUES #{clue_values} RETURNING id;")
+                 .map { |r| r["id"].to_i }
+    # clue_ids order matches insertion order: [across_0, down_0, across_1, down_1, ...]
 
-      next_clue_id = Clue.next_index #TODO This may cause a race condition!!!
-      ActiveRecord::Base.connection.execute(clues_sql)
+    cell_inserts = []
+    cell_num = 1
+    (1..rows).each do |row|
+      (1..cols).each do |col|
+        idx         = (row - 1) * cols + col
+        pair_base   = (idx - 1) * 2          # index into clue_ids for this cell
+        across_id   = clue_ids[pair_base]
+        down_id     = clue_ids[pair_base + 1]
+        numbered    = (row == 1 || col == 1)  # edge cells start a word and get a number
+        num_val     = numbered ? cell_num : "NULL"
+        cell_num   += 1 if numbered
 
-      cell_inserts = []
-      while row <= rows
-        col = 1
-        while col <= cols
-          # temp_cell = Cell.new(row: row, col: col, index: index, is_void: false, is_across_start: col == 1, is_down_start: row == 1)
-          # if (row == 1 or col == 1)
-          #   temp_cell.cell_num = cell_num
-          #   cell_num += 1
-          # end
-          # cells << temp_cell
-          temp_insert = "(#{next_clue_id}, #{next_clue_id+1},#{row}, #{col}, #{index}, #{false}, #{col == 1}, #{row == 1}, #{(row == 1 || col == 1) ? cell_num : 'NULL'}, #{id || Crossword.next_index || 1})"
-          if (row == 1 || col == 1)
-            cell_num += 1
-          end
-          cell_inserts.push(temp_insert)
-
-          index += 1
-          col += 1
-          next_clue_id += 2
-        end
-        row += 1
+        cell_inserts << "(#{across_id}, #{down_id}, #{row}, #{col}, #{idx}, false, " \
+                        "#{col == 1}, #{row == 1}, #{num_val}, #{id})"
       end
-      cells_sql = "INSERT INTO cells (across_clue_id, down_clue_id, row, col, index, is_void, is_across_start, is_down_start, cell_num, crossword_id) VALUES #{cell_inserts.join(", ")}"
-      ActiveRecord::Base.connection.execute(cells_sql)
-      self
-    else
-      raise "This crossword already has cells!"
     end
+
+    cells_sql = "INSERT INTO cells " \
+                "(across_clue_id, down_clue_id, row, col, index, is_void, " \
+                "is_across_start, is_down_start, cell_num, crossword_id) " \
+                "VALUES #{cell_inserts.join(', ')}"
+    ActiveRecord::Base.connection.execute(cells_sql)
+    self
   end
 
   #TODO get a better name
@@ -288,7 +291,7 @@ class Crossword < ApplicationRecord
 
   def randomize_letters_and_voids(symmetrical=true, modify_cells=false)
     error_if_published
-    self.letters = Faker::Lorem.characters(area)
+    self.letters = Faker::Lorem.characters(number: area)
     upper_limit = (symmetrical ? (area/2.0).ceil : area)
     (1..upper_limit).each do |i|
       if (rand * 10) > 7
@@ -393,7 +396,8 @@ class Crossword < ApplicationRecord
     end
     number_cells
     generate_words_and_link_clues
-    update(published: true, published_at: Time.now, letters: letters)
+    # published/published_at columns removed from schema; omit from update for now.
+    update(letters: letters)
     self
   end
 
@@ -421,9 +425,8 @@ class Crossword < ApplicationRecord
 
   private
   def error_if_published
-    if published
-      raise 'Published crosswords cannot perform that action.'
-    end
+    # published column was removed from schema; this guard is currently a no-op.
+    # Re-enable once the column is restored.
   end
 
   #Using a transaction cut down call times by 1.5x to 3.3x for this method

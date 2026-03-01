@@ -25,10 +25,8 @@ class Cell < ApplicationRecord
   scope :down_start_cells, -> { where(is_down_start: true)}
   scope :asc_indices, -> {order(index: :asc)}
   scope :desc_indices, -> {order(index: :desc)}
-  scope :published, -> {where(published: true)}
-  scope :unpublished, -> {where(published: false)}
-  scope :circled, -> {where(circled: true)}
-  scope :uncircled, -> {where(circled: true)}
+  scope :circled,   -> { where(circled: true) }
+  scope :uncircled, -> { where(circled: false) }
 
   belongs_to :across_clue, class_name: 'Clue', foreign_key: 'across_clue_id', inverse_of: :across_cells, optional: true
   belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells, optional: true
@@ -40,7 +38,7 @@ class Cell < ApplicationRecord
   delegate :across_word, to: :across_clue, allow_nil: true
   delegate :down_word, to: :down_clue, allow_nil: true
   delegate :user, to: :crossword, allow_nil: true
-  delegate :published, to: :crossword
+  # published delegate removed — Crossword no longer has a published column
 
   #do not include is_void and other booleans in this validation -- false counts as blank
   validates_presence_of :row, :col, :index
@@ -81,7 +79,7 @@ class Cell < ApplicationRecord
   def update_starts!
     self.reload #Absolutely NECESSARY otherwise publishing during seeds fails
     original_a_value = self.is_across_start
-    original_d_value = self.is_across_start
+    original_d_value = self.is_down_start
     self.update_attribute(:is_across_start, self.should_be_across_start?)
     self.update_attribute(:is_down_start, self.should_be_down_start?)
     new_a_value = self.reload.is_across_start

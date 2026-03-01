@@ -16,7 +16,7 @@ describe Clue do
     
   end
   context 'associations' do
-    it {should belong_to :user}
+    it {should belong_to(:user).optional}
     it {should have_many :across_cells}
     it {should have_many :down_cells}
     it {should have_many(:across_crosswords).through(:across_cells).source(:crossword)}
