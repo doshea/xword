@@ -30,6 +30,16 @@ describe SolutionsController do
     it 'updates the solution letters' do
       expect(solution.reload.letters).to eq 'ABCDE'
     end
+
+    context 'with a null/invalid id (stale JS sending solution_id before it was set)' do
+      # guard_null_solution_id runs before find_object to absorb these silently without
+      # setting a flash error that would persist and show up on subsequent pages
+      it 'returns 200 and sets no flash' do
+        patch :update, params: { id: 'null', letters: 'X' }, format: :js
+        expect(response).to have_http_status(200)
+        expect(flash[:error]).to be_nil
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
