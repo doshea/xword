@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include TimeHelper
 
   def is_admin?
     @current_user.present? && @current_user.is_admin

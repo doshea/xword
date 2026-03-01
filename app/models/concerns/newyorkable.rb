@@ -32,7 +32,7 @@ module Newyorkable
       pz_letters = pz_letters.join('').gsub('.','_')
       begin
         pz_date = Date.parse(pz_title)
-      rescue
+      rescue ArgumentError
         alt_date = pz['date'] || pz[:date]
         pz_date = Date.strptime(alt_date, '%m/%d/%Y')
       end
@@ -102,7 +102,7 @@ module Newyorkable
 
     #NOTE: This will return pure JSON by default. For a Ruby hash, set the format parameter to null.
     def get_github_nyt_from_date(date = Date.today, format = 'json')
-      url = "https://raw.githubusercontent.com/doshea/nyt_crosswords/master/#{date.year}/#{date.month.left_digits(2)}/#{date.day.left_digits(2)}.json"
+      url = "https://raw.githubusercontent.com/doshea/nyt_crosswords/master/#{date.year}/#{'%02d' % date.month}/#{'%02d' % date.day}.json"
       puzzle_json = HTTParty.get(url, format: format.nil? ? format : format.to_s)
     end
 
@@ -111,7 +111,7 @@ module Newyorkable
       pz_title = pz['title'] || pz[:title]
       begin
         pz_date = Date.parse(pz_title)
-      rescue
+      rescue ArgumentError
         alt_date = pz['date'] || pz[:date]
         pz_date = Date.strptime(alt_date, '%m/%d/%Y')
       end

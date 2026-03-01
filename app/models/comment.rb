@@ -12,9 +12,9 @@
 #  updated_at      :datetime
 #
 
-include ActionView::Helpers::DateHelper
-
 class Comment < ApplicationRecord
+  include ActionView::Helpers::DateHelper
+
   belongs_to :user, inverse_of: :comments, optional: true
   belongs_to :crossword, inverse_of: :comments, optional: true
   belongs_to :base_comment, class_name: 'Comment', optional: true
@@ -26,7 +26,7 @@ class Comment < ApplicationRecord
 
   self.per_page = 50
 
-  @@wine_vocab = {
+  WINE_VOCAB = {
     advs:[
       'freakishly','longingly','forcefully','morally'
     ],
@@ -66,20 +66,20 @@ class Comment < ApplicationRecord
       '*noun, *adj *noun and *adj *amt of *noun',
       '*noun, *adj *noun and total absence of *noun'
     ]
-  }
+  }.freeze
 
-  def format_for_api 
+  def format_for_api
     acceptable_keys = [:content, :flagged, :created_at, :updated_at]
     hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
-    hash[:commenter] = user.username
+    hash[:commenter] = user&.username
     hash[:reply_count] = replies.count
     hash[:replies] = replies.map{|r| r.format_for_api}
     hash
   end
 
   def self.random_wine_comment
-    structure = @@wine_vocab[:starts].sample + @@wine_vocab[:lists].sample
-    structure.gsub(/\*adv/){|a| @@wine_vocab[:advs].sample}.gsub(/\*adj/){|a| @@wine_vocab[:adjs].sample}.gsub(/\*noun/){|a| @@wine_vocab[:nouns].sample}.gsub(/\*amt/){|a| @@wine_vocab[:amts].sample}.humanize + '...'
+    structure = WINE_VOCAB[:starts].sample + WINE_VOCAB[:lists].sample
+    structure.gsub(/\*adv/){|a| WINE_VOCAB[:advs].sample}.gsub(/\*adj/){|a| WINE_VOCAB[:adjs].sample}.gsub(/\*noun/){|a| WINE_VOCAB[:nouns].sample}.gsub(/\*amt/){|a| WINE_VOCAB[:amts].sample}.humanize + '...'
   end
 
   def base_crossword
@@ -87,6 +87,7 @@ class Comment < ApplicationRecord
     temp_comment = self
     while temp_cw.nil?
       temp_comment = temp_comment.base_comment
+      break if temp_comment.nil?
       temp_cw = temp_comment.crossword
     end
     temp_cw

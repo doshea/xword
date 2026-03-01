@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   resources :crosswords, only: [:show] do
     member do
-      get :publish
+      post :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'
       post :favorite
       delete 'favorite' => 'crosswords#unfavorite'

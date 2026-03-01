@@ -20,12 +20,11 @@ class CommentsController < ApplicationController
   def reply
     # @comment set by find_object before_action; assign to @base_comment for turbo stream template DOM IDs
     @base_comment = @comment
+    return head :unauthorized unless @current_user
 
-    if @current_user
-      @new_reply = Comment.new(content: params[:content])
-      @base_comment.replies << @new_reply
-      @current_user.comments << @new_reply
-    end
+    @new_reply = Comment.new(content: params[:content])
+    @base_comment.replies << @new_reply
+    @current_user.comments << @new_reply
   end
 
   #DELETE /comments/:id or comment_path
@@ -33,7 +32,7 @@ class CommentsController < ApplicationController
     if @current_user && (@current_user.is_admin? || (@current_user == @comment.user))
       @comment.destroy
     else
-      
+      head :forbidden
     end
   end
 

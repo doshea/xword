@@ -2,16 +2,17 @@ class SolutionsController < ApplicationController
   # Guard runs before find_object so an invalid/null ID from stale JS never triggers a flash error
   prepend_before_action :guard_null_solution_id, only: [:update]
   before_action :find_object, only: [:update, :get_incorrect]
+  before_action :ensure_logged_in, only: [:destroy, :team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
   #GET /solutions/:id or solution_path
   def show
     solution = Solution.find(params[:id])
     if solution.team
-      if (@current_user == solution.user) || (SolutionPartnering.where(solution_id: solution.id, user_id: @current_user.id).any?)
+      if @current_user && ((@current_user == solution.user) || SolutionPartnering.where(solution_id: solution.id, user_id: @current_user.id).any?)
         redirect_to team_crossword_path(solution.crossword.id, solution.key)
       else
-        render :nothing
+        head :forbidden
       end
     else
       redirect_to solution.crossword
@@ -36,6 +37,7 @@ class SolutionsController < ApplicationController
 
   #PATCH /solutions/:id/team_update or team_update_solution_path
   def team_update
+    solution = Solution.find(params[:id])
     data = {
                 row: params[:row],
                 col: params[:col],
@@ -46,13 +48,14 @@ class SolutionsController < ApplicationController
                 blue: params[:blue]
                 }
 
-    Pusher.trigger(params[:channel], 'change_cell', data)
+    Pusher.trigger(team_channel(solution), 'change_cell', data)
 
     head :ok
   end
 
   #POST /solutions/:id/join_team or join_team_solution_path
   def join_team
+    solution = Solution.find(params[:id])
     data = {
             display_name: params[:display_name],
             solver_id: params[:solver_id],
@@ -60,32 +63,33 @@ class SolutionsController < ApplicationController
             green: params[:green],
             blue: params[:blue]
             }
-    Pusher.trigger(params[:channel], 'join_puzzle', data)
+    Pusher.trigger(team_channel(solution), 'join_puzzle', data)
     head :ok
   end
 
   #POST /solutions/:id/leave_team or leave_team_solution_path
   def leave_team
+    solution = Solution.find(params[:id])
     data = {solver_id: params[:solver_id]}
-    Pusher.trigger(params[:channel], 'leave_puzzle', data)
+    Pusher.trigger(team_channel(solution), 'leave_puzzle', data)
     head :ok
   end
 
   #POST /solutions/:id/roll_call or roll_call_solution_path
   def roll_call
+    solution = Solution.find(params[:id])
     data = {}
-    Pusher.trigger(params[:channel], 'roll_call', data)
+    Pusher.trigger(team_channel(solution), 'roll_call', data)
     head :ok
   end
 
   #POST /solutions/:id/send_team_chat or send_team_chat_solution_path
   def send_team_chat
+    @solution = Solution.find(params[:id])
     data = {display_name: params[:display_name],
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
-    Pusher.trigger(params[:channel], 'chat_message', data)
-    # @solution set so send_team_chat.turbo_stream.erb can re-render the form partial with the correct path
-    @solution = Solution.find(params[:id])
+    Pusher.trigger(team_channel(@solution), 'chat_message', data)
     respond_to do |format|
       format.turbo_stream  # Renders solutions/send_team_chat.turbo_stream.erb (resets team chat form)
       format.html { redirect_to team_crossword_path(@solution.crossword, @solution.key) }
@@ -94,6 +98,7 @@ class SolutionsController < ApplicationController
 
   #POST /solutions/:id/show_team_clue or show_team_clue_solution_path
   def show_team_clue
+    solution = Solution.find(params[:id])
     data = {cell_num: params[:cell_num],
                 across: params[:across],
                 red: params[:red],
@@ -101,7 +106,7 @@ class SolutionsController < ApplicationController
                 blue: params[:blue],
                 solver_id: params[:solver_id]
                 }
-    Pusher.trigger(params[:channel], 'outline_team_clue', data)
+    Pusher.trigger(team_channel(solution), 'outline_team_clue', data)
     head :ok
   end
 
@@ -118,6 +123,11 @@ class SolutionsController < ApplicationController
 
   private
 
+  # Derive the Pusher channel name from the solution's key rather than trusting user input.
+  def team_channel(solution)
+    "team_#{solution.key}"
+  end
+
   # Silently absorbs PUT /solutions/null requests sent by stale JS when solution_id is not yet set.
   # The JS guard in save_solution() should prevent this, but this is the server-side safety net.
   def guard_null_solution_id
@@ -126,6 +136,7 @@ class SolutionsController < ApplicationController
 
   def ensure_owner_or_partner
     @solution = Solution.find(params[:id])
+    return redirect_to(unauthorized_path) unless @current_user
     @solution_partnering = SolutionPartnering.find_by_user_id_and_solution_id(@current_user.id, @solution.id)
     redirect_to(unauthorized_path) if !((@current_user == @solution.user) || (@solution_partnering))
   end

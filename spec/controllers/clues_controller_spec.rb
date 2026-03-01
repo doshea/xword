@@ -1,6 +1,11 @@
 describe CluesController do
+  def log_in(u)
+    session[:user_id] = u.id
+  end
+
   # Clues are created by Crossword callbacks; pull from a crossword's cells.
-  let(:crossword) { create(:crossword, :smaller) }
+  let(:user) { create(:user) }
+  let(:crossword) { create(:crossword, :smaller, user: user) }
   let(:clue) { crossword.cells.find(&:across_clue).across_clue }
 
   describe 'GET #show' do
@@ -13,12 +18,19 @@ describe CluesController do
   end
 
   describe 'PATCH #update' do
-    # clue_params uses params.require(:clue), so content must be nested under :clue
-    before { patch :update, params: { id: clue.id, clue: { content: 'Updated clue content' } } }
+    before do
+      log_in(user)
+      patch :update, params: { id: clue.id, clue: { content: 'Updated clue content' } }
+    end
 
     it { should respond_with(200) }
     it 'updates the clue content' do
       expect(clue.reload.content).to eq 'Updated clue content'
     end
+  end
+
+  describe 'PATCH #update when not logged in' do
+    before { patch :update, params: { id: clue.id, clue: { content: 'Nope' } } }
+    it { should redirect_to(account_required_path) }
   end
 end

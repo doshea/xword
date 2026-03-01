@@ -8,6 +8,8 @@
 #  updated_at :datetime
 #
 
+require 'open-uri'
+
 class Word < ApplicationRecord
   scope :desc_length, -> {order('length(content) DESC')}
 
@@ -28,8 +30,9 @@ class Word < ApplicationRecord
   validates_uniqueness_of :content
 
   def self.word_match(pattern)
-    url = "http://www.a2zwordfinder.com/cgi-bin/crossword.cgi?SearchType=Crossword&Pattern=#{pattern}&Search=Find+Words"
-    page = Nokogiri::HTML(open(url))
+    sanitized = ERB::Util.url_encode(pattern.to_s[0, 100])
+    url = "https://www.a2zwordfinder.com/cgi-bin/crossword.cgi?SearchType=Crossword&Pattern=#{sanitized}&Search=Find+Words"
+    page = Nokogiri::HTML(URI.open(url))
     results = page.css('font[face=Courier]').text.split(", \n")
     results
   end

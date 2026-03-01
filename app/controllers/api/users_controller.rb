@@ -1,12 +1,13 @@
 class Api::UsersController < ApplicationController
 
   def index
-    users = User.all
+    users = User.select(:id, :first_name, :last_name, :username, :created_at)
     render json: users.map{|user| api_attributes(user)}
   end
 
   def search
     user = User.find_by(username: params[:username])
+    return head :not_found unless user
     render json: api_attributes(user)
   end
 

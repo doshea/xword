@@ -71,7 +71,7 @@ describe User do
     it { should have_many :favorite_puzzles }
     it { should have_many(:favorites).through(:favorite_puzzles).source(:crossword) }
     it { should have_many(:solution_partnerings).dependent(:destroy) }
-    it { should have_many(:team_solutions).through(:solution_partnerings).source(:user) }
+    it { should have_many(:team_solutions).through(:solution_partnerings).source(:solution) }
   end
   describe 'instance methods' do
 

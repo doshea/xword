@@ -1,6 +1,6 @@
 ActionMailer::Base.smtp_settings ={
   :address              => "smtpout.secureserver.net",
-  :port                 => 80,
+  :port                 => 587,
   :domain               => 'crossword-cafe.com',
   :user_name            => 'info@crossword-cafe.com',
   :password             => ENV['XWORD_EMAIL_PWD'],

@@ -130,7 +130,7 @@ describe UsersController do
 
     context 'with invalid token' do
       before { post :resetter, params: { password_reset_token: 'bogustoken' } }
-      it { should redirect_to(reset_password_users_path('bogustoken')) }
+      it { should redirect_to(forgot_password_users_path) }
     end
   end
 

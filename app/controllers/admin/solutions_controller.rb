@@ -33,7 +33,7 @@ class Admin::SolutionsController < ApplicationController
 
   private
   def update_solution_params
-    params.require(:solution).permit(:lterrs, :is_complete, :team, :key)
+    params.require(:solution).permit(:letters, :is_complete, :team, :key)
   end
 
 end

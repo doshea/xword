@@ -41,7 +41,7 @@ class AdminController < ApplicationController
   #POST /admin/clone_user or admin_clone_user_path
   def clone_user
     user = User.find params[:id]
-    cookies[:auth_token] = user.auth_token
+    cookies.signed[:auth_token] = user.auth_token
     redirect_to root_path
   end
 

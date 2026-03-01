@@ -1,13 +1,12 @@
 class UsersController < ApplicationController
-  before_action :ensure_logged_in, only: [:account]
+  before_action :ensure_logged_in, only: [:account, :update, :change_password]
   # TODO Fix this
   # rescue_from ActiveRecord::Error::RecordNotFound with: :user_not_found
 
   #GET /users/:id or user_path
   def show
-    begin
-      @user = User.find(params[:id])
-    rescue
+    @user = User.find_by(id: params[:id])
+    unless @user
       redirect_to error_path(prev: request.original_url), flash: {error: "Could not find User \##{params[:id]}"}
     end
   end
@@ -21,7 +20,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(create_user_params)
     if @user.save
-      session[:user_id] = @user.id unless session[:user_id]
+      cookies.signed[:auth_token] = @user.auth_token
       redirect_to root_path
     else
       error_messages = @user.errors.full_messages.uniq
@@ -34,13 +33,16 @@ class UsersController < ApplicationController
   #PATCH/PUT /users/:id or user_path
   def update
     @user = User.find(params[:id])
+    unless @current_user == @user || @current_user.is_admin
+      return redirect_to(unauthorized_path)
+    end
     if @user.update(update_user_params)
       respond_to do |format|
         format.turbo_stream  # Renders users/update.turbo_stream.erb (replaces profile pic element)
         format.html { render :account }
       end
     else
-      #HANDLE THE FAILURE CASE
+      redirect_to account_users_path, alert: 'There was a problem updating your profile.'
     end
   end
 
@@ -96,7 +98,7 @@ class UsersController < ApplicationController
     else
       # Replaced: render :redirect_back (jquery_ujs JS window.location redirect)
       # Now: HTTP redirect to reset password page — Turbo follows it
-      redirect_to reset_password_users_path(params[:password_reset_token])
+      redirect_to forgot_password_users_path, alert: 'That password reset link has expired. Please request a new one.'
     end
   end
 

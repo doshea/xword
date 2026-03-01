@@ -1,5 +1,7 @@
 class CellsController < ApplicationController
+  before_action :ensure_logged_in
   before_action :find_object
+  before_action :ensure_owner_or_admin
 
   #PATCH/PUT /cells/:id or cell_path
   def update

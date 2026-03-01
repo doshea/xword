@@ -58,7 +58,7 @@ class Cell < ApplicationRecord
   end
 
   def to_s
-    "#{self.id}. Cell at [#{self.row}, #{self.col}], #{self.index.ordinalize} cell in Crossword #{self.crossword.id}#{" with cell number #{self.cell_num}" if self.cell_num}. #{"Is across start. " if self.is_across_start}#{"Is down start. " if self.is_down_start}"
+    "#{self.id}. Cell at [#{self.row}, #{self.col}], #{self.index.ordinalize} cell in Crossword #{self.crossword&.id}#{" with cell number #{self.cell_num}" if self.cell_num}. #{"Is across start. " if self.is_across_start}#{"Is down start. " if self.is_down_start}"
   end
 
   #TODO find a better name for this method
@@ -129,8 +129,8 @@ class Cell < ApplicationRecord
 
   def is_void!
     unless self.is_void
-      if self.update_attribute(:is_void, true)
-        self.letter = nil
+      if update_columns(is_void: true, letter: nil)
+        self.reload
         self.update_starts!
         self.right_cell.update_starts! if self.right_cell
         self.below_cell.update_starts! if self.below_cell
@@ -151,8 +151,10 @@ class Cell < ApplicationRecord
   #
   def toggle_void
     void_status = self.is_void
-    if self.update_attribute(:is_void, !void_status)
-      self.letter = nil if self.reload.is_void
+    new_attrs = { is_void: !void_status }
+    new_attrs[:letter] = nil if !void_status  # becoming void → clear letter
+    if update_columns(new_attrs)
+      self.reload
       self.update_starts!
       self.right_cell.update_starts! if self.right_cell
       self.below_cell.update_starts! if self.below_cell

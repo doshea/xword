@@ -23,17 +23,17 @@
 class User < ApplicationRecord
   has_secure_password
 
-  has_many :crosswords, inverse_of: :user
-  has_many :unpublished_crosswords, inverse_of: :user
-  has_many :comments, inverse_of: :user
-  has_many :solutions, inverse_of: :user
-  has_many :clues, inverse_of: :user
+  has_many :crosswords, inverse_of: :user, dependent: :nullify
+  has_many :unpublished_crosswords, inverse_of: :user, dependent: :nullify
+  has_many :comments, inverse_of: :user, dependent: :nullify
+  has_many :solutions, inverse_of: :user, dependent: :destroy
+  has_many :clues, inverse_of: :user, dependent: :nullify
 
-  has_many :favorite_puzzles, inverse_of: :user
+  has_many :favorite_puzzles, inverse_of: :user, dependent: :destroy
   has_many :favorites, through: :favorite_puzzles, source: :crossword
 
   has_many :solution_partnerings, inverse_of: :user, dependent: :destroy
-  has_many :team_solutions, through: :solution_partnerings, source: :user
+  has_many :team_solutions, through: :solution_partnerings, source: :solution
 
   #Weird workaround to generate bidirectional HABTM with same model
   has_many :friendship_ones, :class_name => 'Friendship', :foreign_key => :friend_id
@@ -126,7 +126,7 @@ class User < ApplicationRecord
   def friends_with?(user)
     friends.include?(user)
   end
-  def self.rand_unowned_puzzle
-    @current_user.present? ? Crossword.unowned(@current_user).order("RANDOM()").first : Crossword.order("RANDOM()").first
+  def self.rand_unowned_puzzle(user = nil)
+    user.present? ? Crossword.unowned(user).order("RANDOM()").first : Crossword.order("RANDOM()").first
   end
 end

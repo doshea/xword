@@ -12,4 +12,6 @@
 class FavoritePuzzle < ApplicationRecord
   belongs_to :crossword, inverse_of: :favorite_puzzles
   belongs_to :user, inverse_of: :favorite_puzzles
+
+  validates :crossword_id, uniqueness: { scope: :user_id }
 end

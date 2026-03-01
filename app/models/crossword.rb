@@ -223,7 +223,7 @@ class Crossword < ApplicationRecord
     end
     output += "\n#Down clues for #{pseudonym}\n"
     down_start_cells.each do |cell|
-      output += "#{pseudonym}.set_clue(true, #{cell.cell_num}, '#{cell.down_clue.content.gsub("\\","\\\\\\\\").gsub("'","\\\\'")}')\n"
+      output += "#{pseudonym}.set_clue(false, #{cell.cell_num}, '#{cell.down_clue.content.gsub("\\","\\\\\\\\").gsub("'","\\\\'")}')\n"
     end
     output += "\n"
     puts output
@@ -310,7 +310,7 @@ class Crossword < ApplicationRecord
     end
     if modify_cells
       letters.split('').each_with_index do |letter, i|
-        unless letter =~ / _/
+        unless letter =~ /[ _]/
           cell = cells.find_by_index(i+1)
           cell.letter = letter
           cell.save
@@ -340,12 +340,11 @@ class Crossword < ApplicationRecord
       end
       index += 1
     end
-    output
     if blocks
       output.gsub!('_', "\u2588")
-      output.gsub('?', "_")
-
+      output.gsub!('?', "_")
     end
+    output
   end
 
   #Takes an existing crossword puzzle and figures out all of the words in that crossword by cell.
@@ -412,10 +411,10 @@ class Crossword < ApplicationRecord
   end
 
   def format_for_api(include_comments=false)
-    acceptable_keys = [:title, :rows, :cols, :letters, :description, :circled, :published_at, :created_at]
+    acceptable_keys = [:title, :rows, :cols, :letters, :description, :circled, :created_at]
     hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
-    hash[:creator] = user.username
-    if include_comments && !(include_comments.downcase.in?(['false', 'f', '0']))
+    hash[:creator] = user&.username
+    if include_comments.present? && !(include_comments.to_s.downcase.in?(%w[false f 0]))
       hash[:comment_count] = comments.count
       hash[:comments] = comments.map{|c| c.format_for_api}
     end

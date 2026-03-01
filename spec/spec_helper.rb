@@ -58,10 +58,10 @@ RSpec.configure do |c|
 
   #allows me to skip callbacks when I want to using the skip_callbacks metadata tag
   c.before(:all, skip_callbacks: true) do
-    ActiveRecord::Base.skip_callbacks = true
+    ApplicationRecord.skip_callbacks = true
   end
   c.after(:all, skip_callbacks: true) do
-    ActiveRecord::Base.skip_callbacks = nil
+    ApplicationRecord.skip_callbacks = nil
   end
 
   # c.color_enabled = true

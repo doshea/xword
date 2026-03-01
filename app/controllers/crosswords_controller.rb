@@ -1,5 +1,6 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :publish, :remove_potential_word]
+  before_action :ensure_logged_in, only: [:publish, :remove_potential_word, :create_team, :favorite, :unfavorite]
   before_action :ensure_owner_or_admin, only: [:publish, :remove_potential_word]
 
   #GET /crosswords/:id or crossword_path
@@ -22,7 +23,7 @@ class CrosswordsController < ApplicationController
   #GET /crosswords/:id/publish or publish_crossword_path
   def publish
     @crossword.publish! unless @crossword.published?
-    redirect @crossword
+    redirect_to @crossword
   end
 
   #POST /crosswords/:id/team or create_team_crossword_path
@@ -62,7 +63,7 @@ class CrosswordsController < ApplicationController
       end
       render :show
     else
-      #some sort of error
+      redirect_to root_path, flash: { error: "That team session could not be found." }
     end
   end
 
@@ -79,7 +80,7 @@ class CrosswordsController < ApplicationController
   #POST /crosswords/:id/favorite or favorite_crossword_path
   def favorite
     if @crossword && @current_user
-      if @current_user.favorites.include? @crossword
+      if @current_user.favorites.exists?(@crossword.id)
         alert_js('You have already favorited that crossword.')
       else
         if FavoritePuzzle.create(user_id: @current_user.id, crossword_id: @crossword.id)
@@ -140,7 +141,7 @@ class CrosswordsController < ApplicationController
   def check_completion
     @correctness = (@crossword.letters == params[:letters])
     if @current_user
-      @solution = Solution.find(params[:solution_id])  
+      @solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
     end
   end
 

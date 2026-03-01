@@ -34,7 +34,7 @@ class UnpublishedCrossword < ApplicationRecord
       
       #clues
       across_clues = cw.cells.map{|c| c.across_clue.try(:content)}
-      down_clues = cw.cells.map{|c| c.across_clue.try(:content)}
+      down_clues = cw.cells.map{|c| c.down_clue.try(:content)}
       new_ucw.across_clues = across_clues
       new_ucw.down_clues = down_clues
 
@@ -112,6 +112,7 @@ class UnpublishedCrossword < ApplicationRecord
   def populate_arrays
     self.letters = [''] * rows * cols
     self.circles = ' ' * rows * cols
-    self.across_clues = self.down_clues = [nil] * rows * cols
+    self.across_clues = [nil] * rows * cols
+    self.down_clues = [nil] * rows * cols
   end
 end

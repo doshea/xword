@@ -1,5 +1,6 @@
 class CluesController < ApplicationController
   before_action :find_object
+  before_action :ensure_logged_in, only: [:update]
 
   #GET /clue/:id or clue_path
   def show

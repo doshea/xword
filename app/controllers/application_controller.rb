@@ -1,6 +1,6 @@
-include ActionView::Helpers::TextHelper
-
 class ApplicationController < ActionController::Base
+  include ActionView::Helpers::TextHelper
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     token = cookies.signed[:auth_token]
     @current_user = User.find_by_auth_token(token) if token
     # Legacy fallback: session-based auth (kept in case any old code still sets it).
-    @current_user ||= User.find(session[:user_id]) if session[:user_id].present?
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id].present?
   end
 
   def ensure_logged_in
@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   end
 
   def alert_js(s)
-    render js: "alert('#{s}');"
+    render js: "alert(#{s.to_json});"
   end
 
   #For use in finding generic classes and objects
@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
   def find_object
     instance_variable_set("@#{associated_class_string.underscore}", associated_class.find(params[:id]))
-    rescue ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound
     redirect_back fallback_location: root_path, flash: {error: "Sorry, that #{associated_class_string.underscore.humanize} could not be found."}
   end
   def found_object
@@ -45,7 +45,8 @@ class ApplicationController < ActionController::Base
   end
   #
   def ensure_owner_or_admin
-    if !(@current_user.is_admin or @current_user == found_object.user)
+    obj = found_object
+    unless @current_user && obj && (@current_user.is_admin || @current_user == obj.user)
       redirect_back(fallback_location: root_path, flash: {warning: "You do not own that #{associated_class_string.underscore.humanize}."})
     end
   end
