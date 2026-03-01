@@ -130,6 +130,14 @@ rspec-rails: 4.1.2 → 8.0.3
   - 13 `.js.erb` files → `.turbo_stream.erb`; 12 `.js.erb` dead code deleted; 5 kept (jQuery AJAX)
   - All `remote: true` forms → `form_with`; method:delete links → `data: { turbo_method: }`
   - `spec_helper.rb`: added `infer_spec_type_from_file_location!` + `Shoulda::Matchers.configure`
+- **Front-end migration Phase 2** (Feb 2026): Foundation Icons → inline Lucide SVGs
+  - `app/helpers/icon_helper.rb`: lazy `SVG_CACHE`, `icon(name, size:, class:, style:, title:)` helper
+  - 34 SVG files in `app/assets/images/icons/`; `.gitignore` exception for `icons/` dir
+- **Front-end migration Phase 3** (Feb 2026): Foundation 5 grid → xw- CSS Grid
+  - 35 HAML files: `.row`→`.xw-container.xw-grid`/`.xw-grid`, `.large-N.columns`→`.xw-col-12.xw-lg-N`,
+    `.medium-N.columns`→`.xw-col-12.xw-md-N`, `.small-N.columns`→`.xw-col-N`, `.large-12.columns`→`.xw-col-full`
+  - Admin forms: `html: { class: 'xw-col-full xw-grid' }` on `form_with` for column children
+  - Foundation grid CSS still in vendor bundle; removed in Phase 6
 
 ### Changes (Mar 2026)
 - **Race conditions fixed**: `populate_cells` uses atomic `INSERT … RETURNING id`; team key uses
