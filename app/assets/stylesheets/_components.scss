@@ -308,9 +308,8 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
   padding: var(--space-8);
-  max-width: 36rem;   // SassC (LibSass) can't evaluate CSS min() — use two-property equivalent
+  max-width: 36rem;
   width: 90vw;
-  width: 100%;
   background-color: var(--color-surface);
   color: var(--color-text);
 

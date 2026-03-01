@@ -1,11 +1,6 @@
-$input-include-glowing-effect: false;
-
 html {
   background-color: gray;
   background: url("<%= asset_path 'welcome/couch_cafe.jpg' %>") no-repeat center center gray;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
   background-size: cover;
   height: 100%;
 }
@@ -26,9 +21,7 @@ footer#footer {
   margin: 5em auto;
   width: 23.3em;
   height: 29.5em;
-  -webkit-box-shadow: 0.5em 0.625em 1.8em #000;
-  -moz-box-shadow: 0.5em 0.625em 1.8em #000;
-  box-shadow: 0.5em 0.625em 1.8em #000;
+  box-shadow: var(--shadow-chalkboard);
   color: lightgrey;
   text-align: center;
   position: relative;
@@ -82,7 +75,6 @@ input.chalkboard-input {
   color: white;
   width: 65%;
   margin: 0;
-  -webkit-box-shadow: none;
   box-shadow: none;
   display: inline-block;
   &:focus {
