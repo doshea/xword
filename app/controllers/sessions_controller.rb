@@ -8,7 +8,12 @@ class SessionsController < ApplicationController
   # POST /login or login_path
   def create
     user = User.find_by_username(params[:username])
-    if user.present? && user.authenticate(params[:password])
+    authenticated = begin
+      user.present? && user.authenticate(params[:password])
+    rescue BCrypt::Errors::InvalidHash
+      false
+    end
+    if authenticated
       # session[:user_id] = user.id
       if params[:remember_me]
         cookies.permanent[:auth_token] = user.auth_token
