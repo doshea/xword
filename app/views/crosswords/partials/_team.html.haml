@@ -1,10 +1,8 @@
-= javascript_include_tag "http://js.pusher.com/2.1/pusher.min.js"
+= javascript_include_tag 'actioncable'
 - solver_id = (0..5).map{random_char}.join('')
 - display_name = @current_user ? (@current_user.first_name || @current_user.username) : 'anon_'+solver_id
-- channel = "#{@crossword.id}_#{@solution.key}"
 :javascript
-  var pusher = new Pusher("#{Pusher.key}");
-  var channel = "#{channel}";
+  var team_key = "#{@solution.key}";
   team_app = {};
   team_app.display_name = "#{display_name}";
   team_app.solver_id = "#{solver_id}";
@@ -36,4 +34,4 @@
   / Wrapped in #team-chat-form so send_team_chat.turbo_stream.erb can replace it to reset the form
   / Extracted to partial so turbo_stream can re-render a blank copy
   #team-chat-form
-    = render partial: 'crosswords/partials/team_chat_form', locals: { solution: @solution, display_name: display_name, channel: channel }
+    = render partial: 'crosswords/partials/team_chat_form', locals: { solution: @solution, display_name: display_name }

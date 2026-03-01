@@ -24,7 +24,7 @@ A Rails web app for solving and creating crossword puzzles. Features include:
 - NYT crossword importing
 - User accounts, friendships, favorites, comments
 - Admin panel for content management
-- Real-time collaboration via ActionCable + Pusher
+- Real-time collaboration via ActionCable
 - Image uploads to AWS S3 via CarrierWave + Fog
 
 ## Tech Stack
@@ -158,7 +158,7 @@ rspec-rails: 4.1.2 → 8.0.3
   comments, crosswords, solutions, solution_partnerings, users (auth_token unique), etc.
 - **Signed auth cookies**: `cookies[:auth_token]` → `cookies.signed[:auth_token]` (HMAC-verified);
   session-based auth still works as legacy fallback
-- **Test suite fully filled out**: 308 examples, 0 failures, 3 pending. All controller specs (9 main + 6
+- **Test suite fully filled out**: 380 examples, 0 failures, 3 pending. All controller specs (9 main + 6
   admin) and model behavior specs written from scratch. Key patterns: `request.accept = Mime[:turbo_stream].to_s`
   for turbo_stream actions; `request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"` for `.js.erb`/`format.js`
   actions; `allow(Word).to receive(:word_match).and_return(...)` to stub external HTTP in words#match.
@@ -174,6 +174,11 @@ rspec-rails: 4.1.2 → 8.0.3
   is found**, not just the one that surfaced.
 - **Orphaned partials deleted**: `_cell.html.haml` (cells rendered inline in _solve_crossword) and
   `_mini_pic_svg.html.haml` (replaced by image previews) had no callers.
+- **Pusher → ActionCable migration**: team collaboration (6 real-time events: change_cell, join/leave_puzzle,
+  roll_call, chat_message, outline_team_clue) migrated from Pusher gem + external JS to ActionCable
+  WebSockets. New `TeamsChannel` streams from `"team_#{params[:team_key]}"`. `pusher` gem removed;
+  `_team.html.haml` loads `actioncable.js` instead of `pusher.min.js`; `channel` param removed from all
+  AJAX payloads and chat form. 13 new controller specs cover all team actions.
 
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
@@ -217,7 +222,7 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **Pending tests (3)**: login feature specs (home-page dropdown login) — require a JS-capable
   Capybara driver; skipped with `xcontext`
 
-Run tests: `bundle exec rspec`  # 308 examples, 0 failures, 3 pending
+Run tests: `bundle exec rspec`  # 380 examples, 0 failures, 3 pending
 
 ## Notable Gems and Their Roles
 
@@ -229,7 +234,6 @@ Run tests: `bundle exec rspec`  # 308 examples, 0 failures, 3 pending
 | `carrierwave` | 3.1.2 | Image uploads to S3 |
 | `fog-aws` | 3.33.1 | AWS S3 backend for CarrierWave |
 | `rmagick` | 5.5.0 | Image resizing |
-| `pusher` | 1.3.1 | Real-time push notifications |
 | `redis` | 5.4.1 | ActionCable WebSocket backend |
 | `bcrypt` | 3.1.11 | Password hashing |
 | `haml` | 7.2.0 | View templates |

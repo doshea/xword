@@ -42,6 +42,108 @@ describe SolutionsController do
     end
   end
 
+  describe 'PATCH #team_update' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    context 'when logged in' do
+      before { log_in(user) }
+
+      it 'broadcasts change_cell via ActionCable and returns 200' do
+        expect(ActionCable.server).to receive(:broadcast)
+          .with("team_#{team_solution.key}", hash_including(event: 'change_cell'))
+        patch :team_update, params: {
+          id: team_solution.id, row: '0', col: '1', letter: 'A',
+          solver_id: 'abc', red: '100', green: '200', blue: '50'
+        }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when not logged in' do
+      it 'redirects to login' do
+        patch :team_update, params: { id: team_solution.id, row: '0', col: '1', letter: 'A', solver_id: 'abc' }
+        expect(response).to redirect_to(account_required_path)
+      end
+    end
+  end
+
+  describe 'POST #join_team' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before { log_in(user) }
+
+    it 'broadcasts join_puzzle via ActionCable' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(event: 'join_puzzle'))
+      post :join_team, params: {
+        id: team_solution.id, display_name: 'Dylan', solver_id: 'abc',
+        red: '100', green: '200', blue: '50'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'POST #leave_team' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before { log_in(user) }
+
+    it 'broadcasts leave_puzzle via ActionCable' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(event: 'leave_puzzle'))
+      post :leave_team, params: { id: team_solution.id, solver_id: 'abc' }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'POST #roll_call' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before { log_in(user) }
+
+    it 'broadcasts roll_call via ActionCable' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(event: 'roll_call'))
+      post :roll_call, params: { id: team_solution.id }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'POST #send_team_chat' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before do
+      log_in(user)
+      request.accept = Mime[:turbo_stream].to_s
+    end
+
+    it 'broadcasts chat_message via ActionCable' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(event: 'chat_message'))
+      post :send_team_chat, params: {
+        id: team_solution.id, display_name: 'Dylan',
+        avatar: '/default.jpg', chat: 'Hello team!'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'POST #show_team_clue' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before { log_in(user) }
+
+    it 'broadcasts outline_team_clue via ActionCable' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(event: 'outline_team_clue'))
+      post :show_team_clue, params: {
+        id: team_solution.id, cell_num: '1', across: 'true',
+        solver_id: 'abc', red: '100', green: '200', blue: '50'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe 'DELETE #destroy' do
     context 'as the solution owner' do
       before { log_in(user); solution }

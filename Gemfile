@@ -8,8 +8,6 @@ gem 'httparty'
 
 gem 'multi_json'
 
-gem 'pusher'
-
 #required server for ActionCable
 gem 'puma', '~> 7.0'
 gem 'redis', '~> 5.0'

@@ -1,5 +1,5 @@
 // Converted from team_funcs.js.coffee.erb
-// Pusher-based real-time team solving: sends/receives cell updates, roster changes, chat, and clue highlights.
+// ActionCable-based real-time team solving: sends/receives cell updates, roster changes, chat, and clue highlights.
 // display_name and solver_id are pre-set on window.team_app by the view before this file loads.
 
 window.team_app = {
@@ -31,10 +31,10 @@ window.team_app = {
   },
 
   //------------------
-  // PUSHER SENDS
+  // ACTIONCABLE SENDS
   //------------------
 
-  // PATCH → server → Pusher: broadcasts this solver's cell change to all teammates
+  // PATCH → server → ActionCable: broadcasts this solver's cell change to all teammates
   send_team_cell: function($cell, letter) {
     var token = $('#crossword').data('auth-token');
     $.ajax({
@@ -45,7 +45,6 @@ window.team_app = {
         letter:    letter,
         col:       $cell.data('col'),
         row:       $cell.data('row'),
-        channel:   channel,
         solver_id: team_app.solver_id,
         red:       team_app.solver_red,
         green:     team_app.solver_green,
@@ -54,7 +53,7 @@ window.team_app = {
     });
   },
 
-  // POST → server → Pusher: announces this solver joined; teammates add to roster
+  // POST → server → ActionCable: announces this solver joined; teammates add to roster
   join_team: function() {
     var token = $('#crossword').data('auth-token');
     $.ajax({
@@ -62,7 +61,6 @@ window.team_app = {
       url:  '/solutions/' + solve_app.solution_id + '/join_team',
       data: {
         authenticity_token: token,
-        channel:      channel,
         display_name: team_app.display_name,
         red:          team_app.solver_red,
         green:        team_app.solver_green,
@@ -72,7 +70,7 @@ window.team_app = {
     });
   },
 
-  // POST → server → Pusher: announces departure; teammates remove from roster
+  // POST → server → ActionCable: announces departure; teammates remove from roster
   leave_team: function() {
     var token = $('#crossword').data('auth-token');
     $.ajax({
@@ -80,24 +78,23 @@ window.team_app = {
       url:  '/solutions/' + solve_app.solution_id + '/leave_team',
       data: {
         authenticity_token: token,
-        channel:   channel,
         solver_id: team_app.solver_id
       }
     });
   },
 
-  // POST → server → Pusher: asks all participants to re-announce themselves
+  // POST → server → ActionCable: asks all participants to re-announce themselves
   // TODO: Figure out why this isn't properly getting all teammates
   roll_call: function() {
     var token = $('#crossword').data('auth-token');
     $.ajax({
       type: 'POST',
       url:  '/solutions/' + solve_app.solution_id + '/roll_call',
-      data: { authenticity_token: token, channel: channel }
+      data: { authenticity_token: token }
     });
   },
 
-  // POST → server → Pusher: broadcasts which clue this solver is currently viewing
+  // POST → server → ActionCable: broadcasts which clue this solver is currently viewing
   // TODO: Figure out why this isn't properly getting all teammates
   show_team_clue: function() {
     var token    = $('#crossword').data('auth-token');
@@ -108,7 +105,6 @@ window.team_app = {
       url:  '/solutions/' + solve_app.solution_id + '/show_team_clue/',
       data: {
         authenticity_token: token,
-        channel:   channel,
         cell_num:  cell_num,
         across:    across,
         red:       team_app.solver_red,
@@ -120,7 +116,7 @@ window.team_app = {
   },
 
   //------------------
-  // PUSHER RECEIVES
+  // ACTIONCABLE RECEIVES
   //------------------
 
   // Another solver typed a letter: update the cell and play a throttled clack sound
@@ -246,16 +242,29 @@ window.team_app = {
 //------------------
 // DOCUMENT LOAD
 //------------------
-// Subscribe to the Pusher channel and bind all team event handlers
+// Subscribe to the ActionCable channel and dispatch team event handlers
 $(function() {
   document.getElementById('team-explanation').showModal();
-  var listening_channel = pusher.subscribe(channel);
-  listening_channel.bind('change_cell',       team_app.receive_team_cell);
-  listening_channel.bind('join_puzzle',       team_app.welcome_teammate);
-  listening_channel.bind('leave_puzzle',      team_app.farewell_teammate);
-  listening_channel.bind('roll_call',         team_app.join_team);
-  listening_channel.bind('chat_message',      team_app.receive_chat);
-  listening_channel.bind('outline_team_clue', team_app.outline_team_clue);
+
+  var EVENT_HANDLERS = {
+    change_cell:       team_app.receive_team_cell,
+    join_puzzle:       team_app.welcome_teammate,
+    leave_puzzle:      team_app.farewell_teammate,
+    roll_call:         team_app.join_team,
+    chat_message:      team_app.receive_chat,
+    outline_team_clue: team_app.outline_team_clue
+  };
+
+  ActionCable.createConsumer().subscriptions.create(
+    { channel: 'TeamsChannel', team_key: team_key },
+    {
+      received: function(data) {
+        var handler = EVENT_HANDLERS[data.event];
+        if (handler) handler(data);
+      }
+    }
+  );
+
   team_app.roll_call();
   $('#team-chat .row-topper').on('click', team_app.toggle_chat);
   $('.clue').on('click', team_app.show_team_clue);

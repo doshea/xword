@@ -48,7 +48,7 @@ class SolutionsController < ApplicationController
                 blue: params[:blue]
                 }
 
-    Pusher.trigger(team_channel(solution), 'change_cell', data)
+    ActionCable.server.broadcast(team_channel(solution), { event: 'change_cell' }.merge(data))
 
     head :ok
   end
@@ -63,7 +63,7 @@ class SolutionsController < ApplicationController
             green: params[:green],
             blue: params[:blue]
             }
-    Pusher.trigger(team_channel(solution), 'join_puzzle', data)
+    ActionCable.server.broadcast(team_channel(solution), { event: 'join_puzzle' }.merge(data))
     head :ok
   end
 
@@ -71,7 +71,7 @@ class SolutionsController < ApplicationController
   def leave_team
     solution = Solution.find(params[:id])
     data = {solver_id: params[:solver_id]}
-    Pusher.trigger(team_channel(solution), 'leave_puzzle', data)
+    ActionCable.server.broadcast(team_channel(solution), { event: 'leave_puzzle' }.merge(data))
     head :ok
   end
 
@@ -79,7 +79,7 @@ class SolutionsController < ApplicationController
   def roll_call
     solution = Solution.find(params[:id])
     data = {}
-    Pusher.trigger(team_channel(solution), 'roll_call', data)
+    ActionCable.server.broadcast(team_channel(solution), { event: 'roll_call' }.merge(data))
     head :ok
   end
 
@@ -89,7 +89,7 @@ class SolutionsController < ApplicationController
     data = {display_name: params[:display_name],
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
-    Pusher.trigger(team_channel(@solution), 'chat_message', data)
+    ActionCable.server.broadcast(team_channel(@solution), { event: 'chat_message' }.merge(data))
     respond_to do |format|
       format.turbo_stream  # Renders solutions/send_team_chat.turbo_stream.erb (resets team chat form)
       format.html { redirect_to team_crossword_path(@solution.crossword, @solution.key) }
@@ -106,7 +106,7 @@ class SolutionsController < ApplicationController
                 blue: params[:blue],
                 solver_id: params[:solver_id]
                 }
-    Pusher.trigger(team_channel(solution), 'outline_team_clue', data)
+    ActionCable.server.broadcast(team_channel(solution), { event: 'outline_team_clue' }.merge(data))
     head :ok
   end
 
@@ -123,7 +123,7 @@ class SolutionsController < ApplicationController
 
   private
 
-  # Derive the Pusher channel name from the solution's key rather than trusting user input.
+  # Derive the ActionCable channel name from the solution's key rather than trusting user input.
   def team_channel(solution)
     "team_#{solution.key}"
   end
