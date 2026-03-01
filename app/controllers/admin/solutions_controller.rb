@@ -15,9 +15,9 @@ class Admin::SolutionsController < ApplicationController
   # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @solution.update(update_solution_params)
-      redirect_to admin_solutions_path, notice: 'Solution updated.'
+      redirect_to admin_solutions_path, flash: { success: 'Solution updated.' }
     else
-      redirect_to edit_admin_solution_path(@solution), alert: 'Error updating solution.'
+      redirect_to edit_admin_solution_path(@solution), flash: { error: 'Error updating solution.' }
     end
   end
 
@@ -25,9 +25,9 @@ class Admin::SolutionsController < ApplicationController
   # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @solution.destroy
-      redirect_to admin_solutions_path, notice: 'Solution deleted.'
+      redirect_to admin_solutions_path, flash: { success: 'Solution deleted.' }
     else
-      redirect_to admin_solutions_path, alert: 'Error deleting solution.'
+      redirect_to admin_solutions_path, flash: { error: 'Error deleting solution.' }
     end
   end
 

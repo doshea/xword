@@ -16,9 +16,9 @@ class Admin::WordsController < ApplicationController
   # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @word.update(update_word_params)
-      redirect_to admin_words_path, notice: 'Word updated.'
+      redirect_to admin_words_path, flash: { success: 'Word updated.' }
     else
-      redirect_to edit_admin_word_path(@word), alert: 'Error updating word.'
+      redirect_to edit_admin_word_path(@word), flash: { error: 'Error updating word.' }
     end
   end
 
@@ -26,9 +26,9 @@ class Admin::WordsController < ApplicationController
   # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @word.destroy
-      redirect_to admin_words_path, notice: 'Word deleted.'
+      redirect_to admin_words_path, flash: { success: 'Word deleted.' }
     else
-      redirect_to admin_words_path, alert: 'Error deleting word.'
+      redirect_to admin_words_path, flash: { error: 'Error deleting word.' }
     end
   end
 

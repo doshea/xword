@@ -15,9 +15,9 @@ class Admin::UsersController < ApplicationController
   # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @user.update(update_user_params)
-      redirect_to admin_users_path, notice: 'User updated.'
+      redirect_to admin_users_path, flash: { success: 'User updated.' }
     else
-      redirect_to edit_admin_user_path(@user), alert: 'Error updating user.'
+      redirect_to edit_admin_user_path(@user), flash: { error: 'Error updating user.' }
     end
   end
 
@@ -25,9 +25,9 @@ class Admin::UsersController < ApplicationController
   # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @user.destroy
-      redirect_to admin_users_path, notice: 'User deleted.'
+      redirect_to admin_users_path, flash: { success: 'User deleted.' }
     else
-      redirect_to admin_users_path, alert: 'Error deleting user.'
+      redirect_to admin_users_path, flash: { error: 'Error deleting user.' }
     end
   end
 

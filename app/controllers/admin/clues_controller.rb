@@ -18,9 +18,9 @@ class Admin::CluesController < ApplicationController
   # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @clue.update(update_clue_params)
-      redirect_to admin_clues_path, notice: 'Clue updated.'
+      redirect_to admin_clues_path, flash: { success: 'Clue updated.' }
     else
-      redirect_to edit_admin_clue_path(@clue), alert: 'Error updating clue.'
+      redirect_to edit_admin_clue_path(@clue), flash: { error: 'Error updating clue.' }
     end
   end
 
@@ -28,9 +28,9 @@ class Admin::CluesController < ApplicationController
   # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @clue.destroy
-      redirect_to admin_clues_path, notice: 'Clue deleted.'
+      redirect_to admin_clues_path, flash: { success: 'Clue deleted.' }
     else
-      redirect_to admin_clues_path, alert: 'Error deleting clue.'
+      redirect_to admin_clues_path, flash: { error: 'Error deleting clue.' }
     end
   end
 

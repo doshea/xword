@@ -16,9 +16,9 @@ class Admin::CommentsController < ApplicationController
   # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @comment.update(update_comment_params)
-      redirect_to admin_comments_path, notice: 'Comment updated.'
+      redirect_to admin_comments_path, flash: { success: 'Comment updated.' }
     else
-      redirect_to edit_admin_comment_path(@comment), alert: 'Error updating comment.'
+      redirect_to edit_admin_comment_path(@comment), flash: { error: 'Error updating comment.' }
     end
   end
 
@@ -26,9 +26,9 @@ class Admin::CommentsController < ApplicationController
   # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @comment.destroy
-      redirect_to admin_comments_path, notice: 'Comment deleted.'
+      redirect_to admin_comments_path, flash: { success: 'Comment deleted.' }
     else
-      redirect_to admin_comments_path, alert: 'Error deleting comment.'
+      redirect_to admin_comments_path, flash: { error: 'Error deleting comment.' }
     end
   end
 

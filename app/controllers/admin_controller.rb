@@ -52,9 +52,9 @@ class AdminController < ApplicationController
     if params[:nyt_text]
       Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text]))
       Crossword.smart_record(params[:nyt_text])
-      redirect_to admin_manual_nyt_path, notice: 'NYT puzzle added.'
+      redirect_to admin_manual_nyt_path, flash: { success: 'NYT puzzle added.' }
     else
-      redirect_to admin_manual_nyt_path, alert: 'No NYT text provided.'
+      redirect_to admin_manual_nyt_path, flash: { error: 'No NYT text provided.' }
     end
   end
 

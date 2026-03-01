@@ -15,9 +15,9 @@ class Admin::CrosswordsController < ApplicationController
   # Replaced: alert_js (jquery_ujs JS response) → redirect (Turbo follows redirect) #
   def update
     if @crossword.update(update_crossword_params)
-      redirect_to admin_crosswords_path, notice: 'Crossword updated.'
+      redirect_to admin_crosswords_path, flash: { success: 'Crossword updated.' }
     else
-      redirect_to edit_admin_crossword_path(@crossword), alert: 'Error updating crossword.'
+      redirect_to edit_admin_crossword_path(@crossword), flash: { error: 'Error updating crossword.' }
     end
   end
 
@@ -25,16 +25,16 @@ class Admin::CrosswordsController < ApplicationController
   # Replaced: alert_js + destroy.js.erb DOM removal → redirect to index (Turbo follows) #
   def destroy
     if @crossword.destroy
-      redirect_to admin_crosswords_path, notice: 'Crossword deleted.'
+      redirect_to admin_crosswords_path, flash: { success: 'Crossword deleted.' }
     else
-      redirect_to admin_crosswords_path, alert: 'Error deleting crossword.'
+      redirect_to admin_crosswords_path, flash: { error: 'Error deleting crossword.' }
     end
   end
 
   # Replaced: button_to with remote: true → now button_to redirects via Turbo
   def generate_preview
     @crossword.generate_preview
-    redirect_to edit_admin_crossword_path(@crossword), notice: 'Preview generated.'
+    redirect_to edit_admin_crossword_path(@crossword), flash: { success: 'Preview generated.' }
   end
 
   private

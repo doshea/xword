@@ -23,7 +23,7 @@ class AccountController < ApplicationController
       cookies.signed[:auth_token] = @user.auth_token
       redirect_to account_verified_path
     else
-      redirect_to root_path, alert: 'Invalid verification link.'
+      redirect_to root_path, flash: { error: 'Invalid verification link.' }
     end
   end
 

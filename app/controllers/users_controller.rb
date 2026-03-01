@@ -42,7 +42,7 @@ class UsersController < ApplicationController
         format.html { render :account }
       end
     else
-      redirect_to account_users_path, alert: 'There was a problem updating your profile.'
+      redirect_to account_users_path, flash: { error: 'There was a problem updating your profile.' }
     end
   end
 
@@ -90,7 +90,7 @@ class UsersController < ApplicationController
         # Changing the password invalidates the old signed token automatically (password_salt changes)
         # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
         # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
-        redirect_to account_users_path, notice: 'Password updated successfully.'
+        redirect_to account_users_path, flash: { success: 'Password updated successfully.' }
       else
         @errors = user.errors.full_messages.uniq
         respond_to do |format|
@@ -101,7 +101,7 @@ class UsersController < ApplicationController
     else
       # Replaced: render :redirect_back (jquery_ujs JS window.location redirect)
       # Now: HTTP redirect to reset password page — Turbo follows it
-      redirect_to forgot_password_users_path, alert: 'That password reset link has expired. Please request a new one.'
+      redirect_to forgot_password_users_path, flash: { error: 'That password reset link has expired. Please request a new one.' }
     end
   end
 
@@ -111,7 +111,7 @@ class UsersController < ApplicationController
       if @current_user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
         # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
         # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
-        redirect_to account_users_path, notice: 'Password updated successfully.'
+        redirect_to account_users_path, flash: { success: 'Password updated successfully.' }
       else
         @errors = @current_user.errors.full_messages.uniq
         respond_to do |format|
