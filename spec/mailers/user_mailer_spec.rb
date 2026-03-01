@@ -12,8 +12,8 @@ describe UserMailer do
       expect(mail.subject).to eq "Reset your Crossword Caf\u00e9 password"
     end
 
-    it 'sends from info@crossword-cafe.com' do
-      expect(mail.from).to eq ['info@crossword-cafe.com']
+    it 'sends from dylan@crossword-cafe.org' do
+      expect(mail.from).to eq ['dylan@crossword-cafe.org']
     end
 
     it 'includes the username in the body' do

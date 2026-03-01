@@ -1,9 +1,9 @@
-ActionMailer::Base.smtp_settings ={
-  :address              => "smtpout.secureserver.net",
-  :port                 => 587,
-  :domain               => 'crossword-cafe.com',
-  :user_name            => 'info@crossword-cafe.com',
-  :password             => ENV['XWORD_EMAIL_PWD'],
-  :authentication       => 'plain',
-  :enable_starttls_auto => true
+ActionMailer::Base.smtp_settings = {
+  address:              'smtp.gmail.com',
+  port:                 587,
+  domain:               'crossword-cafe.org',
+  user_name:            'dylan@crossword-cafe.org',
+  password:             ENV['XWORD_EMAIL_PWD'],
+  authentication:       'plain',
+  enable_starttls_auto: true
 }

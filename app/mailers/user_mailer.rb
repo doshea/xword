@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   layout 'default_mail'
 
-  full_sender = "Crossword Caf\u00e9 <info@crossword-cafe.com>"
+  full_sender = "Crossword Caf\u00e9 <dylan@crossword-cafe.org>"
   default from: full_sender
 
   def reset_password_email(user)
