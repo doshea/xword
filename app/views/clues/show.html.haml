@@ -3,4 +3,4 @@
   %hr
   %h5 Featured #{pluralize(@count, 'time')} in #{pluralize(@crosswords.length, 'puzzle')}:
   - @crosswords.each do |crossword|
-    = render partial: 'crosswords/partials/crossword_tab', locals: {crossword: crossword}
+    = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
