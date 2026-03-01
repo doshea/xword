@@ -2,12 +2,14 @@
 *,
 *::before,
 *::after  { box-sizing: border-box; }
-body      { margin: 0; }
+body      { margin: 0; font-family: var(--font-body); color: var(--color-text); }
 img, svg  { display: block; max-width: 100%; }
 button,
 input,
 select,
 textarea  { font: inherit; }
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
 
 // Focus rings: visible for keyboard users, hidden for mouse/touch
 :focus-visible {
