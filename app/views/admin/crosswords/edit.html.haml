@@ -24,7 +24,7 @@
       = f.label :letters
       = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, style: 'text-transform: uppercase;'
     .xw-col-full
-      = f.button class: 'button', data: {disable_with: 'Updating...'}
+      = f.button class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
   .xw-col-full
     / Replaced: button_to with remote: true → button_to without (Turbo intercepts form; controller redirects)
     = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch

@@ -23,7 +23,7 @@
         You're not working on any puzzles right now. Why not start a...
         %br
         %br
-      = link_to new_unpublished_crossword_path, class: 'foundation button success' do
+      = link_to new_unpublished_crossword_path, class: 'xw-btn xw-btn--success' do
         = icon('pencil', class: 'larger')
         New Puzzle
     - if @published.try(:any?)

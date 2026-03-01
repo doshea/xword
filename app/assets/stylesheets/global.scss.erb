@@ -132,3 +132,7 @@ input:focus::-webkit-input-placeholder
 {
   color: transparent;
 }
+
+// Foundation typography survival shims (ensure Phase 6 doesn't regress)
+.lead  { font-size: 1.21875rem; line-height: var(--leading-relaxed); }
+.subheader { color: var(--color-text-muted); font-weight: var(--weight-normal); }

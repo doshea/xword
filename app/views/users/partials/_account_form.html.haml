@@ -40,7 +40,7 @@
           = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH
           = f.label :location
           = f.text_field :location, placeholder: 'Lost in thought'
-          = f.submit 'Update Account', class: 'button'
+          = f.submit 'Update Account', class: 'xw-btn'
     #panel2.content
       = form_tag root_path do
         %fieldset
@@ -54,14 +54,14 @@
     #panel4.content
       / = form_tag root_path do
       %fieldset
-        #password-errors.alert-box.alert.hidden{data: {alert: true}}
+        #password-errors.xw-alert.xw-alert--error.hidden
           %p
           %a.slide-close{href: "#"} &times;
-        #password-success.alert-box.success.hidden{data: {alert: true}} Password updated!
+        #password-success.xw-alert.xw-alert--success.hidden Password updated!
         %legend Change Password
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
         = form_with(url: change_password_users_path, method: :post) do |f|
           = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
           = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
           = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH
-          = submit_tag 'Change Password', class: 'button', data: {disable_with: 'Changing...'}
+          = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing...'}

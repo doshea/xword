@@ -19,7 +19,7 @@
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
-      %a#edit-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}, aria: {label: 'Quicksave'}}
+      %a#edit-save.xw-btn.xw-btn--sm.xw-btn--secondary{href: '#', title: 'Quicksave', aria: {label: 'Quicksave'}}
         = icon('save')
 
 %section.xw-container.xw-grid#solve-area{aria: {label: 'Edit puzzle grid'}}
@@ -46,7 +46,7 @@
         = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
   .xw-col-12.xw-lg-6
   .xw-col-12.xw-lg-3
-    = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
+    = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'xw-btn', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
 -# NON-INLINE ELEMENTS
 
 %section#idea-container.slide-up-container

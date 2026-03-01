@@ -1,13 +1,12 @@
-- alert_boxes = {error: 'alert', warning: 'warning', success: 'success', info: 'info', secondary: 'secondary'}
-- alert_boxes.each do |alert_sym, alert_s|
+- alert_boxes = {error: 'xw-alert--error', warning: 'xw-alert--warning', success: 'xw-alert--success', info: 'xw-alert--info', secondary: 'xw-alert--info'}
+- alert_boxes.each do |alert_sym, alert_modifier|
   - if flash[alert_sym]
-    .alert-box{data: {alert: true}, class: alert_s}
+    .xw-alert{data: {controller: 'alert'}, class: alert_modifier}
       .center
         = flash[alert_sym]
-        = link_to '#', class: 'close' do
-          &times;
+      %button.xw-alert__dismiss{data: {action: 'click->alert#dismiss'}, aria: {label: 'Dismiss'}} &times;
 - if flash[:form_error]
-  .alert-box.alert.center{data: {alert: true}}
+  .xw-alert.xw-alert--error.center{data: {controller: 'alert'}}
     %p.no-margin.larger.underline
       %u= flash[:form_error]
     - if flash[:form_errors] && flash[:form_errors].any?
@@ -15,5 +14,4 @@
         - flash[:form_errors].each do |err|
           %li
             = err
-    = link_to '#', class: 'close' do
-      &times;
+    %button.xw-alert__dismiss{data: {action: 'click->alert#dismiss'}, aria: {label: 'Dismiss'}} &times;

@@ -5,11 +5,11 @@
   #profile-join Joined: #{@user.created_at.strftime("%b %d, %Y")}
   - if @current_user && (@current_user != @user)
     - if @current_user.friends.include? @user
-      %button.button.success.small.radius
+      %button.xw-btn.xw-btn--success.xw-btn--sm
         = icon('check')
         Friends!
     - else
-      %button.button.hollow.success.radius Not Friends
+      %button.xw-btn.xw-btn--ghost Not Friends
   #profile-stats
     %h5.center Stats
     %hr

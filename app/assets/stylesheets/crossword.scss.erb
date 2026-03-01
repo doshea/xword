@@ -2,7 +2,7 @@
 @import 'buttons';
 @import 'global_mixins';
 
-#body > .row {
+#body > .xw-container {
   padding: 0.5em 1em 0 1em;
   max-width: $row-width+2em;
 }
@@ -191,19 +191,6 @@ table#crossword {
     width: 49%;
     margin: 0;
     outline: none;
-    // Color scheme used for the new buttons
-    // http://colorschemedesigner.com/#3o61Tq5JJw0w0
-    &.warning {
-      @include button-style(#FFC68D);
-    }
-  }
-  .button {
-    &.success {
-      @include button-style(#83EDA3);
-      &.split span:before {
-        border-color: #333 transparent transparent transparent;
-      }
-    }
   }
   hr {
     margin: 0.2em 0;

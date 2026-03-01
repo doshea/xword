@@ -2,7 +2,7 @@
 = content_for :head do
   = stylesheet_link_tag :pagination
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Solutions'} do
-  = will_paginate @solutions, class: 'smaller pagination'
+  = will_paginate @solutions, class: 'xw-pagination'
   %table
     %thead
       %tr

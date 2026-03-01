@@ -560,6 +560,40 @@
 
 
 // ---------------------------------------------------------------------------
+// PAGINATION — .xw-pagination (will_paginate wrapper class)
+// ---------------------------------------------------------------------------
+
+.xw-pagination {
+  display: flex;
+  gap: var(--space-1);
+  list-style: none;
+  margin: var(--space-4) 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+
+  li {
+    a, span {
+      display: block;
+      padding: var(--space-1) var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      &:hover { background-color: var(--color-surface-alt); }
+    }
+    &.current span {
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+    &.disabled span { opacity: 0.4; cursor: not-allowed; }
+    &.prev a, &.next a { font-weight: var(--weight-medium); }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
 // SECTION WRAPPER — replaces .row-bookend / .row-topper / .row-stopper
 // ---------------------------------------------------------------------------
 // Used in Phase 5 when black bar pattern is replaced.

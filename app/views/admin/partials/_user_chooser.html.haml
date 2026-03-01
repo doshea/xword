@@ -22,6 +22,6 @@
           %td= user.is_admin
           %td= user.created_at.strftime("%b %d, %Y")
           %td= user.updated_at.strftime("%b %d, %Y")
-          %td= button_to('Clone', admin_clone_user_path(id: user.id), class: 'button rounded alert smaller')
+          %td= button_to('Clone', admin_clone_user_path(id: user.id), class: 'xw-btn xw-btn--danger xw-btn--sm')
     - else
       %td.center{colspan: 9} No Results

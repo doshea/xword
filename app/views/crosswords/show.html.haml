@@ -13,7 +13,7 @@
   solve_app.anonymous = #{@current_user.nil?.to_json}
 
 - if (@current_user == @crossword.user)
-  .alert-box.secondary{data: {alert: true}}
+  .xw-alert.xw-alert--info{data: {controller: 'alert'}}
     .center
       You are the creator of this puzzle
       -if !@crossword.published
@@ -21,7 +21,7 @@
         = link_to('Edit Puzzle', edit_crossword_path(@crossword))
         or
         = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
-    %a.close{href: "#"} &times;
+    %button.xw-alert__dismiss{data: {action: 'click->alert#dismiss'}, aria: {label: 'Dismiss'}} &times;
 
 -# Quick fix for sunday crosswords. TODO fix this.
 - if @crossword.cols > 15
@@ -45,27 +45,27 @@
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       - if @current_user
-        %a#solve-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}, aria: {label: 'Quicksave'}}
+        %a#solve-save.xw-btn.xw-btn--sm.xw-btn--secondary{href: '#', title: 'Quicksave', aria: {label: 'Quicksave'}}
           = icon('save')
         / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
         / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
         #favorites-toggle
-          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }, aria: { label: 'Add to favorites' }) do
+          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', class: "xw-btn xw-btn--sm xw-btn--secondary#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }, aria: { label: 'Add to favorites' }) do
             = icon('star')
-          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }, aria: { label: 'Remove from favorites' }) do
+          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', class: "xw-btn xw-btn--sm xw-btn--secondary#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }, aria: { label: 'Remove from favorites' }) do
             = icon('star', style: 'color: #ff7878;')
-        = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary', aria: { label: 'Puzzle controls' } do
+        = link_to '#', id: 'controls-button', title: 'Controls', class: 'xw-btn xw-btn--sm xw-btn--secondary', aria: { label: 'Puzzle controls' } do
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
-        = link_to(delete_solution_path(@solution), class: 'button tiny secondary', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }, aria: { label: 'Delete solution' }) do
+        = link_to(delete_solution_path(@solution), class: 'xw-btn xw-btn--sm xw-btn--secondary', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }, aria: { label: 'Delete solution' }) do
           = icon('trash-2')
       - if @team
-        .button.tiny.secondary
+        .xw-btn.xw-btn--sm.xw-btn--secondary
           = icon('users')
           #teammates
       - else
         / Replaced: link_to with method: 'post' → turbo_method (Turbo handles POST for non-GET links)
-        = link_to create_team_crossword_path(@crossword), class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively', data: { turbo_method: :post }, aria: { label: 'Solve with a team' } do
+        = link_to create_team_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--secondary', id: 'solve-share', title: 'Solve collaboratively', data: { turbo_method: :post }, aria: { label: 'Solve with a team' } do
           = icon('users')
           Team
 
@@ -80,7 +80,7 @@
       -#   %i.fi-alert
       -#   Show Incorrect
       .xw-dropdown{data: {controller: 'dropdown'}}
-        %button.button.small.success.check-completion{data: {action: 'click->dropdown#toggle', unhighlight: 'false'}}
+        %button.xw-btn.xw-btn--sm.xw-btn--success.check-completion{data: {action: 'click->dropdown#toggle', unhighlight: 'false'}}
           = icon('check')
           Check ▾
         %ul.xw-dropdown-menu{data: {dropdown_target: 'menu'}}
