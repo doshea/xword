@@ -1,7 +1,16 @@
 $standard-img-dim: 75px;
 
-.row.puzzle-tabs {
+.puzzle-tabs {
   padding: 1em;
+
+  // Multi-column grid for crossword card lists — replaces Foundation .large-3.columns
+  // that was removed from _crossword_tab.html.haml in Phase 3.
+  ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.5em;
+    margin-bottom: 1em;
+  }
 
   .result-user {
     text-align: center;
@@ -38,7 +47,7 @@ $standard-img-dim: 75px;
   &:hover{
     background: lightgrey;
   }
-  .row {
+  .xw-grid {
     padding: 0.5em 0;
     .metadata {
       padding-left: 1.2em;
