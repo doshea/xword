@@ -27,6 +27,13 @@ Thumbs.db
 *.DS_Store
 .DS_Store*
 
-#Prevents Simplecv from being tracked
-coverage/log/*.log.*
+# SimpleCov output
+/coverage/
+
+# Rotated log files
+/log/*.log.*
+
+# Screenshots
+/screenshots/
+
 /public/assets
