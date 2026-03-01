@@ -1,8 +1,8 @@
 - title @unpublished_crossword.title, true
-= javascript_include_tag 'edit'
 = content_for :head do
   = stylesheet_link_tag :crossword
   = stylesheet_link_tag :edit
+  = javascript_include_tag 'edit'
   = javascript_include_tag 'jquery-ui-1.10.4.draggable.min'
 :javascript
   edit_app.circles = '#{@unpublished_crossword.circles}'

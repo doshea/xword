@@ -275,4 +275,12 @@ window.edit_app = {
   };
 })(jQuery);
 
-$(document).ready(edit_app.ready);
+// Use turbo:load instead of $(document).ready() so edit_app.ready() is
+// called after Turbo Drive replaces the body. Remove+re-add to avoid
+// duplicate listeners when edit.js (in <head>) re-executes on page type change.
+if (window._editTurboLoadHandler) document.removeEventListener("turbo:load", window._editTurboLoadHandler);
+window._editTurboLoadHandler = function() {
+  if (!$(".cell").length) return; // not on a crossword page
+  edit_app.ready();
+};
+document.addEventListener("turbo:load", window._editTurboLoadHandler);

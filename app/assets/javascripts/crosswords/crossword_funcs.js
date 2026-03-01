@@ -221,9 +221,15 @@ cw.PAGE_NAV_KEYS = [cw.UP, cw.RIGHT, cw.DOWN, cw.LEFT, cw.SPACE];
 document.onkeydown = cw.suppressBackspaceAndNav;
 document.onkeypress = cw.suppressBackspaceAndNav;
 
-$(function() {
+// Use turbo:load instead of $(document).ready() so click handlers are
+// re-bound after Turbo Drive replaces the page body on navigation.
+// Remove+re-add to avoid duplicate listeners on repeated crossword visits
+// (solve.js is loaded in <head> so it executes once per page-type change).
+if (window._cwTurboLoadHandler) document.removeEventListener("turbo:load", window._cwTurboLoadHandler);
+window._cwTurboLoadHandler = function() {
+  if (!$(".cell").length) return; // not on a crossword page
   if (!cw.editing) cw.number_cells();
-  $(document).on("keydown", cw.keypress);
+  $(document).off("keydown.cw").on("keydown.cw", cw.keypress);
   $(".cell").on("click", function(e) {
     e.stopPropagation();
     if ($('#unpublished_crossword_one_click_void').prop('checked')) {
@@ -241,5 +247,6 @@ $(function() {
   });
 
   cw.selected = $(".cell:not(.void)").first();
-  cw.selected.highlight();
-});
+  if (cw.selected.length) cw.selected.highlight();
+};
+document.addEventListener("turbo:load", window._cwTurboLoadHandler);

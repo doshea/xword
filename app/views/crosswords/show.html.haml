@@ -1,7 +1,7 @@
 - title @crossword.title, true
-= javascript_include_tag 'solve'
 = content_for :head do
   = stylesheet_link_tag "crossword"
+  = javascript_include_tag 'solve'
   %meta{property: 'og:image', content: @crossword.preview.large.url}
 
 - if @team

@@ -217,4 +217,12 @@ window.solve_app = {
   };
 })(jQuery);
 
-$(document).ready(solve_app.ready);
+// Use turbo:load instead of $(document).ready() so solve_app.ready() is
+// called after Turbo Drive replaces the body. Remove+re-add to avoid
+// duplicate listeners when solve.js (in <head>) re-executes on page type change.
+if (window._solveTurboLoadHandler) document.removeEventListener("turbo:load", window._solveTurboLoadHandler);
+window._solveTurboLoadHandler = function() {
+  if (!$(".cell").length) return; // not on a crossword page
+  solve_app.ready();
+};
+document.addEventListener("turbo:load", window._solveTurboLoadHandler);
