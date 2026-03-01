@@ -6,7 +6,7 @@
       = link_to "#{comment.user.display_name}: ", comment.user
       %br
       = comment.content
-    %ul.inline-list
+    %ul.xw-flex.xw-gap-2
       %li
         - if @current_user
           %a.reply-button.reply{style: 'display: inline-block;'}

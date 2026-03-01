@@ -1,67 +1,64 @@
 = render layout: 'layouts/partials/topper_stopper' do
-  %dl.tabs.vertical{"data-tab" => ""}
-    %dd.active
-      = link_to '#panel1' do
+  .xw-tabs{data: {controller: 'tabs'}}
+    .xw-tabs__nav
+      = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Personal
-    %dd
-      = link_to '#panel2' do
+      = link_to '#panel2', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Puzzles
-    %dd
-      = link_to '#panel3' do
+      = link_to '#panel3', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Emails
-    %dd
-      = link_to '#panel4' do
+      = link_to '#panel4', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Password
-  .tabs-content.vertical
-    #panel1.content.active
-      / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; multipart for file upload)
-      = form_with model: user, html: { multipart: true } do |f|
-        = token_tag nil
+    .xw-tab-panels
+      #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
+        / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; multipart for file upload)
+        = form_with model: user, html: { multipart: true } do |f|
+          = token_tag nil
+          %fieldset
+            %legend Profile Picture
+            .xw-grid
+              .xw-col-12.xw-lg-5
+                / id added so users/update.turbo_stream.erb can replace this element with the new image
+              = image_tag user.image.url, id: 'profile-pic', class: 'profile-pic-updateable'
+              .xw-col-12.xw-lg-7
+                %p
+                  Upload an image from your computer:
+                = f.file_field :image
+                %p
+                  OR
+                %p
+                  paste an image URL:
+                = url_field_tag "user[remote_image_url]", nil, placeholder: "http://www.example.com/willshortz"
+          %fieldset
+            %legend Personal Info
+            = f.label :first_name
+            = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH
+            = f.label :last_name
+            = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH
+            = f.label :location
+            = f.text_field :location, placeholder: 'Lost in thought'
+            = f.submit 'Update Account', class: 'xw-btn'
+      #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}
+        = form_tag root_path do
+          %fieldset
+            %legend Puzzle Settings
+            Coming soon!
+      #panel3.xw-tab-panel{data: {tabs_target: 'panel'}}
+        = form_tag root_path do
+          %fieldset
+            %legend Email Settings
+            -# = form_for @current_user do |f|
+      #panel4.xw-tab-panel{data: {tabs_target: 'panel'}}
+        / = form_tag root_path do
         %fieldset
-          %legend Profile Picture
-          .xw-grid
-            .xw-col-12.xw-lg-5
-              / id added so users/update.turbo_stream.erb can replace this element with the new image
-            = image_tag user.image.url, id: 'profile-pic', class: 'profile-pic-updateable'
-            .xw-col-12.xw-lg-7
-              %p
-                Upload an image from your computer:
-              = f.file_field :image
-              %p
-                OR
-              %p
-                paste an image URL:
-              = url_field_tag "user[remote_image_url]", nil, placeholder: "http://www.example.com/willshortz"
-        %fieldset
-          %legend Personal Info
-          = f.label :first_name
-          = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH
-          = f.label :last_name
-          = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH
-          = f.label :location
-          = f.text_field :location, placeholder: 'Lost in thought'
-          = f.submit 'Update Account', class: 'xw-btn'
-    #panel2.content
-      = form_tag root_path do
-        %fieldset
-          %legend Puzzle Settings
-          Coming soon!
-    #panel3.content
-      = form_tag root_path do
-        %fieldset
-          %legend Email Settings
-          -# = form_for @current_user do |f|
-    #panel4.content
-      / = form_tag root_path do
-      %fieldset
-        #password-errors.xw-alert.xw-alert--error.hidden
-          %p
-          %a.slide-close{href: "#"} &times;
-        #password-success.xw-alert.xw-alert--success.hidden Password updated!
-        %legend Change Password
-        / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
-        = form_with(url: change_password_users_path, method: :post) do |f|
-          = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
-          = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
-          = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH
-          = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing...'}
+          #password-errors.xw-alert.xw-alert--error.hidden
+            %p
+            %a.slide-close{href: "#"} &times;
+          #password-success.xw-alert.xw-alert--success.hidden Password updated!
+          %legend Change Password
+          / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
+          = form_with(url: change_password_users_path, method: :post) do |f|
+            = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
+            = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
+            = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH
+            = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing...'}

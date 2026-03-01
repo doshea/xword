@@ -1,16 +1,14 @@
 /*
  *= require_self
  *
- * Foundation 5 (removed in Phase 6 — still loaded during coexistence period)
- *= require foundation5/normalize
- *= require foundation5/foundation.min
- *= require foundation_overrides
- *
- * New design system (xw- prefix, safe to load alongside Foundation)
+ * New design system (xw- prefix)
  *= require _design_tokens
  *= require _grid
  *= require _components
  *= require _nav
+ *
+ * foundation_overrides contains custom rules (.clue-column, .puzzle-tabs) still needed after Phase 6
+ *= require foundation_overrides
  *
  *= require global
  *= require layouts

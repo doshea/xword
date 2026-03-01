@@ -80,10 +80,6 @@
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
       #word-match-results
 
-%ol.joyride-list{data: {joyride: true}}
-  %li{data: {id: 'credit-area', text: 'Next'}}
-    %p Hello and welcome to the Joyride documentation page.
-
 / Removed remote: true from anchor link (anchor-only links don't need AJAX)
 = link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button') do
   = icon('settings')

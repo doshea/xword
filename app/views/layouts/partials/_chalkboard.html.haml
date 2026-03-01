@@ -10,7 +10,7 @@
         = f.password_field :password_confirmation, placeholder: "password confirm", class: "chalkboard-input subtle-input", required: true, maxlength: User::MAX_PASSWORD_LENGTH
         = f.submit "Sign up!", class: 'chalkboard-button'
       %span or
-      = link_to "#", class: "small chalkboard-button button", id: "signup1" do
+      = link_to "#", class: "chalkboard-button", id: "signup1" do
         Log In
         = icon('arrow-right')
 
@@ -23,7 +23,7 @@
           = label_tag :remember_me, 'remember me'
         = submit_tag "Log in" , :class => "chalkboard-button"
       %span or
-      = link_to '#', class: "small chalkboard-button button", id: "signup2" do
+      = link_to '#', class: "chalkboard-button", id: "signup2" do
         = icon('arrow-left')
         Sign Up
       %br
