@@ -46,27 +46,27 @@
       %span#save-clock.smaller
       - if @current_user
         %a#solve-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
-          %i.fi-save
+          = icon('save')
         / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
         / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
         #favorites-toggle
           = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }) do
-            %i.fi-star>
+            = icon('star')
           = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }) do
-            %i.fi-star{style: 'color: #ff7878;'}>
+            = icon('star', style: 'color: #ff7878;')
         = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
-          %i.fi-widget
+          = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
         = link_to(delete_solution_path(@solution), class: 'button tiny secondary', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }) do
-          %i.fi-trash
+          = icon('trash-2')
       - if @team
         .button.tiny.secondary
-          %i.fi-torsos-all
+          = icon('users')
           #teammates
       - else
         / Replaced: link_to with method: 'post' → turbo_method (Turbo handles POST for non-GET links)
         = link_to create_team_crossword_path(@crossword), class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively', data: { turbo_method: :post } do
-          %i.fi-torsos-all
+          = icon('users')
           Team
 
 
@@ -80,8 +80,8 @@
       -#   %i.fi-alert
       -#   Show Incorrect
       %a.button.split.small.success.check-completion{data: {unhighlight: 'false'}}
-        %i.fi-check
-          Check
+        = icon('check')
+        Check
         %span{data: {dropdown: 'drop'}}
       %br
       %ul#drop.f-dropdown{"data-dropdown-content": true}
@@ -108,7 +108,7 @@
     %hr
     %section#comments
       %h3
-        %i.fi-comments
+        = icon('message-square')
         Comments
       / Feed Entry
       -if @current_user

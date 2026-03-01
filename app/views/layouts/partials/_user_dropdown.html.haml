@@ -9,12 +9,12 @@
     %span.xw-nav__username= @current_user.username
   .xw-nav__dropdown{ data: { dropdown_target: 'menu' } }
     = link_to account_users_path, class: 'xw-nav__dropdown-item' do
-      %i.fi-torso
+      = icon('user')
       Account
     = link_to @current_user, class: 'xw-nav__dropdown-item' do
-      %i.fi-eye
+      = icon('eye')
       Public Profile
     = link_to logout_path, class: 'xw-nav__dropdown-item xw-nav__dropdown-item--danger',
               data: { turbo_method: :delete } do
-      %i.fi-power
+      = icon('log-out')
       Log out

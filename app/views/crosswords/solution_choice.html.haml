@@ -37,9 +37,9 @@
           %tr{data: {link: solution_path(solution), letters: solution.letters, key: solution.key, cols: @crossword.cols}}
             %td
               = button_to solution, method: :get do
-                %i.fi-arrow-left
+                = icon('arrow-left')
             %td.center.larger
-              %i{class: solution.team ? 'fi-torsos-all' : 'fi-torso'}
+              = icon(solution.team ? 'users' : 'user')
             %td.text-right #{solution_correctness[:percent]}%
             -# Not useful at the moment
               %td #{solution_correctness[:numerator]}/#{solution_correctness[:denominator]}
@@ -51,7 +51,7 @@
             %td.center.larger.trash-td
               / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
               = link_to(delete_solution_path(solution), class: 'not-blue', data: { turbo_method: :delete, turbo_confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }) do
-                %i.fi-trash.center
+                = icon('trash-2', class: 'center')
           - if !solution.team
             %tr
               %td

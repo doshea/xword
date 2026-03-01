@@ -20,7 +20,7 @@
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       %a#edit-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
-        %i.fi-save
+        = icon('save')
 
 .row#solve-area
   .large-12.columns
@@ -52,7 +52,7 @@
 %section#idea-container.slide-up-container
   / Removed remote: true from anchor link (anchor-only links don't need AJAX)
   = link_to('#ideas', class: 'bottom-button', id: 'ideas-button') do
-    %i.fi-lightbulb
+    = icon('lightbulb')
     %span.small Notepad
   #ideas
     .row
@@ -70,7 +70,7 @@
 %section#pattern-container.slide-up-container
   / Removed remote: true from anchor link (anchor-only links don't need AJAX)
   = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button') do
-    %i.fi-magnifying-glass
+    = icon('search')
     %span.small
       Pattern Search
   #pattern-search
@@ -86,12 +86,12 @@
 
 / Removed remote: true from anchor link (anchor-only links don't need AJAX)
 = link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button') do
-  %i.fi-widget
+  = icon('settings')
 
 
 #edit-settings.reveal-modal{:'data-reveal' => true}
   %h3
-    %i.fi-widget
+    = icon('settings')
     Edit Settings
   #settings
     

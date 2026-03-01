@@ -10,9 +10,9 @@
     - more_than_a_day = (time_difference[:days] > 0)
     - more_than_an_hour = (time_difference[:hours] > 0)
   %h2.center
-    %i.fi-trophy
+    = icon('trophy')
     SOLVED!
-    %i.fi-trophy
+    = icon('trophy')
   %p.lead.center
     Congratulations#{", #{@current_user.display_first_name}" if @current_user}!
   %p.lead.center
@@ -40,7 +40,7 @@
       / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
       = form_with(url: add_comment_path(@solution.crossword), id: 'complete-form') do |f|
         %h5
-          %i.fi-comment
+          = icon('message-square')
           How was the crossword?
         = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
         :javascript

@@ -23,11 +23,11 @@
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.letters
         %td
           - if crossword.circled?
-            %i.fi-check
+            = icon('check')
         %td
           = link_to edit_admin_crossword_path(crossword) do
-            %i.fi-pencil
+            = icon('pencil')
         %td
           / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
           = link_to admin_crossword_path(crossword), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user.username}?" } do
-            %i.fi-trash
+            = icon('trash-2')

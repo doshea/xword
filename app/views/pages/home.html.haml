@@ -14,18 +14,18 @@
     %dd.active
       = link_to '#panel1' do
         %h5
-          %i.fi-clipboard
+          = icon('clipboard')
           %span #{'New' if @current_user} Puzzles (#{@unstarted.length})
     - if @current_user
       %dd
         = link_to '#panel2' do
           %h5
-            %i.fi-clipboard-pencil
+            = icon('clipboard-pen')
             %span In Progress (#{@in_progress.length})
       %dd
         = link_to '#panel3' do
           %h5
-            %i.fi-clipboard-notes
+            = icon('clipboard-list')
             %span Solved Puzzles (#{@solved.length})
   :javascript
     var puzzles_remaining = {};

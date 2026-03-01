@@ -25,17 +25,17 @@
           %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= solution.letters
           %td
             - if solution.is_complete
-              %i.fi-check
+              = icon('check')
           %td
             - if solution.team
-              %i.fi-check
+              = icon('check')
           %td
             - if solution.key
               = link_to solution.key, team_crossword_path(solution.crossword, solution.key)
           %td
             = link_to edit_admin_solution_path(solution) do
-              %i.fi-pencil
+              = icon('pencil')
           %td
             / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
             = link_to admin_solution_path(solution), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this solution by #{solution.user.username}?" } do
-              %i.fi-trash
+              = icon('trash-2')

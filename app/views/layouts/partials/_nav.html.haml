@@ -34,7 +34,7 @@
                                class: 'xw-nav__search-input',
                                autocomplete: 'off',
                                placeholder: 'Search…'
-            %i.fi-magnifying-glass.xw-nav__search-icon
+            = icon('search', class: 'xw-nav__search-icon')
             %ul#live-results.xw-nav__live-results
 
         / Browse dropdown: NY Times, User-Made, Random
@@ -43,29 +43,29 @@
                                     aria: { label: 'Browse puzzles' },
                                     data: { action: 'dropdown#toggle',
                                             xw_tooltip: 'Browse' } }
-            %i.fi-pencil
+            = icon('pencil')
           .xw-nav__dropdown{ data: { dropdown_target: 'menu' } }
             = link_to nytimes_path, class: 'xw-nav__dropdown-item' do
               = image_tag 'nyt_white.png', class: 'xw-nav__dropdown-icon', alt: ''
               NY Times
             = link_to user_made_path, class: 'xw-nav__dropdown-item' do
-              %i.fi-torso
+              = icon('user')
               User-Made
             = link_to User.rand_unowned_puzzle, class: 'xw-nav__dropdown-item' do
-              %i.fi-shuffle
+              = icon('shuffle')
               Random
 
         / Create a puzzle — #nav-create preserved (CSS unread animation)
         .xw-nav__item#nav-create
           = link_to create_dashboard_path, class: 'xw-nav__icon-btn',
                     data: { xw_tooltip: 'Create' } do
-            %i.fi-lightbulb
+            = icon('lightbulb')
 
         / Messages — #nav-mail preserved (CSS unread pulse animation)
         .xw-nav__item#nav-mail
           = link_to '#', class: 'xw-nav__icon-btn',
                     data: { xw_tooltip: 'Messages' } do
-            %i.fi-mail
+            = icon('mail')
 
         / User menu or login button
         - if is_logged_in?

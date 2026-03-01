@@ -15,13 +15,13 @@
   #team-explanation.reveal-modal{:'data-reveal' => true}
     %h2
       Crosswords: More Fun as a Team
-      %i.fi-torsos-all
+      = icon('users')
     %p.lead
       Solve puzzles with your friends in
       %strong real-time
       \-- just send them the link to this puzzle!
     %input.lead{value: request.original_url, style: 'margin-left: 2em; width: 40%; cursor: pointer', readonly: 'readonly', onclick: '$(this).select();'}
-    %i.lead.fi-link{style: 'font-size: large; padding: 0.2em 0.3em;'}
+    = icon('link', class: 'lead', style: 'font-size: large; padding: 0.2em 0.3em;')
     %p.lead
     %p Now to find some friends...
     %a.close-reveal-modal ×
@@ -30,7 +30,7 @@
   .row.row-topper.no-select
     %span#unread-chat-count
     Team Chat
-    %i.fi-plus#chat-minmax
+    %span#chat-minmax= icon('plus')
   #chats
   / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
   / Wrapped in #team-chat-form so send_team_chat.turbo_stream.erb can replace it to reset the form

@@ -12,7 +12,7 @@
       %span or
       = link_to "#", class: "small chalkboard-button button", id: "signup1" do
         Log In
-        %i.fi-arrow-right
+        = icon('arrow-right')
 
     #login-container
       = form_tag login_path do
@@ -24,7 +24,7 @@
         = submit_tag "Log in" , :class => "chalkboard-button"
       %span or
       = link_to '#', class: "small chalkboard-button button", id: "signup2" do
-        %i.fi-arrow-left
+        = icon('arrow-left')
         Sign Up
       %br
       %br

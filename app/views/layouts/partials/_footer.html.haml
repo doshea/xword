@@ -5,19 +5,19 @@
         %ul
           %li
             = link_to about_path do
-              %i.fi-torsos
+              = icon('users')
               %span About Us
           %li
             = link_to faq_path do
-              %i.fi-info
+              = icon('info')
               %span FAQ
           %li
             = link_to contact_path do
-              %i.fi-mail
+              = icon('mail')
               %span Contact
           %li
             = link_to stats_path do
-              %i.fi-graph-bar
+              = icon('chart-bar')
               %span Site Stats
 
       .large-4.columns
@@ -25,7 +25,7 @@
         %ul
           %li#social-links
             %a{href: 'https://www.facebook.com/pages/Crossword-Caf%C3%A9/522004927841403', target: '_blank'}
-              %i.fi-social-facebook
+              = icon('facebook')
             %a{href: 'https://github.com/doshea/xword', target: '_blank'}
-              %i.fi-social-github
+              = icon('github')
   %h6.subheader &copy; Dylan O'Shea

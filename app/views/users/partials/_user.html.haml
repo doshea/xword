@@ -6,7 +6,7 @@
   - if @current_user && (@current_user != @user)
     - if @current_user.friends.include? @user
       %button.button.success.small.radius
-        %i.fi-check
+        = icon('check')
         Friends!
     - else
       %button.button.hollow.success.radius Not Friends

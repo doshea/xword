@@ -4,7 +4,7 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
   -if is_logged_in?
     %h3
-      %i.fi-pencil
+      = icon('pencil')
       %span Your Puzzles
     %hr
     :javascript
@@ -24,7 +24,7 @@
         %br
         %br
       = link_to new_unpublished_crossword_path, class: 'foundation button success' do
-        %i.fi-pencil.larger
+        = icon('pencil', class: 'larger')
         New Puzzle
     - if @published.try(:any?)
       %hr

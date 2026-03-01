@@ -23,7 +23,11 @@ window.team_app = {
       team_app.unread_count = 0;
       $('#unread-chat-count').text('');
     }
-    $('#chat-minmax').toggleClass('fi-minus fi-plus');
+    // Replaced: fi-minus/fi-plus toggleClass (Foundation font icons) → inline SVG html() swap
+    var PLUS_SVG  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xw-icon xw-icon--plus" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>';
+    var MINUS_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xw-icon xw-icon--minus" aria-hidden="true"><path d="M5 12h14" /></svg>';
+    var $minmax = $('#chat-minmax');
+    $minmax.html($minmax.find('.xw-icon--plus').length ? MINUS_SVG : PLUS_SVG);
   },
 
   //------------------

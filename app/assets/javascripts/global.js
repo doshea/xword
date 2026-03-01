@@ -1,6 +1,6 @@
 window.global = {
   ready: function() {
-    $('body').on('click', '.fi-magnifying-glass', global.submit_closest_form);
+    $('body').on('click', '.xw-nav__search-icon', global.submit_closest_form);
     $('#top-search').on('keyup', '#query', global.live_search);
     $('#dropdown-login').on('click', function(e) {
       e.stopPropagation();
