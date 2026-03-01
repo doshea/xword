@@ -211,7 +211,7 @@ window.cw = {
       if (check_for_unfinish) cw.selected.uncheck_unfinisheds();
       return false;
     }
-    if (_.contains(cw.PAGE_NAV_KEYS, evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
+    if (cw.PAGE_NAV_KEYS.includes(evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
       return false;
     }
   }

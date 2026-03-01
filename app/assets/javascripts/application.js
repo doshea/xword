@@ -8,7 +8,8 @@
 // classic script causes a SyntaxError that prevents the entire bundle from executing.
 //
 // require turbolinks (removed — replaced by turbo above)
-//= require underscore-min
+// underscore-min removed — the two usages (_. contains, _.each) were replaced with
+// Array.prototype.includes and Object.keys().forEach() respectively.
 //
 // require foundation5/foundation.min
 //
