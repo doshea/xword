@@ -69,32 +69,32 @@ describe Crossword do
         end
         describe '#index_from_rc' do
           it 'raises error on too-high row' do
-            expect{subject.index_from_rc(subject.rows * 2, subject.random_col)}.to raise_error
+            expect{subject.index_from_rc(subject.rows * 2, subject.random_col)}.to raise_error(ArgumentError)
           end
           it 'raises error on too-low row' do
-            expect{subject.index_from_rc(subject.rows * -1, subject.random_col)}.to raise_error
+            expect{subject.index_from_rc(subject.rows * -1, subject.random_col)}.to raise_error(ArgumentError)
           end
           it 'raises error on too-high col' do
-            expect{subject.index_from_rc(subject.random_row, subject.cols * 2)}.to raise_error
+            expect{subject.index_from_rc(subject.random_row, subject.cols * 2)}.to raise_error(ArgumentError)
           end
           it 'raises error on too-low col' do
-            expect{subject.index_from_rc(subject.random_row, matsubject.cols * -1)}.to raise_error
+            expect{subject.index_from_rc(subject.random_row, subject.cols * -1)}.to raise_error(ArgumentError)
           end
         end
         describe '#row_from_index' do
           it 'raises error on too-high index' do
-            expect{subject.row_from_index(subject.rows*subject.cols*2)}.to raise_error
+            expect{subject.row_from_index(subject.rows*subject.cols*2)}.to raise_error(ArgumentError)
           end
           it 'raises error on too-low index' do
-            expect{subject.row_from_index(subject.rows*subject.cols*-1)}.to raise_error
+            expect{subject.row_from_index(subject.rows*subject.cols*-1)}.to raise_error(ArgumentError)
           end
         end
         describe '#col_from_index' do
           it 'raises error on too-high index' do
-            expect{subject.col_from_index(subject.rows*subject.cols*2)}.to raise_error
+            expect{subject.col_from_index(subject.rows*subject.cols*2)}.to raise_error(ArgumentError)
           end
           it 'raises error on too-low index' do
-            expect{subject.col_from_index(subject.rows*subject.cols*-1)}.to raise_error
+            expect{subject.col_from_index(subject.rows*subject.cols*-1)}.to raise_error(ArgumentError)
           end
         end
       end
@@ -139,7 +139,7 @@ describe Crossword do
           it 'raise an error when the solution is improperly sized' do
             #either halves or doubles the solution
             bad_letters = rand.round.even? ? subject.letters*2 : subject.letters[subject.letters.length/2,subject.letters.length/2]
-            expect{subject.get_mismatches(bad_letters)}.to raise_error
+            expect{subject.get_mismatches(bad_letters)}.to raise_error(ArgumentError)
           end
         end
 
@@ -162,7 +162,7 @@ describe Crossword do
         its('letters.length'){ should eq subject.area}
 
         it 'throws error if letters are not blank' do
-          expect {subject.populate_letters}.to raise_error
+          expect {subject.populate_letters}.to raise_error(RuntimeError)
         end
       end
     end
@@ -196,7 +196,7 @@ describe Crossword do
         end
         it 'throws error if already populated' do
           subject.cells.count.should be > 0
-          expect {subject.populate_cells}.to raise_error
+          expect {subject.populate_cells}.to raise_error(RuntimeError)
         end
 
       end
@@ -351,11 +351,11 @@ describe Crossword do
         context 'during running' do
           it 'errors if argument length greater than crossword area' do
             circle_inputs.push(circle_inputs[0])
-            expect{subject.circles_from_array(circle_inputs)}.to raise_error
+            expect{subject.circles_from_array(circle_inputs)}.to raise_error(RuntimeError)
           end
           it 'errors if argument length less than crossword area' do
             circle_inputs.pop
-            expect{subject.circles_from_array(circle_inputs)}.to raise_error
+            expect{subject.circles_from_array(circle_inputs)}.to raise_error(RuntimeError)
           end
           it 'errors if some cells are missing' do
             subject.cells.find_by_index(circle_inputs.index(1)+1).destroy

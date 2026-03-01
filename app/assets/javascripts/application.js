@@ -13,6 +13,7 @@
 //= require stimulus_sprockets
 // stimulus_sprockets.js: Sprockets-compatible build of stimulus.min.js (ES module export replaced
 // with window.Stimulus = {Application, Controller}). Controllers live in app/assets/javascripts/controllers/.
+//= require controllers/application
 //= require_tree ./controllers
 //
 //= require moment.min

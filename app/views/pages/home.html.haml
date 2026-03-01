@@ -25,12 +25,12 @@
           %span.tab-label
             = icon('clipboard-list')
             %span Solved Puzzles (#{@solved.length})
-  :javascript
-    var puzzles_remaining = {};
-  .xw-tab-panels
-    #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
-      = render partial: 'pages/home/unstarted'
-    #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}
-      = render partial: 'pages/home/in_progress'
-    #panel3.xw-tab-panel{data: {tabs_target: 'panel'}}
-      = render partial: 'pages/home/solved_puzzles'
+    :javascript
+      var puzzles_remaining = {};
+    .xw-tab-panels
+      #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
+        = render partial: 'pages/home/unstarted'
+      #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}
+        = render partial: 'pages/home/in_progress'
+      #panel3.xw-tab-panel{data: {tabs_target: 'panel'}}
+        = render partial: 'pages/home/solved_puzzles'
