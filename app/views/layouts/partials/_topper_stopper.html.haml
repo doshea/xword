@@ -1,6 +1,6 @@
 .xw-container.row-bookend.row-topper
   - if defined?(row_top_title)
-    %h4
+    %h1
       = row_top_title
 .xw-container.xw-grid{style: defined?(row_style) ? row_style : nil, class: defined?(row_class) ? row_class : nil}
   - unless defined?(custom_columns)

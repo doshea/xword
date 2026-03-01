@@ -35,9 +35,9 @@
     height: #{@crossword.rows*2.175-22/16.0}em;
   }
 
-.xw-container.xw-grid#credit-area
+%header.xw-container.xw-grid#credit-area
   .xw-col-full
-    %h3
+    %h1
       = @crossword.title.html_safe
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
     #puzzle-controls.no-select
@@ -45,19 +45,19 @@
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       - if @current_user
-        %a#solve-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
+        %a#solve-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}, aria: {label: 'Quicksave'}}
           = icon('save')
         / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
         / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
         #favorites-toggle
-          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }) do
+          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }, aria: { label: 'Add to favorites' }) do
             = icon('star')
-          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }) do
+          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', :'data-tooltip' => true, class: "button tiny secondary#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }, aria: { label: 'Remove from favorites' }) do
             = icon('star', style: 'color: #ff7878;')
-        = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary' do
+        = link_to '#', id: 'controls-button', title: 'Controls', :'data-tooltip' => true, class: 'button tiny secondary', aria: { label: 'Puzzle controls' } do
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
-        = link_to(delete_solution_path(@solution), class: 'button tiny secondary', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }) do
+        = link_to(delete_solution_path(@solution), class: 'button tiny secondary', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }, aria: { label: 'Delete solution' }) do
           = icon('trash-2')
       - if @team
         .button.tiny.secondary
@@ -65,15 +65,15 @@
           #teammates
       - else
         / Replaced: link_to with method: 'post' → turbo_method (Turbo handles POST for non-GET links)
-        = link_to create_team_crossword_path(@crossword), class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively', data: { turbo_method: :post } do
+        = link_to create_team_crossword_path(@crossword), class: 'button tiny secondary rounded', id: 'solve-share', 'data-tooltip' => true, title: 'Solve collaboratively', data: { turbo_method: :post }, aria: { label: 'Solve with a team' } do
           = icon('users')
           Team
 
 
-.xw-container.xw-grid#solve-area
+%section.xw-container.xw-grid#solve-area{aria: {label: 'Puzzle grid'}}
   .xw-col-full
     = render partial: 'crosswords/partials/solve_crossword'
-.xw-container.xw-grid#meta-area
+%section.xw-container.xw-grid#meta-area{aria: {label: 'Puzzle information'}}
   .xw-col-full
     #solve-controls
       -# %button.button.warning.small#show-incorrect
@@ -106,8 +106,8 @@
           \--
           = link_to @crossword.user.display_name, @crossword.user
     %hr
-    %section#comments
-      %h3
+    %section#comments{aria: {labelledby: 'comments-heading'}}
+      %h2#comments-heading
         = icon('message-square')
         Comments
       / Feed Entry

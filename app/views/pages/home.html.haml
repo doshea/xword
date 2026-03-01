@@ -4,7 +4,7 @@
   = stylesheet_link_tag :search
 
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
-  %h2
+  %h1
     - if @current_user
       Welcome back, #{@current_user.display_first_name}!
     - else
@@ -13,18 +13,18 @@
   %dl.tabs{"data-tab" => ""}
     %dd.active
       = link_to '#panel1' do
-        %h5
+        %span.tab-label
           = icon('clipboard')
           %span #{'New' if @current_user} Puzzles (#{@unstarted.length})
     - if @current_user
       %dd
         = link_to '#panel2' do
-          %h5
+          %span.tab-label
             = icon('clipboard-pen')
             %span In Progress (#{@in_progress.length})
       %dd
         = link_to '#panel3' do
-          %h5
+          %span.tab-label
             = icon('clipboard-list')
             %span Solved Puzzles (#{@solved.length})
   :javascript

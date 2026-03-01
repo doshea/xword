@@ -134,3 +134,31 @@
 @media (min-width: $bp-md) {
   .xw-mobile-only { display: none !important; }
 }
+
+// Visually hidden but readable by screen readers
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Skip-to-content link — invisible until focused by keyboard
+.skip-to-content {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  z-index: -999;
+  &:focus, &:active {
+    left: 0;
+    z-index: 9999;
+    padding: 0.5em 1em;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 2px solid var(--color-accent);
+    text-decoration: none;
+  }
+}

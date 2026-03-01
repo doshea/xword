@@ -7,7 +7,7 @@
 :javascript
   edit_app.circles = '#{@unpublished_crossword.circles}'
 
-.xw-container.xw-grid#credit-area
+%header.xw-container.xw-grid#credit-area
   .xw-col-12.xw-lg-9
     %h3.large
       .xw-grid
@@ -19,21 +19,21 @@
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
-      %a#edit-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
+      %a#edit-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}, aria: {label: 'Quicksave'}}
         = icon('save')
 
-.xw-container.xw-grid#solve-area
+%section.xw-container.xw-grid#solve-area{aria: {label: 'Edit puzzle grid'}}
   .xw-col-full
     = render partial: 'unpublished_crosswords/partials/edit_unpublished_crossword'
 
-.xw-container.xw-grid#meta-area
+%section.xw-container.xw-grid#meta-area
   .xw-col-full
     %p
       = label_tag :description
       = text_area_tag :description, @unpublished_crossword.description, placeholder: "Say something about the making of this crossword -- or anything interesting that doesn't spoil the puzzle!"
   %hr
-.xw-container.xw-grid#advanced
-  %h5.xw-col-full Advanced Controls
+%section.xw-container.xw-grid#advanced{aria: {labelledby: 'advanced-heading'}}
+  %h2.xw-col-full#advanced-heading Advanced Controls
   .xw-col-12.xw-lg-3
     %ul
       %li
@@ -89,8 +89,8 @@
   = icon('settings')
 
 
-#edit-settings.reveal-modal{:'data-reveal' => true}
-  %h3
+#edit-settings.reveal-modal{:'data-reveal' => true, role: 'dialog', aria: {modal: 'true', labelledby: 'settings-heading'}}
+  %h2#settings-heading
     = icon('settings')
     Edit Settings
   #settings

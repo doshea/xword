@@ -1,31 +1,32 @@
 .xw-container.xw-grid
   .xw-col-full
-    .xw-grid#stats
-      .xw-col-12.xw-lg-4
-        %ul
-          %li
-            = link_to about_path do
-              = icon('users')
-              %span About Us
-          %li
-            = link_to faq_path do
-              = icon('info')
-              %span FAQ
-          %li
-            = link_to contact_path do
-              = icon('mail')
-              %span Contact
-          %li
-            = link_to stats_path do
-              = icon('chart-bar')
-              %span Site Stats
+    %nav{aria: {label: 'Site information'}}
+      .xw-grid#stats
+        .xw-col-12.xw-lg-4
+          %ul
+            %li
+              = link_to about_path do
+                = icon('users')
+                %span About Us
+            %li
+              = link_to faq_path do
+                = icon('info')
+                %span FAQ
+            %li
+              = link_to contact_path do
+                = icon('mail')
+                %span Contact
+            %li
+              = link_to stats_path do
+                = icon('chart-bar')
+                %span Site Stats
 
-      .xw-col-12.xw-lg-4
-      .xw-col-12.xw-lg-4
-        %ul
-          %li#social-links
-            %a{href: 'https://www.facebook.com/pages/Crossword-Caf%C3%A9/522004927841403', target: '_blank'}
-              = icon('facebook')
-            %a{href: 'https://github.com/doshea/xword', target: '_blank'}
-              = icon('github')
+        .xw-col-12.xw-lg-4
+        .xw-col-12.xw-lg-4
+          %ul
+            %li#social-links
+              %a{href: 'https://www.facebook.com/pages/Crossword-Caf%C3%A9/522004927841403', target: '_blank'}
+                = icon('facebook')
+              %a{href: 'https://github.com/doshea/xword', target: '_blank'}
+                = icon('github')
   %h6.subheader.xw-col-full &copy; Dylan O'Shea

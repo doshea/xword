@@ -5,5 +5,5 @@
     .xw-col-10= word
     .xw-col-1
       / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (Turbo handles DELETE)
-      = link_to remove_potential_word_unpublished_crossword_path(@unpublished_crossword, word), data: { turbo_method: :delete } do
+      = link_to remove_potential_word_unpublished_crossword_path(@unpublished_crossword, word), data: { turbo_method: :delete }, aria: { label: "Remove #{word} from word list" } do
         = icon('x')

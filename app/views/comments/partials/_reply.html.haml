@@ -1,4 +1,4 @@
-= content_tag(:div, id: dom_id(reply), class: 'xw-grid') do
+= content_tag(:article, id: dom_id(reply), class: 'xw-grid') do
   .xw-col-3.xw-lg-1
     = link_to (image_tag reply.user.image.reply_size.url), reply.user
     - if @current_user && ((@current_user == reply.user) || (@current_user.is_admin?))
