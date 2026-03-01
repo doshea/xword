@@ -10,16 +10,42 @@ The chalkboard welcome page stays. Everything else gets modernized.
 
 ---
 
+## Design Direction (amended — replaces placeholder decisions from original plan)
+
+**Palette:** Black, white, warm wood tones, forest green. The original plan's `#2b7bb9` blue is dropped entirely — it has no relationship to the existing palette and was a generic placeholder.
+
+**Accent color:** Forest green (`#3a7d5c`) — the site already uses green for "correct answer" feedback, so making it the brand color creates semantic coherence. It also reads as café (plants, chalkboard), editorial (crossword checked-off), and natural.
+
+**Typography — three-font system:**
+- `Playfair Display` (display/headings) — classic newspaper serif. Exactly right for a crossword site: authoritative, wordy, slightly old-school. Makes headings feel like a puzzle masthead.
+- `Lora` (body) — designed for comfortable on-screen reading at small sizes. Essential for clue lists. Slightly editorial, pairs naturally with Playfair.
+- `DM Sans` (UI chrome) — clean geometric sans for nav, buttons, labels, metadata. Doesn't compete with the serifs; keeps functional elements crisp.
+- `Courier Prime` (crossword cells) — refined Courier for the grid itself. Deliberately retro in the right way.
+
+These replace the original plan's `Inter` recommendation. Inter is the default "AI slop" font — too generic for this context.
+
+**What stays:** Wood table background (it's distinctive), paper texture on solve page, chalkboard welcome page, dark nav (#1a1714), black crossword grid, green-for-correct / red-for-incorrect cell flags.
+
+**Google Fonts import** (to add in Phase 5b / application layout):
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Lora:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+```
+
+---
+
 ## Phase 0: Design System Foundation
 *Foundation 5 stays fully loaded. Nothing visual changes.*
 
 ### New files to create:
-1. **`app/assets/stylesheets/_design_tokens.scss`** — CSS custom properties for colors, typography, spacing, shadows, borders, breakpoints, transitions. Single source of truth for the new design.
-   - Colors: refined palette (primary `#2b7bb9`, neutrals gray-50 through gray-900, semantic success/warning/danger)
-   - Typography: Inter font, modular scale (xs through 3xl)
-   - Spacing: 4px-base scale (space-1 through space-16)
-   - Shadows: sm/md/lg/xl elevation scale
-   - SCSS breakpoint variables: `$bp-sm: 640px`, `$bp-md: 768px`, `$bp-lg: 1024px`
+1. **`app/assets/stylesheets/_design_tokens.scss`** ✅ DONE — CSS custom properties for colors, typography, spacing, shadows, borders, breakpoints, transitions. Single source of truth for the new design.
+   - Colors: warm palette (forest green accent, espresso dark, warm cream surfaces — see Design Direction above)
+   - Typography: Playfair Display + Lora + DM Sans (see Design Direction above)
+   - Spacing: 4px-base scale (space-1 through space-32)
+   - Shadows: sm/md/lg/xl with warm espresso undertone (not cold gray)
+   - SCSS breakpoint variables: `$bp-sm: 640px`, `$bp-md: 768px`, `$bp-lg: 1024px`, `$bp-xl: 1280px`
+   - Motion tokens: duration and easing presets
 
 2. **`app/assets/stylesheets/_grid.scss`** — CSS Grid replacement for Foundation's 12-column system
    - `.xw-container` (replaces `.row` as wrapper)

@@ -1,0 +1,261 @@
+// =============================================================================
+// Design Tokens — Crossword Café
+// =============================================================================
+// Single source of truth for the design system. All new SCSS references these.
+// Replaces: the scattered hardcoded values throughout Foundation overrides.
+//
+// Philosophy: editorial warmth — a café where you'd sit with a newspaper and
+// a coffee. The existing palette (near-black, white, warm wood, greens) is
+// RIGHT. We're refining it, not replacing it.
+// =============================================================================
+
+
+// -----------------------------------------------------------------------------
+// SCSS Variables (must be variables, not custom props — used in @media queries)
+// -----------------------------------------------------------------------------
+
+$bp-sm:  640px;
+$bp-md:  768px;
+$bp-lg:  1024px;
+$bp-xl:  1280px;
+
+$max-content-width: 80rem;   // 1280px — matches existing $header-width intent
+$max-puzzle-width:  72rem;   // 1152px — solve page wrapper
+
+
+// -----------------------------------------------------------------------------
+// CSS Custom Properties
+// All runtime values: colors, spacing, type scale, shadows, radii, motion.
+// -----------------------------------------------------------------------------
+
+:root {
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Background & Surface
+  // ---------------------------------------------------------------------------
+
+  // Page background: keep the wood table image; this is the CSS fallback and
+  // is used by pages that override the image (e.g. account, search pages).
+  --color-bg:          #2a1f14;  // deep espresso brown — reads as "wood in shadow"
+  --color-bg-warm:     #f5f0e8;  // warm cream parchment — used where image isn't loaded
+
+  // Content surfaces (cards, panels, content areas)
+  --color-surface:     #fffef9;  // near-white with warm tint — like good paper
+  --color-surface-alt: #f5f0e8;  // warm cream — alternate surface, puzzle card bg
+  --color-surface-sunken: #ede8de; // recessed areas, input backgrounds
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Navigation
+  // ---------------------------------------------------------------------------
+
+  --color-nav-bg:       #1a1714;  // near-black with warm undertone (espresso, not cold)
+  --color-nav-text:     #e8e2d8;  // warm off-white
+  --color-nav-text-dim: #9e9690;  // muted nav text (secondary items)
+  --color-nav-border:   #2e2b28;  // subtle separator within nav
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Accent (Primary)
+  //
+  // The existing site already has its accent: green (from "correct answer" flags,
+  // the success button). We make it the brand color. Forest green reads as
+  // café, nature, chalkboard — all appropriate here.
+  // ---------------------------------------------------------------------------
+
+  --color-accent:        #3a7d5c;  // forest green — the brand color
+  --color-accent-hover:  #2d6649;  // deeper on hover
+  --color-accent-light:  #e6f2ec;  // tinted surface for focus rings, hover bg
+  --color-accent-muted:  #7aaa91;  // lighter, for decorative use
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Text
+  // ---------------------------------------------------------------------------
+
+  --color-text:           #1c1a17;  // warm near-black (ink, not #000)
+  --color-text-secondary: #5a5248;  // warm medium gray
+  --color-text-muted:     #8c8278;  // warm light gray (placeholders, captions)
+  --color-text-inverse:   #f5f0e8;  // text on dark surfaces
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Borders & Dividers
+  // ---------------------------------------------------------------------------
+
+  --color-border:       #d4c9b8;  // warm light tan
+  --color-border-strong: #a89880; // stronger border (inputs, focused elements)
+  --color-border-dark:  #2e2b28;  // dark borders (nav internals, chat widget)
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Semantic / Functional
+  // ---------------------------------------------------------------------------
+
+  --color-success:      #3a7d5c;  // same as accent — green IS correct here
+  --color-success-bg:   #e6f2ec;
+  --color-success-text: #1e4a35;
+
+  --color-warning:      #c87941;  // warm amber — café, autumn
+  --color-warning-bg:   #fdf0e4;
+  --color-warning-text: #7a4520;
+
+  --color-danger:       #b84040;  // warm red (not neon)
+  --color-danger-bg:    #fdeaea;
+  --color-danger-text:  #6e2020;
+
+  --color-info:         #4a7fa5;  // muted slate — the only blue, used sparingly
+  --color-info-bg:      #e8f2f8;
+  --color-info-text:    #1e4a66;
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Crossword-Specific
+  // These are functional and must stay stable — solver JS relies on bg colors
+  // ---------------------------------------------------------------------------
+
+  --color-cell-bg:       #fffef9;  // white with warm tint (paper-like)
+  --color-cell-void:     #1c1a17;  // warm near-black (not pure #000)
+  --color-cell-border:   #1c1a17;
+  --color-cell-selected: #f5d87a;  // warmer golden than existing rgb(255,220,110)
+  --color-cell-word:     #faf2c8;  // lighter golden for word highlight
+  --color-cell-correct:  #c8f0d8;  // light green tint for checked-correct cells
+  --color-cell-incorrect: #f8d0d0; // light red tint for checked-incorrect cells
+
+  // ---------------------------------------------------------------------------
+  // COLOR — Footer
+  // ---------------------------------------------------------------------------
+
+  --color-footer-bg:     #2e2b28;  // dark warm gray (lighter than nav)
+  --color-footer-text:   #b8b0a8;  // muted warm
+  --color-footer-link:   #9e9690;
+  --color-footer-link-hover: var(--color-accent-muted);
+
+  // ---------------------------------------------------------------------------
+  // TYPOGRAPHY
+  //
+  // Playfair Display — editorial serif for headings. Think newspaper masthead.
+  //   Perfect for a crossword site: authoritative, wordy, slightly old-school.
+  // Lora — body serif. Designed for comfortable on-screen reading. Slightly
+  //   editorial, pairs naturally with Playfair, excellent at small sizes (clue lists).
+  // DM Sans — UI chrome. Clean geometric sans for nav, buttons, labels, metadata.
+  //   Doesn't compete with the serifs; keeps functional elements crisp.
+  // ---------------------------------------------------------------------------
+
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-body:    'Lora', 'Georgia', serif;
+  --font-ui:      'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-mono:    'Courier Prime', 'Courier New', monospace;  // crossword cells
+
+  // Type scale (1rem = 16px assumed)
+  --text-xs:   0.6875rem;  // 11px — cell numbers, fine print
+  --text-sm:   0.8125rem;  // 13px — clue list items, captions
+  --text-base: 1rem;       // 16px — body
+  --text-lg:   1.125rem;   // 18px — slightly larger body
+  --text-xl:   1.25rem;    // 20px — section headers
+  --text-2xl:  1.5rem;     // 24px — page sub-headings
+  --text-3xl:  1.875rem;   // 30px — page headings
+  --text-4xl:  2.5rem;     // 40px — hero/display text
+
+  // Font weights
+  --weight-normal:   400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  // Line heights
+  --leading-none:    1;
+  --leading-tight:   1.25;
+  --leading-snug:    1.375;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose:   1.8;
+
+  // Letter spacing
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.08em;
+  --tracking-widest:  0.15em;
+
+  // ---------------------------------------------------------------------------
+  // SPACING (4px base scale)
+  // ---------------------------------------------------------------------------
+
+  --space-px:  1px;
+  --space-0:   0;
+  --space-1:   0.25rem;   //  4px
+  --space-2:   0.5rem;    //  8px
+  --space-3:   0.75rem;   // 12px
+  --space-4:   1rem;      // 16px
+  --space-5:   1.25rem;   // 20px
+  --space-6:   1.5rem;    // 24px
+  --space-8:   2rem;      // 32px
+  --space-10:  2.5rem;    // 40px
+  --space-12:  3rem;      // 48px
+  --space-16:  4rem;      // 64px
+  --space-20:  5rem;      // 80px
+  --space-24:  6rem;      // 96px
+  --space-32:  8rem;      // 128px
+
+  // ---------------------------------------------------------------------------
+  // SHADOWS (warm-tinted — espresso brown undertone, not cold gray)
+  // ---------------------------------------------------------------------------
+
+  --shadow-sm:    0 1px 2px rgba(28, 26, 23, 0.08);
+  --shadow-md:    0 2px 8px rgba(28, 26, 23, 0.12),
+                  0 1px 3px rgba(28, 26, 23, 0.08);
+  --shadow-lg:    0 4px 16px rgba(28, 26, 23, 0.16),
+                  0 2px 6px rgba(28, 26, 23, 0.10);
+  --shadow-xl:    0 8px 32px rgba(28, 26, 23, 0.20),
+                  0 4px 12px rgba(28, 26, 23, 0.12);
+  --shadow-inner: inset 0 1px 3px rgba(28, 26, 23, 0.10);
+
+  // Paper sitting on wood — the crossword page's signature shadow
+  --shadow-paper: 2px 4px 16px rgba(28, 26, 23, 0.30),
+                  0 1px 4px rgba(28, 26, 23, 0.18);
+
+  // Chalkboard shadow (welcome page — keep intact)
+  --shadow-chalkboard: 0.5em 0.625em 1.8em #000;
+
+  // ---------------------------------------------------------------------------
+  // BORDER RADIUS
+  // ---------------------------------------------------------------------------
+
+  --radius-sm:   0.25rem;    //  4px — tags, small badges
+  --radius-md:   0.5rem;     //  8px — inputs, buttons
+  --radius-lg:   0.75rem;    // 12px — cards, panels
+  --radius-xl:   1rem;       // 16px — modals, large cards
+  --radius-2xl:  1.5rem;     // 24px — floating elements
+  --radius-full: 9999px;     // pills, avatar circles
+
+  // ---------------------------------------------------------------------------
+  // MOTION
+  // ---------------------------------------------------------------------------
+
+  --duration-instant: 50ms;
+  --duration-fast:    100ms;
+  --duration-base:    200ms;
+  --duration-slow:    300ms;
+  --duration-slower:  500ms;
+
+  --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  // Shorthand transition presets
+  --transition-colors: color var(--duration-base) var(--ease-in-out),
+                       background-color var(--duration-base) var(--ease-in-out),
+                       border-color var(--duration-base) var(--ease-in-out);
+  --transition-shadow: box-shadow var(--duration-base) var(--ease-out);
+  --transition-transform: transform var(--duration-base) var(--ease-out);
+  --transition-all: all var(--duration-base) var(--ease-in-out);
+
+  // ---------------------------------------------------------------------------
+  // Z-INDEX SCALE
+  // ---------------------------------------------------------------------------
+
+  --z-below:    -1;
+  --z-base:      0;
+  --z-raised:    1;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-nav:      300;
+  --z-modal:    400;
+  --z-toast:    500;
+}
