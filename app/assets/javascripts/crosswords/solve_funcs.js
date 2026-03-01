@@ -17,7 +17,7 @@ window.solve_app = {
   unsaved_changes: false,
 
   ready: function() {
-    if (!solve_app.anonymous) {
+    if (!solve_app.anonymous && solve_app.solution_id) {
       solve_app.save_timer = window.setInterval(function() {
         if (solve_app.unsaved_changes) solve_app.save_solution();
       }, 5000);
