@@ -14,8 +14,6 @@
     = render partial: 'layouts/partials/ga_tracking'
     = csrf_meta_tags
   %body
-    = javascript_include_tag 'foundation5/foundation.min'
-    = javascript_include_tag 'foundation5/modernizr'
     = link_to 'Skip to main content', '#body', class: 'skip-to-content'
     %header#nav.dark-shadow= render partial: 'layouts/partials/nav'
     %main#body= render partial: 'layouts/partials/body'
