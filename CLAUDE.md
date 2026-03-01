@@ -45,7 +45,7 @@ A Rails web app for solving and creating crossword puzzles. Features include:
 ```
 app/
   assets/javascripts/    # Plain JS (converted from CoffeeScript Feb 2026)
-  channels/              # ActionCable channels (messages_channel.rb)
+  channels/              # ActionCable channels (messages_channel.rb, teams_channel.rb)
   controllers/
     admin/               # Admin CRUD controllers (crosswords, users, etc.)
     api/                 # JSON API (crosswords, users)
@@ -78,7 +78,7 @@ spec/                    # RSpec test suite
   features/              # 2 integration specs (login, solve)
   factories/             # FactoryBot factories
 vendor/
-  assets/                # Foundation 5 & 6 JS/CSS
+  assets/                # Foundation 5 & 6 JS only (CSS removed in Phase 6)
 ```
 
 ## Domain Model
@@ -187,6 +187,17 @@ rspec-rails: 4.1.2 → 8.0.3
   Fixed `reset_password_email.html.haml` to use `_url` helper (mailers don't have `_path` helpers).
   Fixed `.deliver` → `.deliver_now` in `scheduler.rake`. Added 2 mailer specs + AccountController spec
   (26 new examples).
+- **Cuprite JS integration tests**: `gem 'cuprite'` added; Cuprite driver registered in `spec_helper.rb`
+  for `js: true` feature specs. 7 solve interaction specs + 3 login nav specs. `browser-actions/setup-chrome`
+  added to CI. Fixed multi-line string literals in `stimulus_sprockets.js`; both `turbo_sprockets.js` and
+  `stimulus_sprockets.js` wrapped in IIFEs to prevent top-level variable collisions on Sprockets concat.
+- **Design audit** (Mar 2026): dead FB SDK + GA tracking removed from layout; Google Fonts loaded
+  (Playfair Display, Lora, DM Sans, Courier Prime); global `*{outline:0!important}` replaced with
+  `:focus-visible` rings scoped correctly; footer uses design tokens; nav browse icon pencil→clipboard-list;
+  about/faq/contact rewrites with proper heading hierarchy; `user_made.html.haml` created (was 204);
+  nytimes duplicate heading removed + `<li>` wrappers added; login/signup forms get `h1` toppers +
+  `autocomplete` attrs; `\--` → `&mdash;` in crossword credit; clue column `h6` → `h3`;
+  search form always renders and uses `form_tag` correctly.
 
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
@@ -212,7 +223,7 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **jQuery** via `jquery-rails` (required by solve_funcs.js, edit_funcs.js, remotipart)
 - **Turbo** via `turbo-rails` — Turbo Drive (page navigation) + Turbo Streams (DOM updates)
 - **Stimulus** via `stimulus-rails`
-- **Foundation** 5 & 6 (vendored JS/CSS)
+- **Foundation** 5 & 6 (vendored JS only; CSS removed in Phase 6)
 - Manifests: `application.js`, `solve.js`, `edit.js`
 - **NOTE**: Files calling `$.ajax({ dataType: 'script' })` use `.js.erb` + `format.js` (NOT Turbo Streams):
   `check_cell.js.erb`, `check_completion.js.erb`, `solutions/update.js.erb`,
@@ -223,15 +234,13 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **Framework**: RSpec with `rspec-rails ~> 8.0` (8.0.3)
 - **Factories**: FactoryBot 6.5 (all attributes use block syntax)
 - **Database cleaning**: DatabaseCleaner 2.1 with truncation strategy (not transactions)
-- **Feature tests**: Capybara `~> 3.0` with CSS selectors (rack-test driver, no JS)
+- **Feature tests**: Capybara `~> 3.0`; rack-test driver for non-JS specs; Cuprite (headless Chrome via CDP) for JS-capable specs (`js: true`)
 - **Coverage**: SimpleCov `~> 0.22`
 - **Matchers**: shoulda-matchers `~> 7.0`
 - **its()**: rspec-its 2.0 (extracted from rspec-core)
 - **Controller specs**: require `rails-controller-testing` (installed)
-- **Pending tests (3)**: login feature specs (home-page dropdown login) — require a JS-capable
-  Capybara driver; skipped with `xcontext`
 
-Run tests: `bundle exec rspec`  # 406 examples, 0 failures, 3 pending
+Run tests: `bundle exec rspec`  # 413 examples, 0 failures
 
 ## Notable Gems and Their Roles
 
@@ -256,6 +265,7 @@ Run tests: `bundle exec rspec`  # 406 examples, 0 failures, 3 pending
 | `remotipart` | 1.4.4 | Multipart AJAX file uploads (requires jQuery) |
 | `jbuilder` | 2.14.1 | JSON API views |
 | `rails-controller-testing` | 1.0.5 | Enables get/post in RSpec controller specs |
+| `cuprite` | — | Headless Chrome driver for Capybara JS feature specs |
 
 ## Key Commands
 
@@ -291,6 +301,4 @@ After any Ruby version change: `bundle lock --add-platform x86_64-linux` before 
    candidate for removal
 4. **`Examplable` concern** (`app/models/concerns/examplable.rb`) — not included by any model; dead code
 5. **`Phrase` model** (`app/models/phrase.rb`) — TODO: "DECIDE HOW I WILL USE THIS MODEL IF AT ALL!!!"
-6. **Feature specs** (login_spec.rb) — home-page and dropdown login flows need a JS-capable Capybara
-   driver (e.g. Cuprite); skipped with `xcontext` for now
-7. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable
+6. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable
