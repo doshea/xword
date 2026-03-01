@@ -7,34 +7,34 @@
 :javascript
   edit_app.circles = '#{@unpublished_crossword.circles}'
 
-.row#credit-area
-  .large-9.columns
+.xw-container.xw-grid#credit-area
+  .xw-col-12.xw-lg-9
     %h3.large
-      .row
-        .large-1.columns.smaller Title:
-        .large-9.columns.end
+      .xw-grid
+        .xw-col-12.xw-lg-1.smaller Title:
+        .xw-col-12.xw-lg-9
           = text_field_tag 'title', @unpublished_crossword.title
           %i#title-status
-  .large-3.columns
+  .xw-col-12.xw-lg-3
     #puzzle-controls
       %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       %a#edit-save.button.tiny.secondary{href: '#', title: 'Quicksave', data: {tooltip: true}}
         = icon('save')
 
-.row#solve-area
-  .large-12.columns
+.xw-container.xw-grid#solve-area
+  .xw-col-full
     = render partial: 'unpublished_crosswords/partials/edit_unpublished_crossword'
 
-.row#meta-area
-  .large-12.columns
+.xw-container.xw-grid#meta-area
+  .xw-col-full
     %p
       = label_tag :description
       = text_area_tag :description, @unpublished_crossword.description, placeholder: "Say something about the making of this crossword -- or anything interesting that doesn't spoil the puzzle!"
   %hr
-.row#advanced
-  %h5 Advanced Controls
-  .large-3.columns
+.xw-container.xw-grid#advanced
+  %h5.xw-col-full Advanced Controls
+  .xw-col-12.xw-lg-3
     %ul
       %li
         = switch_tag @unpublished_crossword, :mirror_voids
@@ -44,8 +44,8 @@
         = switch_tag @unpublished_crossword, :circle_mode, 'Circle Mode'
       %li
         = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
-  .large-6.columns
-  .large-3.columns
+  .xw-col-12.xw-lg-6
+  .xw-col-12.xw-lg-3
     = link_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), class: 'button', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
 -# NON-INLINE ELEMENTS
 
@@ -55,7 +55,7 @@
     = icon('lightbulb')
     %span.small Notepad
   #ideas
-    .row
+    .xw-grid
       / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
       / id="ideas-input" added so add_potential_word.turbo_stream.erb can clear the field after add
       = form_with(url: add_potential_word_unpublished_crossword_path(@unpublished_crossword), method: :patch) do |f|
@@ -74,7 +74,7 @@
     %span.small
       Pattern Search
   #pattern-search
-    .row
+    .xw-grid
       / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
       = form_with(url: match_words_path, method: :post) do |f|
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"

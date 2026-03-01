@@ -1,7 +1,7 @@
-= content_tag(:div, id: dom_id(comment), class: 'row') do
-  .large-1.columns.small-3
+= content_tag(:div, id: dom_id(comment), class: 'xw-grid') do
+  .xw-col-3.xw-lg-1
     = link_to (image_tag comment.user.image.comment_size.url), comment.user
-  .large-11.columns
+  .xw-col-12.xw-lg-11
     %p<
       = link_to "#{comment.user.display_name}: ", comment.user
       %br

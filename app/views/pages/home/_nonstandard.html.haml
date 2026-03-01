@@ -6,5 +6,5 @@
       
   - nonstandard_remaining = @nonstandard[Crossword.per_page..-1]
   - if nonstandard_remaining && nonstandard_remaining.any?
-    .row.center
+    .center
       = render partial: 'pages/home/load_next_button', locals: {remaining: nonstandard_remaining}

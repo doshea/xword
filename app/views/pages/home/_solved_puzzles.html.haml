@@ -7,7 +7,7 @@
       
     - solved_remaining = @solved[Crossword.per_page..-1]
     - if solved_remaining && solved_remaining.any?
-      .row.center
+      .center
         = render partial: 'pages/home/load_next_button', locals: {remaining: solved_remaining}
   - else
     You haven't finished any puzzles yet -- go check out the New tab and try one!

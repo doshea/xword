@@ -1,9 +1,8 @@
-= render layout: 'layouts/partials/topper_stopper' do
-  .small-4.columns.small-offset-4.end
+= render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true} do
+  .xw-col-12.xw-md-4.xw-md-offset-4
     = image_tag 'error.png', class: 'center', style: 'display: block; margin: 0 auto; width: 75%;'
-  .small-12.columns
+  .xw-col-full
     %h3.center
       - if flash[:error]
         = flash[:error]
         %br
-  

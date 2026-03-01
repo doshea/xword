@@ -1,5 +1,5 @@
 %br
-.large-3.columns
+.xw-col-12.xw-lg-3
   = image_tag @user.image.url
   #profile-name= @user.display_name
   #profile-join Joined: #{@user.created_at.strftime("%b %d, %Y")}
@@ -22,7 +22,7 @@
           %li #{@user.unpublished_crosswords.count} in the works
       %hr
       %li Clues written: #{@user.clues.count}
-.large-5.columns
+.xw-col-12.xw-lg-5
   %h2 Recent Comments
   %ul#recent-comments
     - @user.comments.order_recent.each do |c|
@@ -32,7 +32,7 @@
         %span.right.smaller= c.created_ago
       %hr
 
-.large-4.columns
+.xw-col-12.xw-lg-4
   %h2 Puzzles
   - if @user.crosswords.any?
     %ul

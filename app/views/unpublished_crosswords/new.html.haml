@@ -4,14 +4,14 @@
 = javascript_include_tag 'crosswords/new'
 
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'New Crossword', row_class: 'spin-target', custom_columns: true} do
-  .large-7.columns
+  .xw-col-12.xw-lg-7
     = render partial: 'unpublished_crosswords/partials/new_form'
-  .large-5.columns
+  .xw-col-12.xw-lg-5
     %fieldset#preview
       %legend
         Preview
-      .row
-        .large-12.columns
+      .xw-grid
+        .xw-col-full
           #preview-crossword
             - Crossword::MAX_DIMENSION.times do |row|
               .preview-row

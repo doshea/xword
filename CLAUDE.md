@@ -1,5 +1,9 @@
 # Xword - Crossword Puzzle Application
 
+## Working Style
+
+When fixing a bug or making a change, search for the same pattern elsewhere in the codebase before implementing. Fix all instances together. If the broader fix carries risk, flag it before proceeding.
+
 ## Overview
 
 A Rails web app for solving and creating crossword puzzles. Features include:

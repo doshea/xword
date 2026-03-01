@@ -1,12 +1,12 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Comment", custom_columns: true} do
   %br
   / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
-  = form_with model: @comment, url: url_for(controller: 'admin/comments', action: :update) do |f|
-    .large-8.columns
+  = form_with model: @comment, url: url_for(controller: 'admin/comments', action: :update), html: { class: 'xw-col-full xw-grid' } do |f|
+    .xw-col-12.xw-lg-8
       = f.label :content
       = f.text_field :content
-    .large-4.columns
+    .xw-col-12.xw-lg-4
       = f.label :flagged
       = f.check_box :flagged
-    .large-12.columns
+    .xw-col-full
       = f.button class: 'button', data: {disable_with: 'Updating...'}

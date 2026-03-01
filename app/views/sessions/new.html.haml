@@ -1,9 +1,9 @@
 - title 'Log In'
 
-= render layout: 'layouts/partials/topper_stopper' do
-  .columns.medium-4.medium-offset-1.small-12
+= render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true} do
+  .xw-col-12.xw-md-4.xw-md-offset-1
     %h2.text-center Log In
     = render partial: 'sessions/partials/form_large'
-    
-  .columns.medium-4.medium-offset-1.end
+
+  .xw-col-12.xw-md-4.xw-md-offset-1
     = render partial: 'users/partials/form'

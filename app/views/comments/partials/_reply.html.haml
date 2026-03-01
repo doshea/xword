@@ -1,5 +1,5 @@
-= content_tag(:div, id: dom_id(reply), class: 'row') do
-  .large-1.columns.small-3
+= content_tag(:div, id: dom_id(reply), class: 'xw-grid') do
+  .xw-col-3.xw-lg-1
     = link_to (image_tag reply.user.image.reply_size.url), reply.user
     - if @current_user && ((@current_user == reply.user) || (@current_user.is_admin?))
       .reply-controls{style: 'position: absolute; right: -0.2em; top: 0; height: 100%; width: 1em;'}
@@ -8,5 +8,5 @@
         / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (Turbo handles DELETE)
         = link_to reply, style: 'position: absolute; bottom: 0;', data: { turbo_method: :delete, turbo_confirm: 'Are you SURE you want to delete this reply?' } do
           = icon('trash-2')
-  .large-11.columns
+  .xw-col-12.xw-lg-11
     %p= reply.content

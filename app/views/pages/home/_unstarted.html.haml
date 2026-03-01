@@ -7,7 +7,7 @@
   - unstarted_remaining = @unstarted[Crossword.per_page..-1]
   - if unstarted_remaining && unstarted_remaining.any?
     / id added so batch.turbo_stream.erb can replace/remove the load-more button
-    .row.center#load-more-button
+    .center#load-more-button
       = render partial: 'pages/home/load_next_button', locals: {remaining: unstarted_remaining}
 - else
   %p You're already working on all of the puzzles we've got!

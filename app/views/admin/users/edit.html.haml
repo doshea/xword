@@ -1,26 +1,26 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@user.username}</i>".html_safe, custom_columns: true} do
   %br
   / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
-  = form_with model: @user, url: url_for(controller: 'admin/users', method: :update) do |f|
-    .large-3.columns
+  = form_with model: @user, url: url_for(controller: 'admin/users', method: :update), html: { class: 'xw-col-full xw-grid' } do |f|
+    .xw-col-12.xw-lg-3
       = f.label :username
       = f.text_field :username
       = f.label :first_name
       = f.text_field :first_name
-    .large-3.columns
+    .xw-col-12.xw-lg-3
       = f.label :email
       = f.email_field :email
       = f.label :last_name
       = f.text_field :last_name
-    .large-4.columns
+    .xw-col-12.xw-lg-4
       = f.label :image
       = image_tag @user.image.creator_pic.url
       = f.text_field :image
-    .large-2.columns{style: @user.is_admin ? 'background: lightgreen;' : nil}
+    .xw-col-12.xw-lg-2{style: @user.is_admin ? 'background: lightgreen;' : nil}
       = f.label :is_admin, 'Admin'
-      = f.check_box :is_admin  
-    .large-12.columns
+      = f.check_box :is_admin
+    .xw-col-full
       = f.label :location
       = f.text_field :location
-    .large-12.columns
+    .xw-col-full
       = f.submit class: 'button', data: {disable_with: 'Updating...'}

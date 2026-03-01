@@ -3,7 +3,7 @@
   = stylesheet_link_tag :solution_choice
 
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Choose a Solution', custom_columns: true} do
-  .large-4.columns
+  .xw-col-12.xw-lg-4
     = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: @crossword, scale: 2.0}
     .metadata
       %h5
@@ -16,7 +16,7 @@
     %hr
     %p
       You have more than one solution for this crossword. Please choose the one you would like to work on.
-  .large-8.columns
+  .xw-col-12.xw-lg-8
     -# The table of available solutions
     %table
       %thead

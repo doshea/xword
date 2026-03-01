@@ -1,12 +1,12 @@
-= form_tag '/login', id: 'login' do
+= form_tag '/login', id: 'login', class: 'xw-grid' do
   = label_tag :username
   = text_field_tag :username, nil, :autofocus => true
   = label_tag :password
   = password_field_tag :password
-  .small-6.columns
+  .xw-col-6
     = label_tag :remember_me, 'Remember me'
-    = check_box_tag :remember_me, 1, params[:remember_me], checked: true      
-  .small-6.columns
+    = check_box_tag :remember_me, 1, params[:remember_me], checked: true
+  .xw-col-6
     = button_tag 'Log in', class: 'button radius success'
   %br
 .left

@@ -1,21 +1,21 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Solution", custom_columns: true} do
   %br
   / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
-  = form_with model: @solution, url: url_for(controller: 'admin/solutions', method: :update) do |f|
-    .large-8.columns
+  = form_with model: @solution, url: url_for(controller: 'admin/solutions', method: :update), html: { class: 'xw-col-full xw-grid' } do |f|
+    .xw-col-12.xw-lg-8
       = f.label :letters
       = f.text_area :letters, maxlength: @solution.crossword.try(:rows) * @solution.crossword.try(:cols), style: 'text-transform: uppercase;'
-    .large-2.columns
+    .xw-col-12.xw-lg-2
       = f.label :is_complete
       = f.check_box :is_complete
-    .large-2.columns
+    .xw-col-12.xw-lg-2
       = f.label :team
       = f.check_box :team
     - if @solution.team
-      .large-12.columns
+      .xw-col-full
         = f.label :key
         = f.text_field :key
-    .large-12.columns
+    .xw-col-full
       = f.submit class: 'button', data: {disable_with: 'Updating...'}
   %hr
   %section

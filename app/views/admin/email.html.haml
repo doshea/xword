@@ -1,19 +1,19 @@
 - title 'Admin | Email', true
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Email Testing Tool', custom_columns: true} do
   / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
-  = form_with(url: admin_test_emails_path) do |f|
-    .large-6.columns
+  = form_with(url: admin_test_emails_path, html: { class: 'xw-col-full xw-grid' }) do |f|
+    .xw-col-12.xw-lg-6
       %h5 User
       = label_tag :reset_password
       = check_box_tag :reset_password
       = label_tag :signup
       = check_box_tag :signup
-    .large-6.columns
+    .xw-col-12.xw-lg-6
       %h5 Admin
       = label_tag :nyt_upload_error, 'NYT Upload Error'
       = check_box_tag :nyt_upload_error
-    .large-6.columns
+    .xw-col-12.xw-lg-6
       = label_tag :address, 'Mail To:'
       = email_field_tag :address, 'info@crossword-cafe.com'
-    .large-6.columns
+    .xw-col-12.xw-lg-6
       = submit_tag 'Send Test Emails', class: 'button'

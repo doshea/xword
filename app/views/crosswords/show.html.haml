@@ -26,7 +26,7 @@
 -# Quick fix for sunday crosswords. TODO fix this.
 - if @crossword.cols > 15
   :css
-    #body > .row {
+    #body > .xw-container {
       max-width: none;
       width: 1250px;
     }
@@ -35,8 +35,8 @@
     height: #{@crossword.rows*2.175-22/16.0}em;
   }
 
-.row#credit-area
-  .medium-12.columns
+.xw-container.xw-grid#credit-area
+  .xw-col-full
     %h3
       = @crossword.title.html_safe
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
@@ -70,11 +70,11 @@
           Team
 
 
-.row#solve-area
-  .medium-12.columns
+.xw-container.xw-grid#solve-area
+  .xw-col-full
     = render partial: 'crosswords/partials/solve_crossword'
-.row#meta-area
-  .medium-12.columns
+.xw-container.xw-grid#meta-area
+  .xw-col-full
     #solve-controls
       -# %button.button.warning.small#show-incorrect
       -#   %i.fi-alert
@@ -95,12 +95,12 @@
         %li.check-completion
           %a{:href => "#"} Completion
   %hr
-  .medium-12.columns
-    .row
-      .medium-2.columns
+  .xw-col-full
+    .xw-grid
+      .xw-col-12.xw-md-2
         = link_to @crossword.user do
           = image_tag(@crossword.user.image.creator_pic.url, class: 'small-shadow thin-border')
-      .medium-10.columns
+      .xw-col-12.xw-md-10
         %p
           %em= @crossword.description
           \--

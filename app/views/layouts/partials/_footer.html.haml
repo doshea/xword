@@ -1,7 +1,7 @@
-.row
-  .large-12.columns
-    .row#stats
-      .large-4.columns
+.xw-container.xw-grid
+  .xw-col-full
+    .xw-grid#stats
+      .xw-col-12.xw-lg-4
         %ul
           %li
             = link_to about_path do
@@ -20,12 +20,12 @@
               = icon('chart-bar')
               %span Site Stats
 
-      .large-4.columns
-      .large-4.columns
+      .xw-col-12.xw-lg-4
+      .xw-col-12.xw-lg-4
         %ul
           %li#social-links
             %a{href: 'https://www.facebook.com/pages/Crossword-Caf%C3%A9/522004927841403', target: '_blank'}
               = icon('facebook')
             %a{href: 'https://github.com/doshea/xword', target: '_blank'}
               = icon('github')
-  %h6.subheader &copy; Dylan O'Shea
+  %h6.subheader.xw-col-full &copy; Dylan O'Shea
