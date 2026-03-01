@@ -25,6 +25,10 @@ class Word < ApplicationRecord
   has_many :down_cells, through: :clues
   has_many :across_crosswords, through: :across_cells, source: :crossword
   has_many :down_crosswords, through: :down_cells, source: :crossword
+
+  def crosswords
+    (across_crosswords + down_crosswords).uniq
+  end
   self.per_page = 50
 
   validates_uniqueness_of :content

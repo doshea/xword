@@ -60,14 +60,15 @@
 }
 
 .xw-nav__brand-name {
-  font-family: var(--font-display);
-  font-size: var(--text-base);
-  font-weight: var(--weight-semibold);
-  color: var(--color-nav-text);
-  letter-spacing: -0.01em;
+  // Visually hidden at all sizes; screen readers announce the site name once.
+  // Image alt is '' so the name is not duplicated for assistive technology.
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-
-  @media (max-width: #{$bp-md - 1px}) { display: none; }  // hide on mobile
+  border: 0;
 }
 
 
