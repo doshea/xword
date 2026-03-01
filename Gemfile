@@ -76,6 +76,8 @@ group :development do
   # gem 'spring'
   gem 'pry-byebug'
   gem 'pry-stack_explorer'
+  # Sprockets 4 calls cache_key on CoffeeScriptProcessor at startup even without .coffee files
+  gem 'coffee-rails'
 end
 
 group :production do

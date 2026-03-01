@@ -107,6 +107,13 @@ GEM
       marcel (~> 1.0.0)
       ssrf_filter (~> 1.0)
     coderay (1.1.3)
+    coffee-rails (5.0.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 5.2.0)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.12.2)
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
     crass (1.0.6)
@@ -443,6 +450,7 @@ DEPENDENCIES
   binding_of_caller
   capybara (~> 3.0)
   carrierwave (~> 3.1)
+  coffee-rails
   csv
   database_cleaner
   factory_bot_rails
