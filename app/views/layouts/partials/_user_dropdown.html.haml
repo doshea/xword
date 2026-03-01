@@ -1,6 +1,6 @@
 %li.has-dropdown#user-menu
   %a#profile-tease
-    = image_tag @current_user.image.thumb, class: 'profile-pic-updateable'
+    = image_tag @current_user.image.thumb.url, class: 'profile-pic-updateable'
     = @current_user.username
   %ul.dropdown
     %li.divider

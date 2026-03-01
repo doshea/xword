@@ -14,7 +14,7 @@
       = f.text_field :last_name
     .large-4.columns
       = f.label :image
-      = image_tag @user.image.creator_pic
+      = image_tag @user.image.creator_pic.url
       = f.text_field :image
     .large-2.columns{style: @user.is_admin ? 'background: lightgreen;' : nil}
       = f.label :is_admin, 'Admin'

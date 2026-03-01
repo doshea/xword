@@ -1,6 +1,6 @@
 %br
 .large-3.columns
-  = image_tag @user.image
+  = image_tag @user.image.url
   #profile-name= @user.display_name
   #profile-join Joined: #{@user.created_at.strftime("%b %d, %Y")}
   - if @current_user && (@current_user != @user)
@@ -40,6 +40,6 @@
         %li
           = link_to cw.title, cw
           = link_to cw do
-            = image_tag cw.preview, class: 'shadow thin-border'
+            = image_tag cw.preview.url, class: 'shadow thin-border'
   - else
     No puzzles created yet

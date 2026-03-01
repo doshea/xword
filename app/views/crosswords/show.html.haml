@@ -99,7 +99,7 @@
     .row
       .medium-2.columns
         = link_to @crossword.user do
-          = image_tag(@crossword.user.image.creator_pic, class: 'small-shadow thin-border')
+          = image_tag(@crossword.user.image.creator_pic.url, class: 'small-shadow thin-border')
       .medium-10.columns
         %p
           %em= @crossword.description

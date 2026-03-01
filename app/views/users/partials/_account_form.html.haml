@@ -22,7 +22,7 @@
           .row
             .large-5.columns
               / id added so users/update.turbo_stream.erb can replace this element with the new image
-            = image_tag user.image, id: 'profile-pic', class: 'profile-pic-updateable'
+            = image_tag user.image.url, id: 'profile-pic', class: 'profile-pic-updateable'
             .large-7.columns
               %p
                 Upload an image from your computer:

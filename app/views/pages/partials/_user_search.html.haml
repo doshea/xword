@@ -4,5 +4,5 @@
     -slice.each do |user|
       = link_to user do
         .large-2.columns.result-user
-          = image_tag user.image.search
+          = image_tag user.image.search.url
           %p.name= user.display_name

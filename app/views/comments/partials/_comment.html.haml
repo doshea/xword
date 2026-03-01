@@ -1,6 +1,6 @@
 = content_tag(:div, id: dom_id(comment), class: 'row') do
   .large-1.columns.small-3
-    = link_to (image_tag comment.user.image.comment_size), comment.user
+    = link_to (image_tag comment.user.image.comment_size.url), comment.user
   .large-11.columns
     %p<
       = link_to "#{comment.user.display_name}: ", comment.user
