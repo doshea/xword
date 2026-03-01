@@ -2,7 +2,19 @@
 
 ## Working Style
 
-When fixing a bug or making a change, search for the same pattern elsewhere in the codebase before implementing. Fix all instances together. If the broader fix carries risk, flag it before proceeding.
+**Think holistically before changing code.** When fixing a bug or implementing a feature:
+1. Search for the same pattern elsewhere in the codebase — fix all instances together, not just the one that surfaced.
+2. Trace the full impact: HTML, CSS, JS, and tests are a unit. Verify that class names, selectors, and DOM structure stay consistent across all layers.
+3. Add or update specs to cover the changed behavior.
+4. If a broader fix carries risk, flag it before proceeding.
+
+## Development Rules
+
+- Run `bundle exec rspec` after non-trivial changes. "Should work" is not "does work."
+- Prefer ActiveRecord queries over raw SQL. If raw SQL is necessary, add a comment explaining why.
+- Test behavior, not implementation details. Don't test that Rails works.
+- New gems, patterns, or architectural layers are fine when they improve app longevity and are manageable long-term — but get user buy-in first.
+- Keep models to validations, associations, scopes, and callbacks. Keep controllers to request handling. If business logic is needed somewhere, ask where it should go.
 
 ## Overview
 
