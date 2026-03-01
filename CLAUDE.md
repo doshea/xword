@@ -121,6 +121,11 @@ rspec-rails: 4.1.2 → 8.0.3
 - Controller specs: `get :action, id:` → `get :action, params: { id: }` (Rails 5+ style)
 - `rspec-its` gem added (extracted from rspec-core)
 - `Procfile` added (`web: bundle exec puma -C config/puma.rb`)
+- GitHub Actions CI added (Feb 2026): Postgres 16, Ruby from `.ruby-version`, runs rspec
+- **Hotwire migration** (Feb 2026): `turbolinks` + `jquery_ujs` → `turbo-rails` + `stimulus-rails`
+  - 13 `.js.erb` files → `.turbo_stream.erb`; 12 `.js.erb` dead code deleted; 5 kept (jQuery AJAX)
+  - All `remote: true` forms → `form_with`; method:delete links → `data: { turbo_method: }`
+  - `spec_helper.rb`: added `infer_spec_type_from_file_location!` + `Shoulda::Matchers.configure`
 
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
@@ -141,10 +146,14 @@ rspec-rails: 4.1.2 → 8.0.3
 Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **Plain JS** — 12 files (converted from CoffeeScript; crossword interactions, ActionCable, account, global)
 - **SASS** via `sassc-rails`
-- **jQuery** via `jquery-rails` (also provides `jquery_ujs` for `remote: true` forms)
-- **Turbolinks 5.1** (effectively disabled in application.js)
+- **jQuery** via `jquery-rails` (required by solve_funcs.js, edit_funcs.js, remotipart)
+- **Turbo** via `turbo-rails` — Turbo Drive (page navigation) + Turbo Streams (DOM updates)
+- **Stimulus** via `stimulus-rails`
 - **Foundation** 5 & 6 (vendored JS/CSS)
 - Manifests: `application.js`, `solve.js`, `edit.js`
+- **NOTE**: Files calling `$.ajax({ dataType: 'script' })` use `.js.erb` + `format.js` (NOT Turbo Streams):
+  `check_cell.js.erb`, `check_completion.js.erb`, `solutions/update.js.erb`,
+  `update_letters.js.erb`, `live_search.js.erb`
 
 ## Testing
 
@@ -177,8 +186,9 @@ Run tests: `bundle exec rspec`
 | `httparty` | 0.24.2 | HTTP client (NYT puzzle fetching) |
 | `sassc-rails` | — | SASS/SCSS compilation |
 | `terser` | — | JS minification in production |
-| `turbolinks` | 5.1.0 | Page navigation (effectively disabled) |
-| `remotipart` | 1.3.1 | Multipart AJAX file uploads via jQuery UJS |
+| `turbo-rails` | 2.0.23 | Hotwire Turbo Drive + Turbo Streams (replaces turbolinks + jquery_ujs) |
+| `stimulus-rails` | 1.3.4 | Hotwire Stimulus JS framework |
+| `remotipart` | 1.4.4 | Multipart AJAX file uploads (requires jQuery) |
 | `jbuilder` | 2.14.1 | JSON API views |
 
 ## Key Commands
@@ -208,9 +218,8 @@ After any Ruby version change: `bundle lock --add-platform x86_64-linux` before 
 
 ## Known Technical Debt
 
-1. **`remotipart` 1.3.1** — old jQuery UJS gem; Rails 8 compatibility untested
-2. **`turbolinks`** — deprecated; Rails 8 ecosystem uses Hotwire/Turbo
-3. **No CI/CD** — no GitHub Actions or other CI configuration
-4. **Last DB migration**: April 2017 (schema stable)
-5. **`boot.rb`** — `require 'logger'` comment is stale (was needed for Ruby 3.1 + Rails 6.x)
-6. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable releases
+1. **`remotipart` 1.4.4** — multipart AJAX file uploads (profile pic); Rails 8 + Turbo compatibility untested
+2. **Last DB migration**: April 2017 (schema stable)
+3. **`boot.rb`** — `require 'logger'` comment is stale (was needed for Ruby 3.1 + Rails 6.x)
+4. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable releases
+5. **Test suite**: 48 pre-existing failures (missing `published` column on Crossword, `rails-controller-testing` gem not installed, Capybara feature spec issues). CI added via GitHub Actions.
