@@ -134,9 +134,22 @@ rspec-rails: 4.1.2 → 8.0.3
   comments, crosswords, solutions, solution_partnerings, users (auth_token unique), etc.
 - **Signed auth cookies**: `cookies[:auth_token]` → `cookies.signed[:auth_token]` (HMAC-verified);
   session-based auth still works as legacy fallback
-- **Test suite**: 0 failures, 15 pending (was 48 failures). Fixes: `belongs_to.optional`,
-  `validate_inclusion_of` (was `ensure_inclusion_of`), Faker keyword args, `be true/false` (was
-  `be_true/be_false`), `rails-controller-testing` gem added, `:should` syntax enabled in spec_helper
+- **Test suite fully filled out**: 308 examples, 0 failures, 3 pending. All controller specs (9 main + 6
+  admin) and model behavior specs written from scratch. Key patterns: `request.accept = Mime[:turbo_stream].to_s`
+  for turbo_stream actions; `request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"` for `.js.erb`/`format.js`
+  actions; `allow(Word).to receive(:word_match).and_return(...)` to stub external HTTP in words#match.
+  Rails 8.1 password reset: use `User.find_by_password_reset_token(token)` (signed token, not DB column).
+- **PUT /solutions/null bug fixed**: anonymous users on crossword pages caused a HAML syntax error
+  (`#{nil}` → empty string → `solve_app.solution_id = ;`) which left `anonymous` unset (falsy), starting
+  the auto-save timer with a null solution_id. Three-layer fix: `.to_json` in HAML (nil → `null`),
+  `if (!solve_app.solution_id)` guard in `ready()` and `save_solution()`, plus `prepend_before_action
+  :guard_null_solution_id` in SolutionsController for server-side safety.
+- **Partial local variable audit**: all `render partial:` calls audited for local variable name mismatches.
+  `_crossword_tab.html.haml` uses `cw:` — three callers (nytimes, words/show, clues/show) were passing
+  `crossword:` and have been fixed. Convention: **always check all callers of a partial when a mismatch
+  is found**, not just the one that surfaced.
+- **Orphaned partials deleted**: `_cell.html.haml` (cells rendered inline in _solve_crossword) and
+  `_mini_pic_svg.html.haml` (replaced by image previews) had no callers.
 
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
@@ -177,10 +190,10 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **Matchers**: shoulda-matchers `~> 7.0`
 - **its()**: rspec-its 2.0 (extracted from rspec-core)
 - **Controller specs**: require `rails-controller-testing` (installed)
-- **Pending tests (15)**: published-crossword flows (column removed), HABTM join tables removed,
-  login feature specs requiring JS driver
+- **Pending tests (3)**: login feature specs (home-page dropdown login) — require a JS-capable
+  Capybara driver; skipped with `xcontext`
 
-Run tests: `bundle exec rspec`
+Run tests: `bundle exec rspec`  # 308 examples, 0 failures, 3 pending
 
 ## Notable Gems and Their Roles
 
@@ -242,5 +255,5 @@ After any Ruby version change: `bundle lock --add-platform x86_64-linux` before 
 4. **`Examplable` concern** (`app/models/concerns/examplable.rb`) — not included by any model; dead code
 5. **`Phrase` model** (`app/models/phrase.rb`) — TODO: "DECIDE HOW I WILL USE THIS MODEL IF AT ALL!!!"
 6. **Feature specs** (login_spec.rb) — home-page and dropdown login flows need a JS-capable Capybara
-   driver (e.g. Cuprite); skipped for now
+   driver (e.g. Cuprite); skipped with `xcontext` for now
 7. **Ruby 3.5** — only preview1 available as of Feb 2026; upgrade when stable
