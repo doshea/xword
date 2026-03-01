@@ -60,12 +60,9 @@ class UsersController < ApplicationController
   def send_password_reset
     user = @current_user || User.find_by(email: params[:email]) || User.find_by(username: params[:username])
     if user
-      user.generate_token(:password_reset_token)
-      user.password_reset_sent_at = Time.zone.now
-      user.save
+      # Rails 8.1 has_secure_password generates password_reset_token automatically
+      # (signed from password_salt — no DB storage needed; expiry handled by signed token)
       UserMailer.reset_password_email(user).deliver_now
-    else
-      #IF THERE IS NO USER
     end
     respond_to do |format|
       format.turbo_stream  # Renders users/send_password_reset.turbo_stream.erb (shows confirmation message)
@@ -75,17 +72,17 @@ class UsersController < ApplicationController
 
   #GET /users/reset_password/:password_reset_token or reset_password_users_path
   def reset_password
-    @user = User.with_valid_reset_token.find_by(password_reset_token: params[:password_reset_token])
+    # Rails 8.1: find_by_password_reset_token verifies the signed token and checks expiry
+    @user = User.find_by_password_reset_token(params[:password_reset_token])
   end
-  
+
   #POST /users/resetter or resetter_users_path
   def resetter
-    user = User.with_valid_reset_token.find_by(password_reset_token: params[:password_reset_token])
+    # Rails 8.1: find_by_password_reset_token returns nil if token is expired or invalid
+    user = User.find_by_password_reset_token(params[:password_reset_token])
     if user
       if user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
-        user.password_reset_token = nil
-        user.password_reset_sent_at = nil
-        user.save
+        # Changing the password invalidates the old signed token automatically (password_salt changes)
         # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
         # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
         redirect_to account_users_path, notice: 'Password updated successfully.'

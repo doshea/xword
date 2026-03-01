@@ -1,7 +1,6 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :check_puzzle]
-  before_action :ensure_logged_in, only: [:create]
-  before_action :ensure_owner_or_admin, only: [:edit, :update, :publish, :add_potential_word, :remove_potential_word]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion]
+  before_action :ensure_owner_or_admin, only: [:publish, :remove_potential_word]
 
   #GET /crosswords/:id or crossword_path
   def show

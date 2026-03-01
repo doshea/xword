@@ -15,4 +15,21 @@
 #
 
 FactoryBot.define do
+  factory :solution do
+    association :user
+    association :crossword
+
+    # Empty letters by default; check_completion will not trigger ('' != crossword.letters)
+    letters { '' }
+    team    { false }
+
+    # A solved solution with letters matching the crossword
+    trait :complete do
+      after(:build) { |s| s.letters = s.crossword.letters }
+    end
+
+    trait :team do
+      team { true }
+    end
+  end
 end

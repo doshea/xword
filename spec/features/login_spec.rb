@@ -11,51 +11,6 @@ feature 'Login' do
       end
       scenario 'arrive on home page successfully' do
         current_path.should eq root_path
-        # response object not available in Capybara feature specs; path check is sufficient
-      end
-
-      # #login-container only exists on the welcome page (logged_out_home layout),
-      # not on root_path — these scenarios need JS driver and UI update to fix.
-      xscenario 'can log in' do
-        page.should have_selector('#login-container')
-
-        within('#login-container') do
-          fill_in :username, with: @user.username
-          fill_in :password, with: @user.password
-          click_button 'Log in'
-        end
-
-        current_path.should eq root_path
-        page.should_not have_selector('#login-container')
-        expect(page).to have_text("Welcome back, #{@user.username}")
-
-      end
-
-      # Depends on #login-container being on root_path — see above
-      xcontext 'with bad login' do
-        before :each do
-          within('#login-container') do
-            fill_in :username, with: @user.username
-            fill_in :password, with: 'BADPASSWORD'
-            click_button 'Log in'
-          end
-        end
-
-        scenario 'leads to login page' do
-          current_path.should eq login_path
-        end
-
-        scenario 'receives warning' do
-          page.should have_text("Username/password combination did not match our records")
-        end
-
-        scenario 'cannot reach home page' do
-          visit root_path
-          current_path.should eq welcome_path
-          page.should have_selector('#login-container')
-          expect(page).to_not have_text("Welcome back")
-        end
-
       end
     end
 
@@ -82,7 +37,8 @@ feature 'Login' do
       end
     end
 
-    # #login-button dropdown requires JS driver; skipped until Capybara JS driver configured
+    # Dropdown login requires a JS driver (Foundation dropdown is JS-toggled).
+    # Re-enable once a Capybara JS driver (e.g. Cuprite/Selenium) is configured.
     xcontext 'using dropdown login' do
       before :each do
         visit user_path(User.first)
