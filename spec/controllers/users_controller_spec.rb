@@ -90,16 +90,16 @@ describe UsersController do
   end
 
   describe 'POST #send_password_reset' do
-    # Renders send_password_reset.turbo_stream.erb; stubs mailer to avoid sending real email.
     before do
-      request.accept = Mime[:turbo_stream].to_s
       allow(UserMailer).to receive_message_chain(:reset_password_email, :deliver_now)
       post :send_password_reset, params: { email: user.email }
     end
 
-    it { should respond_with(200) }
+    it { should redirect_to(forgot_password_users_path) }
+    it 'sets a success flash' do
+      expect(flash[:success]).to be_present
+    end
     it 'delivers the reset password email' do
-      # Mailer should have been called (stubbed above); confirm no exception was raised.
       expect(UserMailer).to have_received(:reset_password_email)
     end
   end

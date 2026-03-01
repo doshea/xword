@@ -72,10 +72,7 @@ class UsersController < ApplicationController
         Rails.logger.error("[send_password_reset] Email delivery failed: #{e.class} — #{e.message}")
       end
     end
-    respond_to do |format|
-      format.turbo_stream  # Renders users/send_password_reset.turbo_stream.erb (shows confirmation message)
-      format.html { redirect_to forgot_password_users_path, notice: 'Password reset email sent if account found.' }
-    end
+    redirect_to forgot_password_users_path, flash: { success: 'If an account was found, you should receive a password reset email shortly.' }
   end
 
   #GET /users/reset_password/:password_reset_token or reset_password_users_path

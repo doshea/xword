@@ -26,11 +26,11 @@ class AdminController < ApplicationController
       end
     end
     if errors.any?
-      redirect_to admin_email_path, alert: "Delivery failed — #{errors.join('; ')}"
+      redirect_to admin_email_path, flash: { error: "Delivery failed — #{errors.join('; ')}" }
     elsif sent.any?
-      redirect_to admin_email_path, notice: "Sent: #{sent.join(', ')}"
+      redirect_to admin_email_path, flash: { success: "Sent: #{sent.join(', ')}" }
     else
-      redirect_to admin_email_path, alert: "No emails selected."
+      redirect_to admin_email_path, flash: { warning: "No emails selected." }
     end
   end
 
