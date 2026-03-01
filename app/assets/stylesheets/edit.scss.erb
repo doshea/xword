@@ -89,6 +89,28 @@ $bottomcolor: black;
   }
 }
 
+// Make edit-page clue inputs expand to fill the flexible column width.
+// Overrides the text-indent hanging-indent with flexbox so the input
+// takes all remaining space after the clue number.
+.clue-column .clues .clue {
+  display: flex;
+  align-items: baseline;
+  padding-left: 0.25em;
+  text-indent: 0;
+}
+
+.clue-column .clues .clue-num {
+  flex-shrink: 0;
+  min-width: 1.7em;
+  text-align: right;
+  margin-right: 0.3em;
+}
+
+.clue-column .clues input {
+  flex: 1;
+  min-width: 0;
+}
+
 .xw-edit-switches {
   list-style: none;
   margin: 0;
