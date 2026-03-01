@@ -188,10 +188,10 @@
   // Nested to get specificity (0,2,0) — beats Foundation's input[type="search"] at (0,1,1)
   // Foundation also adds margin: 0 0 1rem to inputs; we zero it so flex centering is correct
   .xw-nav__search-input {
-    background-color: rgba(255, 255, 255, 0.10);
+    background-color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.20);
     border-radius: var(--radius-full);
-    color: var(--color-nav-text);
+    color: var(--color-text);
     font-family: var(--font-ui);
     font-size: var(--text-sm);
     padding: var(--space-1) var(--space-8) var(--space-1) var(--space-3);  // right pad clears icon
@@ -203,12 +203,12 @@
                 background-color var(--duration-base) var(--ease-out),
                 border-color var(--duration-base) var(--ease-out);
 
-    &::placeholder { color: rgba(255, 255, 255, 0.45); }
+    &::placeholder { color: var(--color-text-secondary); }
 
     &:focus {
       outline: none;
       width: 16rem;
-      background-color: rgba(255, 255, 255, 0.18);
+      background-color: #fff;
       border-color: var(--color-accent);
     }
   }
@@ -218,7 +218,7 @@
     right: var(--space-3);
     top: 50%;
     transform: translateY(-50%) scaleX(-1);   // flip for correct orientation
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--color-text-secondary);
     pointer-events: none;                     // let clicks pass through to the input
     width: 1rem;
     height: 1rem;

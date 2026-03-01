@@ -4,7 +4,7 @@
   .result-crossword
     .xw-grid
       .xw-col-12.xw-lg-4.minipic
-        = image_tag cw.preview_url || asset_path('example_puzzle.jpg'), class: "shadow thin-border cols-#{cw.cols} rows-#{cw.rows}#{'unpublished' if unpublished}"
+        = image_tag cw.try(:preview_url) || asset_path('example_puzzle.jpg'), class: "shadow thin-border cols-#{cw.cols} rows-#{cw.rows}#{'unpublished' if unpublished}"
       .xw-col-12.xw-lg-8.metadata
         %p.title= cw.title.html_safe
         - unless unpublished or cw.user.nil? or (cw.user.username == 'nytimes')
