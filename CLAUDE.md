@@ -72,7 +72,8 @@ lib/
   custom_funcs.rb        # time_difference_hash(), missing_this_year(), Integer#left_digits
                          # (manually required in application.rb; excluded from Zeitwerk)
 spec/                    # RSpec test suite
-  controllers/           # 9 controller specs + admin/
+  controllers/           # 10 controller specs + admin/
+  mailers/               # 2 mailer specs (UserMailer, AdminMailer)
   models/                # 9 model specs
   features/              # 2 integration specs (login, solve)
   factories/             # FactoryBot factories
@@ -158,7 +159,7 @@ rspec-rails: 4.1.2 → 8.0.3
   comments, crosswords, solutions, solution_partnerings, users (auth_token unique), etc.
 - **Signed auth cookies**: `cookies[:auth_token]` → `cookies.signed[:auth_token]` (HMAC-verified);
   session-based auth still works as legacy fallback
-- **Test suite fully filled out**: 380 examples, 0 failures, 3 pending. All controller specs (9 main + 6
+- **Test suite fully filled out**: 406 examples, 0 failures, 3 pending. All controller specs (9 main + 6
   admin) and model behavior specs written from scratch. Key patterns: `request.accept = Mime[:turbo_stream].to_s`
   for turbo_stream actions; `request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"` for `.js.erb`/`format.js`
   actions; `allow(Word).to receive(:word_match).and_return(...)` to stub external HTTP in words#match.
@@ -179,11 +180,19 @@ rspec-rails: 4.1.2 → 8.0.3
   WebSockets. New `TeamsChannel` streams from `"team_#{params[:team_key]}"`. `pusher` gem removed;
   `_team.html.haml` loads `actioncable.js` instead of `pusher.min.js`; `channel` param removed from all
   AJAX payloads and chat form. 13 new controller specs cover all team actions.
+- **ActionMailer cleanup**: removed dead `UserMailer#signup_email` (no template) and `#test_email`
+  (broken `@url`). Removed 4 dead `AccountController` actions (`forgot`, `forgot_username`,
+  `forgot_password`, `reset_password`) that called non-existent `ForgottenMailer` — working password
+  reset is in `UsersController`. Implemented `AdminController#test_emails` (sends selected test emails).
+  Fixed `reset_password_email.html.haml` to use `_url` helper (mailers don't have `_path` helpers).
+  Fixed `.deliver` → `.deliver_now` in `scheduler.rake`. Added 2 mailer specs + AccountController spec
+  (26 new examples).
 
 ### Deleted files
 - `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
 - `config/initializers/new_framework_defaults.rb` — Rails 5.0 defaults (all baked into load_defaults 8.1)
 - `config/initializers/new_framework_defaults_7_2.rb` — all options were commented out
+- `app/views/user_mailer/test_email.html.haml` — dead template for removed `test_email` method
 
 ## PostgreSQL-Specific Features
 
@@ -222,7 +231,7 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **Pending tests (3)**: login feature specs (home-page dropdown login) — require a JS-capable
   Capybara driver; skipped with `xcontext`
 
-Run tests: `bundle exec rspec`  # 380 examples, 0 failures, 3 pending
+Run tests: `bundle exec rspec`  # 406 examples, 0 failures, 3 pending
 
 ## Notable Gems and Their Roles
 

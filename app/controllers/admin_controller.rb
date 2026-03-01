@@ -7,6 +7,20 @@ class AdminController < ApplicationController
 
   #POST /admin/test_emails or admin_test_emails_path
   def test_emails
+    sent = []
+    if params[:reset_password]
+      UserMailer.reset_password_email(@current_user).deliver_now
+      sent << "reset_password"
+    end
+    if params[:nyt_upload_error]
+      AdminMailer.nyt_upload_error_email.deliver_now
+      sent << "nyt_upload_error"
+    end
+    if sent.any?
+      redirect_to admin_email_path, notice: "Sent: #{sent.join(', ')}"
+    else
+      redirect_to admin_email_path, alert: "No emails selected."
+    end
   end
 
   #GET /admin/clone_user or admin_cloning_tank_path

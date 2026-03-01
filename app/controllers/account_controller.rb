@@ -16,42 +16,6 @@ class AccountController < ApplicationController
     redirect_to account_path
   end
 
-  ### Do not require login
-  def forgot
-  end
-
-  def forgot_username
-    @user = User.find_by_email(params[:email])
-    if @user
-      ForgottenMailer.username(@user).deliver_now
-      alert_js("We just sent an email to you with your username! It may take seconds to minutes to arrive, depending on your email provider.")
-    else
-      alert_js('No such user found :-(')
-    end
-  end
-
-  def forgot_password
-    @user = User.find_by_email(params[:username_or_email]) || User.find_by_username(params[:username_or_email])
-    if @user
-      @user.generate_token(:password_reset_token)
-      @user.password_reset_sent_at = DateTime.now
-      @user.save
-      ForgottenMailer.password(@user).deliver_now
-      alert_js("We just sent an email to reset your password! It may take seconds to minutes to arrive, depending on your email provider.")
-    else
-      alert_js('No such user found :-(')
-    end
-  end
-
-  def reset_password
-    @user = User.where('password_reset_sent_at > ?', 1.days.ago).find_by(password_reset_token: params[:password_reset_token])
-    if @user
-
-    else
-      render plain: 'That password reset code has expired. Please request a new password reset email and click the email link within 24 hours.'
-    end
-  end
-
   def verify
     @user = User.find_by_verification_token(params[:verification_token])
     if @user

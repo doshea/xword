@@ -11,7 +11,7 @@ namespace :nyt do
       Crossword.add_latest_nyt_puzzle
       puts "\nDone."
     rescue
-      AdminMailer.nyt_upload_error_email.deliver
+      AdminMailer.nyt_upload_error_email.deliver_now
     end
   end
 

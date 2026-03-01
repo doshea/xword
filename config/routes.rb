@@ -84,11 +84,6 @@ Rails.application.routes.draw do
     patch :update
     patch :change_password
 
-    get :forgot
-    get :forgot_username
-    get :forgot_password
-    get :reset_password
-
     get :verify
     get :verified
   end
