@@ -31,6 +31,7 @@ window.global = {
         url: "/live_search",
         data: { query: query }
       };
+      settings.error = function() { $('#live-results').hide(); };
       $.ajax(settings);
     }, 300);
   }

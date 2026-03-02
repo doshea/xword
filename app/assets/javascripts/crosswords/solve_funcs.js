@@ -57,7 +57,12 @@ window.solve_app = {
       dataType: 'script',
       type: 'PUT',
       url: "/solutions/" + solve_app.solution_id,
-      data: { authenticity_token: token, letters: letters, save_counter: solve_app.save_counter }
+      data: { authenticity_token: token, letters: letters, save_counter: solve_app.save_counter },
+      error: function(xhr) {
+        $('#save-status').text('Save failed');
+        $('#save-clock').empty();
+        console.warn('save_solution failed:', xhr.status, xhr.statusText);
+      }
     };
     $.ajax(settings);
   },
@@ -98,6 +103,7 @@ window.solve_app = {
           data: { letters: [letter], indices: [] }
         };
         settings.data.indices.push(index);
+        settings.error = function(xhr) { console.warn('check_cell failed:', xhr.status); };
         $.ajax(settings);
         solve_app.save_solution();
       }
@@ -124,6 +130,7 @@ window.solve_app = {
       if (settings.data.letters.length === 0) {
         alert('The selected word is empty.');
       } else {
+        settings.error = function(xhr) { console.warn('check_word failed:', xhr.status); };
         $.ajax(settings);
         solve_app.save_solution();
       }
@@ -137,7 +144,8 @@ window.solve_app = {
       dataType: 'script',
       type: 'POST',
       url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
-      data: { letters: cw.get_puzzle_letters() }
+      data: { letters: cw.get_puzzle_letters() },
+      error: function(xhr) { console.warn('check_puzzle failed:', xhr.status); }
     };
     $.ajax(settings);
   },
@@ -150,7 +158,8 @@ window.solve_app = {
       dataType: 'script',
       type: 'POST',
       url: "/crosswords/" + solve_app.crossword_id + "/check_completion",
-      data: { letters: letters }
+      data: { letters: letters },
+      error: function(xhr) { console.warn('check_completion failed:', xhr.status); }
     };
     if (!solve_app.anonymous) {
       settings.data['solution_id'] = solve_app.solution_id;

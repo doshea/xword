@@ -1,5 +1,10 @@
 class TeamsChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "team_#{params[:team_key]}"
+    team_key = params[:team_key]
+    if team_key.present? && Solution.exists?(key: team_key, team: true)
+      stream_from "team_#{team_key}"
+    else
+      reject
+    end
   end
 end

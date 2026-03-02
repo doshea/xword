@@ -3,6 +3,7 @@ class SolutionsController < ApplicationController
   prepend_before_action :guard_null_solution_id, only: [:update]
   before_action :find_object, only: [:update, :get_incorrect]
   before_action :ensure_logged_in, only: [:destroy, :team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
+  before_action :ensure_team_member, only: [:team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
   #GET /solutions/:id or solution_path
@@ -46,7 +47,6 @@ class SolutionsController < ApplicationController
 
   #PATCH /solutions/:id/team_update or team_update_solution_path
   def team_update
-    solution = Solution.find(params[:id])
     data = {
                 row: params[:row],
                 col: params[:col],
@@ -58,14 +58,13 @@ class SolutionsController < ApplicationController
                 server_time: Process.clock_gettime(Process::CLOCK_REALTIME, :millisecond)
                 }
 
-    team_broadcast(solution, { event: 'change_cell' }.merge(data))
+    team_broadcast(@team_solution, { event: 'change_cell' }.merge(data))
 
     head :ok
   end
 
   #POST /solutions/:id/join_team or join_team_solution_path
   def join_team
-    solution = Solution.find(params[:id])
     data = {
             display_name: params[:display_name],
             solver_id: params[:solver_id],
@@ -73,42 +72,37 @@ class SolutionsController < ApplicationController
             green: params[:green],
             blue: params[:blue]
             }
-    team_broadcast(solution, { event: 'join_puzzle' }.merge(data))
+    team_broadcast(@team_solution, { event: 'join_puzzle' }.merge(data))
     head :ok
   end
 
   #POST /solutions/:id/leave_team or leave_team_solution_path
   def leave_team
-    solution = Solution.find(params[:id])
     data = {solver_id: params[:solver_id]}
-    team_broadcast(solution, { event: 'leave_puzzle' }.merge(data))
+    team_broadcast(@team_solution, { event: 'leave_puzzle' }.merge(data))
     head :ok
   end
 
   #POST /solutions/:id/roll_call or roll_call_solution_path
   def roll_call
-    solution = Solution.find(params[:id])
-    data = {}
-    team_broadcast(solution, { event: 'roll_call' }.merge(data))
+    team_broadcast(@team_solution, { event: 'roll_call' })
     head :ok
   end
 
   #POST /solutions/:id/send_team_chat or send_team_chat_solution_path
   def send_team_chat
-    @solution = Solution.find(params[:id])
     data = {display_name: params[:display_name],
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
-    @broadcast_failed = !team_broadcast(@solution, { event: 'chat_message' }.merge(data))
+    @broadcast_failed = !team_broadcast(@team_solution, { event: 'chat_message' }.merge(data))
     respond_to do |format|
       format.turbo_stream  # Renders solutions/send_team_chat.turbo_stream.erb (resets team chat form)
-      format.html { redirect_to team_crossword_path(@solution.crossword, @solution.key) }
+      format.html { redirect_to team_crossword_path(@team_solution.crossword, @team_solution.key) }
     end
   end
 
   #POST /solutions/:id/show_team_clue or show_team_clue_solution_path
   def show_team_clue
-    solution = Solution.find(params[:id])
     data = {cell_num: params[:cell_num],
                 across: params[:across],
                 red: params[:red],
@@ -116,7 +110,7 @@ class SolutionsController < ApplicationController
                 blue: params[:blue],
                 solver_id: params[:solver_id]
                 }
-    team_broadcast(solution, { event: 'outline_team_clue' }.merge(data))
+    team_broadcast(@team_solution, { event: 'outline_team_clue' }.merge(data))
     head :ok
   end
 
@@ -146,6 +140,13 @@ class SolutionsController < ApplicationController
   # The JS guard in save_solution() should prevent this, but this is the server-side safety net.
   def guard_null_solution_id
     head :ok if params[:id].to_i <= 0
+  end
+
+  def ensure_team_member
+    @team_solution = Solution.find(params[:id])
+    return if @current_user == @team_solution.user
+    return if SolutionPartnering.exists?(solution_id: @team_solution.id, user_id: @current_user.id)
+    head :forbidden
   end
 
   def ensure_owner_or_partner

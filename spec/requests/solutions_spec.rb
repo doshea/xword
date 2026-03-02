@@ -141,6 +141,8 @@ RSpec.describe 'Solutions', type: :request do
     let(:team_solution) { create(:solution, :team, user: user, crossword: crossword, letters: blank_letters) }
     let(:channel)       { "team_#{team_solution.key}" }
 
+    before { SolutionPartnering.create!(user: user_b, solution: team_solution) }
+
     it 'broadcasts each user\'s cell changes independently' do
       broadcasts = []
       allow(ActionCable.server).to receive(:broadcast) do |ch, payload|
@@ -303,6 +305,106 @@ RSpec.describe 'Solutions', type: :request do
       solution.update_column(:crossword_id, nil)
       post "/solutions/#{solution.id}/get_incorrect", params: { letters: 'ABC' }
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # Team action authorization — only owner and partners may call team actions
+  # -------------------------------------------------------------------------
+  describe 'team action authorization' do
+    let(:owner)         { create(:user, password: test_password, password_confirmation: test_password) }
+    let(:partner)       { user }  # reuse `user` let as the partner
+    let(:outsider)      { create(:user, password: test_password, password_confirmation: test_password) }
+    let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
+
+    before do
+      SolutionPartnering.create!(user: partner, solution: team_solution)
+      allow(ActionCable.server).to receive(:broadcast)
+    end
+
+    context 'as a non-member (not owner or partner)' do
+      before { log_in_as(outsider) }
+
+      it 'rejects team_update with 403' do
+        patch "/solutions/#{team_solution.id}/team_update",
+              params: { row: '0', col: '0', letter: 'A', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'rejects join_team with 403' do
+        post "/solutions/#{team_solution.id}/join_team",
+             params: { display_name: 'Test', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'rejects leave_team with 403' do
+        post "/solutions/#{team_solution.id}/leave_team",
+             params: { solver_id: 'x' }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'rejects roll_call with 403' do
+        post "/solutions/#{team_solution.id}/roll_call"
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'rejects send_team_chat with 403' do
+        post "/solutions/#{team_solution.id}/send_team_chat",
+             params: { display_name: 'Test', avatar: '/default.jpg', chat: 'hello' }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'rejects show_team_clue with 403' do
+        post "/solutions/#{team_solution.id}/show_team_clue",
+             params: { cell_num: '1', across: 'true', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'does not broadcast when rejected' do
+        patch "/solutions/#{team_solution.id}/team_update",
+              params: { row: '0', col: '0', letter: 'A', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(ActionCable.server).not_to have_received(:broadcast)
+      end
+    end
+
+    context 'as a team partner (not owner)' do
+      before { log_in_as(partner) }
+
+      it 'allows team_update' do
+        patch "/solutions/#{team_solution.id}/team_update",
+              params: { row: '0', col: '0', letter: 'A', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'allows join_team' do
+        post "/solutions/#{team_solution.id}/join_team",
+             params: { display_name: 'Test', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'allows leave_team' do
+        post "/solutions/#{team_solution.id}/leave_team",
+             params: { solver_id: 'x' }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'allows roll_call' do
+        post "/solutions/#{team_solution.id}/roll_call"
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'allows send_team_chat' do
+        post "/solutions/#{team_solution.id}/send_team_chat",
+             params: { display_name: 'Test', avatar: '/default.jpg', chat: 'hello' },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'allows show_team_clue' do
+        post "/solutions/#{team_solution.id}/show_team_clue",
+             params: { cell_num: '1', across: 'true', solver_id: 'x', red: '0', green: '0', blue: '0' }
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 

@@ -51,7 +51,8 @@ window.team_app = {
         red:       team_app.solver_red,
         green:     team_app.solver_green,
         blue:      team_app.solver_blue
-      }
+      },
+      error: function(xhr) { console.warn('team_update failed:', xhr.status); }
     });
   },
 
@@ -68,7 +69,8 @@ window.team_app = {
         green:        team_app.solver_green,
         blue:         team_app.solver_blue,
         solver_id:    team_app.solver_id
-      }
+      },
+      error: function(xhr) { console.warn('join_team failed:', xhr.status); }
     });
   },
 
@@ -81,7 +83,8 @@ window.team_app = {
       data: {
         authenticity_token: token,
         solver_id: team_app.solver_id
-      }
+      },
+      error: function(xhr) { console.warn('leave_team failed:', xhr.status); }
     });
   },
 
@@ -92,7 +95,8 @@ window.team_app = {
     $.ajax({
       type: 'POST',
       url:  '/solutions/' + solve_app.solution_id + '/roll_call',
-      data: { authenticity_token: token }
+      data: { authenticity_token: token },
+      error: function(xhr) { console.warn('roll_call failed:', xhr.status); }
     });
   },
 
@@ -113,7 +117,8 @@ window.team_app = {
         green:     team_app.solver_green,
         blue:      team_app.solver_blue,
         solver_id: team_app.solver_id
-      }
+      },
+      error: function(xhr) { console.warn('show_team_clue failed:', xhr.status); }
     });
   },
 
