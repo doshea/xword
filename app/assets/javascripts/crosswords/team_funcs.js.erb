@@ -187,7 +187,7 @@ window.team_app = {
     new_chat.appendTo($('#chats'));
 
     if (!is_my_chat) {
-      new_chat.css({'background-color': '#ff7878'});
+      new_chat.css({'background-color': '#fdf0e4'});  // --color-warning-bg (warm amber flash)
       if (chats.hasClass('down')) {
         team_app.unread_count += 1;
         $('#unread-chat-count').text('(' + team_app.unread_count + ')');
@@ -198,7 +198,7 @@ window.team_app = {
         team_app.message_received_sound.play();
       }
       // brief defer lets the browser paint the highlight before fading it out
-      window.setTimeout(function() { new_chat.css({'background-color': 'white'}); }, 400);
+      window.setTimeout(function() { new_chat.css({'background-color': ''}); }, 400);
     }
     var scroll_height = $('#chats').get(0).scrollHeight;
     $('#chats').stop().animate({scrollTop: scroll_height}, 'fast');
@@ -288,3 +288,8 @@ window._teamTurboLoadHandler = function() {
   team_funcs_ready();
 };
 document.addEventListener("turbo:load", window._teamTurboLoadHandler);
+// When Turbo navigates to the team page and executes this body script,
+// turbo:load has already fired. Run immediately if the DOM is ready.
+if (document.readyState !== 'loading' && $('#team-chat').length) {
+  team_funcs_ready();
+}

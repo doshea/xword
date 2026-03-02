@@ -15,3 +15,7 @@ window._solutionChoiceTurboLoadHandler = function() {
   solution_choice_ready();
 };
 document.addEventListener("turbo:load", window._solutionChoiceTurboLoadHandler);
+// Body script may execute after turbo:load has already fired — run immediately if DOM ready.
+if (document.readyState !== 'loading' && $('.xw-solutions-table').length) {
+  solution_choice_ready();
+}

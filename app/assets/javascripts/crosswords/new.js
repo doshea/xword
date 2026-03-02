@@ -67,3 +67,7 @@ window._newCwTurboLoadHandler = function() {
   new_cw.ready();
 };
 document.addEventListener("turbo:load", window._newCwTurboLoadHandler);
+// Body script may execute after turbo:load has already fired — run immediately if DOM ready.
+if (document.readyState !== 'loading' && $('#preview-crossword').length) {
+  new_cw.ready();
+}
