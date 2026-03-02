@@ -228,6 +228,11 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **NOTE**: Files calling `$.ajax({ dataType: 'script' })` use `.js.erb` + `format.js` (NOT Turbo Streams):
   `check_cell.js.erb`, `check_completion.js.erb`, `solutions/update.js.erb`,
   `update_letters.js.erb`, `live_search.js.erb`
+- **JS/CSS coupling hazard**: jQuery `.position()` returns coordinates relative to the nearest
+  positioned ancestor (`position: relative/absolute/fixed`). If CSS refactoring removes `position`
+  from an ancestor, JS scroll/position math silently breaks. When changing CSS `position` properties,
+  grep for `.position()` and `.offset()` in JS to check for coupling. Learned from: `.clues` container
+  lacked `position: relative`, causing `scroll_to_selected()` to scroll clues out of view.
 
 ## Visual Design
 
@@ -259,35 +264,30 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | Design audit | Google Fonts loaded, focus rings fixed, footer tokenized, heading hierarchy, content rewrites |
 | CSS cleanup | Vendor prefixes removed, dead mixins deleted, crossword colors tokenized |
 | Edit page polish (v1-v7) | Paper shadow + rounded corners on crossword sections, title input refined, clue textareas auto-size, clue row breathing room, description textarea sunken background |
+| Edit page polish (v8) | Switch colors calmed (red→warm gray off, lime→forest green on), clue numbers muted, clue containers warmed to cream, section divider strengthened, bottom padding tightened, clue column border-left removed, textarea border softened, clue scroll-into-view bug fixed |
 
-### Current State (v7) — What's Working
+### Current State (v8) — What's Working
 
 - Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
 - Crossword grid is crisp: strong black/white contrast, clean cell borders
 - Typography pairing (Playfair headings / DM Sans labels) creates editorial hierarchy
-- Green accent on Publish button provides confident color pop without shouting
+- Green accent coherent: Publish button, switch on-state, and `--color-accent` all use `#3a7d5c`
+- Toggle switches recede (warm gray off-state) instead of competing with content
+- Clue containers use warm cream (`--color-surface-alt`) — paper-within-paper feel
+- Clue numbers muted on edit page for better scanability (solve page numbers still inline text)
 - Continuous paper texture across `#credit-area` → `#solve-area` → `#meta-area` → `#advanced`
+- Section dividers visible: `2px solid var(--color-border-strong)` between description/advanced
 
-### Next Steps — Edit Page (v8+)
+### Next Steps — Edit Page (v9+)
 
-Priority fixes identified from v7 assessment (all CSS-only, no HTML changes):
+Remaining refinements (lower priority — the edit page is in good shape):
 
-1. **Toggle switch off-color** (high) — saturated red (`lighten(red, 20%)`) is the loudest element
-   on the page, drawing the eye to the least important section. Replace off-state with muted warm
-   gray; keep green for on-state. File: `edit.scss.erb` (`$switch-off-color`)
-2. **Clue number differentiation** (high) — clue numbers and text are same color/weight, making
-   scanning difficult. Make numbers muted (`--color-text-muted`) so clue text stands out.
-   File: `crossword.scss.erb` (`.clue-column .clues .clue`)
-3. **Clue container warmth** (medium) — `var(--color-surface)` (#fffef9) background is too white
-   against paper texture. Warm it up. File: `crossword.scss.erb` (`.clue-column .clues`)
-4. **Section dividers** (medium) — borders between description/advanced are barely visible on paper
-   texture. Need more presence. File: `crossword.scss.erb` or `edit.scss.erb`
-5. **Bottom-of-page emptiness** (medium) — large void between switches and Publish button; paper
-   card ends abruptly. Tighten spacing. File: `edit.scss.erb` (`#advanced`)
-6. **Clue column border-left** (low) — thin structural line adds noise. Newspaper columns use
-   whitespace, not rules. File: `crossword.scss.erb` (`.clue-column`)
-7. **Description textarea border** (low) — hard 1px border + inset shadow reads as "web form"
-   rather than editorial. Soften. File: `edit.scss.erb` (`#meta-area .xw-textarea`)
+1. **Solve page clue number differentiation** — solve page clue numbers are inline text (no wrapper
+   element), so they can't be styled independently without adding a `<span>` in the HAML partial.
+   Consider wrapping numbers in `_clue.html.haml` to match the edit page's `.clue-num` pattern.
+2. **Notepad/Pattern Search panels** — these slide-up panels (`#idea-container`, `#pattern-container`)
+   still use raw black backgrounds and unstyled inputs. Could benefit from design token treatment.
+3. **Settings modal** — `#edit-settings` dialog has placeholder checkboxes with no labels or styling.
 
 ### Pages Not Yet Polished
 
