@@ -25,8 +25,6 @@
           %span.tab-label
             = icon('clipboard-list')
             %span Solved Puzzles (#{@solved_count})
-    :javascript
-      var puzzles_remaining = {};
     .xw-tab-panels
       #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
         = render partial: 'pages/home/unstarted'

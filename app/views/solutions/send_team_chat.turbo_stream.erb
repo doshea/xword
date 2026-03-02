@@ -1,6 +1,6 @@
 <%# Turbo Stream: replaces the team chat form with a fresh blank copy, clearing the input %>
 <%= turbo_stream.update "team-chat-form" do %>
-  <%= render partial: 'crosswords/partials/team_chat_form', locals: { solution: @team_solution } %>
+  <%= render partial: 'crosswords/partials/team_chat_form', locals: { solution: @solution } %>
 <% end %>
 <% if @broadcast_failed %>
   <%= turbo_stream.append "chats" do %>

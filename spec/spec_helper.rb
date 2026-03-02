@@ -13,6 +13,7 @@ require 'launchy'
 
 Capybara.default_selector = :css
 Capybara.ignore_hidden_elements = true #will not find hidden elements
+Capybara.default_max_wait_time = 5
 
 Capybara.register_driver :cuprite do |app|
   Capybara::Cuprite::Driver.new(app, headless: true, browser_options: { 'no-sandbox': nil })

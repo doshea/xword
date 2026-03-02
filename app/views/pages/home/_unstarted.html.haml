@@ -1,10 +1,2 @@
-- if @unstarted.any?
-  / id added so batch.turbo_stream.erb can append new crossword tabs here
-  %ul#crossword-tab-list
-    - @unstarted.each do |cw|
-      %li
-        = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
-  - if @unstarted_count > Crossword.per_page
-    %p.center.smaller Showing #{Crossword.per_page} of #{@unstarted_count} puzzles.
-- else
-  %p You're already working on all of the puzzles we've got!
+/ id added so batch.turbo_stream.erb can append new crossword tabs here
+= render partial: 'pages/home/crossword_list', locals: { collection: @unstarted, count: @unstarted_count, list_id: 'crossword-tab-list', empty_message: "You're already working on all of the puzzles we've got!" }

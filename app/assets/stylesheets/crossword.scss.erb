@@ -176,6 +176,31 @@ table#crossword {
   }
 }
 
+// --- Tablet (768-1023px): side-by-side clues, intermediate spacing ---
+@media (min-width: $bp-md) and (max-width: #{$bp-lg - 1}) {
+  .xw-puzzle-layout {
+    flex-direction: row;
+    align-items: flex-start;
+
+    .clue-column {
+      width: auto;
+      min-width: 10em;
+
+      .clues {
+        max-height: none;
+      }
+    }
+  }
+
+  .xw-reply {
+    margin-left: var(--space-4);
+  }
+
+  #body > .xw-container {
+    padding-inline: var(--space-6);
+  }
+}
+
 // --- Phone: shrink cells to fit standard 15×15 grid ---
 @media (max-width: #{$bp-sm - 1}) {
   table#crossword .cell {

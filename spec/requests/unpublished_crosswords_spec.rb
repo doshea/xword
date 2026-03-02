@@ -84,13 +84,13 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
 
       it 'refuses to publish and redirects back with an error' do
         ucw = create(:unpublished_crossword, rows: 4, cols: 4, user: owner)
-        # Default letters are all empty strings — not publishable
 
-        patch "/unpublished_crosswords/#{ucw.id}/publish"
+        expect {
+          patch "/unpublished_crosswords/#{ucw.id}/publish"
+        }.not_to change(Crossword, :count)
 
         expect(response).to redirect_to(edit_unpublished_crossword_path(ucw))
         expect(flash[:error]).to match(/blank/)
-        expect(Crossword.count).to eq 0
       end
     end
 
@@ -112,11 +112,11 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
       it 'redirects to account_required' do
         ucw = create_publishable_ucw(user: owner)
 
-        patch "/unpublished_crosswords/#{ucw.id}/publish"
+        expect {
+          patch "/unpublished_crosswords/#{ucw.id}/publish"
+        }.not_to change(Crossword, :count)
 
-        # ensure_owner_or_admin redirects when @current_user is nil
         expect(response).to have_http_status(:redirect)
-        expect(Crossword.count).to eq 0
       end
     end
   end
