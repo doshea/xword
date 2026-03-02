@@ -4,7 +4,7 @@ class Admin::SolutionsController < ApplicationController
 
   #GET /admin/solutions or admin_solutions_path
   def index
-    @solutions = Solution.all.paginate(:page => params[:page])
+    @solutions = Solution.includes(:crossword, :user).paginate(:page => params[:page])
   end
 
   #GET /admin/solutions/:id/edit or edit_admin_solution_path

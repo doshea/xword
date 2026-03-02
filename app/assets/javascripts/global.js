@@ -37,6 +37,12 @@ window.global = {
   }
 };
 
+// Show the Turbo progress bar after 200ms (default 500ms) so users see feedback
+// faster, especially during Heroku dyno wake-up.
+if (window.Turbo && Turbo.config && Turbo.config.drive) {
+  Turbo.config.drive.progressBarDelay = 200;
+}
+
 // Use turbo:load instead of $(document).ready() — DOMContentLoaded only fires once,
 // but turbo:load fires on every Turbo Drive visit. Since all handlers above delegate
 // from <body> (which persists across visits), we only need to bind once.

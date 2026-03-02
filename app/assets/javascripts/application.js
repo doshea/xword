@@ -16,7 +16,7 @@
 //= require controllers/application
 //= require_tree ./controllers
 //
-//= require moment.min
-//= require sugar.min
+// moment.min moved to solve.js and edit.js (only used there)
+// sugar.min removed (completely unused)
 //= require global
 //

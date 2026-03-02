@@ -4,7 +4,7 @@ class Admin::CrosswordsController < ApplicationController
 
   #GET /admin/crosswords or admin_crosswords_path
   def index
-    @crosswords = Crossword.order(:created_at).paginate(page: params[:page])
+    @crosswords = Crossword.includes(:user).order(:created_at).paginate(page: params[:page])
   end
 
   #GET /admin/crosswords/:id/edit or edit_admin_crossword_path
@@ -39,7 +39,7 @@ class Admin::CrosswordsController < ApplicationController
 
   private
   def update_crossword_params
-    params.require(:crossword).permit(:title, :rows, :cols, :published, :circled, :description, :letters)
+    params.require(:crossword).permit(:title, :rows, :cols, :circled, :description, :letters)
   end
 
 end

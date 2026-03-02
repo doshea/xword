@@ -23,6 +23,11 @@ describe Comment do
     it {should have_many(:replies).class_name('Comment').with_foreign_key('base_comment_id').dependent(:destroy)}
   end
 
+  context 'validations' do
+    it { should validate_presence_of(:content) }
+    it { should validate_length_of(:content).is_at_most(10_000) }
+  end
+
   describe 'MAX_PER_CROSSWORD' do
     it 'is defined as a positive integer' do
       expect(Comment::MAX_PER_CROSSWORD).to be_a(Integer).and be_positive

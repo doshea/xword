@@ -67,9 +67,4 @@ module Crosswordable
     rows * cols
   end
 
-  module ClassMethods
-    def class_example #notice that there is no "self." in this method name! It is not necessary when using ActiveSupport::Concern!
-    end
-  end
-
 end

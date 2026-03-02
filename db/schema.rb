@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_031639) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_210944) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_031639) do
     t.string "title", limit: 255, default: "Untitled", null: false
     t.datetime "updated_at"
     t.integer "user_id"
+    t.index ["created_at"], name: "index_crosswords_on_created_at"
     t.index ["user_id"], name: "index_crosswords_on_user_id"
   end
 
@@ -130,8 +131,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_031639) do
     t.boolean "team", default: false, null: false
     t.datetime "updated_at"
     t.integer "user_id"
+    t.index ["crossword_id", "user_id"], name: "index_solutions_on_crossword_id_and_user_id"
     t.index ["crossword_id"], name: "index_solutions_on_crossword_id"
     t.index ["key"], name: "index_solutions_on_key_unique", unique: true, where: "(key IS NOT NULL)"
+    t.index ["user_id", "is_complete"], name: "index_solutions_on_user_id_and_is_complete"
     t.index ["user_id"], name: "index_solutions_on_user_id"
   end
 

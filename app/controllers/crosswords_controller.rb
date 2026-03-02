@@ -1,7 +1,6 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :publish, :remove_potential_word]
-  before_action :ensure_logged_in, only: [:publish, :remove_potential_word, :create_team, :favorite, :unfavorite]
-  before_action :ensure_owner_or_admin, only: [:publish, :remove_potential_word]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion]
+  before_action :ensure_logged_in, only: [:create_team, :favorite, :unfavorite]
 
   #GET /crosswords/:id or crossword_path
   def show
@@ -18,12 +17,6 @@ class CrosswordsController < ApplicationController
     # Preload comment authors and replies (+ reply authors) to avoid N+1 in _comment.html.haml.
     @comments = @crossword.comments.includes(:user, replies: :user)
     @cells = @crossword.cells.asc_indices
-  end
-
-  #GET /crosswords/:id/publish or publish_crossword_path
-  def publish
-    @crossword.publish! unless @crossword.published?
-    redirect_to @crossword
   end
 
   #POST /crosswords/:id/team or create_team_crossword_path
@@ -66,16 +59,6 @@ class CrosswordsController < ApplicationController
       render :show
     else
       redirect_to root_path, flash: { error: "That team session could not be found." }
-    end
-  end
-
-  #DELETE /crosswords/:id/remove_potential_word/:potential_word_id or remove_potential_word_crossword_path
-  def remove_potential_word
-    if @crossword
-      @word = Word.find(params[:potential_word_id])
-      @crossword.potential_words.delete(@word)
-    else
-      head :ok
     end
   end
 
@@ -149,14 +132,6 @@ class CrosswordsController < ApplicationController
                       .where(solution_partnerings: { user_id: @current_user.id })
                       .find_by(id: params[:solution_id], crossword_id: @crossword.id)
     end
-  end
-
-  private
-  def create_crossword_params
-    params.require(:crossword).permit(:title, :description, :rows, :cols)
-  end
-  def update_crossword_params
-    params.require(:crossword).permit(:title, :description, :letters)
   end
 
 end

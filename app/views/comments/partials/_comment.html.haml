@@ -31,8 +31,8 @@
       /   %a{href: ""} Share
     / id added so reply.turbo_stream.erb can update the reply count display
     %p.xw-comment__reply-count{id: "reply-count-#{comment.id}"}<
-      - if comment.replies.any?
-        = pluralize(comment.replies.count, 'Reply')
+      - if (reply_count = comment.replies.size) > 0
+        = pluralize(reply_count, 'Reply')
     / id added so reply.turbo_stream.erb can append new replies to this container
     .replies{id: "replies-#{comment.id}"}
       - comment.replies.each do |reply|

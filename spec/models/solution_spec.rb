@@ -25,6 +25,14 @@ describe Solution do
     it {should have_many(:teammates).through(:solution_partnerings).source(:user)}
   end
 
+  context 'validations' do
+    it 'rejects letters longer than the maximum crossword area' do
+      solution = build(:solution, user: user, crossword: crossword, letters: 'A' * 901)
+      expect(solution).not_to be_valid
+      expect(solution.errors[:letters]).to be_present
+    end
+  end
+
   describe '#check_completion (before_save callback)' do
     context 'when letters match the crossword' do
       it 'marks the solution as complete and sets solved_at' do

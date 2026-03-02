@@ -100,7 +100,7 @@ class Crossword < ApplicationRecord
   # The transaction in this method does not seem to help. Maaaybe 1% speed improvement.
   def number_cells
     #Again...make this work for NYT
-    # error_if_published
+
     counter = 1
     #order by index
     cells.each do |cell|
@@ -124,8 +124,6 @@ class Crossword < ApplicationRecord
 
   #populates blank letters
   def populate_letters
-    # NEED A WAY TO CHECK THIS THAT DOESN'T AFFECT NYT CROSSWORDS
-    # error_if_published 
     if letters.empty?
       self.letters = ' '*(rows * cols)
       self
@@ -179,10 +177,10 @@ class Crossword < ApplicationRecord
   #TODO get a better name
   def set_contents(letters_string)
     # MAKE THIS WORK FOR NYT PUZZLES
-    # error_if_published
+
     if letters_string.length == area
       #WHY WOULD IT DO THIS TWICE
-      # error_if_published
+  
       self.letters = letters_string
       if save
         update_cells_from_letters
@@ -196,7 +194,7 @@ class Crossword < ApplicationRecord
 
   def set_clue(across, cell_num, content)
     #Make this work for NYT
-    # error_if_published
+
     cell = cells.find_by_cell_num(cell_num)
     if cell
       clue = across ? cell.across_clue : cell.down_clue
@@ -291,7 +289,6 @@ class Crossword < ApplicationRecord
   end
 
   def randomize_letters_and_voids(symmetrical=true, modify_cells=false)
-    error_if_published
     self.letters = Faker::Lorem.characters(number: area)
     upper_limit = (symmetrical ? (area/2.0).ceil : area)
     (1..upper_limit).each do |i|
@@ -389,7 +386,6 @@ class Crossword < ApplicationRecord
   end
 
   def publish!
-    error_if_published
     letters = string_from_cells
     cells.each do |cell|
       cell.delete_extraneous_cells!
@@ -424,10 +420,6 @@ class Crossword < ApplicationRecord
 
 
   private
-  def error_if_published
-    # published column was removed from schema; this guard is currently a no-op.
-    # Re-enable once the column is restored.
-  end
 
   #Using a transaction cut down call times by 1.5x to 3.3x for this method
   def update_cells_from_letters

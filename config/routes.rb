@@ -5,7 +5,6 @@ Rails.application.routes.draw do
 
   resources :cells, only: [:update] do
     member do
-      put :reletter #TODO
       put :toggle_void
     end
   end
@@ -21,7 +20,6 @@ Rails.application.routes.draw do
 
   resources :crosswords, only: [:show] do
     member do
-      post :publish
       post 'team' => 'crosswords#create_team', as: 'create_team'
       post :favorite
       delete 'favorite' => 'crosswords#unfavorite'
@@ -122,7 +120,6 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: :json} do
     get '/nyt_source/:year/:month/:day' => :nyt_source
     get '/nyt/:year/:month/:day' => :nyt
-    get :nyt
     namespace :users do
       get '/' => :index
       get :search

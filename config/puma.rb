@@ -23,6 +23,11 @@
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
+# Fork worker processes for production parallelism (2 workers x 3 threads = 6 concurrent requests).
+# Development/test stays single-process for simplicity.
+workers ENV.fetch("WEB_CONCURRENCY") { ENV["RAILS_ENV"] == "production" ? 2 : 0 }
+preload_app!
+
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
 

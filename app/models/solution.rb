@@ -21,6 +21,9 @@ class Solution < ApplicationRecord
   has_many :solution_partnerings, inverse_of: :solution, dependent: :destroy
   has_many :teammates, through: :solution_partnerings, source: :user
 
+  # Max crossword area is 30×30 = 900; cap at 900 to prevent abuse
+  validates :letters, length: { maximum: 900 }
+
   scope :complete, -> { where(is_complete: true)}
   scope :incomplete, -> { where(is_complete: false)}
   scope :order_recent, -> {order(updated_at: :desc)}

@@ -15,16 +15,16 @@
       = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         %span.tab-label
           = icon('clipboard')
-          %span #{'New' if @current_user} Puzzles (#{@unstarted.length})
+          %span #{'New' if @current_user} Puzzles (#{@unstarted_count})
       - if @current_user
         = link_to '#panel2', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
           %span.tab-label
             = icon('clipboard-pen')
-            %span In Progress (#{@in_progress.length})
+            %span In Progress (#{@in_progress_count})
         = link_to '#panel3', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
           %span.tab-label
             = icon('clipboard-list')
-            %span Solved Puzzles (#{@solved.length})
+            %span Solved Puzzles (#{@solved_count})
     :javascript
       var puzzles_remaining = {};
     .xw-tab-panels

@@ -14,13 +14,7 @@
 
 - if @crossword.user && (@current_user == @crossword.user)
   .xw-alert.xw-alert--info{data: {controller: 'alert'}}
-    .center
-      You are the creator of this puzzle
-      -if !@crossword.published
-        %br
-        = link_to('Edit Puzzle', edit_crossword_path(@crossword))
-        or
-        = link_to('Publish Puzzle', publish_crossword_path(@crossword), data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
+    .center You are the creator of this puzzle
     %button.xw-alert__dismiss{data: {action: 'click->alert#dismiss'}, aria: {label: 'Dismiss'}} &times;
 
 -# Sunday crosswords need a wider container on desktop; mobile scrolls horizontally
@@ -112,7 +106,7 @@
       / Feed Entry
       -if @current_user
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
-        = form_with(url: add_comment_path(@crossword), id: 'comment-form') do |f|
+        = form_with(url: add_comment_path(@crossword), id: 'comment-form', data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
           = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea', autocomplete: 'off', placeholder: 'What did you think of this crossword?')
       -else
         =link_to 'Sign up', new_user_path

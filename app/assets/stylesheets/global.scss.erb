@@ -140,6 +140,25 @@ body {
 .xw-admin-cell--compact { font-size: var(--text-xs); max-width: 250px; overflow-wrap: break-word; }
 .xw-admin-highlight { background-color: var(--color-success-bg); }
 
+// Turbo Drive progress bar — shows during page navigation
+.turbo-progress-bar {
+  height: 3px;
+  background-color: var(--color-accent);
+}
+
+// Pure CSS spinner for loading states
+.xw-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: xw-spin 0.6s linear infinite;
+  vertical-align: middle;
+}
+@keyframes xw-spin { to { transform: rotate(360deg); } }
+
 // Cross-browser scrollbar styling
 // Standard properties (Firefox, Chrome 121+)
 * {

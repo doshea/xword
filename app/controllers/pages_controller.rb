@@ -8,11 +8,16 @@ class PagesController < ApplicationController
   #GET / or root_path
   def home
     if @current_user
-      @in_progress = Crossword.all_in_progress(@current_user)
-      @solved = Crossword.all_solved(@current_user)
-      @unstarted = Crossword.new_to_user(@current_user)
+      per = Crossword.per_page
+      @unstarted_count   = Crossword.new_to_user(@current_user).count
+      @in_progress_count = Crossword.all_in_progress(@current_user).count
+      @solved_count      = Crossword.all_solved(@current_user).count
+      @unstarted   = Crossword.new_to_user(@current_user).includes(:user).limit(per)
+      @in_progress = Crossword.all_in_progress(@current_user).includes(:user).limit(per)
+      @solved      = Crossword.all_solved(@current_user).includes(:user).limit(per)
     else
-      @unstarted = Crossword.all.paginate(page: params[:page])
+      @unstarted = Crossword.all.includes(:user).paginate(page: params[:page])
+      @unstarted_count = @unstarted.total_entries
     end
   end
 
@@ -35,7 +40,7 @@ class PagesController < ApplicationController
     @query = params[:query]
     @users = User.starts_with(@query)
     @users_sliced = @users.each_slice(6)
-    @crosswords = Crossword.starts_with(@query)
+    @crosswords = Crossword.starts_with(@query).includes(:user)
     @crosswords_sliced = @crosswords.each_slice(4)
     @words = Word.starts_with(@query)
   end
@@ -44,18 +49,18 @@ class PagesController < ApplicationController
   def live_search
     query = params[:query]
     max_results = 15
-    @users = User.starts_with(query).limit(max_results)
-    @crosswords = Crossword.starts_with(query).limit(max_results)
-    @words = Word.starts_with(query).limit(max_results)
+    @users = User.starts_with(query).limit(max_results).load
+    @crosswords = Crossword.starts_with(query).limit(max_results).load
+    @words = Word.starts_with(query).limit(max_results).load
 
     split_ways = (@users.any? ? 1 : 0) + (@crosswords.any? ? 1 : 0) + (@words.any? ? 1 : 0)
     split_ways += 1 if split_ways == 0
     split_results = max_results / split_ways
-    @users = @users.limit(split_results)
-    @crosswords = @crosswords.limit(split_results)
-    @words = @words.limit(split_results)
+    @users = @users.first(split_results)
+    @crosswords = @crosswords.first(split_results)
+    @words = @words.first(split_results)
 
-    @result_count = @users.count(:all) + @crosswords.count(:all) + @words.count(:all)
+    @result_count = @users.size + @crosswords.size + @words.size
   end
 
   #GET /welcome or welcome_path
@@ -84,14 +89,14 @@ class PagesController < ApplicationController
   #TODO decide if this will be its own page or not
   def nytimes
     @nytimes_user = User.find_by_username('nytimes')
-    @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords : Crossword.none
+    @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.includes(:user) : Crossword.none
   end
 
   #GET /user_made or user_made_path
   #TODO decide if this will be its own page or not
   def user_made
     @nytimes_user = User.find_by_username('nytimes')
-    @user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id) : Crossword.all
+    @user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id).includes(:user) : Crossword.includes(:user).all
   end
 
 

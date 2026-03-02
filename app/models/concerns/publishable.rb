@@ -22,17 +22,13 @@ module Publishable
 
     scope :started,   -> (user) { with_solution(user).union(partnered(user)) }
 
-    # Pluck once and guard against empty IN() — the [0] sentinel was fragile and ran pluck twice.
+    # Subquery-based: avoids materializing IDs into Ruby arrays.
     scope :unstarted, -> (user) {
-      started_ids = started(user).pluck(:id)
-      base = unowned(user).distinct
-      started_ids.any? ? base.where.not(id: started_ids) : base
+      unowned(user).where.not(id: started(user).select(:id)).distinct
     }
 
     scope :new_to_user, -> (user) {
-      partnered_ids = partnered(user).pluck(:id)
-      base = unowned(user).unstarted(user).distinct
-      partnered_ids.any? ? base.where.not(id: partnered_ids) : base
+      unowned(user).unstarted(user).where.not(id: partnered(user).select(:id)).distinct
     }
   end
 
