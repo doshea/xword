@@ -291,7 +291,7 @@
     z-index: var(--z-dropdown);
   }
 
-  &:hover::after, &:focus-visible::after {
+  &:hover::after, &:focus-visible::after, &.xw-tooltip--flash::after {
     opacity: 1;
   }
 }
