@@ -1,4 +1,4 @@
-%h6= "#{pluralize(@users.count, 'user')}  found"
+%h2.search-result-count= "#{pluralize(@users.count, 'user')}  found"
 - @users_sliced.each do |slice|
   .xw-grid
     -slice.each do |user|

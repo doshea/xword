@@ -3,13 +3,14 @@
     - in_progress_initial = @in_progress[0...Crossword.per_page]
     %ul
       - in_progress_initial.each do |cw|
-        = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
+        %li
+          = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
     - in_progress_remaining = @in_progress[Crossword.per_page..-1]
     - if in_progress_remaining && in_progress_remaining.any?
       .center
         = render partial: 'pages/home/load_next_button', locals: {remaining: in_progress_remaining}
       %hr
   - else
-    You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}
+    %p You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel2'}
 - else
-  Make an account or log in and you'll be able to track which crosswords you're working on!
+  %p Make an account or log in and you'll be able to track which crosswords you're working on!

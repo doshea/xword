@@ -2,7 +2,7 @@
 <%# Turbo Stream: appends next page of crossword tabs and updates the load-more button %>
 <% @crosswords.each do |crossword| %>
   <%= turbo_stream.append "crossword-tab-list" do %>
-    <%= render partial: 'crosswords/partials/crossword_tab', locals: { cw: crossword } %>
+    <li><%= render partial: 'crosswords/partials/crossword_tab', locals: { cw: crossword } %></li>
   <% end %>
 <% end %>
 <% if @crosswords_remaining&.any? %>

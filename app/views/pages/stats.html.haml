@@ -3,7 +3,7 @@
   = stylesheet_link_tag 'site_stats'
   = javascript_include_tag 'chart.min'
 = render layout: 'layouts/partials/topper_stopper' do
-  %h4 Total Users by Date
+  %h2 Total Users by Date
   %canvas#total-users{width: 800, height: 400}
   :javascript
     var ctx = $("#total-users").get(0).getContext("2d");
@@ -51,7 +51,7 @@
     }
     var myNewChart = new Chart(ctx).Line(data,options);
   %hr
-  %h4 Daily User Signups
+  %h2 Daily User Signups
   %canvas#signup-counts{width: 800, height: 400}
   :javascript
     var ctx = $("#signup-counts").get(0).getContext("2d");

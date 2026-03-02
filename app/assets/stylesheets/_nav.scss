@@ -242,7 +242,7 @@
   z-index: var(--z-dropdown);
   color: var(--color-text);   // content is light-bg, not dark like nav
 
-  h6 {
+  .xw-nav__live-results-label {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     font-weight: var(--weight-semibold);
@@ -255,18 +255,16 @@
 
   hr { margin: var(--space-1) 0; border-color: var(--color-border); }
 
-  a {
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  li a {
     display: block;
     color: var(--color-text);
     text-decoration: none;
-
-    li {
-      padding: var(--space-2) var(--space-3);
-      font-family: var(--font-ui);
-      font-size: var(--text-sm);
-      list-style: none;
-      &:hover { background-color: var(--color-surface-alt); }
-    }
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    &:hover { background-color: var(--color-surface-alt); }
   }
 }
 

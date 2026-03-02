@@ -3,9 +3,9 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true, row_top_title: 'Sign In'} do
   .xw-col-full
     .xw-auth-layout
-      .xw-auth-column
-        %h2.center Log In
+      %section.xw-auth-column{aria: {labelledby: 'login-heading'}}
+        %h2#login-heading.center Log In
         = render partial: 'sessions/partials/form_large'
-      .xw-auth-column
-        %h2.center Sign up
+      %section.xw-auth-column{aria: {labelledby: 'signup-heading'}}
+        %h2#signup-heading.center Sign up
         = render partial: 'users/partials/form'

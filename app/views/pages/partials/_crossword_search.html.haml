@@ -1,4 +1,4 @@
-%h6= "#{pluralize(@crosswords.length, 'crossword')} found"
+%h2.search-result-count= "#{pluralize(@crosswords.length, 'crossword')} found"
 - @crosswords_sliced.each do |slice|
   .xw-grid.xw-grid--auto
     - slice.each do |cw|

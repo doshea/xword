@@ -1,7 +1,9 @@
 .xw-col-12.xw-lg-3
   = image_tag @user.image.url
-  #profile-name= @user.display_name
-  #profile-join Joined: #{@user.created_at.strftime("%b %d, %Y")}
+  %h1#profile-name= @user.display_name
+  %p#profile-join
+    Joined:
+    %time{datetime: @user.created_at.iso8601}= @user.created_at.strftime("%b %d, %Y")
   - if @current_user && (@current_user != @user)
     - if @current_user.friends.include? @user
       %button.xw-btn.xw-btn--success.xw-btn--sm
@@ -19,7 +21,8 @@
           %li #{@user.solutions.complete.count} solved
           %li #{@user.crosswords.count} created
           %li #{@user.unpublished_crosswords.count} in the works
-      %hr
+    %hr
+    %ul
       %li Clues written: #{@user.clues.count}
 .xw-col-12.xw-lg-5
   %h2 Recent Comments
@@ -28,7 +31,7 @@
       %li
         = link_to c.content, c.base_crossword
         %br
-        %span.smaller= c.created_ago
+        %time.smaller{datetime: c.created_at.iso8601}= c.created_ago
       %hr
 
 .xw-col-12.xw-lg-4
@@ -41,4 +44,4 @@
           = link_to cw do
             = image_tag cw.preview.url, class: 'xw-thumbnail'
   - else
-    No puzzles created yet
+    %p No puzzles created yet

@@ -12,7 +12,7 @@
     = render partial: 'layouts/partials/ga_tracking'
     = csrf_meta_tags
   %body
-    #body
+    %main#body
       = yield
       = render partial: 'layouts/partials/chalkboard'
     %footer#footer

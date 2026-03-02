@@ -1,22 +1,25 @@
 - if @users.any?
-  %h6 Users
-  - @users.each do |user|
-    = link_to user do
+  %p.xw-nav__live-results-label Users
+  %ul
+    - @users.each do |user|
       %li
-        = user.display_name
+        = link_to user do
+          = user.display_name
 - if @crosswords.any?
   -if @users.any?
     %hr
-  %h6 Crosswords
-  - @crosswords.each do |crossword|
-    = link_to crossword do
+  %p.xw-nav__live-results-label Crosswords
+  %ul
+    - @crosswords.each do |crossword|
       %li
-        = crossword.title
+        = link_to crossword do
+          = crossword.title
 - if @words.any?
   -if @crosswords.any? or @users.any?
     %hr
-  %h6 Words
-  - @words.each do |word|
-    = link_to word do
+  %p.xw-nav__live-results-label Words
+  %ul
+    - @words.each do |word|
       %li
-        = word.content
+        = link_to word do
+          = word.content
