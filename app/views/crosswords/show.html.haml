@@ -1,7 +1,7 @@
 - title @crossword.title, true
 = content_for :head do
   = stylesheet_link_tag "crossword"
-  = javascript_include_tag 'solve'
+  = javascript_include_tag 'solve', 'data-turbo-track': 'reload'
   %meta{property: 'og:image', content: @crossword.preview.large.url}
 
 - if @team
@@ -114,7 +114,7 @@
       -if @current_user
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
         = form_with(url: add_comment_path(@crossword), id: 'comment-form') do |f|
-          = text_area_tag('content', nil, id: 'add-comment', placeholder: 'What did you think of this crossword?')
+          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea', placeholder: 'What did you think of this crossword?')
       -else
         =link_to 'Sign up', new_user_path
         or
