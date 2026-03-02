@@ -91,29 +91,10 @@ class Cell < ApplicationRecord
     self.is_across_start || self.is_down_start
   end
 
-  def left_cell
-    unless col == 1
-      crossword.cells.find_by_row_and_col(row, col-1)
-    end
-  end
-
-  def right_cell
-    unless col == crossword.cols
-      crossword.cells.find_by_row_and_col(row, col+1)
-    end
-  end
-
-  def above_cell
-    unless row == 1
-      crossword.cells.find_by_row_and_col(row-1, col)
-    end
-  end
-
-  def below_cell
-    unless row == crossword.rows
-      crossword.cells.find_by_row_and_col(row+1, col)
-    end
-  end
+  def left_cell  = neighbor_cell(0, -1, col > 1)
+  def right_cell = neighbor_cell(0, 1, col < crossword.cols)
+  def above_cell = neighbor_cell(-1, 0, row > 1)
+  def below_cell = neighbor_cell(1, 0, row < crossword.rows)
 
   def get_mirror_cell
     opposing_row = crossword.rows-row+1
@@ -155,6 +136,10 @@ class Cell < ApplicationRecord
   end
 
   private
+
+  def neighbor_cell(row_delta, col_delta, in_bounds)
+    crossword.cells.find_by_row_and_col(row + row_delta, col + col_delta) if in_bounds
+  end
 
   def refresh_neighbor_starts!
     self.update_starts!
