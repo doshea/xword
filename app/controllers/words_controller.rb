@@ -3,12 +3,9 @@ class WordsController < ApplicationController
   
   #GET /words/:id or word_path
   def show
-    across_crosswords = @word.across_crosswords
-    down_crosswords = @word.down_crosswords
-    @count = across_crosswords.length + down_crosswords.length
-    @crosswords = (across_crosswords + down_crosswords).uniq.sort{|x,y| x.title <=> y.title}
-
-    @clues = @word.clues.sort{|x,y| x.difficulty <=> y.difficulty}
+    @crosswords = @word.crosswords_by_title
+    @count = @word.across_crosswords.size + @word.down_crosswords.size
+    @clues = @word.clues.sort_by(&:difficulty)
   end
 
   #POST /words/match or match_words_path

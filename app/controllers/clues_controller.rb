@@ -5,10 +5,8 @@ class CluesController < ApplicationController
 
   #GET /clue/:id or clue_path
   def show
-    across_crosswords = @clue.across_crosswords
-    down_crosswords = @clue.down_crosswords
-    @count = across_crosswords.length + down_crosswords.length
-    @crosswords = (across_crosswords + down_crosswords).uniq.sort{|x,y| x.title <=> y.title}
+    @crosswords = @clue.crosswords_by_title
+    @count = @clue.across_crosswords.size + @clue.down_crosswords.size
   end
 
   #PATCH/PUT /clue/:id or clue_path

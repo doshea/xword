@@ -24,6 +24,10 @@ class Clue < ApplicationRecord
 
   self.per_page = 50
 
+  def crosswords_by_title
+    (across_crosswords + down_crosswords).uniq.sort_by(&:title)
+  end
+
   CONTENT_LENGTH_MAX = 100
 
   validates :content, presence: true, length: {maximum: CONTENT_LENGTH_MAX}

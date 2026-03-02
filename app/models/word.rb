@@ -29,6 +29,10 @@ class Word < ApplicationRecord
   def crosswords
     (across_crosswords + down_crosswords).uniq
   end
+
+  def crosswords_by_title
+    crosswords.sort_by(&:title)
+  end
   self.per_page = 50
 
   validates_uniqueness_of :content
