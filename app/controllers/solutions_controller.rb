@@ -98,7 +98,7 @@ class SolutionsController < ApplicationController
     data = {display_name: params[:display_name],
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
-    team_broadcast(@solution, { event: 'chat_message' }.merge(data))
+    @broadcast_failed = !team_broadcast(@solution, { event: 'chat_message' }.merge(data))
     respond_to do |format|
       format.turbo_stream  # Renders solutions/send_team_chat.turbo_stream.erb (resets team chat form)
       format.html { redirect_to team_crossword_path(@solution.crossword, @solution.key) }
@@ -132,12 +132,13 @@ class SolutionsController < ApplicationController
 
   private
 
-  # Broadcast to the team's ActionCable channel; silently swallow Redis connection errors
-  # so team actions degrade gracefully instead of 500ing when Redis is unavailable.
+  # Broadcast to the team's ActionCable channel; returns true on success, false on Redis failure.
   def team_broadcast(solution, payload)
     ActionCable.server.broadcast("team_#{solution.key}", payload)
+    true
   rescue Redis::BaseConnectionError
     Rails.logger.warn("ActionCable broadcast failed (Redis unavailable)")
+    false
   end
 
   # Silently absorbs PUT /solutions/null requests sent by stale JS when solution_id is not yet set.

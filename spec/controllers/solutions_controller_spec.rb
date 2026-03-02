@@ -147,6 +147,20 @@ describe SolutionsController do
       }
       expect(response).to have_http_status(:ok)
     end
+
+    context 'when Redis is unavailable' do
+      render_views
+
+      it 'includes an error notice in the turbo_stream response' do
+        allow(ActionCable.server).to receive(:broadcast)
+          .and_raise(Redis::CannotConnectError)
+        post :send_team_chat, params: {
+          id: team_solution.id, display_name: 'Dylan',
+          avatar: '/default.jpg', chat: 'Hello team!'
+        }
+        expect(response.body).to include('team-chat-error')
+      end
+    end
   end
 
   describe 'POST #roll_call (Redis unavailable)' do
