@@ -97,7 +97,9 @@ Rails.application.configure do
   config.hosts = [
     "crosswordcafe.herokuapp.com",
     "www.crossword-cafe.com",
-    "crossword-cafe.com"
+    "crossword-cafe.com",
+    "www.crossword-cafe.org",
+    "crossword-cafe.org"
   ]
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
