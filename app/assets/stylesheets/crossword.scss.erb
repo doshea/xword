@@ -468,9 +468,16 @@ table#crossword {
       border-color: var(--color-accent);
     }
   }
-  .team-modal__url-icon {
+  .team-modal__url-copy {
+    background: none;
+    border: none;
     color: var(--color-accent);
     flex-shrink: 0;
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-colors);
+    &:hover { background: var(--color-accent-light); }
   }
   .team-modal__footnote {
     font-family: var(--font-ui);
