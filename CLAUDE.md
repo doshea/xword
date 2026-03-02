@@ -202,8 +202,9 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | v9-v10 | Ghost toolbar buttons, creator credit byline, comments BEM layout, Turbo Stream fixes, `populate_cells` bug fix |
 | v11-v12 | Modal polish (controls keycaps, win modal tokens), edit tool panels tokenized, settings modal cleaned |
 | v13-v17 | Inline styles → CSS classes site-wide, legacy shadow classes removed, search cards tokenized, profile page polished, team chat/grid/nav colors tokenized |
+| v18 | Legacy cleanup: `.dark-shadow` removed (nav + edit), `.lead`/`.subheader` dead CSS deleted, `.subheader`→`.xw-footer__copyright`, home `<hr>` inline style→`.xw-hr--flush` |
 
-### Current State (v17) — What's Working
+### Current State (v18) — What's Working
 
 - Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
 - Crossword grid is crisp: strong black/white contrast, clean cell borders
@@ -241,17 +242,17 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | v15 | Search cards tokenized: `lightgrey`→`--color-border`/`--color-surface-alt`, dotted→solid border, `--radius-sm`, token spacing/typography. Solution choice: `#f04124`→`--color-danger`, blue overlay→muted info tint |
 | v16 | User profile: `h5`→`h3` Stats heading, dead `.right` class removed, leading `%br` removed, `profile.scss.erb` tokenized, `account.scss.erb` `#333`→`--color-text` |
 | v17 | Tokenized: grid `tr` bg→`--color-cell-void`, clue border `#999`→`--color-border-strong`, team chat black/white→nav tokens + `--shadow-lg` + `--radius-md`, bookend bars→nav tokens, nav danger `#f77`→`--color-danger`, new_crossword preview→cell tokens |
+| v18 | Legacy cleanup: `.dark-shadow` deleted (nav header + edit settings→`var(--shadow-lg)`), dead `.lead`/`.subheader` CSS removed, `.subheader`→`.xw-footer__copyright` (inlined props), home `<hr>` inline style→`.xw-hr--flush` class |
 
 ### Remaining Cleanup
 
 #### Ongoing
 1. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
    for stacking on narrow viewports.
-2. **Legacy utility classes** — `.dark-shadow` (nav, edit settings), `.center`, `.lead` (team partial),
-   `.subheader` (footer) still use hardcoded values or Foundation shim patterns.
-3. **Remaining inline styles** — `_team.html.haml` (2 styles + `.lead`), `pages/home.html.haml`
-   (`margin-bottom: 0` on `<hr>`), admin pages (low priority).
-4. **Email template** — `default_mail.html.haml` uses inline styles (correct for email; leave as-is).
+2. **Legacy utility class `.center`** — 14 uses, simple `text-align: center` utility with no hardcoded
+   colors. Harmless and widely used; renaming would touch 14+ files for zero functional benefit.
+3. **Email template** — `default_mail.html.haml` uses inline styles (correct for email; leave as-is).
+4. **Admin pages** — inline styles remain (low priority).
 
 ### Pages Not Yet Polished
 

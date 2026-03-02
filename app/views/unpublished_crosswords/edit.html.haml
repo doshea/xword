@@ -28,7 +28,7 @@
   .xw-col-full
     = render partial: 'unpublished_crosswords/partials/edit_unpublished_crossword'
 
-%section.xw-container.xw-grid#meta-area
+%section.xw-container.xw-grid#meta-area{aria: {label: 'Puzzle details'}}
   .xw-col-full
     .xw-field
       %label.xw-label{for: 'description'} Description
@@ -79,7 +79,7 @@
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
       #word-match-results
 
-= link_to('#edit-settings', class: 'dark-shadow side-button', id: 'settings-button', data: { turbo: false }) do
+= link_to('#edit-settings', class: 'side-button', id: 'settings-button', data: { turbo: false }) do
   = icon('settings')
 
 

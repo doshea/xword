@@ -16,6 +16,6 @@
     = csrf_meta_tags
   %body
     = link_to 'Skip to main content', '#body', class: 'skip-to-content'
-    %header#nav.dark-shadow= render partial: 'layouts/partials/nav'
+    %header#nav= render partial: 'layouts/partials/nav'
     %main#body= render partial: 'layouts/partials/body'
     %footer#footer= render partial: 'layouts/partials/footer'
