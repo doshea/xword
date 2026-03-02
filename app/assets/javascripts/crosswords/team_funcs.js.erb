@@ -11,6 +11,7 @@ window.team_app = {
   message_received_sound: new Audio('<%= audio_path("submarine.m4a") %>'),
   last_received:         null,
   unread_count:          0,
+  last_chat_sender:      null,
   display_name:          team_app.display_name,  // copied from view-injected stub
   solver_id:             team_app.solver_id,
   outline_timers:        {},  // per-solver timeout IDs for clue outline fade-out
@@ -160,35 +161,51 @@ window.team_app = {
     });
   },
 
-  // Chat message received: render sender-styled or other-styled chat bubble and scroll to bottom
+  // Chat message received: group consecutive messages from the same speaker (iMessage-style)
   receive_chat: function(data) {
-    var is_my_chat        = (team_app.display_name === data['display_name']);
-    var chats_already_exist = ($('.chat').length > 0);
-    var chats    = $('#team-chat');
-    var new_chat = $('<div>').addClass('chat');
-    if (is_my_chat) new_chat.addClass('my-chat');
+    var is_my_chat  = (team_app.display_name === data['display_name']);
+    var sender_key  = data['display_name'];
+    var $chats      = $('#chats');
+    var $lastChild  = $chats.children().last();
+    var $lastGroup  = $lastChild.hasClass('chat-group') ? $lastChild : $();
+    var sameSender  = (team_app.last_chat_sender === sender_key) && $lastGroup.length > 0;
 
+    // Build the bubble
+    var new_chat  = $('<div>').addClass('chat');
     var chat_text = $('<span>').text(data['chat_text']).addClass('chat-text');
-    var display_name, avatar;
+    if (is_my_chat) new_chat.addClass('my-chat');
+    chat_text.appendTo(new_chat);
 
-    if (!is_my_chat) {
-      display_name = $('<span>').text(data['display_name'] + ': ').addClass('display-name');
-      avatar = $('<img>').attr('src', data['avatar']).addClass('avatar');
-      avatar.appendTo(new_chat);
-      display_name.appendTo(new_chat);
-    }
-    if (is_my_chat) {
-      chat_text.prependTo(new_chat);
+    if (sameSender) {
+      // Append to existing group
+      $lastGroup.find('.chat-group__messages').append(new_chat);
     } else {
-      chat_text.appendTo(new_chat);
+      // Create new group
+      var $group    = $('<div>').addClass('chat-group');
+      var $messages = $('<div>').addClass('chat-group__messages');
+
+      new_chat.addClass('chat--first');
+
+      if (is_my_chat) {
+        $group.addClass('chat-group--self');
+      } else {
+        $group.addClass('chat-group--other');
+        var $avatar = $('<img>').attr('src', data['avatar']).addClass('chat-group__avatar');
+        var $name   = $('<span>').text(data['display_name']).addClass('chat-group__name');
+        $messages.append($name);
+        $group.append($avatar);
+      }
+
+      $messages.append(new_chat);
+      $group.append($messages);
+      $chats.append($group);
+      team_app.last_chat_sender = sender_key;
     }
 
-    if (chats_already_exist) $('<hr />').appendTo($('#chats'));
-    new_chat.appendTo($('#chats'));
-
+    // Amber flash, sound throttle, unread count for other people's messages
     if (!is_my_chat) {
-      new_chat.css({'background-color': '#fdf0e4'});  // --color-warning-bg (warm amber flash)
-      if (chats.hasClass('down')) {
+      new_chat.css({'background-color': '#fdf0e4'});
+      if ($('#team-chat').hasClass('down')) {
         team_app.unread_count += 1;
         $('#unread-chat-count').text('(' + team_app.unread_count + ')');
       }
@@ -197,11 +214,10 @@ window.team_app = {
         team_app.last_received = now;
         team_app.message_received_sound.play();
       }
-      // brief defer lets the browser paint the highlight before fading it out
       window.setTimeout(function() { new_chat.css({'background-color': ''}); }, 400);
     }
-    var scroll_height = $('#chats').get(0).scrollHeight;
-    $('#chats').stop().animate({scrollTop: scroll_height}, 'fast');
+    var scroll_height = $chats.get(0).scrollHeight;
+    $chats.stop().animate({scrollTop: scroll_height}, 'fast');
   },
 
   // Teammate clicked a clue: draw a dashed outline over those cells for 20 seconds

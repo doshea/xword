@@ -354,11 +354,38 @@ table#crossword {
     overflow-y: auto;
     max-height: 330px;
     padding: var(--space-2);
+  }
 
-    hr {
-      border: none;
-      border-top: 1px solid var(--color-border);
-      margin: 0;
+  .chat-group {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-1);
+    margin-bottom: var(--space-2);
+
+    &:last-child { margin-bottom: 0; }
+
+    &--other { flex-direction: row; }
+    &--self  { flex-direction: row-reverse; }
+
+    &__avatar {
+      width: 1.6em;
+      height: 1.6em;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+
+    &__messages {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 80%;
+    }
+
+    &__name {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-muted);
+      padding-left: var(--space-1);
     }
   }
 
@@ -366,42 +393,32 @@ table#crossword {
     padding: var(--space-1) var(--space-2);
     font-size: var(--text-sm);
     line-height: var(--leading-snug);
-    min-height: 1.6em;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-alt);
     transition: background-color var(--duration-slow) var(--ease-out);
 
-    img {
-      height: 1.2em;
-      width: 1.2em;
-    }
     &.my-chat {
-      text-align: right;
+      text-align: left;
       background-color: var(--color-accent-light);
     }
-    .avatar {
-      width: 1.4em;
-      height: 1.4em;
-      border-radius: var(--radius-full);
-      vertical-align: middle;
+
+    &--first {
+      .chat-group--other & { border-top-left-radius: var(--radius-sm); }
+      .chat-group--self &  { border-top-right-radius: var(--radius-sm); }
     }
-    .display-name {
-      font-weight: var(--weight-semibold);
-      color: var(--color-text-secondary);
-      margin-left: 0.3em;
-    }
+
     .chat-text {
       max-width: 100%;
       overflow-wrap: break-word;
     }
-    span {
-      vertical-align: bottom;
-    }
+
     &.team-chat-error {
       text-align: center;
       font-style: italic;
       color: var(--color-text-muted);
       font-size: var(--text-sm);
       padding: 0.4em 0;
+      background: none;
     }
   }
 }
