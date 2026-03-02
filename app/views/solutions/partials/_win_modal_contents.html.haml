@@ -9,40 +9,39 @@
     - millisecond_s = '%03d' % time_difference[:milliseconds]
     - more_than_a_day = (time_difference[:days] > 0)
     - more_than_an_hour = (time_difference[:hours] > 0)
-  %h2.center
+  %h2.win-modal__heading
     = icon('trophy')
     SOLVED!
     = icon('trophy')
-  %p.lead.center
+  %p.win-modal__congrats
     Congratulations#{", #{@current_user.display_first_name}" if @current_user}!
-  %p.lead.center
+  %p.win-modal__subtitle
     You completed
     %i #{@crossword.title}#{' in:' if @current_user}
   - if @current_user
-    .center
+    .win-modal__time
       - if more_than_a_day
-        #days{style: 'display: inline-block'}
+        #days.win-clock__segment
         days, and
-      .clock{style: 'background: black; display: inline-block; padding: 1px 5px 0; color: #EEE; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; '}
+      .win-clock
         -if more_than_an_hour
-          #hours{style: 'display: inline-block;'}
-          %span{style: 'vertical-align: top; line-height: 37px;'} :
-        #minutes{style: 'display: inline-block;'}
+          #hours.win-clock__segment
+          %span.win-clock__separator :
+        #minutes.win-clock__segment
         - unless more_than_a_day
-          %span{style: 'vertical-align: top; line-height: 37px;'} :
-          #seconds{style: 'display: inline-block;'}
+          %span.win-clock__separator :
+          #seconds.win-clock__segment
         - unless more_than_an_hour
-          %span{style: 'bottom: 7px; position: relative;'} .
-          #milliseconds{style: 'display: inline-block;'}
+          %span.win-clock__ms-dot .
+          #milliseconds.win-clock__segment
     = render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
     - unless @current_user.comments.where(crossword_id: @solution.crossword.id).any?
       %hr
-      / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
       = form_with(url: add_comment_path(@solution.crossword), id: 'complete-form') do |f|
-        %h5
+        %h5.win-modal__prompt
           = icon('message-square')
           How was the crossword?
-        = text_area_tag 'content', nil, placeholder: Comment.random_wine_comment
+        = text_area_tag 'content', nil, class: 'xw-textarea', placeholder: Comment.random_wine_comment
         :javascript
           $('#complete-form').on('keypress', 'textarea', function(e){
             if(!e.metaKey){
@@ -52,7 +51,7 @@
                 if(!$(this).val() == ''){
                   $(this).parent().submit();
                   $(this).val('');
-                  var thank_you = $('<h3 style="text-align: center; display: none;">');
+                  var thank_you = $('<h3 class="win-modal__thanks">');
                   thank_you.text('Thank you!');
                   $(this).parent().after(thank_you);
                   $(this).parent().fadeOut(500, function(){

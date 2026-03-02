@@ -1,22 +1,21 @@
 %dialog#controls-modal.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
   %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
-  %u
-    %h1 Controls
-  .xw-flex{style: 'justify-content: center; gap: 3rem;'}
-    %ul
+  %h2.controls-modal__heading Controls
+  .controls-modal__columns
+    %ul.controls-modal__actions
       %li Next word
       %li Next empty
       %li Change direction
       %li Cell navigation
-    %ul#keys
+    %ul.controls-modal__keys
       %li
         %kbd Tab
       %li
         %kbd Enter
       %li
-        %kbd &nbsp;&nbsp;Space&nbsp;&nbsp;
+        %kbd Space
       %li
-        %kbd &uarr;
-        %kbd &darr;
-        %kbd &larr;
-        %kbd &rarr;
+        %kbd.controls-modal__arrow-key &uarr;
+        %kbd.controls-modal__arrow-key &darr;
+        %kbd.controls-modal__arrow-key &larr;
+        %kbd.controls-modal__arrow-key &rarr;

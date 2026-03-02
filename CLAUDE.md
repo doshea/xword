@@ -267,60 +267,57 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | Edit page polish (v8) | Switch colors calmed (red→warm gray off, lime→forest green on), clue numbers muted, clue containers warmed to cream, section divider strengthened, bottom padding tightened, clue column border-left removed, textarea border softened, clue scroll-into-view bug fixed |
 | Solve page polish (v8.2) | Clue numbers wrapped in `span.clue-num` (shared muted color), `<hr>` dividers styled with warm borders, `#solve-controls` modernized from float to flow, `#puzzle-controls` absolute→flex, comment textarea sunken bg, Comments heading display font |
 
-### Current State (v8.2) — What's Working
+### Current State (v10) — What's Working
 
 - Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
 - Crossword grid is crisp: strong black/white contrast, clean cell borders
-- Typography pairing (Playfair headings / DM Sans labels) creates editorial hierarchy
-- Green accent coherent: Publish button, switch on-state, and `--color-accent` all use `#3a7d5c`
+- Typography pairing (Playfair headings / DM Sans labels / Lora body) creates editorial hierarchy
+- Green accent coherent: Publish button, switch on-state, Check button, `--color-accent` all `#3a7d5c`
 - Toggle switches recede (warm gray off-state) instead of competing with content
 - Clue containers use warm cream (`--color-surface-alt`) — paper-within-paper feel
 - Clue numbers muted on both pages via shared `.clue-num { color: var(--color-text-muted) }`
 - Continuous paper texture across `#credit-area` → `#solve-area` → `#meta-area` → `#advanced`
-- Section dividers visible: `2px solid var(--color-border-strong)` between description/advanced
-- Solve page `<hr>` dividers warm (`--color-border`), puzzle controls flex-positioned (not absolute)
+- Section dividers visible and consistent: warm `--color-border` on solve, `--color-border-strong` on edit
+- Puzzle controls flex-positioned with ghost buttons (no border noise), status text muted
+- Creator credit byline styled with `--font-body` + `--color-text-secondary` (editorial feel)
 - Comment textarea sunken with `.xw-textarea` class, Comments heading uses `--font-display`
+- Comments/replies use BEM flex layout (`xw-comment`/`xw-reply` with `__avatar`/`__body` children)
+- All inline `style` attributes removed from comment/reply partials — display states in CSS
+- Reply count uses semantic `<p>` (was `h6`), reply controls flex layout with muted icons
 
-### Next Steps — Solve + Edit Pages (v9+)
+### Completed Versions
 
-#### v9 — Credit area + controls cohesion
-1. **Creator credit byline** — `#creator-credit` needs `--font-body` (Lora) + `--color-text-secondary`
-   for editorial byline feel. Currently inherits from `h1` with only `font-size: large`.
-2. **Check button placement** — green "Check ▾" sits alone in empty space between grid and description.
-   Move to `#credit-area` toolbar, or give it more intentional treatment in `#meta-area`.
-3. **Puzzle controls toolbar refinement** — icon-only buttons should use `xw-btn--ghost` to reduce
-   border noise. Status text (`#save-status`, `#save-clock`) needs `.smaller` treatment from edit page
-   (`--font-ui`, `--text-xs`, `--color-text-muted`). Group related controls with subtle separators.
+| Version | What changed |
+|---------|-------------|
+| v8.2 | Clue numbers wrapped in `span.clue-num`, `<hr>` warm borders, `#solve-controls` flow layout, `#puzzle-controls` absolute→flex, comment textarea + heading styling |
+| v9 | Ghost toolbar buttons, status text muted `--font-ui`/`--text-xs`, orphaned `%br` removed, creator credit byline `--font-body`/`--color-text-secondary` |
+| v10 | Comments BEM layout (`xw-comment`/`xw-reply`), inline styles→CSS, reply count `h6`→`p`, Turbo Stream wrapper fix, `populate_cells` `cells.reset` bug fix |
 
-#### v10 — Comment section mini-redesign
-4. **Comment cards** — comments use bare `xw-grid` articles with oversized avatar column (`.xw-col-3`
-   = 25% on mobile). Reply/Delete actions use inline `style` attributes and raw `.reply-button` class.
-   Reply textareas lack `.xw-textarea`. Reply count uses wrong element (`%h6`). Externalize all inline
-   styles to CSS classes, use `xw-btn--ghost` for actions, proper avatar sizing.
+### Next Steps — Solve + Edit Pages (v11+)
 
 #### v11 — Modal polish
-5. **Win modal** — highest-impact emotional moment, stuck in 2014. Heavy inline styles on clock,
+1. **Win modal** — highest-impact emotional moment, stuck in 2014. Heavy inline styles on clock,
    `.lead`/`.center` legacy classes, bare `<h5>` for comment prompt. Restyle with design tokens:
    Playfair "SOLVED!" heading, `--font-mono` timer, warm surface instead of black clock bg.
-6. **Controls modal** — `<u>` tag on `<h1>`, unstyled `<kbd>` elements, inline `style` attribute
+2. **Controls modal** — `<u>` tag on `<h1>`, unstyled `<kbd>` elements, inline `style` attribute
    for layout. Add keycap styling (mono font, subtle border+shadow), proper CSS classes.
 
 #### v12 — Edit page tool panels
-7. **Notepad/Pattern Search panels** — slide-up panels use raw `$bottomcolor: black`, `border: 1px
+3. **Notepad/Pattern Search panels** — slide-up panels use raw `$bottomcolor: black`, `border: 1px
    solid #444`, unstyled inputs. Retheme with `--color-nav-bg` (warm near-black), `--color-nav-border`,
    design-token inputs. Bottom trigger buttons could use paper-tab metaphor.
-8. **Settings modal** — `#edit-settings` has 6 unlabeled checkboxes + `<br>` tags. Either implement
+4. **Settings modal** — `#edit-settings` has 6 unlabeled checkboxes + `<br>` tags. Either implement
    properly with labeled settings + switch-form component, or remove the settings button.
 
 #### Ongoing cleanup
-9. **Inline style audit** — `_comment.html.haml`, `_reply.html.haml`, `_win_modal_contents.html.haml`,
-   `_controls_modal.html.haml` all use `style` attributes that should be CSS classes.
-10. **Legacy utility classes** — `.small-shadow`, `.thin-border`, `.dark-shadow`, `.center`, `.lead`
-    use hardcoded values; migrate callers to token-based equivalents.
-11. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
-    for stacking on narrow viewports.
-12. **Cross-browser scrollbar** — WebKit-only custom scrollbar in `edit.scss.erb`; use `scrollbar-color`
-    and `scrollbar-width` for cross-browser support with design tokens.
+5. **Inline style audit** — `_win_modal_contents.html.haml`, `_controls_modal.html.haml` still use
+   `style` attributes that should be CSS classes.
+6. **Legacy utility classes** — `.small-shadow`, `.thin-border`, `.dark-shadow`, `.center`, `.lead`
+   use hardcoded values; migrate callers to token-based equivalents.
+7. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
+   for stacking on narrow viewports.
+8. **Cross-browser scrollbar** — WebKit-only custom scrollbar in `edit.scss.erb`; use `scrollbar-color`
+   and `scrollbar-width` for cross-browser support with design tokens.
 
 ### Pages Not Yet Polished
 
@@ -342,7 +339,7 @@ The solve and edit pages are the focus. Other pages still need attention:
 - **Controller specs**: require `rails-controller-testing` (installed)
 - **Shared helpers**: `spec/support/auth_helpers.rb` — `log_in(user)` for controller specs
 
-Run tests: `bundle exec rspec`  # ~488 examples, 0 failures
+Run tests: `bundle exec rspec`  # 509 examples, 0 failures
 
 ### Test-Writing Guidelines
 
