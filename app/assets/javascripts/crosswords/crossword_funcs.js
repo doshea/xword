@@ -206,6 +206,7 @@ window.cw = {
     evt = evt || window.event;
     var target = evt.target || evt.srcElement;
     if (evt.keyCode === cw.BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
+      if (!cw.selected) return false;
       var check_for_unfinish = !cw.selected.is_empty_cell();
       cw.selected.delete_letter(true);
       if (check_for_unfinish) cw.selected.uncheck_unfinisheds();

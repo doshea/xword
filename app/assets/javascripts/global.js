@@ -1,4 +1,6 @@
 window.global = {
+  _searchTimer: null,
+
   ready: function() {
     // All handlers delegate from <body> so they survive Turbo Drive body replacements
     // without needing to be re-bound on each visit.
@@ -17,7 +19,12 @@ window.global = {
     var query = $('#query').val();
     if (query.length < 3) {
       $('#live-results').hide();
-    } else {
+      if (global._searchTimer) clearTimeout(global._searchTimer);
+      return;
+    }
+    // Debounce: wait 300ms after last keystroke before firing AJAX
+    if (global._searchTimer) clearTimeout(global._searchTimer);
+    global._searchTimer = setTimeout(function() {
       var settings = {
         dataType: 'script',
         type: 'GET',
@@ -25,7 +32,7 @@ window.global = {
         data: { query: query }
       };
       $.ajax(settings);
-    }
+    }, 300);
   }
 };
 

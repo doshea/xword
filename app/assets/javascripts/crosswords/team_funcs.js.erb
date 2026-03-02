@@ -13,7 +13,7 @@ window.team_app = {
   unread_count:          0,
   display_name:          team_app.display_name,  // copied from view-injected stub
   solver_id:             team_app.solver_id,
-  outline_timer:         null,
+  outline_timers:        {},  // per-solver timeout IDs for clue outline fade-out
 
   // Toggle the team chat tray open/closed; reset unread count when opening
   toggle_chat: function() {
@@ -198,7 +198,7 @@ window.team_app = {
         team_app.message_received_sound.play();
       }
       // brief defer lets the browser paint the highlight before fading it out
-      window.setTimeout(function() { new_chat.css({'background-color': 'white'}); }, 0.4);
+      window.setTimeout(function() { new_chat.css({'background-color': 'white'}); }, 400);
     }
     var scroll_height = $('#chats').get(0).scrollHeight;
     $('#chats').stop().animate({scrollTop: scroll_height}, 'fast');
@@ -231,8 +231,9 @@ window.team_app = {
         .offset({ top: word_cells[0].offset().top + 1, left: word_cells[0].offset().left + 1 })
         .stop().css('opacity', 1).show();
 
-      if (team_app.outline_timer) clearInterval(team_app.outline_timer);
-      team_app.outline_timer = setTimeout(function() {
+      // Per-solver timer so multiple teammates' outlines fade independently
+      if (team_app.outline_timers[data.solver_id]) clearTimeout(team_app.outline_timers[data.solver_id]);
+      team_app.outline_timers[data.solver_id] = setTimeout(function() {
         the_outline.animate({'opacity': 0}, 'fast');
       }, 20000);
     }
@@ -257,7 +258,12 @@ function team_funcs_ready() {
     outline_team_clue: team_app.outline_team_clue
   };
 
-  ActionCable.createConsumer().subscriptions.create(
+  // Disconnect previous consumer/subscription to prevent duplicate message processing
+  if (team_app._consumer) {
+    team_app._consumer.disconnect();
+  }
+  team_app._consumer = ActionCable.createConsumer();
+  team_app._consumer.subscriptions.create(
     { channel: 'TeamsChannel', team_key: team_key },
     {
       received: function(data) {
@@ -270,6 +276,8 @@ function team_funcs_ready() {
   team_app.roll_call();
   $('#team-chat .row-topper').on('click', team_app.toggle_chat);
   $('.clue').on('click', team_app.show_team_clue);
+  // Remove previous unload handler before adding to prevent stacking
+  $(window).off('unload', team_app.leave_team);
   $(window).on('unload', team_app.leave_team);
 }
 

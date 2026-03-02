@@ -18,6 +18,8 @@ window.edit_app = {
   save_counter: null,
 
   ready: function() {
+    // Clear any previous timer to prevent phantom saves after Turbo navigation
+    if (edit_app.save_timer) clearInterval(edit_app.save_timer);
     edit_app.save_timer = window.setInterval(function() {
       if (edit_app.unsaved_changes) edit_app.save_puzzle();
     }, edit_app.SAVE_INTERVAL);
@@ -83,7 +85,7 @@ window.edit_app = {
         title_status.html('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xw-icon xw-icon--x" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>').addClass('xw-status-err').removeClass('xw-status-ok');
       },
       complete: function() {
-        title_status.fadeTo(1500, 0, function() {
+        title_status.stop(true).fadeTo(1500, 0, function() {
           title_status.removeClass('xw-status-ok xw-status-err').html('');
         });
       }

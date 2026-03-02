@@ -23,12 +23,15 @@ describe SolutionsController do
     # update.js.erb is called via $.ajax from solve_funcs.js (format.js, not Turbo)
     before do
       log_in(user)
-      patch :update, params: { id: solution.id, letters: 'ABCDE' }, format: :js
+      patch :update, params: { id: solution.id, letters: 'ABCDE', save_counter: '0.12345' }, format: :js
     end
 
     it { should respond_with(200) }
     it 'updates the solution letters' do
       expect(solution.reload.letters).to eq 'ABCDE'
+    end
+    it 'passes save_counter through to the response template' do
+      expect(assigns(:save_counter)).to eq '0.12345'
     end
 
     context 'with a null/invalid id (stale JS sending solution_id before it was set)' do

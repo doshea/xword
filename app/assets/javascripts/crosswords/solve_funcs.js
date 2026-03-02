@@ -15,9 +15,13 @@ window.solve_app = {
   clock_updater: null,
   last_save: null,
   unsaved_changes: false,
+  save_counter: null,
 
   ready: function() {
     if (!solve_app.anonymous && solve_app.solution_id) {
+      // Clear any previous timers to prevent phantom saves after Turbo navigation
+      if (solve_app.save_timer) clearInterval(solve_app.save_timer);
+      if (solve_app.clock_updater) clearInterval(solve_app.clock_updater);
       solve_app.save_timer = window.setInterval(function() {
         if (solve_app.unsaved_changes) solve_app.save_solution();
       }, 5000);
@@ -53,7 +57,7 @@ window.solve_app = {
       dataType: 'script',
       type: 'PUT',
       url: "/solutions/" + solve_app.solution_id,
-      data: { authenticity_token: token, letters: letters }
+      data: { authenticity_token: token, letters: letters, save_counter: solve_app.save_counter }
     };
     $.ajax(settings);
   },
@@ -73,6 +77,7 @@ window.solve_app = {
   update_unsaved: function() {
     if (!solve_app.anonymous) {
       solve_app.unsaved_changes = true;
+      solve_app.save_counter = Math.random().toString();
       $('#save-status').text('Unsaved changes');
       $('#save-clock').empty();
     }
@@ -135,7 +140,6 @@ window.solve_app = {
       data: { letters: cw.get_puzzle_letters() }
     };
     $.ajax(settings);
-    solve_app.save_solution();
   },
 
   check_completion: function(e) {

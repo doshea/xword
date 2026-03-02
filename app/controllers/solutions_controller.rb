@@ -22,6 +22,7 @@ class SolutionsController < ApplicationController
   #PATCH/PUT /solutions/:id or solution_path
   def update
     @solution.letters = params[:letters]
+    @save_counter = params[:save_counter]
     @solution.save
   end
 
