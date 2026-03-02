@@ -78,5 +78,19 @@ describe AdminController do
       before { get :manual_nyt }
       it { should respond_with(200) }
     end
+
+    # -----------------------------------------------------------------------
+    # POST #create_manual_nyt
+    # -----------------------------------------------------------------------
+    describe 'POST #create_manual_nyt' do
+      context 'with invalid JSON' do
+        before { post :create_manual_nyt, params: { nyt_text: 'not valid json {{' } }
+
+        it { should redirect_to(admin_manual_nyt_path) }
+        it 'sets an error flash' do
+          expect(flash[:error]).to match(/invalid/i)
+        end
+      end
+    end
   end
 end

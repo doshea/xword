@@ -3,7 +3,7 @@ describe CrosswordsController do
   let(:crossword) { create(:crossword, :smaller) }
 
   describe 'before_actions' do
-    it { should use_before_action(:ensure_owner_or_admin) }
+    it { should use_before_action(:ensure_logged_in) }
   end
 
   describe 'GET #show' do

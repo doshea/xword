@@ -56,6 +56,8 @@ class AdminController < ApplicationController
     else
       redirect_to admin_manual_nyt_path, flash: { error: 'No NYT text provided.' }
     end
+  rescue JSON::ParserError
+    redirect_to admin_manual_nyt_path, flash: { error: 'Invalid JSON format.' }
   end
 
   #POST /admin/user_search or admin_user_search_path

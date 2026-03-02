@@ -13,7 +13,8 @@ class ApiController < ApplicationController
         render json: @data.to_s
       end
     end
-  
+  rescue JSON::ParserError
+    head :bad_gateway
   end
 
   #GET /api/nyt_source/:year/:month/:date or api_path
@@ -29,7 +30,8 @@ class ApiController < ApplicationController
         render json: @data.to_s
       end
     end
-  
+  rescue JSON::ParserError
+    head :bad_gateway
   end
 
   

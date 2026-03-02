@@ -37,7 +37,16 @@ RSpec.configure do |c|
   c.include AuthHelpers, type: :controller
 
   c.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
+    retries = 0
+    begin
+      DatabaseCleaner.clean_with(:truncation)
+    rescue ActiveRecord::Deadlocked => e
+      retries += 1
+      raise if retries > 3
+      ActiveRecord::Base.connection_pool.disconnect!
+      sleep 1
+      retry
+    end
   end
 
   c.around(:each) do |example|

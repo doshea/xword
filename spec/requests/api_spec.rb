@@ -99,6 +99,17 @@ RSpec.describe 'API', type: :request do
     end
   end
 
+  describe 'GET /api/nyt/:year/:month/:day (invalid JSON from upstream)' do
+    before do
+      allow(Crossword).to receive(:get_github_nyt_from_date).and_return('not valid json {{')
+    end
+
+    it 'returns 502 when upstream returns invalid JSON' do
+      get '/api/nyt/2024/1/15.xml'
+      expect(response).to have_http_status(:bad_gateway)
+    end
+  end
+
   describe 'GET /api/nyt_source/:year/:month/:day' do
     let(:fake_json) { '{"title":"NYT Puzzle","size":{"rows":15,"cols":15}}' }
 
@@ -110,6 +121,17 @@ RSpec.describe 'API', type: :request do
       get '/api/nyt_source/2024/1/15'
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to include('application/json')
+    end
+  end
+
+  describe 'GET /api/nyt_source/:year/:month/:day (invalid JSON from upstream)' do
+    before do
+      allow(Crossword).to receive(:get_nyt_from_date).and_return('not valid json {{')
+    end
+
+    it 'returns 502 when upstream returns invalid JSON' do
+      get '/api/nyt_source/2024/1/15.xml'
+      expect(response).to have_http_status(:bad_gateway)
     end
   end
 end
