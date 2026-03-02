@@ -185,6 +185,26 @@ table#crossword {
   }
 }
 
+// --- XL screens: widen container + scale up cells ---
+// At 1280px+, the 1032px container wastes 400+ pixels of space.
+// Widen to 1200px and bump cells from 30px → 36px so the puzzle
+// feels proportional to the screen. Clue columns auto-widen (flex: 1).
+@media (min-width: $bp-xl) {
+  #body > .xw-container {
+    max-width: 75rem;  // 1200px
+  }
+  table#crossword .cell {
+    font-size: 1.5em;  // 36px cells (up from 30px)
+  }
+  .clue-column .clues {
+    height: 38em;        // taller to match scaled-up grid (~540px)
+  }
+  #team-chat {
+    width: 380px;
+    font-size: var(--text-base);
+  }
+}
+
 .clue-column {
   background: transparent;
   border: none;
