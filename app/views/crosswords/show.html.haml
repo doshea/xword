@@ -44,27 +44,27 @@
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       - if @current_user
-        %a#solve-save.xw-btn.xw-btn--sm.xw-btn--ghost{href: '#', title: 'Quicksave', aria: {label: 'Quicksave'}}
+        %a#solve-save.xw-btn.xw-btn--sm.xw-btn--ghost{href: '#', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
           = icon('save')
         / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
         / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
         #favorites-toggle
-          = link_to(favorite_crossword_path(@crossword), title: 'Favorite', class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }, aria: { label: 'Add to favorites' }) do
+          = link_to(favorite_crossword_path(@crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post, 'xw-tooltip': 'Favorite' }, aria: { label: 'Add to favorites' }) do
             = icon('star')
-          = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }, aria: { label: 'Remove from favorites' }) do
+          = link_to(favorite_crossword_path(@crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete, 'xw-tooltip': 'Unfavorite' }, aria: { label: 'Remove from favorites' }) do
             = icon('star', class: 'xw-icon--favorited')
-        = link_to '#', id: 'controls-button', title: 'Controls', class: 'xw-btn xw-btn--sm xw-btn--ghost', aria: { label: 'Puzzle controls' } do
+        = link_to '#', id: 'controls-button', class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Controls' }, aria: { label: 'Puzzle controls' } do
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
-        = link_to(delete_solution_path(@solution), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }, aria: { label: 'Delete solution' }) do
+        = link_to(delete_solution_path(@solution), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?', 'xw-tooltip': 'Delete Solution' }, aria: { label: 'Delete solution' }) do
           = icon('trash-2')
       - if @team
-        .xw-btn.xw-btn--sm.xw-btn--secondary
+        %button.xw-btn.xw-btn--sm.xw-btn--secondary{type: 'button', onclick: "document.getElementById('team-explanation').showModal()", data: {'xw-tooltip': 'Team Solve'}, aria: {label: 'Team Solve'}}
           = icon('users')
-          #teammates
+          %span#teammates
       - else
         / Replaced: link_to with method: 'post' → turbo_method (Turbo handles POST for non-GET links)
-        = link_to create_team_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--secondary', id: 'solve-share', title: 'Solve collaboratively', data: { turbo_method: :post }, aria: { label: 'Solve with a team' } do
+        = link_to create_team_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--secondary', id: 'solve-share', data: { turbo_method: :post, 'xw-tooltip': 'Team Solve' }, aria: { label: 'Solve with a team' } do
           = icon('users')
           Team
 

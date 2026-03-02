@@ -73,7 +73,7 @@ describe 'crosswords/show' do
     before { base_assigns(current_user: viewer, solution: solution); render }
 
     it 'gives the quicksave button an aria-label' do
-      expect(rendered).to have_selector('#solve-save[aria-label="Quicksave"]', visible: :all)
+      expect(rendered).to have_selector('#solve-save[aria-label="Save"]', visible: :all)
     end
 
     it 'gives the favorite button an aria-label' do

@@ -122,7 +122,7 @@ feature 'Accessibility' do
       before { visit crossword_path(crossword) }
 
       it 'gives the quicksave button an aria-label' do
-        expect(page).to have_selector('#solve-save[aria-label="Quicksave"]', visible: :all)
+        expect(page).to have_selector('#solve-save[aria-label="Save"]', visible: :all)
       end
 
       it 'gives the favorite button an aria-label' do

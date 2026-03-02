@@ -9,20 +9,19 @@
 
 = javascript_include_tag 'crosswords/team_funcs', 'data-turbo-track': 'reload'
 
-- if @current_user && @solution.user_id == @current_user.id
-  %dialog#team-explanation.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
-    %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} &times;
-    %h2
-      = icon('users')
-      Crosswords: More Fun as a Team
-    %p.team-modal__body
-      Solve puzzles with your friends in
-      %strong real-time
-      &mdash; just send them the link to this puzzle!
-    .team-modal__url-row
-      %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', onclick: 'this.select();'}
-      .team-modal__url-icon= icon('link')
-    %p.team-modal__footnote Now to find some friends&hellip;
+%dialog#team-explanation.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
+  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} &times;
+  %h2
+    = icon('users')
+    Crosswords: More Fun as a Team
+  %p.team-modal__body
+    Solve puzzles with your friends in
+    %strong real-time
+    &mdash; just send them the link to this puzzle!
+  .team-modal__url-row
+    %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', onclick: 'this.select();'}
+    .team-modal__url-icon= icon('link')
+  %p.team-modal__footnote Now to find some friends&hellip;
 
 #team-chat.down
   .row-topper.no-select
