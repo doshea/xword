@@ -191,4 +191,113 @@ RSpec.describe 'Solutions', type: :request do
       expect(team_solution.solved_at).to be_present
     end
   end
+
+  # -------------------------------------------------------------------------
+  # GET /solutions/:id — show (routing logic)
+  # -------------------------------------------------------------------------
+  describe 'GET /solutions/:id (show routing)' do
+    context 'solo solution redirects to crossword' do
+      it 'redirects to the crossword page' do
+        get "/solutions/#{solution.id}"
+        expect(response).to redirect_to(crossword_path(crossword))
+      end
+    end
+
+    context 'team solution as the owner' do
+      let(:team_solution) { create(:solution, :team, user: user, crossword: crossword, letters: blank_letters) }
+
+      before { log_in_as(user) }
+
+      it 'redirects to the team crossword page' do
+        get "/solutions/#{team_solution.id}"
+        expect(response).to redirect_to(team_crossword_path(crossword, team_solution.key))
+      end
+    end
+
+    context 'team solution as a partner' do
+      let(:owner) { create(:user, password: test_password, password_confirmation: test_password) }
+      let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
+
+      before do
+        SolutionPartnering.create!(user: user, solution: team_solution)
+        log_in_as(user)
+      end
+
+      it 'redirects to the team crossword page' do
+        get "/solutions/#{team_solution.id}"
+        expect(response).to redirect_to(team_crossword_path(crossword, team_solution.key))
+      end
+    end
+
+    context 'team solution as an unrelated user' do
+      let(:owner) { create(:user, password: test_password, password_confirmation: test_password) }
+      let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
+
+      before { log_in_as(user) }
+
+      it 'returns 403 forbidden' do
+        get "/solutions/#{team_solution.id}"
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'orphaned solution (crossword deleted)' do
+      before { solution.update_column(:crossword_id, nil) }
+
+      it 'redirects to root with an alert' do
+        get "/solutions/#{solution.id}"
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # POST /solutions/:id/get_incorrect
+  # -------------------------------------------------------------------------
+  describe 'POST /solutions/:id/get_incorrect' do
+    it 'returns 200 with correct letters (no mismatches)' do
+      post "/solutions/#{solution.id}/get_incorrect", params: { letters: correct_letters }
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'marks the solution complete when all letters match' do
+      post "/solutions/#{solution.id}/get_incorrect", params: { letters: correct_letters }
+      expect(solution.reload.is_complete).to be true
+    end
+
+    it 'does not mark solution complete when there are mismatches' do
+      wrong = correct_letters.dup
+      wrong[0] = 'Z'
+      post "/solutions/#{solution.id}/get_incorrect", params: { letters: wrong }
+      expect(solution.reload.is_complete).to be false
+    end
+
+    it 'returns 404 for an orphaned solution (crossword deleted)' do
+      solution.update_column(:crossword_id, nil)
+      post "/solutions/#{solution.id}/get_incorrect", params: { letters: 'ABC' }
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # DELETE /solutions/:id — destroy
+  # -------------------------------------------------------------------------
+  describe 'DELETE /solutions/:id (destroy)' do
+    context 'as a partner (not owner)' do
+      let(:owner) { create(:user, password: test_password, password_confirmation: test_password) }
+      let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
+
+      before do
+        SolutionPartnering.create!(user: user, solution: team_solution)
+        log_in_as(user)
+      end
+
+      it 'destroys the partnership, not the solution' do
+        expect {
+          delete "/solutions/#{team_solution.id}"
+        }.to change(SolutionPartnering, :count).by(-1)
+          .and change(Solution, :count).by(0)
+      end
+    end
+  end
 end
