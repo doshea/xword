@@ -54,49 +54,8 @@ describe CrosswordsController do
     it { should respond_with(200) }
   end
 
-  describe 'GET #check_cell' do
-    # check_cell renders check_cell.js.erb via $.ajax(dataType:'script') — mark as XHR to bypass cross-origin check
-    before do
-      request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
-      get :check_cell,
-          params: { id: crossword.id, letters: crossword.letters },
-          format: :js
-    end
-
-    it { should respond_with(200) }
-    it 'assigns @mismatches' do
-      expect(assigns(:mismatches)).to be_present
-    end
-  end
-
-  describe 'GET #check_completion' do
-    # check_completion renders check_completion.js.erb via $.ajax(dataType:'script') — mark as XHR
-    context 'correct solution' do
-      before do
-        request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
-        get :check_completion,
-            params: { id: crossword.id, letters: crossword.letters },
-            format: :js
-      end
-      it 'assigns @correctness as true' do
-        expect(assigns(:correctness)).to be true
-      end
-    end
-
-    context 'incorrect solution' do
-      before do
-        request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
-        # Use non-space characters — crossword.letters is all spaces, so 'X' * n != ' ' * n
-        wrong_letters = 'X' * crossword.letters.length
-        get :check_completion,
-            params: { id: crossword.id, letters: wrong_letters },
-            format: :js
-      end
-      it 'assigns @correctness as false' do
-        expect(assigns(:correctness)).to be false
-      end
-    end
-  end
+  # check_cell and check_completion specs moved to spec/requests/check_functions_spec.rb
+  # (POST request specs with proper HTTP method and response assertions)
 
   describe 'POST #create_team' do
     context 'logged in' do

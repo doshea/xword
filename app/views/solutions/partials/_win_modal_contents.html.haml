@@ -1,5 +1,5 @@
 - if @correctness
-  - if @current_user
+  - if @current_user && @solution
     = javascript_include_tag 'jquery.flightboard.min'
     - time_difference = time_difference_hash(@solution.updated_at, @solution.created_at)
     - day_s = '%03d' % time_difference[:days]
@@ -17,8 +17,8 @@
     Congratulations#{", #{@current_user.display_first_name}" if @current_user}!
   %p.win-modal__subtitle
     You completed
-    %i #{@crossword.title}#{' in:' if @current_user}
-  - if @current_user
+    %i #{@crossword.title}#{' in:' if @current_user && @solution}
+  - if @current_user && @solution
     .win-modal__time
       - if more_than_a_day
         #days.win-clock__segment

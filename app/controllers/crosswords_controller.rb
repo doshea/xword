@@ -133,17 +133,21 @@ class CrosswordsController < ApplicationController
     @crosswords = @crosswords[0...Crossword.per_page]
   end
 
-  #GET /crosswords/:id/check_cell or check_cell_crossword_path
+  #POST /crosswords/:id/check_cell or check_cell_crossword_path
   def check_cell
     indices = params[:indices]&.map(&:to_i)
     @mismatches = @crossword.cell_mismatches(params[:letters], indices: indices)
   end
 
-  #GET /crosswords/:id/check_completion or check_completion_crossword_path
+  #POST /crosswords/:id/check_completion or check_completion_crossword_path
   def check_completion
     @correctness = (@crossword.letters == params[:letters])
-    if @current_user
+    if @current_user && params[:solution_id].present?
       @solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
+      # Team partners don't own the solution — find via partnership
+      @solution ||= Solution.joins(:solution_partnerings)
+                      .where(solution_partnerings: { user_id: @current_user.id })
+                      .find_by(id: params[:solution_id], crossword_id: @crossword.id)
     end
   end
 

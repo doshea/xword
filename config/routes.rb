@@ -28,7 +28,6 @@ Rails.application.routes.draw do
       get 'team/:key' => 'crosswords#team', as: 'team'
       get :solution_choice
       post :check_cell
-      post :check_puzzle
       post :check_completion
     end
     collection do

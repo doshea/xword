@@ -6,10 +6,6 @@ if(<%= @correctness %>){
     win_modal.prepend("<%=j render partial: 'solutions/partials/win_modal_contents' %>");
     win_modal.attr('filled', true);
   }
-  if (typeof applause == 'undefined'){
-    var applause = new Audio('<%= audio_path('mod_applause.mp3') %>');
-  }
-  // applause.play();
   document.getElementById('win-modal').showModal();
 } else {
   alert("Your solution contains incorrect letters.");

@@ -157,6 +157,78 @@ describe Crossword do
 
       end
 
+      describe '#cell_mismatches' do
+        # Use predefined_five_by_five for deterministic letter positions:
+        # letters = 'AMIGOVOLOWANIONIDOSELONER' (25 chars, 0-indexed, no voids)
+        let(:cw) { create(:predefined_five_by_five) }
+
+        context 'spot-check mode (with indices)' do
+          it 'returns false for a correct letter' do
+            result = cw.cell_mismatches(['A'], indices: [0])
+            expect(result).to eq({ 0 => false })
+          end
+
+          it 'returns true for an incorrect letter' do
+            result = cw.cell_mismatches(['Z'], indices: [0])
+            expect(result).to eq({ 0 => true })
+          end
+
+          it 'handles multiple indices with mixed results' do
+            # indices 0='A'(correct), 1='M' but send 'Z'(incorrect), 2='I'(correct)
+            result = cw.cell_mismatches(['A', 'Z', 'I'], indices: [0, 1, 2])
+            expect(result).to eq({ 0 => false, 1 => true, 2 => false })
+          end
+
+          it 'checks all letters in a word' do
+            # First row: A(0) M(1) I(2) G(3) O(4)
+            result = cw.cell_mismatches(%w[A M I G O], indices: [0, 1, 2, 3, 4])
+            expect(result.values).to all(be false)
+          end
+
+          it 'detects all incorrect letters in a word' do
+            result = cw.cell_mismatches(%w[Z Z Z Z Z], indices: [0, 1, 2, 3, 4])
+            expect(result.values).to all(be true)
+          end
+        end
+
+        context 'full-puzzle mode (without indices)' do
+          it 'returns all false when all letters are correct' do
+            result = cw.cell_mismatches(cw.letters)
+            expect(result.values).to all(be false)
+          end
+
+          it 'returns true for incorrect positions' do
+            wrong = cw.letters.dup
+            wrong[0] = 'Z'  # was 'A'
+            result = cw.cell_mismatches(wrong)
+            expect(result[0]).to be true
+            expect(result[1]).to be false  # 'M' unchanged
+          end
+
+          it 'does not flag empty cells (spaces)' do
+            blanks = ' ' * cw.letters.length
+            result = cw.cell_mismatches(blanks)
+            expect(result.values).to all(be false)
+          end
+
+          it 'does not flag void cells (underscores)' do
+            voids = '_' * cw.letters.length
+            result = cw.cell_mismatches(voids)
+            expect(result.values).to all(be false)
+          end
+
+          it 'flags only filled-in incorrect cells in a partial solution' do
+            partial = ' ' * cw.letters.length
+            partial[0] = 'A'  # correct
+            partial[1] = 'Z'  # incorrect
+            result = cw.cell_mismatches(partial)
+            expect(result[0]).to be false  # correct letter
+            expect(result[1]).to be true   # wrong letter
+            expect(result[2]).to be false  # empty (space)
+          end
+        end
+      end
+
       it '#is_void_at?' do
         row = subject.random_row
         col = subject.random_col
