@@ -203,8 +203,11 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | v11-v12 | Modal polish (controls keycaps, win modal tokens), edit tool panels tokenized, settings modal cleaned |
 | v13-v17 | Inline styles → CSS classes site-wide, legacy shadow classes removed, search cards tokenized, profile page polished, team chat/grid/nav colors tokenized |
 | v18 | Legacy cleanup: `.dark-shadow` removed (nav + edit), `.lead`/`.subheader` dead CSS deleted, `.subheader`→`.xw-footer__copyright`, home `<hr>` inline style→`.xw-hr--flush` |
+| v19 | Accessibility & semantic HTML audit: heading hierarchy fixed site-wide, valid list nesting, `<main>` landmark, `aria-labelledby`, `<time>` elements, `.form-error-summary` class |
+| v20 | Admin inline styles→CSS classes: `.xw-textarea--uppercase`, `.xw-admin-cell--compact`, `.xw-admin-highlight`; table width:100% removed |
+| v21 | Mobile responsiveness: phone breakpoints for team chat (full-width), comments (reduced indent), controls modal (single column), tabs (horizontal scroll), edit tool panels (full-width); XL breakpoints for container + cells |
 
-### Current State (v18) — What's Working
+### Current State (v21) — What's Working
 
 - Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
 - Crossword grid is crisp: strong black/white contrast, clean cell borders
@@ -227,6 +230,10 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
   token-based spacing and typography
 - Profile page: heading hierarchy fixed, CSS tokenized, dead `.right` class removed
 - Nearly all hardcoded colors in CSS files replaced with design tokens
+- Semantic HTML: proper heading hierarchy, `<main>` landmark, `aria-labelledby` on sections
+- Mobile responsive: phone breakpoints stack layout, scroll tabs, full-width panels
+- XL screens (1280px+): wider container, larger cells, taller clue columns
+- Admin views: all inline styles replaced with CSS utility classes
 
 ### Completed Versions
 
@@ -243,16 +250,20 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | v16 | User profile: `h5`→`h3` Stats heading, dead `.right` class removed, leading `%br` removed, `profile.scss.erb` tokenized, `account.scss.erb` `#333`→`--color-text` |
 | v17 | Tokenized: grid `tr` bg→`--color-cell-void`, clue border `#999`→`--color-border-strong`, team chat black/white→nav tokens + `--shadow-lg` + `--radius-md`, bookend bars→nav tokens, nav danger `#f77`→`--color-danger`, new_crossword preview→cell tokens |
 | v18 | Legacy cleanup: `.dark-shadow` deleted (nav header + edit settings→`var(--shadow-lg)`), dead `.lead`/`.subheader` CSS removed, `.subheader`→`.xw-footer__copyright` (inlined props), home `<hr>` inline style→`.xw-hr--flush` class |
+| v19 | Accessibility: heading hierarchy (h3→h1, h5→h2/h4/p, h6→p across 19 views), valid `<ul>/<li>` nesting in home tabs + batch stream, `<main>` landmark, `aria-labelledby` on login sections, `<time datetime>` on profile, `.form-error-summary`/`.search-result-count` classes, `<u>` tags removed |
+| v20 | Admin inline styles: `style='width:100%'`→removed, `lightgreen`→`.xw-admin-highlight`, `text-transform:uppercase`→`.xw-textarea--uppercase`, `font-size:6px`→`.xw-admin-cell--compact` (7 inline attrs across 5 files) |
+| v21 | Mobile: phone (<640px) team chat full-width, comments full-width replies + reduced indent, controls modal single-column, tabs horizontal scroll, edit tool panels full-width. XL (1280px+) wider container + padding, larger cells, taller clues, wider team chat |
 
 ### Remaining Cleanup
 
 #### Ongoing
-1. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
-   for stacking on narrow viewports.
+1. **Mobile tablet range (768-1024px)** — phone and desktop breakpoints are in place; tablet-specific
+   refinements (e.g., 2-column clue layout on iPad) could improve the intermediate range.
 2. **Legacy utility class `.center`** — 14 uses, simple `text-align: center` utility with no hardcoded
    colors. Harmless and widely used; renaming would touch 14+ files for zero functional benefit.
 3. **Email template** — `default_mail.html.haml` uses inline styles (correct for email; leave as-is).
-4. **Admin pages** — inline styles remain (low priority).
+4. **Admin visual polish** — inline styles replaced (v20), but admin pages could benefit from further
+   design treatment (low priority).
 
 ### Pages Not Yet Polished
 
@@ -274,7 +285,7 @@ Primary pages (solve + edit) are polished. Secondary pages partially addressed:
 - **Controller specs**: require `rails-controller-testing` (installed)
 - **Shared helpers**: `spec/support/auth_helpers.rb` — `log_in(user)` for controller specs
 
-Run tests: `bundle exec rspec`  # ~510 examples, 0 failures
+Run tests: `bundle exec rspec`  # ~570 examples, 0 failures
 
 ### Test-Writing Guidelines
 
