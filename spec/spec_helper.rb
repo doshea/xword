@@ -36,6 +36,7 @@ RSpec.configure do |c|
   c.infer_spec_type_from_file_location!
   c.include FactoryBot::Syntax::Methods
   c.include AuthHelpers, type: :controller
+  c.include RequestAuthHelpers, type: :request
 
   c.before(:suite) do
     retries = 0

@@ -1,11 +1,6 @@
 RSpec.describe 'Comments', type: :request do
-  let(:test_password) { 'password123' }
-  let(:user)      { create(:user, password: test_password, password_confirmation: test_password) }
+  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
   let(:crossword) { create(:crossword, :smaller) }
-
-  def log_in_as(u)
-    post '/login', params: { username: u.username, password: test_password }
-  end
 
   # -------------------------------------------------------------------------
   # POST /comments/:id/reply — parent-child threading

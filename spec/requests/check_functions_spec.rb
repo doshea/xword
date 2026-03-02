@@ -1,14 +1,9 @@
 RSpec.describe 'Check functions', type: :request do
-  let(:test_password) { 'password123' }
-  let(:user)      { create(:user, password: test_password, password_confirmation: test_password) }
+  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
   let(:crossword) { create(:predefined_five_by_five) }
   # 5x5 grid, correct letters = 'AMIGOVOLOWANIONIDOSELONER' (25 chars, 0-indexed)
   let(:correct_letters) { crossword.letters }
   let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }
-
-  def log_in_as(u)
-    post '/login', params: { username: u.username, password: test_password }
-  end
 
   # jQuery AJAX headers matching $.ajax({ dataType: 'script', type: 'POST' })
   let(:xhr_headers) do
@@ -105,7 +100,7 @@ RSpec.describe 'Check functions', type: :request do
   # POST /crosswords/:id/check_cell — team mode
   # ---------------------------------------------------------------------------
   describe 'POST /crosswords/:id/check_cell (team)' do
-    let(:owner)         { create(:user, password: test_password, password_confirmation: test_password) }
+    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     before do
@@ -215,7 +210,7 @@ RSpec.describe 'Check functions', type: :request do
   # POST /crosswords/:id/check_completion — team mode
   # ---------------------------------------------------------------------------
   describe 'POST /crosswords/:id/check_completion (team)' do
-    let(:owner)         { create(:user, password: test_password, password_confirmation: test_password) }
+    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     before do

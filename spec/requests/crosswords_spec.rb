@@ -1,13 +1,8 @@
 RSpec.describe 'Crosswords', type: :request do
-  let(:test_password) { 'password123' }
-  let(:user)      { create(:user, password: test_password, password_confirmation: test_password) }
+  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
   let(:crossword) { create(:predefined_five_by_five) }
   let(:correct_letters) { crossword.letters }
   let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }
-
-  def log_in_as(u)
-    post '/login', params: { username: u.username, password: test_password }
-  end
 
   # -------------------------------------------------------------------------
   # GET /crosswords/:id — Solution initialization via fill_letters
@@ -71,7 +66,7 @@ RSpec.describe 'Crosswords', type: :request do
   # GET /crosswords/:id/team/:key — SolutionPartnering creation
   # -------------------------------------------------------------------------
   describe 'GET /crosswords/:id/team/:key (team join)' do
-    let(:owner)         { create(:user, password: test_password, password_confirmation: test_password) }
+    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     context 'when a non-owner visits the team URL' do
@@ -163,7 +158,7 @@ RSpec.describe 'Crosswords', type: :request do
     end
 
     context 'with a partnered team solution (not owned but joined)' do
-      let(:owner) { create(:user, password: test_password, password_confirmation: test_password) }
+      let(:owner) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
       let!(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
       before do

@@ -1,10 +1,5 @@
 RSpec.describe 'Pages', type: :request do
-  let(:test_password) { 'password123' }
-  let(:user)      { create(:user, password: test_password, password_confirmation: test_password) }
-
-  def log_in_as(u)
-    post '/login', params: { username: u.username, password: test_password }
-  end
+  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
 
   # -------------------------------------------------------------------------
   # GET / — Home page scopes (Publishable concern)

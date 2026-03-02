@@ -7,3 +7,11 @@ module AuthHelpers
     session[:user_id] = create(:admin).id
   end
 end
+
+module RequestAuthHelpers
+  TEST_PASSWORD = 'password123'
+
+  def log_in_as(user)
+    post '/login', params: { username: user.username, password: TEST_PASSWORD }
+  end
+end

@@ -1,13 +1,8 @@
 RSpec.describe 'Clues', type: :request do
-  let(:test_password) { 'password123' }
-  let(:owner)    { create(:user, password: test_password, password_confirmation: test_password) }
-  let(:outsider) { create(:user, password: test_password, password_confirmation: test_password) }
+  let(:owner)    { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:outsider) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
   let(:crossword) { create(:crossword, :smaller, user: owner) }
   let(:clue)      { crossword.cells.find(&:across_clue).across_clue }
-
-  def log_in_as(u)
-    post '/login', params: { username: u.username, password: test_password }
-  end
 
   # -------------------------------------------------------------------------
   # PATCH /clues/:id — authorization
@@ -42,7 +37,7 @@ RSpec.describe 'Clues', type: :request do
     end
 
     context 'as an admin (not the owner)' do
-      let(:admin) { create(:admin, password: test_password, password_confirmation: test_password) }
+      let(:admin) { create(:admin, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
 
       before { log_in_as(admin) }
 
