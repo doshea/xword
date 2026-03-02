@@ -198,7 +198,7 @@ window.cw = {
       $(".cell[data-cell='" + $clue.attr("data-cell-num") + "']").first();
     cw.select_across = $clue.closest(".clues").attr("id") === "across";
     $cell.highlight();
-    if (cw.editing) $clue.children('input').select();
+    if (cw.editing) $clue.children('textarea').select();
   },
 
   // Prevents backspace from navigating back, prevents arrow keys/space from scrolling page

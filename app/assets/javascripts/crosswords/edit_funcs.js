@@ -26,7 +26,7 @@ window.edit_app = {
     $('#crossword').on('dblclick', '.cell', function() { $(this).toggle_void(true); });
     $('#edit-save').on('click', edit_app.save_puzzle);
     $('#title').on('change', edit_app.update_title);
-    $('.clue').on('change', 'input', edit_app.update_clue);
+    $('.clue').on('change', 'textarea', edit_app.update_clue);
     $('.clue').on('click', function() { $(".cell[data-index=" + $(this).data('index') + "]").highlight(); });
     $('#description').on('change', edit_app.update_description);
 
@@ -163,10 +163,10 @@ window.edit_app = {
     var across_clues = [];
     var down_clues = [];
     $.each($('.across-clue'), function() {
-      across_clues.push($(this).children('input').val());
+      across_clues.push($(this).children('textarea').val());
     });
     $.each($('.down-clue'), function() {
-      down_clues.push($(this).children('input').val());
+      down_clues.push($(this).children('textarea').val());
     });
 
     var token = $('#crossword').data('auth-token');

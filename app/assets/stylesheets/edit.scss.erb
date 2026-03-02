@@ -110,9 +110,22 @@ $bottomcolor: black;
   margin-right: 0.3em;
 }
 
-.clue-column .clues input {
+.clue-column .clues textarea {
   flex: 1;
   min-width: 0;
+  field-sizing: content;
+  resize: none;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  background: none;
+  margin-bottom: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  &:focus {
+    cursor: text;
+  }
 }
 
 .xw-edit-switches {
