@@ -4,10 +4,10 @@
 
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Choose a Solution', custom_columns: true} do
   .xw-col-12.xw-lg-4
-    = image_tag(@crossword.preview.url, class: 'xw-thumbnail')
+    - if @crossword.preview.present?
+      = image_tag(@crossword.preview.url, class: 'xw-thumbnail')
     .metadata
-      %h5
-        %strong= @crossword.title
+      %h2= @crossword.title
       %p= @crossword.user&.display_name || '[deleted]'
       %p.smaller
         #{@crossword.rows} x #{@crossword.cols}
