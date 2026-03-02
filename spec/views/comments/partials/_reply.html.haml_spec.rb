@@ -26,5 +26,32 @@ describe 'comments/partials/_reply' do
     it 'contains the reply content inside the article' do
       expect(rendered).to have_selector("article##{dom_id(reply)}", text: reply.content, visible: :all)
     end
+
+    it 'uses the xw-reply class for the article wrapper' do
+      expect(rendered).to have_selector("article.xw-reply", visible: :all)
+    end
+
+    it 'renders the avatar in a xw-reply__avatar container' do
+      expect(rendered).to have_selector('.xw-reply__avatar', visible: :all)
+    end
+
+    it 'renders the reply body in a xw-reply__body container' do
+      expect(rendered).to have_selector('.xw-reply__body', visible: :all)
+    end
+  end
+
+  context 'logged-in reply owner' do
+    before do
+      assign(:current_user, user)
+      render partial: 'comments/partials/reply', locals: { reply: reply }
+    end
+
+    it 'does not use inline style on reply-controls' do
+      expect(rendered).not_to have_selector('.reply-controls[style]', visible: :all)
+    end
+
+    it 'does not use inline style on the delete link' do
+      expect(rendered).not_to have_selector('.reply-controls a[style]', visible: :all)
+    end
   end
 end

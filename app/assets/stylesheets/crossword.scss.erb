@@ -28,8 +28,11 @@
   h1 {
     margin-bottom: 0;
     #creator-credit {
-      font-size: large;
-      font-weight: normal;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: var(--weight-normal);
+      color: var(--color-text-secondary);
+      margin-left: var(--space-2);
     }
   }
   #puzzle-controls {
@@ -38,6 +41,12 @@
     align-items: center;
     gap: 0.5em;
     flex-wrap: wrap;
+
+    .smaller {
+      font-family: var(--font-ui);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
   }
 }
 #meta-area {
@@ -336,7 +345,23 @@ table#crossword {
     resize: none;
     overflow: auto;
   }
-  .comment {
+}
+
+// --- Comment & reply layout ---
+
+.xw-comment {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+
+  &__avatar {
+    flex-shrink: 0;
+    img { border-radius: 50%; }
+  }
+  &__body {
+    flex: 1;
+    min-width: 0;
+
     li {
       width: 70%;
     }
@@ -344,6 +369,53 @@ table#crossword {
       height: 1em;
       min-height: 2.3em;
     }
+  }
+  &__reply-count {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+    cursor: pointer;
+  }
+}
+
+.xw-reply {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  margin-left: var(--space-6);
+
+  &__avatar {
+    flex-shrink: 0;
+    img { border-radius: 50%; }
+  }
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+// Initial display states for reply toggle (jQuery toggle_reply_form manages visibility)
+.cancel-button { display: none; }
+.reply-form { display: none; }
+
+.reply-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  &:hover { color: var(--color-text); }
+}
+
+.reply-controls {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  a {
+    color: var(--color-text-muted);
+    cursor: pointer;
+    &:hover { color: var(--color-text); }
   }
 }
 .team-outline {

@@ -265,8 +265,9 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | CSS cleanup | Vendor prefixes removed, dead mixins deleted, crossword colors tokenized |
 | Edit page polish (v1-v7) | Paper shadow + rounded corners on crossword sections, title input refined, clue textareas auto-size, clue row breathing room, description textarea sunken background |
 | Edit page polish (v8) | Switch colors calmed (red→warm gray off, lime→forest green on), clue numbers muted, clue containers warmed to cream, section divider strengthened, bottom padding tightened, clue column border-left removed, textarea border softened, clue scroll-into-view bug fixed |
+| Solve page polish (v8.2) | Clue numbers wrapped in `span.clue-num` (shared muted color), `<hr>` dividers styled with warm borders, `#solve-controls` modernized from float to flow, `#puzzle-controls` absolute→flex, comment textarea sunken bg, Comments heading display font |
 
-### Current State (v8) — What's Working
+### Current State (v8.2) — What's Working
 
 - Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
 - Crossword grid is crisp: strong black/white contrast, clean cell borders
@@ -274,25 +275,56 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 - Green accent coherent: Publish button, switch on-state, and `--color-accent` all use `#3a7d5c`
 - Toggle switches recede (warm gray off-state) instead of competing with content
 - Clue containers use warm cream (`--color-surface-alt`) — paper-within-paper feel
-- Clue numbers muted on edit page for better scanability (solve page numbers still inline text)
+- Clue numbers muted on both pages via shared `.clue-num { color: var(--color-text-muted) }`
 - Continuous paper texture across `#credit-area` → `#solve-area` → `#meta-area` → `#advanced`
 - Section dividers visible: `2px solid var(--color-border-strong)` between description/advanced
+- Solve page `<hr>` dividers warm (`--color-border`), puzzle controls flex-positioned (not absolute)
+- Comment textarea sunken with `.xw-textarea` class, Comments heading uses `--font-display`
 
-### Next Steps — Edit Page (v9+)
+### Next Steps — Solve + Edit Pages (v9+)
 
-Remaining refinements (lower priority — the edit page is in good shape):
+#### v9 — Credit area + controls cohesion
+1. **Creator credit byline** — `#creator-credit` needs `--font-body` (Lora) + `--color-text-secondary`
+   for editorial byline feel. Currently inherits from `h1` with only `font-size: large`.
+2. **Check button placement** — green "Check ▾" sits alone in empty space between grid and description.
+   Move to `#credit-area` toolbar, or give it more intentional treatment in `#meta-area`.
+3. **Puzzle controls toolbar refinement** — icon-only buttons should use `xw-btn--ghost` to reduce
+   border noise. Status text (`#save-status`, `#save-clock`) needs `.smaller` treatment from edit page
+   (`--font-ui`, `--text-xs`, `--color-text-muted`). Group related controls with subtle separators.
 
-1. **Solve page clue number differentiation** — solve page clue numbers are inline text (no wrapper
-   element), so they can't be styled independently without adding a `<span>` in the HAML partial.
-   Consider wrapping numbers in `_clue.html.haml` to match the edit page's `.clue-num` pattern.
-2. **Notepad/Pattern Search panels** — these slide-up panels (`#idea-container`, `#pattern-container`)
-   still use raw black backgrounds and unstyled inputs. Could benefit from design token treatment.
-3. **Settings modal** — `#edit-settings` dialog has placeholder checkboxes with no labels or styling.
+#### v10 — Comment section mini-redesign
+4. **Comment cards** — comments use bare `xw-grid` articles with oversized avatar column (`.xw-col-3`
+   = 25% on mobile). Reply/Delete actions use inline `style` attributes and raw `.reply-button` class.
+   Reply textareas lack `.xw-textarea`. Reply count uses wrong element (`%h6`). Externalize all inline
+   styles to CSS classes, use `xw-btn--ghost` for actions, proper avatar sizing.
+
+#### v11 — Modal polish
+5. **Win modal** — highest-impact emotional moment, stuck in 2014. Heavy inline styles on clock,
+   `.lead`/`.center` legacy classes, bare `<h5>` for comment prompt. Restyle with design tokens:
+   Playfair "SOLVED!" heading, `--font-mono` timer, warm surface instead of black clock bg.
+6. **Controls modal** — `<u>` tag on `<h1>`, unstyled `<kbd>` elements, inline `style` attribute
+   for layout. Add keycap styling (mono font, subtle border+shadow), proper CSS classes.
+
+#### v12 — Edit page tool panels
+7. **Notepad/Pattern Search panels** — slide-up panels use raw `$bottomcolor: black`, `border: 1px
+   solid #444`, unstyled inputs. Retheme with `--color-nav-bg` (warm near-black), `--color-nav-border`,
+   design-token inputs. Bottom trigger buttons could use paper-tab metaphor.
+8. **Settings modal** — `#edit-settings` has 6 unlabeled checkboxes + `<br>` tags. Either implement
+   properly with labeled settings + switch-form component, or remove the settings button.
+
+#### Ongoing cleanup
+9. **Inline style audit** — `_comment.html.haml`, `_reply.html.haml`, `_win_modal_contents.html.haml`,
+   `_controls_modal.html.haml` all use `style` attributes that should be CSS classes.
+10. **Legacy utility classes** — `.small-shadow`, `.thin-border`, `.dark-shadow`, `.center`, `.lead`
+    use hardcoded values; migrate callers to token-based equivalents.
+11. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
+    for stacking on narrow viewports.
+12. **Cross-browser scrollbar** — WebKit-only custom scrollbar in `edit.scss.erb`; use `scrollbar-color`
+    and `scrollbar-width` for cross-browser support with design tokens.
 
 ### Pages Not Yet Polished
 
-The edit page is the first page getting the full treatment. Other pages still need attention:
-- Solve page (shares `crossword.scss.erb` — benefits from clue fixes automatically)
+The solve and edit pages are the focus. Other pages still need attention:
 - Home page / search results
 - Login / signup
 - User profile / account
@@ -303,14 +335,45 @@ The edit page is the first page getting the full treatment. Other pages still ne
 
 - **Framework**: RSpec with `rspec-rails ~> 8.0` (8.0.3)
 - **Factories**: FactoryBot 6.5 (all attributes use block syntax)
-- **Database cleaning**: DatabaseCleaner 2.1 with truncation strategy (not transactions)
+- **Database cleaning**: DatabaseCleaner 2.1 — transactions for unit specs, truncation for `js: true` feature specs
 - **Feature tests**: Capybara `~> 3.0`; rack-test driver for non-JS specs; Cuprite (headless Chrome via CDP) for JS-capable specs (`js: true`)
 - **Coverage**: SimpleCov `~> 0.22`
 - **Matchers**: shoulda-matchers `~> 7.0`
-- **its()**: rspec-its 2.0 (extracted from rspec-core)
 - **Controller specs**: require `rails-controller-testing` (installed)
+- **Shared helpers**: `spec/support/auth_helpers.rb` — `log_in(user)` for controller specs
 
-Run tests: `bundle exec rspec`  # 428 examples, 0 failures
+Run tests: `bundle exec rspec`  # ~488 examples, 0 failures
+
+### Test-Writing Guidelines
+
+**Use `expect()` syntax only.** The `should` syntax is deprecated. Do not use `subject.stub(...)` —
+use `allow(subject).to receive(...)`. Do not use `rspec-its` `its(:method)` — write explicit `it` blocks.
+
+**Test behavior, not markup.** View specs should assert:
+- Semantic HTML (correct element types: `article` not `div`, `h1` not `h3`)
+- Accessibility attributes (ARIA labels, `aria-labelledby`, heading hierarchy)
+- Absence of anti-patterns (inline `style` attributes during migration)
+
+View specs should NOT assert CSS class names, specific nesting depth, or DOM structure that's
+purely presentational. If the class name changes but the page still works, the test shouldn't break.
+
+**No empty placeholder specs.** Don't scaffold out empty `context`/`describe` blocks for sections
+you haven't written yet. They create false confidence and noise in `--format documentation` output.
+
+**Don't test broken state as expected behavior.** If an action raises `MissingExactTemplate`, fix
+the action or remove it — don't write a spec asserting the error.
+
+**New specs should be request specs** (`type: :request`), not controller specs. Controller specs
+(`type: :controller`) are legacy. Existing controller specs don't need to be rewritten, but all
+new HTTP-layer specs should use `get '/path'` style, not `get :action, params:`.
+
+**Model specs should test business logic.** Validations and associations are a baseline, but the
+real value is testing methods that compute, transform, or make decisions. Test return values with
+concrete inputs, not just return type/shape.
+
+**Factories should be used or deleted.** Don't keep factory files that are never called (e.g., empty
+`word_factory.rb`, unused `cell_factory.rb`). If a record is always sourced from an association
+(cells from crossword), the factory is dead code.
 
 ## Notable Gems and Their Roles
 

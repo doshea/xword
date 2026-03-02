@@ -172,6 +172,7 @@ class Crossword < ApplicationRecord
                 "is_across_start, is_down_start, cell_num, crossword_id) " \
                 "VALUES #{cell_inserts.join(', ')}"
     ActiveRecord::Base.connection.execute(cells_sql)
+    cells.reset   # Clear ActiveRecord cache so subsequent queries see the raw-SQL-inserted rows
     self
   end
 

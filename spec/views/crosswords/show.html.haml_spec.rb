@@ -102,5 +102,80 @@ describe 'crosswords/show' do
         visible: :all
       )
     end
+
+    it 'uses ghost style for icon-only toolbar buttons' do
+      expect(rendered).to have_selector('#solve-save.xw-btn--ghost', visible: :all)
+      expect(rendered).to have_selector('#favorite.xw-btn--ghost', visible: :all)
+      expect(rendered).to have_selector('#controls-button.xw-btn--ghost', visible: :all)
+    end
+
+    it 'keeps secondary style for the team button (has text label)' do
+      expect(rendered).to have_selector('#solve-share.xw-btn--secondary', visible: :all)
+    end
+
+    it 'renders status text spans with the smaller class' do
+      expect(rendered).to have_selector('#save-status.smaller', visible: :all)
+      expect(rendered).to have_selector('#save-clock.smaller', visible: :all)
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  # Comment form
+  # -----------------------------------------------------------------------
+  context 'comment form (logged-in user)' do
+    let(:viewer)   { create(:user) }
+    let(:solution) { create(:solution, user: viewer, crossword: crossword) }
+
+    before { base_assigns(current_user: viewer, solution: solution); render }
+
+    it 'renders the comment textarea with xw-textarea class' do
+      expect(rendered).to have_selector('#add-comment.xw-textarea', visible: :all)
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  # Creator credit byline
+  # -----------------------------------------------------------------------
+  context 'creator credit byline' do
+    before { base_assigns; render }
+
+    it 'renders the creator credit inside the h1' do
+      expect(rendered).to have_selector('h1 #creator-credit', visible: :all)
+    end
+
+    it 'includes the creator display name in the byline' do
+      expect(rendered).to have_selector('#creator-credit', text: /by #{owner.display_name}/, visible: :all)
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  # Comment rendering (with comments present, logged-in user)
+  # -----------------------------------------------------------------------
+  context 'comment actions (logged-in user with comments)' do
+    let(:viewer)   { create(:user) }
+    let(:solution) { create(:solution, user: viewer, crossword: crossword) }
+    let(:comment)  { create(:comment, user: owner, crossword: crossword) }
+
+    before do
+      base_assigns(current_user: viewer, solution: solution)
+      assign(:comments, [comment])
+      render
+    end
+
+    it 'renders the reply textarea with xw-textarea class' do
+      expect(rendered).to have_selector('textarea.reply-content.xw-textarea', visible: :all)
+    end
+
+    it 'does not use inline style on the reply button' do
+      expect(rendered).not_to have_selector('.reply-button.reply[style]', visible: :all)
+    end
+
+    it 'does not use inline style on the cancel button' do
+      expect(rendered).not_to have_selector('.cancel-button[style]', visible: :all)
+    end
+
+    it 'does not use inline style on the reply form' do
+      expect(rendered).not_to have_selector('form.reply-form[style]', visible: :all)
+    end
   end
 end

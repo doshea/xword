@@ -5,5 +5,7 @@
   <%= render partial: 'comments/partials/reply', locals: { reply: @new_reply } %>
 <% end %>
 <%= turbo_stream.replace "reply-count-#{@base_comment.id}" do %>
-  <%= @base_comment.replies.count %> Replies
+  <p class="xw-comment__reply-count" id="reply-count-<%= @base_comment.id %>">
+    <%= pluralize(@base_comment.replies.count, 'Reply') %>
+  </p>
 <% end %>
