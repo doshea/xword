@@ -214,16 +214,6 @@ table#crossword {
   table#crossword .cell {
     font-size: 1.5em;  // 36px cells (up from 30px)
   }
-  .xw-puzzle-layout .clue-column {
-    align-self: stretch;   // match grid height without stretching the table
-    display: flex;
-    flex-direction: column;
-
-    .clues {
-      flex: 1;
-      height: auto !important;  // override inline style from HAML
-    }
-  }
   #team-chat {
     width: 380px;
     font-size: var(--text-base);

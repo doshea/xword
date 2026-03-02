@@ -33,6 +33,11 @@
   .clue-column .clues {
     height: #{@crossword.rows*2.175-22/16.0}em;
   }
+  @media (min-width: 1280px) {
+    .clue-column .clues {
+      height: #{@crossword.rows*2.61-22/16.0}em;
+    }
+  }
 
 %header.xw-container.xw-grid#credit-area
   .xw-col-full
