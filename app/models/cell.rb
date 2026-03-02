@@ -131,9 +131,7 @@ class Cell < ApplicationRecord
     unless self.is_void
       if update_columns(is_void: true, letter: nil)
         self.reload
-        self.update_starts!
-        self.right_cell.update_starts! if self.right_cell
-        self.below_cell.update_starts! if self.below_cell
+        refresh_neighbor_starts!
       end
     end
   end
@@ -141,23 +139,26 @@ class Cell < ApplicationRecord
   def is_not_void!
     if self.is_void
       if self.update_attribute(:is_void, false)
-        self.update_starts!
-        self.right_cell.update_starts! if self.right_cell
-        self.below_cell.update_starts! if self.below_cell
+        refresh_neighbor_starts!
       end
     end
   end
 
-  #
   def toggle_void
     void_status = self.is_void
     new_attrs = { is_void: !void_status }
     new_attrs[:letter] = nil if !void_status  # becoming void → clear letter
     if update_columns(new_attrs)
       self.reload
-      self.update_starts!
-      self.right_cell.update_starts! if self.right_cell
-      self.below_cell.update_starts! if self.below_cell
+      refresh_neighbor_starts!
     end
+  end
+
+  private
+
+  def refresh_neighbor_starts!
+    self.update_starts!
+    self.right_cell.update_starts! if self.right_cell
+    self.below_cell.update_starts! if self.below_cell
   end
 end

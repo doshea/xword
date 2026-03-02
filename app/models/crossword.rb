@@ -351,28 +351,8 @@ class Crossword < ApplicationRecord
   #TODO: This will not work if the same word is used multiple times in a puzzle!!!!
   def get_words_hsh
     word_clues = {}
-    cells.across_start_cells.each do |across_start|
-      word = ''
-      current = across_start
-      clue = current.across_clue
-      while current && !current.is_void
-        word += current.letter
-        current = current.right_cell
-      end
-      word_clues[word] ||= []
-      word_clues[word] += [clue]
-    end
-    cells.down_start_cells.each do |down_start|
-      word = ''
-      current = down_start
-      clue = current.down_clue
-      while current && !current.is_void
-        word += current.letter
-        current = current.below_cell
-      end
-      word_clues[word] ||= []
-      word_clues[word] += [clue]
-    end
+    collect_direction_words(word_clues, cells.across_start_cells, :across_clue, :right_cell)
+    collect_direction_words(word_clues, cells.down_start_cells, :down_clue, :below_cell)
     word_clues
   end
 
@@ -420,6 +400,20 @@ class Crossword < ApplicationRecord
 
 
   private
+
+  def collect_direction_words(word_clues, start_cells, clue_method, next_method)
+    start_cells.each do |start_cell|
+      word = ''
+      current = start_cell
+      clue = current.send(clue_method)
+      while current && !current.is_void
+        word += current.letter
+        current = current.send(next_method)
+      end
+      word_clues[word] ||= []
+      word_clues[word] += [clue]
+    end
+  end
 
   #Using a transaction cut down call times by 1.5x to 3.3x for this method
   def update_cells_from_letters
