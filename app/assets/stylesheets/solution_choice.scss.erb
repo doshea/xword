@@ -1,70 +1,90 @@
-tr:hover{
-  button {
-    transform: scale(2, 1) translateX(-12%);
+@import 'design_tokens';
+
+// --- Solution choice table ---
+
+.xw-solutions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-4) 0;
+
+  thead {
+    th {
+      font-family: var(--font-ui);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wider);
+      color: var(--color-text-secondary);
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 2px solid var(--color-border-strong);
+      white-space: nowrap;
+    }
   }
-  .hidden-canvas {
-    background-color: rgba(0,0,0,0);
-    border-radius: 0em;
+
+  tbody {
+    tr {
+      cursor: pointer;
+      transition: background-color var(--duration-fast) var(--ease-out);
+
+      &:hover {
+        background-color: var(--color-surface-alt);
+
+        .xw-icon--arrow-left {
+          transform: scaleX(-1) translateX(-4px);
+        }
+      }
+    }
+
+    td {
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--text-sm);
+      vertical-align: middle;
+    }
   }
 }
-tr:not(:hover){
-  .hidden-canvas {
-    opacity: 0;
-    top: 0 !important;
-    left: 0 !important;
-    transform: scale(0);
-    visibility: hidden;
-  }
-  a {
-    color: inherit;
-  }
-  button {
-    opacity: 0.5;
-  }
+
+// Arrow icon animates on hover
+.xw-icon--arrow-left {
+  transition: transform var(--duration-fast) var(--ease-out);
 }
-.hidden-canvas {
-  position: absolute;
-  margin: 0;
-  transition: all var(--duration-slow) linear;
-  background-color: rgba(74, 127, 165, 0.4); // --color-info tinted overlay
-}
-table {
-  margin: 0.5em 0 1.5em 1em;
-}
-button, form {
-  margin: 0;
-  transition: all var(--duration-slow);
-}
-button {
-  padding: 0.5em 1em;
-}
-.xw-icon {
-  transition: all var(--duration-slow);
-  &.xw-icon--trash-2:hover {
+
+// Trash icon turns red on hover
+.xw-icon--trash-2 {
+  transition: color var(--duration-fast) var(--ease-out);
+
+  &:hover {
     color: var(--color-danger);
   }
 }
-a {
-  transition: all var(--duration-slow);
+
+// Delete column: don't navigate on click (JS excludes .trash-td)
+.trash-td {
+  cursor: default;
 }
+
 a.not-blue {
   color: inherit;
 }
-tbody td{
-  cursor: pointer;
-  position: relative;
-  .delete-td {
-    cursor: inherit;
+
+// --- Left column metadata ---
+
+.metadata {
+  padding-top: var(--space-2);
+
+  h5 {
+    margin-bottom: var(--space-1);
+  }
+
+  p {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-1);
   }
 }
-canvas {
-  float: left;
-  margin: 1em 1em 0;
-}
+
 hr {
-  border-width: 0 0 1px;
-  padding-top: 1em;
-}
-.metadata {
-  padding-top: 0.5em;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-4) 0;
 }

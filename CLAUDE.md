@@ -117,92 +117,26 @@ fog-aws:   2.0.0 → 3.33.1
 rspec-rails: 4.1.2 → 8.0.3
 ```
 
-### Key changes during upgrade
-- All `belongs_to` with nullable FK columns: added `optional: true`
-- `content_tag_for` → `content_tag + dom_id` (removed `record_tag_helper` dependency)
-- `render text:` → `render plain:` in 3 controllers
-- `include PgSearch` → `include PgSearch::Model` in 3 models
-- `cw.try(:preview)` → `cw.preview_url` in `_crossword_tab.html.haml`
-- `sass-rails` → `sassc-rails`; `uglifier` → `terser`
-- All 12 CoffeeScript files converted to plain JS
-- `haml succeed` helper → `content_tag` equivalent (removed in HAML 6)
-- `annotate` gem removed (incompatible with Rails 8, dev-only tool)
-- `puma ~> 5` → `~> 6` (required for Rack 3 / Rails 8) → `~> 7` (Heroku Router 2.0)
-- `gem 'csv'` added explicitly (removed from Ruby 3.4 default gems)
-- `httparty` 0.15.7 → 0.24.2 (old version required csv directly)
-- `config.active_support.deprecation` removed from dev/test envs (Rails 8 API change)
-- `new_framework_defaults.rb` (Rails 5.0 era) and `new_framework_defaults_7_2.rb` deleted
-- All 14 models migrated from `ActiveRecord::Base` to `ApplicationRecord`
-- CarrierWave: `extension_white_list` → `extension_allowlist`; removed `config.fog_provider` (deprecated)
-- Factories: all static values wrapped in blocks; Faker positional args → keyword args
-- Controller specs: `get :action, id:` → `get :action, params: { id: }` (Rails 5+ style)
-- `Procfile` added (`web: bundle exec puma -C config/puma.rb`)
-- GitHub Actions CI added (Feb 2026): Postgres 16, Ruby from `.ruby-version`, runs rspec
-- **Hotwire migration** (Feb 2026): `turbolinks` + `jquery_ujs` → `turbo-rails` + `stimulus-rails`
-  - 13 `.js.erb` files → `.turbo_stream.erb`; 12 `.js.erb` dead code deleted; 5 kept (jQuery AJAX)
-  - All `remote: true` forms → `form_with`; method:delete links → `data: { turbo_method: }`
-  - `spec_helper.rb`: added `infer_spec_type_from_file_location!` + `Shoulda::Matchers.configure`
-- **Front-end migration Phase 2** (Feb 2026): Foundation Icons → inline Lucide SVGs
-  - `app/helpers/icon_helper.rb`: lazy `SVG_CACHE`, `icon(name, size:, class:, style:, title:)` helper
-  - 34 SVG files in `app/assets/images/icons/`; `.gitignore` exception for `icons/` dir
-- **Front-end migration Phase 3** (Feb 2026): Foundation 5 grid → xw- CSS Grid
-  - 35 HAML files: `.row`→`.xw-container.xw-grid`/`.xw-grid`, `.large-N.columns`→`.xw-col-12.xw-lg-N`,
-    `.medium-N.columns`→`.xw-col-12.xw-md-N`, `.small-N.columns`→`.xw-col-N`, `.large-12.columns`→`.xw-col-full`
-  - Admin forms: `html: { class: 'xw-col-full xw-grid' }` on `form_with` for column children
-  - Foundation grid CSS still in vendor bundle; removed in Phase 6
+### Key changes during upgrade (Feb 2026)
+- API migrations: `belongs_to` → `optional: true`; `render text:` → `render plain:`; `include PgSearch::Model`
+- CoffeeScript → plain JS (12 files); `sass-rails` → `sassc-rails`; `uglifier` → `terser`
+- All 14 models → `ApplicationRecord`; CarrierWave `extension_allowlist`; factories use block syntax
+- `Procfile` added; GitHub Actions CI added (Postgres 16, rspec)
+- **Hotwire migration**: `turbolinks` + `jquery_ujs` → `turbo-rails` + `stimulus-rails`
+  - 13 `.js.erb` → `.turbo_stream.erb`; `remote: true` → `form_with`; 5 `.js.erb` kept (jQuery AJAX)
+- **Phase 2**: Foundation Icons → inline Lucide SVGs (`icon()` helper, 34 SVGs)
+- **Phase 3**: Foundation grid → `xw-` CSS Grid (35 HAML files)
 
 ### Changes (Mar 2026)
-- **Race conditions fixed**: `populate_cells` uses atomic `INSERT … RETURNING id`; team key uses
-  `SecureRandom.alphanumeric(12)` + unique DB index + `rescue RecordNotUnique; retry` in controller
-- **20 FK indexes added** (migration `20260301031639`): all foreign-key columns on cells, clues,
-  comments, crosswords, solutions, solution_partnerings, users (auth_token unique), etc.
-- **Signed auth cookies**: `cookies[:auth_token]` → `cookies.signed[:auth_token]` (HMAC-verified);
-  session-based auth still works as legacy fallback
-- **Test suite fully filled out**: all controller specs (9 main + 6
-  admin) and model behavior specs written from scratch. Key patterns: `request.accept = Mime[:turbo_stream].to_s`
-  for turbo_stream actions; `request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"` for `.js.erb`/`format.js`
-  actions; `allow(Word).to receive(:word_match).and_return(...)` to stub external HTTP in words#match.
-  Rails 8.1 password reset: use `User.find_by_password_reset_token(token)` (signed token, not DB column).
-- **PUT /solutions/null bug fixed**: anonymous users on crossword pages caused a HAML syntax error
-  (`#{nil}` → empty string → `solve_app.solution_id = ;`) which left `anonymous` unset (falsy), starting
-  the auto-save timer with a null solution_id. Three-layer fix: `.to_json` in HAML (nil → `null`),
-  `if (!solve_app.solution_id)` guard in `ready()` and `save_solution()`, plus `prepend_before_action
-  :guard_null_solution_id` in SolutionsController for server-side safety.
-- **Partial local variable audit**: all `render partial:` calls audited for local variable name mismatches.
-  `_crossword_tab.html.haml` uses `cw:` — three callers (nytimes, words/show, clues/show) were passing
-  `crossword:` and have been fixed. Convention: **always check all callers of a partial when a mismatch
-  is found**, not just the one that surfaced.
-- **Orphaned partials deleted**: `_cell.html.haml` (cells rendered inline in _solve_crossword) and
-  `_mini_pic_svg.html.haml` (replaced by image previews) had no callers.
-- **Pusher → ActionCable migration**: team collaboration (6 real-time events: change_cell, join/leave_puzzle,
-  roll_call, chat_message, outline_team_clue) migrated from Pusher gem + external JS to ActionCable
-  WebSockets. New `TeamsChannel` streams from `"team_#{params[:team_key]}"`. `pusher` gem removed;
-  `_team.html.haml` loads `actioncable.js` instead of `pusher.min.js`; `channel` param removed from all
-  AJAX payloads and chat form. 13 new controller specs cover all team actions.
-- **ActionMailer cleanup**: removed dead `UserMailer#signup_email` (no template) and `#test_email`
-  (broken `@url`). Removed 4 dead `AccountController` actions (`forgot`, `forgot_username`,
-  `forgot_password`, `reset_password`) that called non-existent `ForgottenMailer` — working password
-  reset is in `UsersController`. Implemented `AdminController#test_emails` (sends selected test emails).
-  Fixed `reset_password_email.html.haml` to use `_url` helper (mailers don't have `_path` helpers).
-  Fixed `.deliver` → `.deliver_now` in `scheduler.rake`. Added 2 mailer specs + AccountController spec
-  (26 new examples).
-- **Cuprite JS integration tests**: `gem 'cuprite'` added; Cuprite driver registered in `spec_helper.rb`
-  for `js: true` feature specs. 7 solve interaction specs + 3 login nav specs. `browser-actions/setup-chrome`
-  added to CI. Fixed multi-line string literals in `stimulus_sprockets.js`; both `turbo_sprockets.js` and
-  `stimulus_sprockets.js` wrapped in IIFEs to prevent top-level variable collisions on Sprockets concat.
-- **Design audit** (Mar 2026): dead FB SDK + GA tracking removed from layout; Google Fonts loaded
-  (Playfair Display, Lora, DM Sans, Courier Prime); global `*{outline:0!important}` replaced with
-  `:focus-visible` rings scoped correctly; footer uses design tokens; nav browse icon pencil→clipboard-list;
-  about/faq/contact rewrites with proper heading hierarchy; `user_made.html.haml` created (was 204);
-  nytimes duplicate heading removed + `<li>` wrappers added; login/signup forms get `h1` toppers +
-  `autocomplete` attrs; `\--` → `&mdash;` in crossword credit; clue column `h6` → `h3`;
-  search form always renders and uses `form_tag` correctly.
-
-### Deleted files
-- `config/initializers/ruby3_compat.rb` — 306 lines of Rails 5.1/Ruby 3.x patches
-- `config/initializers/new_framework_defaults.rb` — Rails 5.0 defaults (all baked into load_defaults 8.1)
-- `config/initializers/new_framework_defaults_7_2.rb` — all options were commented out
-- `app/views/user_mailer/test_email.html.haml` — dead template for removed `test_email` method
+- **Race conditions**: `populate_cells` atomic `INSERT … RETURNING id`; team key unique index + retry
+- **20 FK indexes** added; **signed auth cookies** (`cookies.signed[:auth_token]`)
+- **Test suite**: all controller + model behavior specs (9 main + 6 admin controllers)
+- **Solutions/null bug**: 3-layer fix (`.to_json` in HAML, JS guard, `guard_null_solution_id` before_action)
+- **Partial audit**: `_crossword_tab.html.haml` `cw:` mismatch fixed in 3 callers; 2 orphaned partials deleted
+- **Pusher → ActionCable**: 6 team events migrated; `pusher` gem removed; `TeamsChannel` added
+- **ActionMailer cleanup**: dead methods/actions removed; `AdminController#test_emails` added
+- **Cuprite**: JS integration tests; IIFEs in turbo/stimulus sprockets to prevent variable collisions
+- **Design audit**: dead FB/GA removed; Google Fonts loaded; focus rings fixed; heading hierarchy; content rewrites
 
 ## PostgreSQL-Specific Features
 

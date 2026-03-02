@@ -126,6 +126,12 @@ $max-puzzle-width:  72rem;   // 1152px — solve page wrapper
   --color-footer-link-hover: var(--color-accent-muted);
 
   // ---------------------------------------------------------------------------
+  // COLOR — Scrollbar
+  // ---------------------------------------------------------------------------
+
+  --color-scrollbar-thumb: rgba(28, 26, 23, 0.35); // warm-tinted, matches shadow palette
+
+  // ---------------------------------------------------------------------------
   // TYPOGRAPHY
   //
   // Playfair Display — editorial serif for headings. Think newspaper masthead.

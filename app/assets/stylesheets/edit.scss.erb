@@ -425,22 +425,6 @@ $switch-off-color: #c4bbb2;  // warm neutral gray — recedes instead of screami
   }
 }
 
-// Cross-browser scrollbar styling
-// Standard properties (Firefox, Chrome 121+)
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
-}
-// WebKit fallback (older Chrome/Safari)
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  border: 2px solid white;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
 @media (max-height: 700px){
   #ideas ul, #word-match-results {
     max-height: 15em;

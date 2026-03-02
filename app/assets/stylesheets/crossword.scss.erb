@@ -1,4 +1,5 @@
 @import 'dimensions';
+@import 'design_tokens';
 
 #body > .xw-container {
   padding-inline: 1em;
@@ -62,7 +63,6 @@
 
 table#crossword {
   border-spacing: 0;
-  float: left;
   margin-bottom: 0;
 
   tr {
@@ -140,10 +140,11 @@ table#crossword {
   display: flex;
   align-items: flex-start;
   gap: 0.5em;
+  flex-wrap: wrap;
 
   .clue-column {
     flex: 1;
-    min-width: 0;
+    min-width: 12em;       // force flex-wrap when columns would get too narrow
     margin-left: 0;
 
     .clues {
@@ -152,8 +153,39 @@ table#crossword {
   }
 }
 
+// --- Mobile: stack vertically, grid on top, clues below ---
+@media (max-width: #{$bp-lg - 1}) {
+  .xw-puzzle-layout {
+    flex-direction: column;
+    align-items: center;
+
+    .clue-column {
+      width: 100%;
+      min-width: 0;
+
+      .clues {
+        height: auto !important;  // override inline style from HAML
+        max-height: 18em;
+      }
+    }
+  }
+
+  // Allow horizontal scroll for grids that overflow (Sunday 21×21)
+  #solve-area .xw-col-full {
+    overflow-x: auto;
+  }
+}
+
+// --- Phone: shrink cells to fit standard 15×15 grid ---
+@media (max-width: #{$bp-sm - 1}) {
+  table#crossword .cell {
+    font-size: 1.05em;   // down from 1.25em → ~25px cells → 15×25=375px
+    width: 1.4em;
+    height: 1.4em;
+  }
+}
+
 .clue-column {
-  float: left;
   background: transparent;
   border: none;
   border-left: none;
@@ -174,7 +206,7 @@ table#crossword {
   .clues {
     position: relative;
     overflow: auto;
-    width: 250px;
+    width: 100%;
     overflow-x: hidden;
     background: var(--color-surface-alt);
     box-shadow: var(--shadow-inner);

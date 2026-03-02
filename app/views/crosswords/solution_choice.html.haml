@@ -4,7 +4,7 @@
 
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Choose a Solution', custom_columns: true} do
   .xw-col-12.xw-lg-4
-    = render partial: 'crosswords/partials/mini_pic_canvas', locals: {cw: @crossword, scale: 2.0}
+    = image_tag(@crossword.preview.url, class: 'xw-thumbnail')
     .metadata
       %h5
         %strong= @crossword.title
@@ -18,7 +18,7 @@
       You have more than one solution for this crossword. Please choose the one you would like to work on.
   .xw-col-12.xw-lg-8
     -# The table of available solutions
-    %table
+    %table.xw-solutions-table
       %thead
         %tr
           %th
@@ -34,34 +34,18 @@
         - @solutions.each do |solution|
           - solution_correctness = solution.percent_correct
           - solution_completion = solution.percent_complete
-          %tr{data: {link: solution_path(solution), letters: solution.letters, key: solution.key, cols: @crossword.cols}}
+          %tr{data: {link: solution_path(solution)}}
             %td
-              = button_to solution, method: :get do
+              = link_to solution_path(solution) do
                 = icon('arrow-left')
             %td.center.larger
               = icon(solution.team ? 'users' : 'user')
             %td.text-right #{solution_correctness[:percent]}%
-            -# Not useful at the moment
-              %td #{solution_correctness[:numerator]}/#{solution_correctness[:denominator]}
             %td.text-right #{solution_completion[:percent]}%
-            -# Not useful at the moment
-              %td.text-right #{solution_completion[:numerator]}/#{solution_completion[:denominator]}
             %td.smaller #{distance_of_time_in_words_to_now(solution.updated_at, {include_seconds: true})} ago
             %td.smaller #{distance_of_time_in_words_to_now(solution.created_at, {include_seconds: true})} ago
             %td.center.larger.trash-td
               / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
               = link_to(delete_solution_path(solution), class: 'not-blue', data: { turbo_method: :delete, turbo_confirm: @current_user == solution.user ? (solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to delete your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?' }) do
-                = icon('trash-2', class: 'center')
-          - if !solution.team
-            %tr
-              %td
-              %td
-              -# %td
-              -# %td
-              %td
-              %td
-              %td
-              %td
-              %td
-/# This script will show previews of the solutions on the page when their rows are hovered
+                = icon('trash-2')
 = javascript_include_tag 'solution_choice', 'data-turbo-track': 'reload'

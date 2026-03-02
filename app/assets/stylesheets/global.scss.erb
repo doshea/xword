@@ -132,3 +132,19 @@ body {
 // Foundation typography survival shims (ensure Phase 6 doesn't regress)
 .lead  { font-size: 1.21875rem; line-height: var(--leading-relaxed); }
 .subheader { color: var(--color-text-muted); font-weight: var(--weight-normal); }
+
+// Cross-browser scrollbar styling
+// Standard properties (Firefox, Chrome 121+)
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) transparent;
+}
+// WebKit fallback (older Chrome/Safari)
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid var(--color-surface);
+  background-color: var(--color-scrollbar-thumb);
+}
