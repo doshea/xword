@@ -1,6 +1,7 @@
 / Favorites toggle buttons — extracted as partial so favorite_unfavorite.turbo_stream.erb can re-render them
 / after a favorite or unfavorite action to swap visibility between the two buttons
-= link_to(favorite_crossword_path(crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{(current_user.favorites.include? crossword) ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post, 'xw-tooltip': 'Favorite' }, aria: { label: 'Add to favorites' }) do
-  = icon('star')
-= link_to(favorite_crossword_path(crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{(current_user.favorites.include? crossword) ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete, 'xw-tooltip': 'Unfavorite' }, aria: { label: 'Remove from favorites' }) do
-  = icon('star', class: 'xw-icon--favorited')
+#favorites-toggle{ data: { controller: 'favorite' } }
+  = link_to(favorite_crossword_path(crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{(current_user.favorites.include? crossword) ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post, 'xw-tooltip': 'Favorite', action: 'favorite#toggle', favorite_target: 'off' }, aria: { label: 'Add to favorites' }) do
+    = icon('star')
+  = link_to(favorite_crossword_path(crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{(current_user.favorites.include? crossword) ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete, 'xw-tooltip': 'Unfavorite', action: 'favorite#toggle', favorite_target: 'on' }, aria: { label: 'Remove from favorites' }) do
+    = icon('star', class: 'xw-icon--favorited')

@@ -46,13 +46,7 @@
       - if @current_user
         %a#solve-save.xw-btn.xw-btn--sm.xw-btn--ghost{href: '#', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
           = icon('save')
-        / Replaced: link_to with method: :post/:delete, remote: true → turbo_method (Turbo handles AJAX)
-        / Wrapped in #favorites-toggle so favorite_unfavorite.turbo_stream.erb can replace both buttons together
-        #favorites-toggle
-          = link_to(favorite_crossword_path(@crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post, 'xw-tooltip': 'Favorite' }, aria: { label: 'Add to favorites' }) do
-            = icon('star')
-          = link_to(favorite_crossword_path(@crossword), class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete, 'xw-tooltip': 'Unfavorite' }, aria: { label: 'Remove from favorites' }) do
-            = icon('star', class: 'xw-icon--favorited')
+        = render partial: 'crosswords/partials/favorites_toggle', locals: { crossword: @crossword, current_user: @current_user }
         = link_to '#', id: 'controls-button', class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Controls' }, aria: { label: 'Puzzle controls' } do
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
