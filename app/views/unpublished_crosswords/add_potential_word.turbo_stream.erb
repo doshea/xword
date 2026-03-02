@@ -1,13 +1,17 @@
 <%# Replaces: add_potential_word.js.erb (jquery_ujs + complex sorted-insertion jQuery — inserted word in length-descending order) %>
 <%# Turbo Stream: replaces the full potential word list (server sorts by length desc) or shows error message %>
 <% if @added %>
-  <%= turbo_stream.replace "potential-words-list" do %>
+  <%= turbo_stream.update "potential-words-list" do %>
     <%= render partial: 'unpublished_crosswords/partials/potential_words_list',
                locals: { words: @unpublished_crossword.potential_words.sort_by { |w| -w.length } } %>
   <% end %>
-  <%# Clear the word input after successful add %>
-  <%= turbo_stream.update "ideas-input" do %><% end %>
+  <%# Clear the word input after successful add — replace with fresh empty input %>
+  <%= turbo_stream.replace "ideas-input" do %>
+    <%= text_field_tag :word, nil, id: 'ideas-input', autocomplete: 'off', placeholder: "Type a word you're considering" %>
+  <% end %>
 <% else %>
-  <%# Word already in list — update error area with message %>
-  <%= turbo_stream.update "ideas-error" do %>Word already added to list.<% end %>
+  <%# Word already in list — replace error element to remove hidden class and show message %>
+  <%= turbo_stream.replace "ideas-error" do %>
+    <p id="ideas-error">Word already added to list.</p>
+  <% end %>
 <% end %>

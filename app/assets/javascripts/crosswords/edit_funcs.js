@@ -33,9 +33,9 @@ window.edit_app = {
     $('.switch-form input').on('click', edit_app.flip_switch);
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', function() { cw.unhighlight_all(); });
 
-    $('#ideas input[name=word]').on('keypress', edit_app.add_potential_word);
-    $('#settings-button').on('click', function() { document.getElementById('edit-settings').showModal(); });
-    $('.bottom-button').on('click', function() { $(this).closest('.slide-up-container').toggleClass('open'); });
+    $('#ideas').on('keypress', 'input[name=word]', edit_app.add_potential_word);
+    $('#settings-button').on('click', function(e) { e.preventDefault(); document.getElementById('edit-settings').showModal(); });
+    $('.bottom-button').on('click', function(e) { e.preventDefault(); $(this).closest('.slide-up-container').toggleClass('open'); });
   },
 
   flip_switch: function(e) {
@@ -49,7 +49,7 @@ window.edit_app = {
       if (key === cw.ENTER) {
         e.preventDefault();
         if ($(this).val() !== '') {
-          $(this).parent().submit();
+          $(this).closest('form')[0].requestSubmit();
         }
       }
     }
@@ -85,6 +85,7 @@ window.edit_app = {
       complete: function() {
         title_status.fadeTo(1500, 0, function() {
           title_status.removeClass('xw-status-ok xw-status-err').html('');
+        });
       }
     };
     $.ajax(settings);

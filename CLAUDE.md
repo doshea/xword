@@ -229,6 +229,76 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
   `check_cell.js.erb`, `check_completion.js.erb`, `solutions/update.js.erb`,
   `update_letters.js.erb`, `live_search.js.erb`
 
+## Visual Design
+
+**When asked about style, aesthetics, or visual design of this app, always use the `frontend-design` skill
+for assessment and recommendations before proposing changes.**
+
+### Design Philosophy
+
+Cozy "paper on wood" — a crossword worksheet sitting on a café table. The aesthetic is editorial
+warmth, not sterile web app. Key colors: **black, white, forest green, warm wood tones**. The
+existing palette (warm near-blacks, cream surfaces, tan borders, green accents) is intentional
+and should be refined, not replaced.
+
+Typography: Playfair Display (editorial serif headings), Lora (readable serif body/clues),
+DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
+
+### Design History (Feb-Mar 2026)
+
+| Phase | What changed |
+|-------|-------------|
+| Phase 0 | Design tokens (`_design_tokens.scss`), CSS Grid (`_grid.scss`), components (`_components.scss`) |
+| Phase 1 | Foundation `.top-bar` → `.xw-nav` with Stimulus nav/dropdown controllers |
+| Phase 2 | Foundation Icons (`fi-*`) → inline Lucide SVGs via `icon()` helper (34 SVGs) |
+| Phase 3 | Foundation 5 grid → `xw-` CSS Grid classes (35 HAML files migrated) |
+| Phase 4a | Semantic HTML + accessibility: landmarks, heading hierarchy, ARIA labels |
+| Phase 4b | Foundation JS removal: reveal-modals → native `<dialog>`, tabs/dropdowns → Stimulus |
+| Phase 5 | Visual modernization: `.alert-box`→`.xw-alert`, `.button`→`.xw-btn`, pagination, dead CSS removed |
+| Phase 6 | Foundation CSS vendor bundle deleted (~1.4MB); minimal CSS reset added to `global.scss.erb` |
+| Design audit | Google Fonts loaded, focus rings fixed, footer tokenized, heading hierarchy, content rewrites |
+| CSS cleanup | Vendor prefixes removed, dead mixins deleted, crossword colors tokenized |
+| Edit page polish (v1-v7) | Paper shadow + rounded corners on crossword sections, title input refined, clue textareas auto-size, clue row breathing room, description textarea sunken background |
+
+### Current State (v7) — What's Working
+
+- Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
+- Crossword grid is crisp: strong black/white contrast, clean cell borders
+- Typography pairing (Playfair headings / DM Sans labels) creates editorial hierarchy
+- Green accent on Publish button provides confident color pop without shouting
+- Continuous paper texture across `#credit-area` → `#solve-area` → `#meta-area` → `#advanced`
+
+### Next Steps — Edit Page (v8+)
+
+Priority fixes identified from v7 assessment (all CSS-only, no HTML changes):
+
+1. **Toggle switch off-color** (high) — saturated red (`lighten(red, 20%)`) is the loudest element
+   on the page, drawing the eye to the least important section. Replace off-state with muted warm
+   gray; keep green for on-state. File: `edit.scss.erb` (`$switch-off-color`)
+2. **Clue number differentiation** (high) — clue numbers and text are same color/weight, making
+   scanning difficult. Make numbers muted (`--color-text-muted`) so clue text stands out.
+   File: `crossword.scss.erb` (`.clue-column .clues .clue`)
+3. **Clue container warmth** (medium) — `var(--color-surface)` (#fffef9) background is too white
+   against paper texture. Warm it up. File: `crossword.scss.erb` (`.clue-column .clues`)
+4. **Section dividers** (medium) — borders between description/advanced are barely visible on paper
+   texture. Need more presence. File: `crossword.scss.erb` or `edit.scss.erb`
+5. **Bottom-of-page emptiness** (medium) — large void between switches and Publish button; paper
+   card ends abruptly. Tighten spacing. File: `edit.scss.erb` (`#advanced`)
+6. **Clue column border-left** (low) — thin structural line adds noise. Newspaper columns use
+   whitespace, not rules. File: `crossword.scss.erb` (`.clue-column`)
+7. **Description textarea border** (low) — hard 1px border + inset shadow reads as "web form"
+   rather than editorial. Soften. File: `edit.scss.erb` (`#meta-area .xw-textarea`)
+
+### Pages Not Yet Polished
+
+The edit page is the first page getting the full treatment. Other pages still need attention:
+- Solve page (shares `crossword.scss.erb` — benefits from clue fixes automatically)
+- Home page / search results
+- Login / signup
+- User profile / account
+- Admin panel
+- About / FAQ / Contact
+
 ## Testing
 
 - **Framework**: RSpec with `rspec-rails ~> 8.0` (8.0.3)
@@ -240,7 +310,7 @@ Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
 - **its()**: rspec-its 2.0 (extracted from rspec-core)
 - **Controller specs**: require `rails-controller-testing` (installed)
 
-Run tests: `bundle exec rspec`  # 413 examples, 0 failures
+Run tests: `bundle exec rspec`  # 428 examples, 0 failures
 
 ## Notable Gems and Their Roles
 

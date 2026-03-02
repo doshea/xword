@@ -134,6 +134,7 @@ $bottomcolor: black;
   min-width: 1.7em;
   text-align: right;
   margin-right: 0.3em;
+  color: var(--color-text-muted);
 }
 
 .clue-column .clues textarea {
@@ -192,7 +193,8 @@ $bottomcolor: black;
 #advanced {
   border-bottom-left-radius: var(--radius-lg);
   border-bottom-right-radius: var(--radius-lg);
-  border-top: 1px solid var(--color-border);
+  border-top: 2px solid var(--color-border-strong);
+  padding-bottom: var(--space-2);
 
   h2 {
     font-family: var(--font-ui);
@@ -217,7 +219,7 @@ $bottomcolor: black;
   }
   .xw-textarea {
     background-color: var(--color-surface-sunken);
-    border: 1px solid var(--color-border);
+    border: 1px solid transparent;
     box-shadow: var(--shadow-inner);
     border-radius: var(--radius-sm);
   }
@@ -315,8 +317,8 @@ $bottomcolor: black;
 $switch-height: 1.8em;
 $switch-width: 4em;
 $pip-diameter: $switch-width/3;
-$switch-on-color: lighten(limegreen, 20%);
-$switch-off-color: lighten(red, 20%);
+$switch-on-color: #3a7d5c;   // forest green — matches --color-accent
+$switch-off-color: #c4bbb2;  // warm neutral gray — recedes instead of screaming
 .switch-form {
   display: inline-block;
   margin: 0;
