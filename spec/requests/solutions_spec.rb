@@ -1,0 +1,194 @@
+RSpec.describe 'Solutions', type: :request do
+  let(:test_password) { 'password123' }
+  let(:user)      { create(:user, password: test_password, password_confirmation: test_password) }
+  let(:crossword) { create(:predefined_five_by_five) }
+  # 5x5 grid, correct letters = 'AMIGOVOLOWANIONIDOSELONER'
+  let(:correct_letters) { crossword.letters }
+  let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }
+  let(:solution)  { create(:solution, user: user, crossword: crossword, letters: blank_letters) }
+
+  def log_in_as(u)
+    post '/login', params: { username: u.username, password: test_password }
+  end
+
+  # -------------------------------------------------------------------------
+  # Solo solve — saving letters
+  # -------------------------------------------------------------------------
+  describe 'PUT /solutions/:id (solo save)' do
+    before { log_in_as(user) }
+
+    it 'persists the submitted letters to the database' do
+      partial = blank_letters.dup
+      partial[0] = 'A'   # fill first cell
+      partial[1] = 'M'
+
+      put "/solutions/#{solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      expect(response).to have_http_status(:ok)
+      expect(solution.reload.letters[0..1]).to eq 'AM'
+    end
+
+    it 'preserves the full letter string across multiple saves' do
+      first_save = blank_letters.dup
+      first_save[0] = 'A'
+      put "/solutions/#{solution.id}", params: { letters: first_save, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+
+      second_save = solution.reload.letters.dup
+      second_save[5] = 'V'
+      put "/solutions/#{solution.id}", params: { letters: second_save, save_counter: '0.2' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+
+      result = solution.reload.letters
+      expect(result[0]).to eq 'A'
+      expect(result[5]).to eq 'V'
+    end
+
+    it 'marks the solution complete when all letters are correct' do
+      put "/solutions/#{solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+
+      solution.reload
+      expect(solution.is_complete).to be true
+      expect(solution.solved_at).to be_present
+    end
+
+    it 'leaves the solution incomplete when letters are wrong' do
+      wrong = correct_letters.dup
+      wrong[0] = 'Z'
+      put "/solutions/#{solution.id}", params: { letters: wrong, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+
+      expect(solution.reload.is_complete).to be false
+    end
+
+    it 'silently handles a null solution id from stale JS' do
+      put "/solutions/null", params: { letters: 'X' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # Team solve — broadcasting cell changes
+  # -------------------------------------------------------------------------
+  describe 'PATCH /solutions/:id/team_update (team cell broadcast)' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword, letters: blank_letters) }
+
+    before { log_in_as(user) }
+
+    it 'broadcasts a change_cell event with the correct payload' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(
+          event: 'change_cell',
+          row: '3', col: '2', letter: 'A', solver_id: 'solver1'
+        ))
+
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '3', col: '2', letter: 'A',
+        solver_id: 'solver1', red: '100', green: '150', blue: '50'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'includes solver color in the broadcast' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(
+          red: '255', green: '0', blue: '128'
+        ))
+
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '1', col: '1', letter: 'X',
+        solver_id: 'abc', red: '255', green: '0', blue: '128'
+      }
+    end
+
+    it 'broadcasts a delete (empty letter) when a cell is cleared' do
+      expect(ActionCable.server).to receive(:broadcast)
+        .with("team_#{team_solution.key}", hash_including(
+          event: 'change_cell', letter: ''
+        ))
+
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '1', col: '1', letter: '',
+        solver_id: 'solver1', red: '0', green: '0', blue: '0'
+      }
+    end
+
+    it 'returns 200 even when Redis is unavailable' do
+      allow(ActionCable.server).to receive(:broadcast)
+        .and_raise(Redis::CannotConnectError)
+
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '1', col: '1', letter: 'A',
+        solver_id: 'solver1', red: '0', green: '0', blue: '0'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'requires authentication' do
+      # Fresh request without logging in
+      reset!
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '1', col: '1', letter: 'A', solver_id: 'x'
+      }
+      expect(response).to redirect_to(account_required_path)
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # Team solve — two users sending interleaved edits
+  # -------------------------------------------------------------------------
+  describe 'two users editing a team puzzle' do
+    let(:user_b)        { create(:user, password: test_password, password_confirmation: test_password) }
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword, letters: blank_letters) }
+    let(:channel)       { "team_#{team_solution.key}" }
+
+    it 'broadcasts each user\'s cell changes independently' do
+      broadcasts = []
+      allow(ActionCable.server).to receive(:broadcast) do |ch, payload|
+        broadcasts << payload if ch == channel
+      end
+
+      # User A types 'A' at (1,1)
+      log_in_as(user)
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '1', col: '1', letter: 'A',
+        solver_id: 'solverA', red: '200', green: '0', blue: '0'
+      }
+
+      # User B types 'V' at (2,1)
+      log_in_as(user_b)
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '2', col: '1', letter: 'V',
+        solver_id: 'solverB', red: '0', green: '0', blue: '200'
+      }
+
+      # User A types 'M' at (1,2)
+      log_in_as(user)
+      patch "/solutions/#{team_solution.id}/team_update", params: {
+        row: '1', col: '2', letter: 'M',
+        solver_id: 'solverA', red: '200', green: '0', blue: '0'
+      }
+
+      expect(broadcasts.length).to eq 3
+      expect(broadcasts[0]).to include(solver_id: 'solverA', letter: 'A', row: '1', col: '1')
+      expect(broadcasts[1]).to include(solver_id: 'solverB', letter: 'V', row: '2', col: '1')
+      expect(broadcasts[2]).to include(solver_id: 'solverA', letter: 'M', row: '1', col: '2')
+    end
+
+    it 'saves the team solution when either user triggers a full save' do
+      log_in_as(user)
+      partial = blank_letters.dup
+      partial[0] = 'A'
+      partial[5] = 'V'
+
+      put "/solutions/#{team_solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      expect(team_solution.reload.letters[0]).to eq 'A'
+      expect(team_solution.reload.letters[5]).to eq 'V'
+    end
+
+    it 'marks the team solution complete when saved with correct letters' do
+      log_in_as(user)
+      put "/solutions/#{team_solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+
+      team_solution.reload
+      expect(team_solution.is_complete).to be true
+      expect(team_solution.solved_at).to be_present
+    end
+  end
+end
