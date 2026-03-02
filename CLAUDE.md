@@ -265,8 +265,11 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | Edit page polish (v1-v7) | Paper shadow + rounded corners on crossword sections, title input refined, clue textareas auto-size, clue row breathing room, description textarea sunken background |
 | Edit page polish (v8) | Switch colors calmed (red→warm gray off, lime→forest green on), clue numbers muted, clue containers warmed to cream, section divider strengthened, bottom padding tightened, clue column border-left removed, textarea border softened, clue scroll-into-view bug fixed |
 | Solve page polish (v8.2) | Clue numbers wrapped in `span.clue-num` (shared muted color), `<hr>` dividers styled with warm borders, `#solve-controls` modernized from float to flow, `#puzzle-controls` absolute→flex, comment textarea sunken bg, Comments heading display font |
+| v9-v10 | Ghost toolbar buttons, creator credit byline, comments BEM layout, Turbo Stream fixes, `populate_cells` bug fix |
+| v11-v12 | Modal polish (controls keycaps, win modal tokens), edit tool panels tokenized, settings modal cleaned |
+| v13-v17 | Inline styles → CSS classes site-wide, legacy shadow classes removed, search cards tokenized, profile page polished, team chat/grid/nav colors tokenized |
 
-### Current State (v10) — What's Working
+### Current State (v17) — What's Working
 
 - Paper-on-wood metaphor reads immediately; wood grain bg + cream paper card + `--shadow-paper` depth
 - Crossword grid is crisp: strong black/white contrast, clean cell borders
@@ -281,8 +284,14 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 - Creator credit byline styled with `--font-body` + `--color-text-secondary` (editorial feel)
 - Comment textarea sunken with `.xw-textarea` class, Comments heading uses `--font-display`
 - Comments/replies use BEM flex layout (`xw-comment`/`xw-reply` with `__avatar`/`__body` children)
-- All inline `style` attributes removed from comment/reply partials — display states in CSS
-- Reply count uses semantic `<p>` (was `h6`), reply controls flex layout with muted icons
+- All inline `style` attributes removed from comment/reply/modal partials — display states in CSS
+- Controls modal: keycap styling with `--font-mono`, border+shadow, proper heading hierarchy
+- Win modal: BEM classes, tokenized clock styling, `.xw-textarea` on comment input
+- Edit page: tool panels use `--color-nav-bg/text/border`, cross-browser scrollbar, settings modal cleaned
+- Search/home page: crossword cards use `--color-border` solid border, `--color-surface-alt` hover,
+  token-based spacing and typography
+- Profile page: heading hierarchy fixed, CSS tokenized, dead `.right` class removed
+- Nearly all hardcoded colors in CSS files replaced with design tokens
 
 ### Completed Versions
 
@@ -291,41 +300,33 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 | v8.2 | Clue numbers wrapped in `span.clue-num`, `<hr>` warm borders, `#solve-controls` flow layout, `#puzzle-controls` absolute→flex, comment textarea + heading styling |
 | v9 | Ghost toolbar buttons, status text muted `--font-ui`/`--text-xs`, orphaned `%br` removed, creator credit byline `--font-body`/`--color-text-secondary` |
 | v10 | Comments BEM layout (`xw-comment`/`xw-reply`), inline styles→CSS, reply count `h6`→`p`, Turbo Stream wrapper fix, `populate_cells` `cells.reset` bug fix |
+| v11 | Controls modal keycaps (`kbd` styling), win modal inline styles→BEM classes, both modals h1→h2, `<u>` tag removed |
+| v12 | Edit page tool panels tokenized (`$bottomcolor`→`--color-nav-bg`, etc.), settings modal cleaned (bare checkboxes→placeholder), cross-browser scrollbar, `.potential-word__row` class |
+| v13 | Inline styles→CSS classes: favorited star→`.xw-icon--favorited`, creator avatar→`.xw-thumbnail`, login icon→`.xw-icon--accent`, admin flag→`.xw-icon--danger`. Dead `.small-shadow`/`.shadow`/`.thin-border`/`.light-shadow` removed from global CSS |
+| v14 | Login page inline flex styles→`.xw-auth-layout`/`.xw-auth-column` CSS; error page image→`.xw-error-image`; dead `.text-center`→`.center` |
+| v15 | Search cards tokenized: `lightgrey`→`--color-border`/`--color-surface-alt`, dotted→solid border, `--radius-sm`, token spacing/typography. Solution choice: `#f04124`→`--color-danger`, blue overlay→muted info tint |
+| v16 | User profile: `h5`→`h3` Stats heading, dead `.right` class removed, leading `%br` removed, `profile.scss.erb` tokenized, `account.scss.erb` `#333`→`--color-text` |
+| v17 | Tokenized: grid `tr` bg→`--color-cell-void`, clue border `#999`→`--color-border-strong`, team chat black/white→nav tokens + `--shadow-lg` + `--radius-md`, bookend bars→nav tokens, nav danger `#f77`→`--color-danger`, new_crossword preview→cell tokens |
 
-### Next Steps — Solve + Edit Pages (v11+)
+### Remaining Cleanup
 
-#### v11 — Modal polish
-1. **Win modal** — highest-impact emotional moment, stuck in 2014. Heavy inline styles on clock,
-   `.lead`/`.center` legacy classes, bare `<h5>` for comment prompt. Restyle with design tokens:
-   Playfair "SOLVED!" heading, `--font-mono` timer, warm surface instead of black clock bg.
-2. **Controls modal** — `<u>` tag on `<h1>`, unstyled `<kbd>` elements, inline `style` attribute
-   for layout. Add keycap styling (mono font, subtle border+shadow), proper CSS classes.
-
-#### v12 — Edit page tool panels
-3. **Notepad/Pattern Search panels** — slide-up panels use raw `$bottomcolor: black`, `border: 1px
-   solid #444`, unstyled inputs. Retheme with `--color-nav-bg` (warm near-black), `--color-nav-border`,
-   design-token inputs. Bottom trigger buttons could use paper-tab metaphor.
-4. **Settings modal** — `#edit-settings` has 6 unlabeled checkboxes + `<br>` tags. Either implement
-   properly with labeled settings + switch-form component, or remove the settings button.
-
-#### Ongoing cleanup
-5. **Inline style audit** — `_win_modal_contents.html.haml`, `_controls_modal.html.haml` still use
-   `style` attributes that should be CSS classes.
-6. **Legacy utility classes** — `.small-shadow`, `.thin-border`, `.dark-shadow`, `.center`, `.lead`
-   use hardcoded values; migrate callers to token-based equivalents.
-7. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
+#### Ongoing
+1. **Mobile responsiveness** — float-based crossword + clue column layout has no `@media` breakpoints
    for stacking on narrow viewports.
-8. **Cross-browser scrollbar** — WebKit-only custom scrollbar in `edit.scss.erb`; use `scrollbar-color`
-   and `scrollbar-width` for cross-browser support with design tokens.
+2. **Legacy utility classes** — `.dark-shadow` (nav, edit settings), `.center`, `.lead` (team partial),
+   `.subheader` (footer) still use hardcoded values or Foundation shim patterns.
+3. **Remaining inline styles** — `_team.html.haml` (2 styles + `.lead`), `pages/home.html.haml`
+   (`margin-bottom: 0` on `<hr>`), admin pages (low priority).
+4. **Email template** — `default_mail.html.haml` uses inline styles (correct for email; leave as-is).
 
 ### Pages Not Yet Polished
 
-The solve and edit pages are the focus. Other pages still need attention:
-- Home page / search results
-- Login / signup
-- User profile / account
-- Admin panel
-- About / FAQ / Contact
+Primary pages (solve + edit) are polished. Secondary pages partially addressed:
+- Home page / search results — crossword cards tokenized (v15), tabs styled
+- Login / signup — flex layout tokenized (v14), heading fixed
+- User profile — heading hierarchy + CSS tokenized (v16)
+- About / FAQ / Contact — content rewritten (design audit), could benefit from further visual treatment
+- Admin panel — functional, low priority
 
 ## Testing
 
