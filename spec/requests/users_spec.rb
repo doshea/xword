@@ -84,16 +84,4 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
-  # -------------------------------------------------------------------------
-  # Account namespace (AccountController)
-  # NOTE: GET /account (AccountController#show) has no template — confirmed broken.
-  # It will raise ActionView::MissingExactTemplate in production. Not tested here
-  # because testing broken state as expected behavior is an anti-pattern.
-  # -------------------------------------------------------------------------
-  describe 'GET /account (anonymous)' do
-    it 'redirects to account_required when not logged in' do
-      get '/account'
-      expect(response).to redirect_to(account_required_path)
-    end
-  end
 end

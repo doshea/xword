@@ -78,15 +78,6 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :account do
-    get '/', action: :show
-    patch :update
-    patch :change_password
-
-    get :verify
-    get :verified
-  end
-
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'

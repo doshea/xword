@@ -434,6 +434,14 @@ $switch-off-color: #c4bbb2;  // warm neutral gray — recedes instead of screami
   }
 }
 
+// --- Tablet: wider tool panels ---
+@media (max-width: #{$bp-lg - 1}) and (min-width: $bp-sm) {
+  .slide-up-container {
+    &#pattern-container { width: 24em; }
+  }
+  #pattern-search, #ideas, #ideas ul { width: 100%; }
+}
+
 // --- Phone: full-width tool panels ---
 @media (max-width: #{$bp-sm - 1}) {
   .slide-up-container {

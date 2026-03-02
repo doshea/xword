@@ -1,4 +1,4 @@
-.xw-col-12.xw-lg-3
+.xw-col-12.xw-md-4.xw-lg-3
   = image_tag @user.image.url
   %h1#profile-name= @user.display_name
   %p#profile-join
@@ -24,7 +24,7 @@
     %hr
     %ul
       %li Clues written: #{@user.clues.count}
-.xw-col-12.xw-lg-5
+.xw-col-12.xw-md-8.xw-lg-5
   %h2 Recent Comments
   %ul#recent-comments
     - @user.comments.order_recent.each do |c|

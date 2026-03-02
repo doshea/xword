@@ -435,6 +435,39 @@
   .xw-tab { white-space: nowrap; }
 }
 
+// Tablet/phone: vertical tabs → horizontal scrollable bar
+@media (max-width: #{$bp-md - 1}) {
+  .xw-tabs--vertical {
+    flex-direction: column;
+
+    .xw-tabs__nav {
+      flex-direction: row;
+      border-right: none;
+      border-bottom: 2px solid var(--color-border);
+      padding-right: 0;
+      margin-bottom: var(--space-4);
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .xw-tab {
+      border-right: none;
+      border-bottom: 2px solid transparent;
+      margin-right: 0;
+      margin-bottom: -2px;
+      white-space: nowrap;
+    }
+
+    .xw-tab.xw-tab--active {
+      border-right-color: transparent;
+      border-bottom-color: var(--color-accent);
+      background-color: transparent;
+    }
+  }
+}
+
 .xw-tab-panels { flex: 1; min-width: 0; }
 
 .xw-tab-panel {

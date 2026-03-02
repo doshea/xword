@@ -1,6 +1,8 @@
 canvas {
-  width: 80%;
-  margin: 1em 10% 0;
+  width: 100%;
+  max-width: 800px;
+  margin: var(--space-4) auto 0;
+  display: block;
 }
 h2 {
   text-align: center;
