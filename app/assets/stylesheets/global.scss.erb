@@ -21,21 +21,16 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
 table#crossword td {
   outline: none;
 }
-.small-shadow {
-  box-shadow: 1px 1px 2px #000;
-}
-.light-shadow {
-  box-shadow: 3px 3px 3px grey;
-}
-.shadow {
-  box-shadow: 3px 3px 3px #222;
-}
 .dark-shadow {
   box-shadow: 3px 3px 3px black;
 }
-.thin-border {
-  border: 1px solid black;
+.xw-thumbnail {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border);
 }
+.xw-icon--favorited { color: #ff7878; }
+.xw-icon--danger { color: var(--color-danger); }
+.xw-icon--accent { color: var(--color-accent); }
 .borderless {
   border: none !important;
 }
@@ -112,6 +107,26 @@ body {
 }
 .text-right {
   text-align: right;
+}
+
+// Auth page two-column layout (login + signup side by side)
+.xw-auth-layout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+.xw-auth-column {
+  flex: 0 1 22rem;
+  min-width: 15rem;
+}
+
+// Error page centered image
+.xw-error-image {
+  display: block;
+  margin: 0 auto;
+  width: 75%;
 }
 
 // Foundation typography survival shims (ensure Phase 6 doesn't regress)

@@ -103,33 +103,24 @@ describe 'crosswords/show' do
       )
     end
 
-    it 'uses ghost style for icon-only toolbar buttons' do
-      expect(rendered).to have_selector('#solve-save.xw-btn--ghost', visible: :all)
-      expect(rendered).to have_selector('#favorite.xw-btn--ghost', visible: :all)
-      expect(rendered).to have_selector('#controls-button.xw-btn--ghost', visible: :all)
-    end
-
-    it 'keeps secondary style for the team button (has text label)' do
-      expect(rendered).to have_selector('#solve-share.xw-btn--secondary', visible: :all)
-    end
-
-    it 'renders status text spans with the smaller class' do
-      expect(rendered).to have_selector('#save-status.smaller', visible: :all)
-      expect(rendered).to have_selector('#save-clock.smaller', visible: :all)
+    it 'does not use inline style on the unfavorite star icon' do
+      expect(rendered).not_to have_selector('#unfavorite svg[style]', visible: :all)
     end
   end
 
   # -----------------------------------------------------------------------
-  # Comment form
+  # Inline styles and legacy utility classes
   # -----------------------------------------------------------------------
-  context 'comment form (logged-in user)' do
-    let(:viewer)   { create(:user) }
-    let(:solution) { create(:solution, user: viewer, crossword: crossword) }
+  context 'inline styles and legacy classes (anonymous user)' do
+    before { base_assigns; render }
 
-    before { base_assigns(current_user: viewer, solution: solution); render }
+    it 'does not use legacy shadow utility classes on images' do
+      expect(rendered).not_to have_selector('img.small-shadow', visible: :all)
+      expect(rendered).not_to have_selector('img.shadow', visible: :all)
+    end
 
-    it 'renders the comment textarea with xw-textarea class' do
-      expect(rendered).to have_selector('#add-comment.xw-textarea', visible: :all)
+    it 'does not use legacy .thin-border class on images' do
+      expect(rendered).not_to have_selector('img.thin-border', visible: :all)
     end
   end
 

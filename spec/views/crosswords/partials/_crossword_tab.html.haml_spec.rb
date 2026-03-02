@@ -20,6 +20,11 @@ describe 'crosswords/partials/_crossword_tab' do
     it 'links to the solution choice page' do
       expect(rendered).to have_link(href: solution_choice_crossword_path(crossword))
     end
+
+    it 'does not use legacy shadow or thin-border classes on images' do
+      expect(rendered).not_to have_selector('img.shadow', visible: :all)
+      expect(rendered).not_to have_selector('img.thin-border', visible: :all)
+    end
   end
 
   context 'with an UnpublishedCrossword' do

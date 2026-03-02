@@ -15,7 +15,7 @@
         %td= comment.content
         %td
           - if comment.flagged
-            = icon('flag', style: 'color: red;')
+            = icon('flag', class: 'xw-icon--danger')
         %td
           = link_to comment.user.username, comment.user
         %td

@@ -53,7 +53,7 @@
           = link_to(favorite_crossword_path(@crossword), title: 'Favorite', class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? ' hidden' : ''}", id: 'favorite', data: { turbo_method: :post }, aria: { label: 'Add to favorites' }) do
             = icon('star')
           = link_to(favorite_crossword_path(@crossword), title: 'Unfavorite', class: "xw-btn xw-btn--sm xw-btn--ghost#{@is_favorited ? '' : ' hidden'}", id: 'unfavorite', data: { turbo_method: :delete }, aria: { label: 'Remove from favorites' }) do
-            = icon('star', style: 'color: #ff7878;')
+            = icon('star', class: 'xw-icon--favorited')
         = link_to '#', id: 'controls-button', title: 'Controls', class: 'xw-btn xw-btn--sm xw-btn--ghost', aria: { label: 'Puzzle controls' } do
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
@@ -98,7 +98,7 @@
     .xw-grid
       .xw-col-12.xw-md-2
         = link_to @crossword.user do
-          = image_tag(@crossword.user.image.creator_pic.url, class: 'small-shadow thin-border')
+          = image_tag(@crossword.user.image.creator_pic.url, class: 'xw-thumbnail')
       .xw-col-12.xw-md-10
         %p
           %em= @crossword.description
