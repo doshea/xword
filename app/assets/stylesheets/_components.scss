@@ -771,8 +771,9 @@
 // ---------------------------------------------------------------------------
 
 .xw-prose {
-  max-width: 42rem;
+  max-width: 48rem;
   margin-inline: auto;
+  padding-bottom: var(--space-6);
 
   h1 {
     font-family: var(--font-display);
@@ -811,9 +812,11 @@
     border: none;
     border-top: 1px solid var(--color-border);
     margin: var(--space-6) 0;
+
+    + h2 { margin-top: var(--space-4); }  // tighter gap: divider belongs to the next section
   }
 
-  del {
+  s {
     color: var(--color-text-muted);
   }
 

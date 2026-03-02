@@ -111,9 +111,19 @@ RSpec.describe 'Pages', type: :request do
   end
 
   describe 'GET /about' do
+    before { get '/about' }
+
     it 'renders the about page' do
-      get '/about'
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'uses <s> for stylistic strikethrough, not <del>' do
+      expect(response.body).to include('<s>')
+      expect(response.body).not_to include('<del>')
+    end
+
+    it 'separates The Resurrection with a divider' do
+      expect(response.body).to match(%r{<hr\s*/?>.*The Resurrection}m)
     end
   end
 
