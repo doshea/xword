@@ -17,7 +17,7 @@
 
 describe Crossword do
   it 'has a valid factory' do
-    create(:crossword).should be_valid
+    expect(create(:crossword)).to be_valid
   end
 
   describe 'associations' do
@@ -32,10 +32,6 @@ describe Crossword do
     it {should have_many :favorite_puzzles}
     it {should have_many :favoriters}
     it {should have_many(:solution_partnerings).through(:solutions)}
-  end
-
-  describe 'attributes' do
-
   end
 
   describe 'validations' do
@@ -53,12 +49,24 @@ describe Crossword do
     context 'no requirements' do
       subject {build(:crossword)}
 
-      its(:random_row){should be_in(1..subject.rows)}
-      its(:random_row){should be_an Integer}
-      its(:random_col){should be_in(1..subject.cols)}
-      its(:random_col){should be_an Integer}
-      its(:random_index){should be_in(1..subject.area)}
-      its(:random_index){should be_an Integer}
+      it 'returns a random row in range' do
+        expect(subject.random_row).to be_in(1..subject.rows)
+      end
+      it 'returns a random row as Integer' do
+        expect(subject.random_row).to be_an Integer
+      end
+      it 'returns a random col in range' do
+        expect(subject.random_col).to be_in(1..subject.cols)
+      end
+      it 'returns a random col as Integer' do
+        expect(subject.random_col).to be_an Integer
+      end
+      it 'returns a random index in range' do
+        expect(subject.random_index).to be_in(1..subject.area)
+      end
+      it 'returns a random index as Integer' do
+        expect(subject.random_index).to be_an Integer
+      end
 
       describe "helpers for index/row/col" do
         it 'interconvert properly' do
@@ -108,8 +116,12 @@ describe Crossword do
 
       context 'real letters and voids' do
         before {subject.randomize_letters_and_voids}
-        its(:nonvoid_letter_count){ should be > 0}
-        its(:nonvoid_letter_count){ should eq (subject.letters.length - subject.letters.count(' _'))}
+        it 'has a positive nonvoid letter count' do
+          expect(subject.nonvoid_letter_count).to be > 0
+        end
+        it 'nonvoid letter count equals letters minus voids' do
+          expect(subject.nonvoid_letter_count).to eq(subject.letters.length - subject.letters.count(' _'))
+        end
         describe '#mismatch_array' do
           before do
             #Finds the first alphabetic character to swap it out
@@ -129,11 +141,11 @@ describe Crossword do
 
           it 'returns the correct array' do
             mismatches = (0...subject.area).find_all{|i| subject.letters[i] == @letter }
-            subject.get_mismatches(@similar_letters).should eq mismatches
+            expect(subject.get_mismatches(@similar_letters)).to eq mismatches
           end
 
           it 'returns empty array if the solutions match' do
-            subject.get_mismatches(subject.letters).should eq []
+            expect(subject.get_mismatches(subject.letters)).to eq []
           end
 
           it 'raise an error when the solution is improperly sized' do
@@ -158,8 +170,12 @@ describe Crossword do
       end
 
       describe '#populate_letters' do
-        its(:letters){ should be_blank}
-        its('letters.length'){ should eq subject.area}
+        it 'has blank letters' do
+          expect(subject.letters).to be_blank
+        end
+        it 'has letters length equal to area' do
+          expect(subject.letters.length).to eq subject.area
+        end
 
         it 'throws error if letters are not blank' do
           expect {subject.populate_letters}.to raise_error(RuntimeError)
@@ -195,7 +211,7 @@ describe Crossword do
           end
         end
         it 'throws error if already populated' do
-          subject.cells.count.should be > 0
+          expect(subject.cells.count).to be > 0
           expect {subject.populate_cells}.to raise_error(RuntimeError)
         end
 
@@ -237,8 +253,12 @@ describe Crossword do
 
       describe '#across/down_start_cells' do
         subject {create(:crossword)}
-        its(:across_start_cells){should eq subject.cells.select(&:is_across_start)}
-        its(:down_start_cells){should eq subject.cells.select(&:is_down_start)}
+        it 'returns across start cells' do
+          expect(subject.across_start_cells).to eq subject.cells.select(&:is_across_start)
+        end
+        it 'returns down start cells' do
+          expect(subject.down_start_cells).to eq subject.cells.select(&:is_down_start)
+        end
       end
 
       describe '#set_contents' do
@@ -299,7 +319,7 @@ describe Crossword do
         end
         context 'on an invalid crossword (cannot be saved)' do
           it 'raises an error' do
-            subject.stub(:save){false}
+            allow(subject).to receive(:save).and_return(false)
             expect{subject.set_contents(random_string)}.to raise_error 'Save failed!'
           end
         end
@@ -337,16 +357,15 @@ describe Crossword do
         end
 
       end
-      describe '#build_seed' do
-
-      end
       describe '#circles_from_array' do
         subject {create(:crossword)}
         let(:circle_count){rand(subject.area).ceil}
         let(:circle_inputs){([0]*(subject.area-circle_count)+[1]*circle_count).shuffle}
 
         context 'before running' do
-          its(:circled){should be false}
+          it 'is not circled' do
+            expect(subject.circled).to be false
+          end
         end
         context 'during running' do
           it 'errors if argument length greater than crossword area' do
@@ -364,15 +383,14 @@ describe Crossword do
         end
         context 'after running' do
           before{subject.circles_from_array(circle_inputs)}
-          its(:circled){should be true}
+          it 'is circled' do
+            expect(subject.circled).to be true
+          end
           it 'should have circled the correct cells' do
             circle_results = subject.cells.map{|cell| cell.circled ? 1 : 0}
             expect(circle_results).to eq circle_inputs
           end
         end
-      end
-      describe '#generate_preview' do
-
       end
       describe '#get_words_hsh' do
         context 'in a puzzle without repeated words' do
@@ -384,11 +402,6 @@ describe Crossword do
           end
         end
       end
-      describe '#generate_words_and_link_clues' do
-
-      end
-
-
 
 
     end
@@ -397,38 +410,55 @@ describe Crossword do
   describe 'CLASS METHODS' do
     describe '#new' do
       subject(:crossword) {build(:crossword)}
-      it {should be_a_new(Crossword)}
-      its('letters.length'){should_not eq subject.area}
+      it { is_expected.to be_a_new(Crossword) }
+      it 'letters length does not equal area before populate' do
+        expect(subject.letters.length).not_to eq subject.area
+      end
     end
 
     describe '#create' do
       context 'without callbacks', skip_callbacks: true do
         subject {create(:crossword)}
 
-        it {should_not be_a_new(Crossword)}
-        its(:letters){ should be_blank}
-        its(:cells){should be_empty}
+        it { is_expected.not_to be_a_new(Crossword) }
+        it 'has blank letters' do
+          expect(subject.letters).to be_blank
+        end
+        it 'has no cells' do
+          expect(subject.cells).to be_empty
+        end
 
         it 'saves to database Crossword' do
           subject #ensure that it is present
-          Crossword.count.should eq 1
+          expect(Crossword.count).to eq 1
           create(:crossword)
-          Crossword.count.should eq 2
+          expect(Crossword.count).to eq 2
         end
       end
 
       context 'with callbacks', dirty_inside: true do
         subject {create(:crossword)}
-        its('letters.length'){should eq subject.area}
-        its('cells.count'){should eq subject.area}
+        it 'letters length equals area' do
+          expect(subject.letters.length).to eq subject.area
+        end
+        it 'cells count equals area' do
+          expect(subject.cells.count).to eq subject.area
+        end
       end
     end
     context 'without building a Crossword' do
-      subject {Crossword}
-      its(:random_row_or_col){ should be_in (1..Crossword::MAX_DIMENSION)}
-      its(:random_row_or_col){ should be_an Integer}
-      its(:random_dimension){ should be_in (Crossword::MIN_DIMENSION  ..Crossword::MAX_DIMENSION)}
-      its(:random_dimension){ should be_an Integer}
+      it 'random_row_or_col is in range' do
+        expect(Crossword.random_row_or_col).to be_in(1..Crossword::MAX_DIMENSION)
+      end
+      it 'random_row_or_col is an Integer' do
+        expect(Crossword.random_row_or_col).to be_an Integer
+      end
+      it 'random_dimension is in range' do
+        expect(Crossword.random_dimension).to be_in(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)
+      end
+      it 'random_dimension is an Integer' do
+        expect(Crossword.random_dimension).to be_an Integer
+      end
     end
   end
 end

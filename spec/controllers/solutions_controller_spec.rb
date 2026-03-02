@@ -3,10 +3,6 @@ describe SolutionsController do
   let(:crossword) { create(:crossword, :smaller) }
   let(:solution)  { create(:solution, user: user, crossword: crossword) }
 
-  def log_in(u)
-    session[:user_id] = u.id
-  end
-
   context 'before_actions' do
     it { should use_before_action(:ensure_owner_or_partner) }
   end

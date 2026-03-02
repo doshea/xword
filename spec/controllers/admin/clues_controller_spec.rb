@@ -3,10 +3,6 @@ describe Admin::CluesController do
   let(:crossword) { create(:crossword, :smaller) }
   let(:clue)     { crossword.cells.find(&:across_clue).across_clue }
 
-  def log_in_admin
-    session[:user_id] = admin.id
-  end
-
   context 'before_actions' do
     it { should use_before_action(:ensure_admin) }
   end
@@ -19,7 +15,7 @@ describe Admin::CluesController do
   end
 
   context 'as admin' do
-    before { log_in_admin }
+    before { log_in(admin) }
 
     describe 'GET #index' do
       before { get :index }

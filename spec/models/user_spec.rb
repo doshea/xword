@@ -73,10 +73,4 @@ describe User do
     it { should have_many(:solution_partnerings).dependent(:destroy) }
     it { should have_many(:team_solutions).through(:solution_partnerings).source(:solution) }
   end
-  describe 'instance methods' do
-
-  end
-  describe 'class methods' do
-
-  end
 end

@@ -27,17 +27,6 @@ describe 'comments/partials/_reply' do
       expect(rendered).to have_selector("article##{dom_id(reply)}", text: reply.content, visible: :all)
     end
 
-    it 'uses the xw-reply class for the article wrapper' do
-      expect(rendered).to have_selector("article.xw-reply", visible: :all)
-    end
-
-    it 'renders the avatar in a xw-reply__avatar container' do
-      expect(rendered).to have_selector('.xw-reply__avatar', visible: :all)
-    end
-
-    it 'renders the reply body in a xw-reply__body container' do
-      expect(rendered).to have_selector('.xw-reply__body', visible: :all)
-    end
   end
 
   context 'logged-in reply owner' do

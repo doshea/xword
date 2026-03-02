@@ -2,10 +2,6 @@ describe CrosswordsController do
   let(:user)      { create(:user) }
   let(:crossword) { create(:crossword, :smaller) }
 
-  def log_in(u)
-    session[:user_id] = u.id
-  end
-
   describe 'before_actions' do
     it { should use_before_action(:ensure_owner_or_admin) }
   end

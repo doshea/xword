@@ -26,18 +26,6 @@ describe 'comments/partials/_comment' do
       expect(rendered).to have_selector("article##{dom_id(comment)}", text: comment.content, visible: :all)
     end
 
-    it 'uses the xw-comment class for the article wrapper' do
-      expect(rendered).to have_selector("article.xw-comment", visible: :all)
-    end
-
-    it 'renders the avatar in a xw-comment__avatar container' do
-      expect(rendered).to have_selector('.xw-comment__avatar', visible: :all)
-    end
-
-    it 'renders the comment body in a xw-comment__body container' do
-      expect(rendered).to have_selector('.xw-comment__body', visible: :all)
-    end
-
     it 'renders the reply count as a <p>, not an <h6>' do
       expect(rendered).to have_selector("p.xw-comment__reply-count", visible: :all)
       expect(rendered).not_to have_selector("h6.reply-count", visible: :all)

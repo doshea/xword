@@ -136,7 +136,6 @@ rspec-rails: 4.1.2 → 8.0.3
 - CarrierWave: `extension_white_list` → `extension_allowlist`; removed `config.fog_provider` (deprecated)
 - Factories: all static values wrapped in blocks; Faker positional args → keyword args
 - Controller specs: `get :action, id:` → `get :action, params: { id: }` (Rails 5+ style)
-- `rspec-its` gem added (extracted from rspec-core)
 - `Procfile` added (`web: bundle exec puma -C config/puma.rb`)
 - GitHub Actions CI added (Feb 2026): Postgres 16, Ruby from `.ruby-version`, runs rspec
 - **Hotwire migration** (Feb 2026): `turbolinks` + `jquery_ujs` → `turbo-rails` + `stimulus-rails`
@@ -159,7 +158,7 @@ rspec-rails: 4.1.2 → 8.0.3
   comments, crosswords, solutions, solution_partnerings, users (auth_token unique), etc.
 - **Signed auth cookies**: `cookies[:auth_token]` → `cookies.signed[:auth_token]` (HMAC-verified);
   session-based auth still works as legacy fallback
-- **Test suite fully filled out**: 406 examples, 0 failures, 3 pending. All controller specs (9 main + 6
+- **Test suite fully filled out**: all controller specs (9 main + 6
   admin) and model behavior specs written from scratch. Key patterns: `request.accept = Mime[:turbo_stream].to_s`
   for turbo_stream actions; `request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"` for `.js.erb`/`format.js`
   actions; `allow(Word).to receive(:word_match).and_return(...)` to stub external HTTP in words#match.
@@ -339,7 +338,7 @@ The solve and edit pages are the focus. Other pages still need attention:
 - **Controller specs**: require `rails-controller-testing` (installed)
 - **Shared helpers**: `spec/support/auth_helpers.rb` — `log_in(user)` for controller specs
 
-Run tests: `bundle exec rspec`  # 509 examples, 0 failures
+Run tests: `bundle exec rspec`  # ~510 examples, 0 failures
 
 ### Test-Writing Guidelines
 
@@ -368,9 +367,8 @@ new HTTP-layer specs should use `get '/path'` style, not `get :action, params:`.
 real value is testing methods that compute, transform, or make decisions. Test return values with
 concrete inputs, not just return type/shape.
 
-**Factories should be used or deleted.** Don't keep factory files that are never called (e.g., empty
-`word_factory.rb`, unused `cell_factory.rb`). If a record is always sourced from an association
-(cells from crossword), the factory is dead code.
+**Factories should be used or deleted.** If a record is always sourced from an association
+(cells from crossword), a standalone factory is dead code.
 
 ## Notable Gems and Their Roles
 
@@ -404,7 +402,7 @@ bundle install          # Install dependencies
 rails db:create         # Create dev + test databases
 rails db:migrate        # Run migrations
 rails server            # Start dev server (Puma)
-bundle exec rspec       # Run test suite (0 failures, 15 pending)
+bundle exec rspec       # Run test suite (~510 examples, 0 failures)
 rails console           # Interactive console
 ```
 

@@ -2,10 +2,6 @@ describe UnpublishedCrosswordsController do
   let(:user) { create(:user) }
   let(:ucw)  { create(:unpublished_crossword, user: user) }
 
-  def log_in(u)
-    session[:user_id] = u.id
-  end
-
   describe 'before_actions' do
     it { should use_before_action(:find_object) }
     it { should use_before_action(:ensure_owner_or_admin) }

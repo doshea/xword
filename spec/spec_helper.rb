@@ -7,7 +7,6 @@ SimpleCov.start 'rails'
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
-require 'rspec/its'
 require 'capybara/rspec'
 require 'capybara/cuprite'
 require 'launchy'
@@ -30,27 +29,26 @@ Shoulda::Matchers.configure do |config|
 end
 
 RSpec.configure do |c|
-  # Suppress deprecation warnings: suite uses the old :should syntax throughout.
-  # Re-evaluate when migrating to expect() syntax.
-  c.expect_with(:rspec) { |ec| ec.syntax = [:should, :expect] }
-  c.mock_with(:rspec)   { |mc| mc.syntax = [:should, :expect] }
+  c.expect_with(:rspec) { |ec| ec.syntax = :expect }
+  c.mock_with(:rspec)   { |mc| mc.syntax = :expect }
   # c.fail_fast = true
   c.infer_spec_type_from_file_location!
   c.include FactoryBot::Syntax::Methods
+  c.include AuthHelpers, type: :controller
 
   c.before(:suite) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean_with(:truncation)
   end
 
-  #Clean unless tagged with :dirty_inside
-  #For more info on around hooks, check out http://spin.atomicobject.com/2013/03/24/using-the-rspec-around-hook/
   c.around(:each) do |example|
-    if (example.metadata[:dirty_inside])
+    if example.metadata[:dirty_inside]
       example.run
+    elsif example.metadata[:js]
+      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.cleaning { example.run }
     else
-      DatabaseCleaner.cleaning do
-        example.run
-      end
+      DatabaseCleaner.strategy = :transaction
+      DatabaseCleaner.cleaning { example.run }
     end
   end
 

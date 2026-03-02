@@ -1,10 +1,6 @@
 describe AdminController do
   let(:admin) { create(:admin) }
 
-  def log_in_admin
-    session[:user_id] = admin.id
-  end
-
   context 'before_actions' do
     it { should use_before_action(:ensure_admin) }
   end
@@ -17,7 +13,7 @@ describe AdminController do
   end
 
   context 'as admin' do
-    before { log_in_admin }
+    before { log_in(admin) }
 
     describe 'GET #email' do
       before { get :email }

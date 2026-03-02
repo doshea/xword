@@ -2,10 +2,6 @@ describe AccountController do
   let(:pw)   { 'testpassword' }
   let(:user) { create(:full_user, password: pw, password_confirmation: pw) }
 
-  def log_in(u)
-    session[:user_id] = u.id
-  end
-
   context 'before_actions' do
     it { should use_before_action(:ensure_logged_in) }
   end

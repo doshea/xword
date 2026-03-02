@@ -2,10 +2,6 @@ describe Admin::UsersController do
   let(:admin)      { create(:admin) }
   let(:target_user) { create(:user) }
 
-  def log_in_admin
-    session[:user_id] = admin.id
-  end
-
   context 'before_actions' do
     it { should use_before_action(:ensure_admin) }
   end
@@ -18,7 +14,7 @@ describe Admin::UsersController do
   end
 
   context 'as admin' do
-    before { log_in_admin }
+    before { log_in(admin) }
 
     describe 'GET #index' do
       before { get :index }

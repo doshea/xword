@@ -7,11 +7,6 @@ describe CommentsController do
   # render_views is false (rspec-rails default) so no template is actually loaded.
   before { request.accept = Mime[:turbo_stream].to_s }
 
-  # Simulate logged-in state via session-based auth (ApplicationController#authenticate)
-  def log_in(u)
-    session[:user_id] = u.id
-  end
-
   describe 'POST #add_comment' do
     let(:content) { 'This puzzle was absolutely delightful!' }
 

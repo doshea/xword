@@ -1,8 +1,4 @@
 describe CluesController do
-  def log_in(u)
-    session[:user_id] = u.id
-  end
-
   # Clues are created by Crossword callbacks; pull from a crossword's cells.
   let(:user) { create(:user) }
   let(:crossword) { create(:crossword, :smaller, user: user) }

@@ -10,7 +10,7 @@ feature 'Login' do
         visit root_path
       end
       scenario 'arrive on home page successfully' do
-        current_path.should eq root_path
+        expect(page).to have_current_path(root_path)
       end
     end
 
@@ -25,15 +25,15 @@ feature 'Login' do
           click_button 'Log in'
         end
 
-        current_path.should eq root_path
-        page.should_not have_selector('#login-container')
+        expect(page).to have_current_path(root_path)
+        expect(page).not_to have_selector('#login-container')
         expect(page).to have_text("Welcome back, #{@user.username}")
       end
       scenario 'can see Forgot Password link and navigate using it' do
         forgot_password_text = 'Forgot your password?'
-        page.should have_link(forgot_password_text)
+        expect(page).to have_link(forgot_password_text)
         click_link(forgot_password_text)
-        current_path.should eq forgot_password_users_path
+        expect(page).to have_current_path(forgot_password_users_path)
       end
     end
 
