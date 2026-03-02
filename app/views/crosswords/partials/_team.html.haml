@@ -19,7 +19,7 @@
     %strong real-time
     &mdash; just send them the link to this puzzle!
   .team-modal__url-row
-    %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', onclick: 'this.select();'}
+    %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', data: {'xw-tooltip': 'Copy link'}, onclick: "this.select();navigator.clipboard.writeText(this.value);this.dataset.xwTooltip='Copied!';var t=this;setTimeout(function(){t.dataset.xwTooltip='Copy link'},1500)"}
     %button.team-modal__url-copy{type: 'button', data: {'xw-tooltip': 'Copy link'}, aria: {label: 'Copy link'}, onclick: "var i=this.closest('.team-modal__url-row').querySelector('input');i.select();navigator.clipboard.writeText(i.value);this.dataset.xwTooltip='Copied!';setTimeout(function(){this.dataset.xwTooltip='Copy link'}.bind(this),1500)"}= icon('link')
   %p.team-modal__footnote Now to find some friends&hellip;
 
