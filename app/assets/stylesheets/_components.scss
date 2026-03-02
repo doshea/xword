@@ -661,3 +661,170 @@
     color: var(--color-text-inverse);
   }
 }
+
+
+// ---------------------------------------------------------------------------
+// FOOTER — .xw-footer
+// ---------------------------------------------------------------------------
+// Dark bar matching nav aesthetic. Two-group flexbox: nav links left, social
+// icons right, stacks centered on mobile.
+// ---------------------------------------------------------------------------
+
+.xw-footer {
+  font-family: var(--font-ui);
+  background-color: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  margin-top: var(--space-16);
+  padding: var(--space-6) 0 var(--space-4);
+
+  a {
+    color: var(--color-footer-link);
+    text-decoration: none;
+    transition: var(--transition-colors);
+    &:hover { color: var(--color-footer-link-hover); }
+  }
+}
+
+.xw-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.xw-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.xw-footer__nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  transition: var(--transition-colors);
+
+  &:hover, &:focus-visible {
+    background-color: rgba(255, 255, 255, 0.12);
+    outline: none;
+  }
+}
+
+.xw-footer__social {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.xw-footer__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  transition: var(--transition-colors);
+
+  &:hover, &:focus-visible {
+    background-color: rgba(255, 255, 255, 0.12);
+    outline: none;
+  }
+}
+
+.xw-footer__copyright {
+  text-align: center;
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-nav-border);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: #{$bp-sm - 1}) {
+  .xw-footer__inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .xw-footer__nav {
+    justify-content: center;
+  }
+
+  .xw-footer__social {
+    justify-content: center;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// PROSE — .xw-prose
+// ---------------------------------------------------------------------------
+// Constrained-width long-form content (About, FAQ, Contact, etc.).
+// ---------------------------------------------------------------------------
+
+.xw-prose {
+  max-width: 42rem;
+  margin-inline: auto;
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    margin-bottom: var(--space-4);
+
+    &:first-child { margin-top: 0; }
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+
+    &:first-child { margin-top: 0; }
+  }
+
+  p {
+    font-family: var(--font-body);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-4);
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover { color: var(--color-accent-hover); }
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: var(--space-6) 0;
+  }
+
+  del {
+    color: var(--color-text-muted);
+  }
+
+  .xw-btn {
+    margin-top: var(--space-6);
+  }
+
+  .xw-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+}

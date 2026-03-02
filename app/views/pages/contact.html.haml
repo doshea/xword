@@ -1,7 +1,11 @@
 - title 'Contact'
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Contact'} do
-  %p
-    Questions, bug reports, puzzle suggestions, or just want to say hi? I'd love to hear from you.
-  %p
-    Email:
-    = mail_to 'dylan@crossword-cafe.org', 'dylan@crossword-cafe.org'
+  .xw-prose
+    %p
+      Questions, bug reports, puzzle suggestions, or just want to say hi? I'd love to hear from you.
+    %p
+      Email:
+      = mail_to 'dylan@crossword-cafe.org', 'dylan@crossword-cafe.org'
+    %p
+      GitHub:
+      %a{href: 'https://github.com/doshea/xword', target: '_blank', rel: 'noopener'} github.com/doshea/xword

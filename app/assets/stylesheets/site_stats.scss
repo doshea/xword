@@ -1,9 +1,15 @@
-canvas {
-  width: 100%;
-  max-width: 800px;
-  margin: var(--space-4) auto 0;
-  display: block;
-}
-h2 {
-  text-align: center;
+.xw-stats {
+  canvas {
+    width: 100%;
+    max-width: 800px;
+    margin: var(--space-4) auto 0;
+    display: block;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    text-align: center;
+  }
 }
