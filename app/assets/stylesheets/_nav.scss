@@ -334,7 +334,7 @@
 
 // Danger variant (logout link)
 .xw-nav__dropdown-item--danger {
-  i { color: #f77; }
+  i { color: var(--color-danger); }
 }
 
 
