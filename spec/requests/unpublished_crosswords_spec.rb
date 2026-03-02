@@ -1,6 +1,6 @@
 RSpec.describe 'UnpublishedCrosswords', type: :request do
-  let(:owner)  { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
-  let(:other)  { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:owner)  { create(:user, :with_test_password) }
+  let(:other)  { create(:user, :with_test_password) }
 
   # Build a publishable UCW: 4x4 grid, all letters filled, a couple of voids, clues on start cells
   def create_publishable_ucw(user:)

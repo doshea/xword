@@ -1,5 +1,5 @@
 RSpec.describe 'Check functions', type: :request do
-  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:user)      { create(:user, :with_test_password) }
   let(:crossword) { create(:predefined_five_by_five) }
   # 5x5 grid, correct letters = 'AMIGOVOLOWANIONIDOSELONER' (25 chars, 0-indexed)
   let(:correct_letters) { crossword.letters }
@@ -100,7 +100,7 @@ RSpec.describe 'Check functions', type: :request do
   # POST /crosswords/:id/check_cell — team mode
   # ---------------------------------------------------------------------------
   describe 'POST /crosswords/:id/check_cell (team)' do
-    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+    let(:owner)         { create(:user, :with_test_password) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     before do
@@ -210,7 +210,7 @@ RSpec.describe 'Check functions', type: :request do
   # POST /crosswords/:id/check_completion — team mode
   # ---------------------------------------------------------------------------
   describe 'POST /crosswords/:id/check_completion (team)' do
-    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+    let(:owner)         { create(:user, :with_test_password) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     before do

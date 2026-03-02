@@ -58,12 +58,6 @@ FactoryBot.define do
       end
     end
 
-    factory :five_by_five, parent: :predefined_five_by_five do
-      after(:create) do |crossword|
-        crossword.publish!
-      end
-    end
-
     #from http://www.rinkworks.com/brainfood/p/5box1.shtml
     factory :repeating_five_by_five do
       rows { 5 }
@@ -87,5 +81,9 @@ FactoryBot.define do
 
   end
 
-
+  factory :five_by_five, parent: :predefined_five_by_five do
+    after(:create) do |crossword|
+      crossword.publish!
+    end
+  end
 end

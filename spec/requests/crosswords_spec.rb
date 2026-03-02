@@ -1,5 +1,5 @@
 RSpec.describe 'Crosswords', type: :request do
-  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:user)      { create(:user, :with_test_password) }
   let(:crossword) { create(:predefined_five_by_five) }
   let(:correct_letters) { crossword.letters }
   let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }
@@ -66,7 +66,7 @@ RSpec.describe 'Crosswords', type: :request do
   # GET /crosswords/:id/team/:key — SolutionPartnering creation
   # -------------------------------------------------------------------------
   describe 'GET /crosswords/:id/team/:key (team join)' do
-    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+    let(:owner)         { create(:user, :with_test_password) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     context 'when a non-owner visits the team URL' do
@@ -158,7 +158,7 @@ RSpec.describe 'Crosswords', type: :request do
     end
 
     context 'with a partnered team solution (not owned but joined)' do
-      let(:owner) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:owner) { create(:user, :with_test_password) }
       let!(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
       before do

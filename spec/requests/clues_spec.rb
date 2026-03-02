@@ -1,6 +1,6 @@
 RSpec.describe 'Clues', type: :request do
-  let(:owner)    { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
-  let(:outsider) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:owner)    { create(:user, :with_test_password) }
+  let(:outsider) { create(:user, :with_test_password) }
   let(:crossword) { create(:crossword, :smaller, user: owner) }
   let(:clue)      { crossword.cells.find(&:across_clue).across_clue }
 
@@ -37,7 +37,7 @@ RSpec.describe 'Clues', type: :request do
     end
 
     context 'as an admin (not the owner)' do
-      let(:admin) { create(:admin, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:admin) { create(:admin, :with_test_password) }
 
       before { log_in_as(admin) }
 

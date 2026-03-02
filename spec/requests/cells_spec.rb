@@ -1,5 +1,5 @@
 RSpec.describe 'Cells', type: :request do
-  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:user)      { create(:user, :with_test_password) }
   let(:crossword) { create(:crossword, :smaller, user: user) }
 
   # -------------------------------------------------------------------------

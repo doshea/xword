@@ -1,5 +1,5 @@
 RSpec.describe 'Solutions', type: :request do
-  let(:user)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+  let(:user)      { create(:user, :with_test_password) }
   let(:crossword) { create(:predefined_five_by_five) }
   # 5x5 grid, correct letters = 'AMIGOVOLOWANIONIDOSELONER'
   let(:correct_letters) { crossword.letters }
@@ -74,7 +74,7 @@ RSpec.describe 'Solutions', type: :request do
     end
 
     context 'as a different user (not owner or partner)' do
-      let(:outsider) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:outsider) { create(:user, :with_test_password) }
 
       it 'returns 403 and does not modify the solution' do
         log_in_as(outsider)
@@ -86,7 +86,7 @@ RSpec.describe 'Solutions', type: :request do
     end
 
     context 'as a team partner (not owner)' do
-      let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:owner)         { create(:user, :with_test_password) }
       let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
       before do
@@ -121,7 +121,7 @@ RSpec.describe 'Solutions', type: :request do
     end
 
     context 'as a different user (not owner)' do
-      let(:outsider) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:outsider) { create(:user, :with_test_password) }
 
       it 'returns 403' do
         log_in_as(outsider)
@@ -205,7 +205,7 @@ RSpec.describe 'Solutions', type: :request do
   # Team solve — two users sending interleaved edits
   # -------------------------------------------------------------------------
   describe 'two users editing a team puzzle' do
-    let(:user_b)        { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+    let(:user_b)        { create(:user, :with_test_password) }
     let(:team_solution) { create(:solution, :team, user: user, crossword: crossword, letters: blank_letters) }
     let(:channel)       { "team_#{team_solution.key}" }
 
@@ -312,7 +312,7 @@ RSpec.describe 'Solutions', type: :request do
     end
 
     context 'team solution as a partner' do
-      let(:owner) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:owner) { create(:user, :with_test_password) }
       let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
       before do
@@ -327,7 +327,7 @@ RSpec.describe 'Solutions', type: :request do
     end
 
     context 'team solution as an unrelated user' do
-      let(:owner) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:owner) { create(:user, :with_test_password) }
       let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
       before { log_in_as(user) }
@@ -382,9 +382,9 @@ RSpec.describe 'Solutions', type: :request do
   # Team action authorization — only owner and partners may call team actions
   # -------------------------------------------------------------------------
   describe 'team action authorization' do
-    let(:owner)         { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+    let(:owner)         { create(:user, :with_test_password) }
     let(:partner)       { user }  # reuse `user` let as the partner
-    let(:outsider)      { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+    let(:outsider)      { create(:user, :with_test_password) }
     let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
     before do
@@ -483,7 +483,7 @@ RSpec.describe 'Solutions', type: :request do
   # -------------------------------------------------------------------------
   describe 'DELETE /solutions/:id (destroy)' do
     context 'as a partner (not owner)' do
-      let(:owner) { create(:user, password: RequestAuthHelpers::TEST_PASSWORD, password_confirmation: RequestAuthHelpers::TEST_PASSWORD) }
+      let(:owner) { create(:user, :with_test_password) }
       let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
 
       before do

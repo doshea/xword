@@ -39,6 +39,11 @@ FactoryBot.define do
       is_admin { true }
     end
 
+    trait :with_test_password do
+      password { RequestAuthHelpers::TEST_PASSWORD }
+      password_confirmation { RequestAuthHelpers::TEST_PASSWORD }
+    end
+
     ### INVALID ###
 
     # Short_attributes
