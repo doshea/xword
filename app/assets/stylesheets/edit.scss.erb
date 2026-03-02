@@ -1,8 +1,8 @@
-$bottomcolor: black;
+// --- Tool panel buttons ---
 
 .side-button {
-  background: black;
-  color: whitesmoke;
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
   font-size: 1.5em;
 
   #settings-button {
@@ -16,27 +16,29 @@ $bottomcolor: black;
 }
 
 .bottom-button {
-  background: black;
-  color: whitesmoke;
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
   font-size: 1.25em;
   position: absolute;
   top: -1.5em;
   width: 6em;
   z-index: 1;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--color-nav-border);
 }
 #ideas-button {
   border-top-right-radius: 0.5em;
   padding: 0.3em 0.4em 0.2em 0.3em;
-  border-right: 1px solid #444;
+  border-right: 1px solid var(--color-nav-border);
 }
 #pattern-search-button {
   width: 9em;
   left: 5.8em;
   border-top-left-radius: 0.5em;
   padding: 0.3em 0.3em 0.2em 0.4em;
-  border-left: 1px solid #444;
+  border-left: 1px solid var(--color-nav-border);
 }
+
+// --- Slide-up tool panels ---
 
 .slide-up-container {
   z-index: 70001;
@@ -58,6 +60,9 @@ $bottomcolor: black;
     top: 95px;
   }
 }
+
+// --- Edit header ---
+
 .xw-edit-header {
   display: flex;
   align-items: center;
@@ -115,9 +120,8 @@ $bottomcolor: black;
   }
 }
 
-// Make edit-page clue inputs expand to fill the flexible column width.
-// Overrides the text-indent hanging-indent with flexbox so the input
-// takes all remaining space after the clue number.
+// --- Clue column (edit-page flexbox overrides) ---
+
 .clue-column .clues .clue {
   display: flex;
   align-items: baseline;
@@ -154,6 +158,8 @@ $bottomcolor: black;
   }
 }
 
+// --- Switches ---
+
 .xw-edit-switches {
   list-style: none;
   margin: 0;
@@ -162,6 +168,8 @@ $bottomcolor: black;
   flex-wrap: wrap;
   gap: 0.75em 1.5em;
 }
+
+// --- Title input ---
 
 #title {
   margin: 0;
@@ -173,7 +181,7 @@ $bottomcolor: black;
   right: 1em;
   height: 100%;
   padding: 0 0.5em 0;
-  color: black;
+  color: var(--color-text);
   opacity: 0;
   background-repeat: no-repeat;
   background-position: 50%;
@@ -186,6 +194,8 @@ $bottomcolor: black;
     padding: 0 0.2em 0;
   }
 }
+
+// --- Section overrides ---
 
 // On the edit page, #advanced is the last paper section (not #meta-area).
 #meta-area { border-radius: 0; }
@@ -224,27 +234,23 @@ $bottomcolor: black;
   }
 }
 
-#settings {
-    color: whitesmoke;
-    border-radius: 1px;
-    background: $bottomcolor;
-  }
+// --- Tool panels ---
 
 #pattern-search {
   position: absolute;
-  background: $bottomcolor;
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
   max-height: 80%;
   min-height: 20em;
   width: 18.5em;
   padding: 1em;
-  border-left: 1px solid #444;
-  border-bottom: 1px solid #444;
-  border-top: 1px solid #444;
-
+  border-left: 1px solid var(--color-nav-border);
+  border-bottom: 1px solid var(--color-nav-border);
+  border-top: 1px solid var(--color-nav-border);
 }
 
 #word-match-results {
-  background: white;
+  background: var(--color-surface);
   overflow-y: auto;
   max-height: 25em;
 
@@ -255,9 +261,10 @@ $bottomcolor: black;
   li {
     display: inline-block;
     font-size: small;
+    color: var(--color-text);
 
     &:hover {
-      color: blue;
+      color: var(--color-accent);
     }
   }
 }
@@ -274,17 +281,18 @@ $bottomcolor: black;
 #ideas {
   position: absolute;
   text-transform: uppercase;
-  background: $bottomcolor;
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
   max-height: 80%;
   min-height: 20em;
   width: 18.5em;
   padding: 1em;
-  border-right: 1px solid #444;
-  border-bottom: 1px solid #444;
-  border-top: 1px solid #444;
+  border-right: 1px solid var(--color-nav-border);
+  border-bottom: 1px solid var(--color-nav-border);
+  border-top: 1px solid var(--color-nav-border);
 
   ul {
-    background: white;
+    background: var(--color-surface);
     overflow-y: auto;
     margin: 0;
     width: 16.5em;
@@ -297,11 +305,11 @@ $bottomcolor: black;
       transition: background 0.4s;
 
       &:nth-child(even) {
-        background: #eee;
+        background: var(--color-surface-sunken);
       }
 
       &.added-word {
-        background: lightgreen;
+        background: var(--color-success);
         display: none;
       }
 
@@ -313,6 +321,22 @@ $bottomcolor: black;
     }
   }
 }
+
+// Potential word row — replaces inline style="margin: 0 auto"
+.potential-word__row {
+  margin: 0 auto;
+}
+
+// Settings modal placeholder
+.settings-modal__placeholder {
+  font-family: var(--font-ui);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-4) 0;
+}
+
+// --- Toggle switches ---
+
 $switch-height: 1.8em;
 $switch-width: 4em;
 $pip-diameter: $switch-width/3;
@@ -378,6 +402,8 @@ $switch-off-color: #c4bbb2;  // warm neutral gray — recedes instead of screami
   }
 }
 
+// --- Miscellaneous ---
+
 #tools {
   position: fixed;
   height: 300px;
@@ -399,15 +425,20 @@ $switch-off-color: #c4bbb2;  // warm neutral gray — recedes instead of screami
   }
 }
 
-::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 8px;
+// Cross-browser scrollbar styling
+// Standard properties (Firefox, Chrome 121+)
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
 }
-
+// WebKit fallback (older Chrome/Safari)
+::-webkit-scrollbar {
+  width: 8px;
+}
 ::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    border: 2px solid white; /* should match background, can't be transparent */
-    background-color: rgba(0, 0, 0, .5);
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 @media (max-height: 700px){

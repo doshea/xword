@@ -54,6 +54,10 @@ describe 'unpublished_crosswords/edit' do
     expect(rendered).to have_selector('h2#settings-heading', text: 'Edit Settings', visible: :all)
   end
 
+  it 'does not render bare unlabeled checkboxes in the settings modal' do
+    expect(rendered).not_to have_selector('#edit-settings input[type="checkbox"]:not([id])', visible: :all)
+  end
+
   # -----------------------------------------------------------------------
   # Quicksave button
   # -----------------------------------------------------------------------

@@ -1,6 +1,6 @@
 / id="potential-word-#{word.downcase}" added so remove_potential_word.turbo_stream.erb can target this element
 %li.word{id: "potential-word-#{word.downcase}", data: {length: word.length, word: word}}
-  .xw-grid{style: 'margin: 0 auto;'}
+  .xw-grid.potential-word__row
     .length.xw-col-1 (#{word.length})
     .xw-col-10= word
     .xw-col-1

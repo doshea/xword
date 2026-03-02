@@ -26,6 +26,10 @@ describe 'unpublished_crosswords/partials/_potential_word' do
         visible: :all
       )
     end
+
+    it 'does not use inline style attributes' do
+      expect(rendered).not_to have_selector('[style]', visible: :all)
+    end
   end
 
   context 'for a short word' do
