@@ -16,7 +16,7 @@
     .xw-edit-header
       %label.xw-edit-header__label{for: 'title'} Title:
       .xw-edit-header__title
-        = text_field_tag 'title', @unpublished_crossword.title
+        = text_field_tag 'title', @unpublished_crossword.title, autocomplete: 'off'
         %i#title-status
       #puzzle-controls
         %span#save-status.smaller No changes yet
@@ -32,7 +32,7 @@
   .xw-col-full
     .xw-field
       %label.xw-label{for: 'description'} Description
-      = text_area_tag :description, @unpublished_crossword.description, class: 'xw-textarea', rows: 4, placeholder: "Say something about the making of this crossword — or anything interesting that doesn't spoil the puzzle!"
+      = text_area_tag :description, @unpublished_crossword.description, class: 'xw-textarea', autocomplete: 'off', rows: 4, placeholder: "Say something about the making of this crossword — or anything interesting that doesn't spoil the puzzle!"
   %hr
 %section.xw-container.xw-grid#advanced{aria: {labelledby: 'advanced-heading'}}
   %h2.xw-col-full#advanced-heading Advanced Controls

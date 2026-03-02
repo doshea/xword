@@ -12,7 +12,7 @@
   solve_app.crossword_id = #{@crossword.try(:id).to_json}
   solve_app.anonymous = #{@current_user.nil?.to_json}
 
-- if (@current_user == @crossword.user)
+- if @crossword.user && (@current_user == @crossword.user)
   .xw-alert.xw-alert--info{data: {controller: 'alert'}}
     .center
       You are the creator of this puzzle
@@ -114,7 +114,7 @@
       -if @current_user
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
         = form_with(url: add_comment_path(@crossword), id: 'comment-form') do |f|
-          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea', placeholder: 'What did you think of this crossword?')
+          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea', autocomplete: 'off', placeholder: 'What did you think of this crossword?')
       -else
         =link_to 'Sign up', new_user_path
         or

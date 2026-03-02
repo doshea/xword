@@ -26,7 +26,7 @@
             Never mind
           / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
           = form_with(url: reply_to_comment_path(comment), class: 'reply-form') do |f|
-            = text_area_tag('content', nil, id: nil, class: 'reply-content xw-textarea')
+            = text_area_tag('content', nil, id: nil, class: 'reply-content xw-textarea', autocomplete: 'off')
       / %li
       /   %a{href: ""} Share
     / id added so reply.turbo_stream.erb can update the reply count display
