@@ -1,3 +1,5 @@
+@import 'design_tokens';
+
 // --- Tool panel buttons ---
 
 .side-button {
@@ -429,5 +431,24 @@ $switch-off-color: #c4bbb2;  // warm neutral gray — recedes instead of screami
 @media (max-height: 700px){
   #ideas ul, #word-match-results {
     max-height: 15em;
+  }
+}
+
+// --- Phone: full-width tool panels ---
+@media (max-width: #{$bp-sm - 1}) {
+  .slide-up-container {
+    &#pattern-container,
+    &#idea-container {
+      left: 0;
+      right: 0;
+      width: 100%;
+    }
+  }
+  #pattern-search,
+  #ideas {
+    width: 100%;
+  }
+  #ideas ul {
+    width: 100%;
   }
 }

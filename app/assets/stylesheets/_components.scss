@@ -424,6 +424,17 @@
   }
 }
 
+// Mobile: scrollable tabs to prevent overflow on narrow screens
+@media (max-width: #{$bp-sm - 1}) {
+  .xw-tabs .xw-tabs__nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+  .xw-tab { white-space: nowrap; }
+}
+
 .xw-tab-panels { flex: 1; min-width: 0; }
 
 .xw-tab-panel {
