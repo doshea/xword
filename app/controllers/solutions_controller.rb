@@ -3,6 +3,7 @@ class SolutionsController < ApplicationController
   prepend_before_action :guard_null_solution_id, only: [:update]
   before_action :find_object, only: [:update, :get_incorrect]
   before_action :ensure_logged_in, only: [:destroy, :team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
+  before_action :ensure_solution_access, only: [:update, :get_incorrect]
   before_action :ensure_team_member, only: [:team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
   before_action :ensure_owner_or_partner, only: [:destroy]
 
@@ -140,6 +141,16 @@ class SolutionsController < ApplicationController
   # The JS guard in save_solution() should prevent this, but this is the server-side safety net.
   def guard_null_solution_id
     head :ok if params[:id].to_i <= 0
+  end
+
+  # Verify the current user owns the solution or is a team partner.
+  # Runs after find_object (which sets @solution). Returns 403 for
+  # unauthenticated or unauthorized users — appropriate for AJAX endpoints.
+  def ensure_solution_access
+    return head(:forbidden) unless @current_user
+    return if @current_user == @solution.user
+    return if SolutionPartnering.exists?(solution_id: @solution.id, user_id: @current_user.id)
+    head :forbidden
   end
 
   def ensure_team_member

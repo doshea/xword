@@ -64,6 +64,79 @@ RSpec.describe 'Solutions', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # PUT /solutions/:id — authorization
+  # -------------------------------------------------------------------------
+  describe 'PUT /solutions/:id authorization' do
+    let(:xhr_headers) { { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' } }
+
+    context 'as an anonymous user' do
+      it 'returns 403 and does not modify the solution' do
+        original_letters = solution.letters
+        put "/solutions/#{solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: xhr_headers
+        expect(response).to have_http_status(:forbidden)
+        expect(solution.reload.letters).to eq original_letters
+      end
+    end
+
+    context 'as a different user (not owner or partner)' do
+      let(:outsider) { create(:user, password: test_password, password_confirmation: test_password) }
+
+      it 'returns 403 and does not modify the solution' do
+        log_in_as(outsider)
+        original_letters = solution.letters
+        put "/solutions/#{solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: xhr_headers
+        expect(response).to have_http_status(:forbidden)
+        expect(solution.reload.letters).to eq original_letters
+      end
+    end
+
+    context 'as a team partner (not owner)' do
+      let(:owner)         { create(:user, password: test_password, password_confirmation: test_password) }
+      let(:team_solution) { create(:solution, :team, user: owner, crossword: crossword, letters: blank_letters) }
+
+      before do
+        SolutionPartnering.create!(user: user, solution: team_solution)
+        log_in_as(user)
+      end
+
+      it 'allows saving the team solution' do
+        partial = blank_letters.dup
+        partial[0] = 'A'
+        put "/solutions/#{team_solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: xhr_headers
+        expect(response).to have_http_status(:ok)
+        expect(team_solution.reload.letters[0]).to eq 'A'
+      end
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # POST /solutions/:id/get_incorrect — authorization
+  # -------------------------------------------------------------------------
+  describe 'POST /solutions/:id/get_incorrect authorization' do
+    context 'as an anonymous user' do
+      it 'returns 403' do
+        post "/solutions/#{solution.id}/get_incorrect", params: { letters: correct_letters }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'does not mark the solution complete' do
+        post "/solutions/#{solution.id}/get_incorrect", params: { letters: correct_letters }
+        expect(solution.reload.is_complete).to be false
+      end
+    end
+
+    context 'as a different user (not owner)' do
+      let(:outsider) { create(:user, password: test_password, password_confirmation: test_password) }
+
+      it 'returns 403' do
+        log_in_as(outsider)
+        post "/solutions/#{solution.id}/get_incorrect", params: { letters: correct_letters }
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # Team solve — broadcasting cell changes
   # -------------------------------------------------------------------------
   describe 'PATCH /solutions/:id/team_update (team cell broadcast)' do
@@ -284,6 +357,8 @@ RSpec.describe 'Solutions', type: :request do
   # POST /solutions/:id/get_incorrect
   # -------------------------------------------------------------------------
   describe 'POST /solutions/:id/get_incorrect' do
+    before { log_in_as(user) }
+
     it 'returns 200 with correct letters (no mismatches)' do
       post "/solutions/#{solution.id}/get_incorrect", params: { letters: correct_letters }
       expect(response).to have_http_status(:ok)
