@@ -61,7 +61,7 @@ describe SolutionsController do
 
       it 'broadcasts change_cell via ActionCable and returns 200' do
         expect(ActionCable.server).to receive(:broadcast)
-          .with("team_#{team_solution.key}", hash_including(event: 'change_cell'))
+          .with("team_#{team_solution.key}", hash_including(event: 'change_cell', server_time: a_kind_of(Integer)))
         patch :team_update, params: {
           id: team_solution.id, row: '0', col: '1', letter: 'A',
           solver_id: 'abc', red: '100', green: '200', blue: '50'

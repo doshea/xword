@@ -75,7 +75,8 @@ RSpec.describe 'Solutions', type: :request do
       expect(ActionCable.server).to receive(:broadcast)
         .with("team_#{team_solution.key}", hash_including(
           event: 'change_cell',
-          row: '3', col: '2', letter: 'A', solver_id: 'solver1'
+          row: '3', col: '2', letter: 'A', solver_id: 'solver1',
+          server_time: a_kind_of(Integer)
         ))
 
       patch "/solutions/#{team_solution.id}/team_update", params: {
@@ -88,7 +89,8 @@ RSpec.describe 'Solutions', type: :request do
     it 'includes solver color in the broadcast' do
       expect(ActionCable.server).to receive(:broadcast)
         .with("team_#{team_solution.key}", hash_including(
-          red: '255', green: '0', blue: '128'
+          red: '255', green: '0', blue: '128',
+          server_time: a_kind_of(Integer)
         ))
 
       patch "/solutions/#{team_solution.id}/team_update", params: {
@@ -100,7 +102,8 @@ RSpec.describe 'Solutions', type: :request do
     it 'broadcasts a delete (empty letter) when a cell is cleared' do
       expect(ActionCable.server).to receive(:broadcast)
         .with("team_#{team_solution.key}", hash_including(
-          event: 'change_cell', letter: ''
+          event: 'change_cell', letter: '',
+          server_time: a_kind_of(Integer)
         ))
 
       patch "/solutions/#{team_solution.id}/team_update", params: {
@@ -169,6 +172,30 @@ RSpec.describe 'Solutions', type: :request do
       expect(broadcasts[0]).to include(solver_id: 'solverA', letter: 'A', row: '1', col: '1')
       expect(broadcasts[1]).to include(solver_id: 'solverB', letter: 'V', row: '2', col: '1')
       expect(broadcasts[2]).to include(solver_id: 'solverA', letter: 'M', row: '1', col: '2')
+
+      timestamps = broadcasts.map { |b| b[:server_time] }
+      timestamps.each { |t| expect(t).to be_a(Integer) }
+      expect(timestamps).to eq(timestamps.sort)
+    end
+
+    it 'includes monotonically non-decreasing server_time across successive broadcasts' do
+      broadcasts = []
+      allow(ActionCable.server).to receive(:broadcast) do |ch, payload|
+        broadcasts << payload if ch == channel
+      end
+
+      log_in_as(user)
+      5.times do |i|
+        patch "/solutions/#{team_solution.id}/team_update", params: {
+          row: '0', col: i.to_s, letter: ('A'.ord + i).chr,
+          solver_id: 'solverA', red: '0', green: '0', blue: '0'
+        }
+      end
+
+      timestamps = broadcasts.map { |b| b[:server_time] }
+      expect(timestamps.length).to eq 5
+      timestamps.each { |t| expect(t).to be_a(Integer).and be > 0 }
+      timestamps.each_cons(2) { |a, b| expect(b).to be >= a }
     end
 
     it 'saves the team solution when either user triggers a full save' do

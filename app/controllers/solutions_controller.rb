@@ -54,7 +54,8 @@ class SolutionsController < ApplicationController
                 solver_id: params[:solver_id],
                 red: params[:red],
                 green: params[:green],
-                blue: params[:blue]
+                blue: params[:blue],
+                server_time: Process.clock_gettime(Process::CLOCK_REALTIME, :millisecond)
                 }
 
     team_broadcast(solution, { event: 'change_cell' }.merge(data))

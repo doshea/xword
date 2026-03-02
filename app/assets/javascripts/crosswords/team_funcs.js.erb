@@ -14,6 +14,7 @@ window.team_app = {
   last_chat_sender:      null,
   display_name:          team_app.display_name,  // copied from view-injected stub
   solver_id:             team_app.solver_id,
+  cellTimestamps:        {},  // maps "row,col" → last server_time (ms) for LWW gating
   outline_timers:        {},  // per-solver timeout IDs for clue outline fade-out
 
   // Toggle the team chat tray open/closed; reset unread count when opening
@@ -35,6 +36,8 @@ window.team_app = {
 
   // PATCH → server → ActionCable: broadcasts this solver's cell change to all teammates
   send_team_cell: function($cell, letter) {
+    var key = $cell.data('row') + ',' + $cell.data('col');
+    team_app.cellTimestamps[key] = Infinity; // protect cell until our echo returns
     var token = $('#crossword').data('auth-token');
     $.ajax({
       type: 'PATCH',
@@ -118,23 +121,39 @@ window.team_app = {
   // ACTIONCABLE RECEIVES
   //------------------
 
-  // Another solver typed a letter: update the cell and play a throttled clack sound
+  // Another solver typed a letter — last-writer-wins via server_time gating.
+  // Own echo: record timestamp (downgrades Infinity), don't touch display.
+  // Teammate newer: apply edit, record timestamp. Teammate stale: drop silently.
   receive_team_cell: function(data) {
-    if (team_app.solver_id !== data.solver_id) {
-      var $cell = $(".cell[data-row=" + data.row + "][data-col=" + data.col + "]");
-      var now   = Date.now();
-      if (!(team_app.last_clack && (now - team_app.last_clack < 4000))) {
-        team_app.last_clack = now;
-        team_app.cell_clack_sound.play();
-      }
-      $cell.children('.flag').stop()
-        .css('background', 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')')
-        .animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
-      if (data.letter === '') {
-        $cell.delete_letter(false);
-      } else {
-        $cell.set_letter(data.letter, false);
-      }
+    var key       = data.row + ',' + data.col;
+    var stored    = team_app.cellTimestamps[key] || 0;
+    var timestamp = data.server_time || 0;
+
+    if (team_app.solver_id === data.solver_id) {
+      // Own echo — record the real server timestamp (replaces Infinity)
+      team_app.cellTimestamps[key] = timestamp;
+      return;
+    }
+
+    // Stale broadcast from a teammate — drop silently
+    if (timestamp <= stored) return;
+
+    // Newer teammate edit — apply it
+    team_app.cellTimestamps[key] = timestamp;
+
+    var $cell = $(".cell[data-row=" + data.row + "][data-col=" + data.col + "]");
+    var now   = Date.now();
+    if (!(team_app.last_clack && (now - team_app.last_clack < 4000))) {
+      team_app.last_clack = now;
+      team_app.cell_clack_sound.play();
+    }
+    $cell.children('.flag').stop()
+      .css('background', 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')')
+      .animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
+    if (data.letter === '') {
+      $cell.delete_letter(false);
+    } else {
+      $cell.set_letter(data.letter, false);
     }
   },
 
