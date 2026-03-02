@@ -25,27 +25,27 @@ tr:not(:hover){
 .hidden-canvas {
   position: absolute;
   margin: 0;
-  transition: all 0.3s linear;
-  background-color: rgba(43, 166, 203, 0.5);
+  transition: all var(--duration-slow) linear;
+  background-color: rgba(74, 127, 165, 0.4); // --color-info tinted overlay
 }
 table {
   margin: 0.5em 0 1.5em 1em;
 }
 button, form {
   margin: 0;
-  transition: all 0.3s;
+  transition: all var(--duration-slow);
 }
 button {
   padding: 0.5em 1em;
 }
 .xw-icon {
-  transition: all 0.3s;
+  transition: all var(--duration-slow);
   &.xw-icon--trash-2:hover {
-    color: #f04124;
+    color: var(--color-danger);
   }
 }
 a {
-  transition: all 0.3s;
+  transition: all var(--duration-slow);
 }
 a.not-blue {
   color: inherit;

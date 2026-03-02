@@ -1,28 +1,28 @@
 $standard-img-dim: 75px;
 
 .puzzle-tabs {
-  padding: 1em;
+  padding: var(--space-4);
 
   // Multi-column grid for crossword card lists — replaces Foundation .large-3.columns
   // that was removed from _crossword_tab.html.haml in Phase 3.
   ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 0.5em;
-    margin-bottom: 1em;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
   }
 
   .result-user {
     text-align: center;
-    border-radius: 1em;
+    border-radius: var(--radius-lg);
     filter: grayscale(80%);
-    transition: all 0.6s;
+    transition: all var(--duration-slower) var(--ease-in-out);
     &:hover {
       filter: grayscale(0%);
-      background: lightgrey;
+      background: var(--color-surface-alt);
     }
     img {
-      margin-top: 0.5em;
+      margin-top: var(--space-2);
     }
     p.name {
       text-align: center;
@@ -31,28 +31,30 @@ $standard-img-dim: 75px;
 }
 
 .result-crossword {
-  border: 1px dotted lightgrey;
-  transition: background 0.4s;
-  &:hover{
-    background: lightgrey;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-slow) var(--ease-in-out);
+  &:hover {
+    background: var(--color-surface-alt);
   }
   .xw-grid {
-    padding: 0.5em 0;
+    padding: var(--space-2) 0;
     .metadata {
-      padding-left: 1.2em;
+      padding-left: var(--space-4);
       p {
         margin: 0;
         &.title {
-          font-weight: bold;
-          font-size: smaller;
-          line-height: 1em;
+          font-weight: var(--weight-semibold);
+          font-size: var(--text-sm);
+          line-height: var(--leading-tight);
         }
         &.byline {
           font-style: italic;
-          font-size: smaller;
+          font-size: var(--text-sm);
         }
         &.dimensions {
-          font-size: smaller;
+          font-size: var(--text-sm);
+          color: var(--color-text-muted);
         }
       }
     }
@@ -75,7 +77,7 @@ $standard-img-dim: 75px;
 
 .nyt-watermark {
   position: absolute;
-  right: 1em;
-  bottom: 0.5em;
+  right: var(--space-4);
+  bottom: var(--space-2);
   height: 1.5em;
 }
