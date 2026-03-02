@@ -20,7 +20,7 @@
           %td= solution.id
           %td= solution.crossword ? link_to(solution.crossword.title, solution.crossword) : 'NONE'
           %td= solution.user ? link_to(solution.user.username, solution.user) : '[deleted]'
-          %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= solution.letters
+          %td.xw-admin-cell--compact= solution.letters
           %td
             - if solution.is_complete
               = icon('check')

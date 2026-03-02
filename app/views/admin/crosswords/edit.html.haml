@@ -22,7 +22,7 @@
       = f.text_area :description
     .xw-col-full
       = f.label :letters
-      = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, style: 'text-transform: uppercase;'
+      = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, class: 'xw-textarea--uppercase'
     .xw-col-full
       = f.button class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
   .xw-col-full

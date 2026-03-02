@@ -16,7 +16,7 @@
       = f.label :image
       = image_tag @user.image.creator_pic.url
       = f.text_field :image
-    .xw-col-12.xw-lg-2{style: @user.is_admin ? 'background: lightgreen;' : nil}
+    .xw-col-12.xw-lg-2{class: ('xw-admin-highlight' if @user.is_admin)}
       = f.label :is_admin, 'Admin'
       = f.check_box :is_admin
     .xw-col-full

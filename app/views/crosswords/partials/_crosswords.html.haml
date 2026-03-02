@@ -17,10 +17,10 @@
         %td= link_to crossword.id, crossword
         %td= link_to crossword.title, crossword
         %td= crossword.user ? link_to(crossword.user.username, crossword.user) : '[deleted]'
-        %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.description
+        %td.xw-admin-cell--compact= crossword.description
         %td= crossword.rows
         %td= crossword.cols
-        %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.letters
+        %td.xw-admin-cell--compact= crossword.letters
         %td
           - if crossword.circled?
             = icon('check')
