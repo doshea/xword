@@ -247,7 +247,8 @@ window.team_app = {
 // Use turbo:load so team initialization runs after Turbo Drive replaces the body.
 // Remove+re-add to prevent duplicate listeners if the script re-executes.
 function team_funcs_ready() {
-  document.getElementById('team-explanation').showModal();
+  var teamModal = document.getElementById('team-explanation');
+  if (teamModal) teamModal.showModal();
 
   var EVENT_HANDLERS = {
     change_cell:       team_app.receive_team_cell,
