@@ -39,6 +39,9 @@ class Word < ApplicationRecord
     page = Nokogiri::HTML(URI.open(url))
     results = page.css('font[face=Courier]').text.split(", \n")
     results
+  rescue StandardError => e
+    Rails.logger.error("Word.word_match failed for pattern '#{pattern}': #{e.class} — #{e.message}")
+    []
   end
 end
 

@@ -18,6 +18,12 @@ feature 'Edit crossword', js: true do
     expect(page).to have_css('table#crossword')
   end
 
+  # Helper: wait for the 0.4s CSS slide-up transition to settle so Cuprite
+  # clicks hit the correct screen coordinates.
+  def wait_for_panel_transition
+    sleep 0.5
+  end
+
   # -----------------------------------------------------------------------
   # Settings modal
   # -----------------------------------------------------------------------
@@ -41,7 +47,9 @@ feature 'Edit crossword', js: true do
     find('#ideas-button').click
     expect(page).to have_css('#idea-container.open')
 
-    # Click again to close
+    # Wait for the slide-up transition before clicking the same button again;
+    # the button moves during the transition and Cuprite misses it otherwise.
+    wait_for_panel_transition
     find('#ideas-button').click
     expect(page).not_to have_css('#idea-container.open')
   end
@@ -49,6 +57,7 @@ feature 'Edit crossword', js: true do
   scenario 'adding a word via the notepad' do
     find('#ideas-button').click
     expect(page).to have_css('#idea-container.open')
+    wait_for_panel_transition
 
     fill_in 'word', with: 'HELLO'
     find('#ideas-input').send_keys(:return)
@@ -64,6 +73,7 @@ feature 'Edit crossword', js: true do
 
     find('#ideas-button').click
     expect(page).to have_css('#idea-container.open')
+    wait_for_panel_transition
 
     fill_in 'word', with: 'HELLO'
     find('#ideas-input').send_keys(:return)
@@ -80,7 +90,8 @@ feature 'Edit crossword', js: true do
     find('#pattern-search-button').click
     expect(page).to have_css('#pattern-container.open')
 
-    # Click again to close
+    # Wait for the slide-up transition before clicking the same button again
+    wait_for_panel_transition
     find('#pattern-search-button').click
     expect(page).not_to have_css('#pattern-container.open')
   end
@@ -104,6 +115,7 @@ feature 'Edit crossword', js: true do
 
     find('#ideas-button').click
     expect(page).to have_css('#potential-words-list li', text: 'HELLO')
+    wait_for_panel_transition
 
     find('a[aria-label="Remove HELLO from word list"]').click
     expect(page).not_to have_css('#potential-words-list li', text: 'HELLO')

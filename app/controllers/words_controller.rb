@@ -13,6 +13,7 @@ class WordsController < ApplicationController
 
   #POST /words/match or match_words_path
   def match
-    @results = Word.word_match(params[:pattern].gsub(/_|-/, '?')).map(&:upcase)
+    pattern = params[:pattern].to_s.strip
+    @results = pattern.present? ? Word.word_match(pattern.gsub(/_|-/, '?')).map(&:upcase) : []
   end
 end
