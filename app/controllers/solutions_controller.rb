@@ -8,6 +8,10 @@ class SolutionsController < ApplicationController
   #GET /solutions/:id or solution_path
   def show
     solution = Solution.find(params[:id])
+    unless solution.crossword
+      redirect_to root_path, alert: "This puzzle is no longer available."
+      return
+    end
     if solution.team
       if @current_user && ((@current_user == solution.user) || SolutionPartnering.where(solution_id: solution.id, user_id: @current_user.id).any?)
         redirect_to team_crossword_path(solution.crossword.id, solution.key)
@@ -29,6 +33,10 @@ class SolutionsController < ApplicationController
   #POST /solutions/:id/get_incorrect or get_incorrect_solution_path
   # get_incorrect.js.erb was all commented-out dead code; replaced with head :ok
   def get_incorrect
+    unless @solution.crossword
+      head :not_found
+      return
+    end
     @mismatches = @solution.crossword.get_mismatches(params[:letters])
     if @mismatches.empty?
       @solution.update(is_complete: true)
@@ -49,7 +57,7 @@ class SolutionsController < ApplicationController
                 blue: params[:blue]
                 }
 
-    ActionCable.server.broadcast(team_channel(solution), { event: 'change_cell' }.merge(data))
+    team_broadcast(solution, { event: 'change_cell' }.merge(data))
 
     head :ok
   end
@@ -64,7 +72,7 @@ class SolutionsController < ApplicationController
             green: params[:green],
             blue: params[:blue]
             }
-    ActionCable.server.broadcast(team_channel(solution), { event: 'join_puzzle' }.merge(data))
+    team_broadcast(solution, { event: 'join_puzzle' }.merge(data))
     head :ok
   end
 
@@ -72,7 +80,7 @@ class SolutionsController < ApplicationController
   def leave_team
     solution = Solution.find(params[:id])
     data = {solver_id: params[:solver_id]}
-    ActionCable.server.broadcast(team_channel(solution), { event: 'leave_puzzle' }.merge(data))
+    team_broadcast(solution, { event: 'leave_puzzle' }.merge(data))
     head :ok
   end
 
@@ -80,7 +88,7 @@ class SolutionsController < ApplicationController
   def roll_call
     solution = Solution.find(params[:id])
     data = {}
-    ActionCable.server.broadcast(team_channel(solution), { event: 'roll_call' }.merge(data))
+    team_broadcast(solution, { event: 'roll_call' }.merge(data))
     head :ok
   end
 
@@ -90,7 +98,7 @@ class SolutionsController < ApplicationController
     data = {display_name: params[:display_name],
                 avatar: params[:avatar],
                 chat_text: params[:chat]}
-    ActionCable.server.broadcast(team_channel(@solution), { event: 'chat_message' }.merge(data))
+    team_broadcast(@solution, { event: 'chat_message' }.merge(data))
     respond_to do |format|
       format.turbo_stream  # Renders solutions/send_team_chat.turbo_stream.erb (resets team chat form)
       format.html { redirect_to team_crossword_path(@solution.crossword, @solution.key) }
@@ -107,7 +115,7 @@ class SolutionsController < ApplicationController
                 blue: params[:blue],
                 solver_id: params[:solver_id]
                 }
-    ActionCable.server.broadcast(team_channel(solution), { event: 'outline_team_clue' }.merge(data))
+    team_broadcast(solution, { event: 'outline_team_clue' }.merge(data))
     head :ok
   end
 
@@ -124,9 +132,12 @@ class SolutionsController < ApplicationController
 
   private
 
-  # Derive the ActionCable channel name from the solution's key rather than trusting user input.
-  def team_channel(solution)
-    "team_#{solution.key}"
+  # Broadcast to the team's ActionCable channel; silently swallow Redis connection errors
+  # so team actions degrade gracefully instead of 500ing when Redis is unavailable.
+  def team_broadcast(solution, payload)
+    ActionCable.server.broadcast("team_#{solution.key}", payload)
+  rescue Redis::BaseConnectionError
+    Rails.logger.warn("ActionCable broadcast failed (Redis unavailable)")
   end
 
   # Silently absorbs PUT /solutions/null requests sent by stale JS when solution_id is not yet set.

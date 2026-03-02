@@ -30,6 +30,7 @@ class Solution < ApplicationRecord
   before_save   :check_completion
 
   def check_completion
+    return true unless crossword
     if letters == crossword.letters && !is_complete?
       self.is_complete = true
       self.solved_at   = Time.current  # use Time.current for time-zone awareness
@@ -50,6 +51,7 @@ class Solution < ApplicationRecord
   public
 
   def percent_complete
+    return { numerator: 0, denominator: 0, percent: 0.0 } unless crossword
     letter_count = self.crossword.nonvoid_letter_count
     valid_letter_count = self.letters.gsub(/( |_)/, '').length
     percent = ((valid_letter_count.to_f)/(letter_count)*100).round(1)
@@ -57,6 +59,7 @@ class Solution < ApplicationRecord
   end
 
   def percent_correct
+    return { numerator: 0, denominator: 0, percent: 0.0 } unless crossword
     current_letters = self.letters
     cw_letters = self.crossword.letters
 
@@ -72,6 +75,7 @@ class Solution < ApplicationRecord
   end
 
   def fill_letters
+    return unless crossword
     if letters.length != crossword.letters.length
       Rails.logger.warn("[Solution#fill_letters] id=#{id} length mismatch — re-initializing letters")
       self.letters = crossword.letters.gsub(/[^_]/, " ")

@@ -65,4 +65,21 @@ describe PagesController do
       expect(assigns(:query)).to eq 'test'
     end
   end
+
+  # ---------------------------------------------------------------------------
+  # Nil-safety: nytimes user missing
+  # ---------------------------------------------------------------------------
+  describe 'GET #nytimes' do
+    context 'when nytimes user does not exist' do
+      before { get :nytimes }
+      it { should respond_with(200) }
+    end
+  end
+
+  describe 'GET #user_made' do
+    context 'when nytimes user does not exist' do
+      before { get :user_made }
+      it { should respond_with(200) }
+    end
+  end
 end

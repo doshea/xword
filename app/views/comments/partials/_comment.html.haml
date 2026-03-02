@@ -1,9 +1,13 @@
 = content_tag(:article, id: dom_id(comment), class: 'xw-comment') do
   .xw-comment__avatar
-    = link_to (image_tag comment.user.image.comment_size.url), comment.user
+    - if comment.user
+      = link_to (image_tag comment.user.image.comment_size.url), comment.user
   .xw-comment__body
-    %p<
-      = link_to "#{comment.user.display_name}: ", comment.user
+    %p
+      - if comment.user
+        = link_to "#{comment.user.display_name}: ", comment.user
+      - else
+        %strong [deleted]:
       %br
       = comment.content
     %ul.xw-flex.xw-gap-2

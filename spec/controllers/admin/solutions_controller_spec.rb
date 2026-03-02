@@ -23,9 +23,31 @@ describe Admin::SolutionsController do
       it { should respond_with(200) }
     end
 
+    describe 'GET #index (nil associations)' do
+      render_views
+
+      it 'renders when solution has nil user and nil crossword' do
+        solution.update_column(:user_id, nil)
+        solution.update_column(:crossword_id, nil)
+        get :index
+        expect(response).to have_http_status(200)
+      end
+    end
+
     describe 'GET #edit' do
       before { get :edit, params: { id: solution.id } }
       it { should respond_with(200) }
+    end
+
+    describe 'GET #edit (nil associations)' do
+      render_views
+
+      it 'renders when solution has nil user and nil crossword' do
+        solution.update_column(:user_id, nil)
+        solution.update_column(:crossword_id, nil)
+        get :edit, params: { id: solution.id }
+        expect(response).to have_http_status(200)
+      end
     end
 
     describe 'DELETE #destroy' do

@@ -8,7 +8,7 @@
     .metadata
       %h5
         %strong= @crossword.title
-      %p= @crossword.user.display_name
+      %p= @crossword.user&.display_name || '[deleted]'
       %p.smaller
         #{@crossword.rows} x #{@crossword.cols}
         %br

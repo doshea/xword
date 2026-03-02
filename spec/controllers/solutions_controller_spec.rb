@@ -13,6 +13,18 @@ describe SolutionsController do
       before { get :show, params: { id: solution.id } }
       it { should redirect_to(crossword) }
     end
+
+    context 'when crossword has been deleted (nil crossword_id)' do
+      before do
+        solution.update_column(:crossword_id, nil)
+        get :show, params: { id: solution.id }
+      end
+
+      it 'redirects to root with alert' do
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq "This puzzle is no longer available."
+      end
+    end
   end
 
   describe 'PATCH #update' do
@@ -122,6 +134,45 @@ describe SolutionsController do
       post :send_team_chat, params: {
         id: team_solution.id, display_name: 'Dylan',
         avatar: '/default.jpg', chat: 'Hello team!'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'returns success even when Redis is unavailable' do
+      allow(ActionCable.server).to receive(:broadcast)
+        .and_raise(Redis::CannotConnectError)
+      post :send_team_chat, params: {
+        id: team_solution.id, display_name: 'Dylan',
+        avatar: '/default.jpg', chat: 'Hello team!'
+      }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'POST #roll_call (Redis unavailable)' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before { log_in(user) }
+
+    it 'returns success even when Redis is unavailable' do
+      allow(ActionCable.server).to receive(:broadcast)
+        .and_raise(Redis::CannotConnectError)
+      post :roll_call, params: { id: team_solution.id }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'PATCH #team_update (Redis unavailable)' do
+    let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    before { log_in(user) }
+
+    it 'returns success even when Redis is unavailable' do
+      allow(ActionCable.server).to receive(:broadcast)
+        .and_raise(Redis::CannotConnectError)
+      patch :team_update, params: {
+        id: team_solution.id, row: '0', col: '1', letter: 'A',
+        solver_id: 'abc', red: '100', green: '200', blue: '50'
       }
       expect(response).to have_http_status(:ok)
     end

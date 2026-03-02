@@ -20,6 +20,29 @@ describe CrosswordsController do
         expect(Solution.find_by(user: user, crossword: crossword)).to be_present
       end
     end
+
+    context 'when crossword creator has been deleted (nil user_id)' do
+      render_views
+
+      before do
+        crossword.update_column(:user_id, nil)
+        get :show, params: { id: crossword.id }
+      end
+
+      it { should respond_with(200) }
+    end
+
+    context 'with comments from deleted users' do
+      render_views
+
+      before do
+        comment = Comment.create!(content: 'Test comment', user: user, crossword: crossword)
+        comment.update_column(:user_id, nil)
+        get :show, params: { id: crossword.id }
+      end
+
+      it { should respond_with(200) }
+    end
   end
 
   describe 'GET #batch' do

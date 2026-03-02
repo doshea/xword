@@ -16,7 +16,7 @@
       = content_tag(:tr, id: dom_id(crossword)) do
         %td= link_to crossword.id, crossword
         %td= link_to crossword.title, crossword
-        %td= link_to crossword.user.username, crossword.user
+        %td= crossword.user ? link_to(crossword.user.username, crossword.user) : '[deleted]'
         %td{style: 'font-size: 6px; max-width: 250px; overflow-wrap: break-word;'}= crossword.description
         %td= crossword.rows
         %td= crossword.cols
@@ -29,5 +29,5 @@
             = icon('pencil')
         %td
           / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
-          = link_to admin_crossword_path(crossword), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user.username}?" } do
+          = link_to admin_crossword_path(crossword), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user&.username || '[deleted]'}?" } do
             = icon('trash-2')

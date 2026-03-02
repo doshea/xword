@@ -1,6 +1,7 @@
 = content_tag(:article, id: dom_id(reply), class: 'xw-reply') do
   .xw-reply__avatar
-    = link_to (image_tag reply.user.image.reply_size.url), reply.user
+    - if reply.user
+      = link_to (image_tag reply.user.image.reply_size.url), reply.user
     - if @current_user && ((@current_user == reply.user) || (@current_user.is_admin?))
       .reply-controls
         %a

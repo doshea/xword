@@ -23,6 +23,16 @@ describe Admin::CommentsController do
       it { should respond_with(200) }
     end
 
+    describe 'GET #index (nil user)' do
+      render_views
+
+      it 'renders when comment has nil user' do
+        comment.update_column(:user_id, nil)
+        get :index
+        expect(response).to have_http_status(200)
+      end
+    end
+
     describe 'GET #edit' do
       before { get :edit, params: { id: comment.id } }
       it { should respond_with(200) }

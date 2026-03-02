@@ -62,4 +62,28 @@ describe Solution do
       expect(solution.reload.letters.length).to eq crossword.letters.length
     end
   end
+
+  describe 'nil-crossword safety (orphaned solution)' do
+    let(:orphaned) do
+      s = create(:solution, user: user, crossword: crossword, letters: '')
+      s.update_column(:crossword_id, nil)
+      s.reload
+    end
+
+    it '#check_completion returns true without raising' do
+      expect(orphaned.check_completion).to eq true
+    end
+
+    it '#percent_complete returns zeroed hash' do
+      expect(orphaned.percent_complete).to eq({ numerator: 0, denominator: 0, percent: 0.0 })
+    end
+
+    it '#percent_correct returns zeroed hash' do
+      expect(orphaned.percent_correct).to eq({ numerator: 0, denominator: 0, percent: 0.0 })
+    end
+
+    it '#fill_letters returns nil without raising' do
+      expect(orphaned.fill_letters).to be_nil
+    end
+  end
 end
