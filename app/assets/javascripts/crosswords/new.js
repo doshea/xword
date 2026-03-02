@@ -59,4 +59,11 @@ window.new_cw = {
   }
 };
 
-$(document).ready(new_cw.ready);
+// Use turbo:load so new_cw.ready() runs after Turbo Drive replaces the body.
+// Remove+re-add to prevent duplicate listeners if the script re-executes.
+if (window._newCwTurboLoadHandler) document.removeEventListener("turbo:load", window._newCwTurboLoadHandler);
+window._newCwTurboLoadHandler = function() {
+  if (!$('#preview-crossword').length) return; // not on the new crossword page
+  new_cw.ready();
+};
+document.addEventListener("turbo:load", window._newCwTurboLoadHandler);

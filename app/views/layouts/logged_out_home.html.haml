@@ -8,7 +8,7 @@
     = stylesheet_link_tag    "application", media: "all"
     = stylesheet_link_tag    "welcome"
     = javascript_include_tag "application"
-    = javascript_include_tag "welcome"
+    = javascript_include_tag "welcome", 'data-turbo-track': 'reload'
     = render partial: 'layouts/partials/ga_tracking'
     = csrf_meta_tags
   %body

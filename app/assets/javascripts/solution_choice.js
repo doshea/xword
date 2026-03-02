@@ -36,11 +36,22 @@ function draw_letters($row) {
   }
 }
 
-$("tbody").on("click", "tr td:not(.delete-td)", function(e) {
-  e.preventDefault();
-  window.location = $(this).parent().data("link");
-});
+function solution_choice_ready() {
+  $("tbody").on("click", "tr td:not(.delete-td)", function(e) {
+    e.preventDefault();
+    window.location = $(this).parent().data("link");
+  });
 
-$("tbody tr").each(function(index, el) {
-  draw_letters($(el));
-});
+  $("tbody tr").each(function(index, el) {
+    draw_letters($(el));
+  });
+}
+
+// Use turbo:load so handlers and canvas rendering run after Turbo Drive replaces the body.
+// Remove+re-add to prevent duplicate listeners if the script re-executes.
+if (window._solutionChoiceTurboLoadHandler) document.removeEventListener("turbo:load", window._solutionChoiceTurboLoadHandler);
+window._solutionChoiceTurboLoadHandler = function() {
+  if (!$('tbody tr[data-letters]').length) return; // not on the solution choice page
+  solution_choice_ready();
+};
+document.addEventListener("turbo:load", window._solutionChoiceTurboLoadHandler);

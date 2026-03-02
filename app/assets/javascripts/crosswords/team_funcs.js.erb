@@ -242,8 +242,10 @@ window.team_app = {
 //------------------
 // DOCUMENT LOAD
 //------------------
-// Subscribe to the ActionCable channel and dispatch team event handlers
-$(function() {
+// Subscribe to the ActionCable channel and dispatch team event handlers.
+// Use turbo:load so team initialization runs after Turbo Drive replaces the body.
+// Remove+re-add to prevent duplicate listeners if the script re-executes.
+function team_funcs_ready() {
   document.getElementById('team-explanation').showModal();
 
   var EVENT_HANDLERS = {
@@ -269,4 +271,11 @@ $(function() {
   $('#team-chat .row-topper').on('click', team_app.toggle_chat);
   $('.clue').on('click', team_app.show_team_clue);
   $(window).on('unload', team_app.leave_team);
-});
+}
+
+if (window._teamTurboLoadHandler) document.removeEventListener("turbo:load", window._teamTurboLoadHandler);
+window._teamTurboLoadHandler = function() {
+  if (!$('#team-chat').length) return; // not on a team solve page
+  team_funcs_ready();
+};
+document.addEventListener("turbo:load", window._teamTurboLoadHandler);

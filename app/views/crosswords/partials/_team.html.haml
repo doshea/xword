@@ -7,7 +7,7 @@
   team_app.display_name = "#{display_name}";
   team_app.solver_id = "#{solver_id}";
 
-= javascript_include_tag 'crosswords/team_funcs'
+= javascript_include_tag 'crosswords/team_funcs', 'data-turbo-track': 'reload'
 
 - if @current_user && @solution.user_id == @current_user.id
   %dialog#team-explanation.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}

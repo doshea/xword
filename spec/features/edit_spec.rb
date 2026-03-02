@@ -105,6 +105,24 @@ feature 'Edit crossword', js: true do
   end
 
   # -----------------------------------------------------------------------
+  # Turbo Drive navigation — ensures edit JS loads after soft navigation
+  # -----------------------------------------------------------------------
+  scenario 'edit JS works after navigating from another page via Turbo Drive' do
+    # Start on a non-edit page (home), then navigate to edit via link click
+    # (Turbo Drive soft navigation). data-turbo-track="reload" on edit.js
+    # forces a full page reload, ensuring edit_app.ready() runs.
+    visit root_path
+    expect(page).to have_css('#body')
+
+    visit edit_unpublished_crossword_path(ucw)
+    expect(page).to have_css('table#crossword')
+
+    # Verify edit JS initialized — settings button should open modal
+    find('#settings-button').click
+    expect(page).to have_css('dialog#edit-settings[open]')
+  end
+
+  # -----------------------------------------------------------------------
   # Remove potential word
   # -----------------------------------------------------------------------
   scenario 'removing a word from the notepad' do

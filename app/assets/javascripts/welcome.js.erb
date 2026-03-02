@@ -18,4 +18,11 @@ window.welcome = {
   }
 };
 
-$(document).ready(welcome.ready);
+// Use turbo:load so welcome.ready() runs after Turbo Drive replaces the body.
+// Remove+re-add to prevent duplicate listeners if the script re-executes.
+if (window._welcomeTurboLoadHandler) document.removeEventListener("turbo:load", window._welcomeTurboLoadHandler);
+window._welcomeTurboLoadHandler = function() {
+  if (!$('#signup1').length) return; // not on the welcome page
+  welcome.ready();
+};
+document.addEventListener("turbo:load", window._welcomeTurboLoadHandler);
