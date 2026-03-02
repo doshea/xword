@@ -58,7 +58,9 @@ class CrosswordsController < ApplicationController
     if @crossword && @solution
       @team = true
       @cells = @crossword.cells.asc_indices
+      @comments = @crossword.comments.includes(:user, replies: :user)
       if @current_user
+        @is_favorited = @current_user.favorites.exists?(@crossword.id)
         SolutionPartnering.find_or_create_by(solution_id: @solution.id, user_id: @current_user.id) unless (@solution.user == @current_user)
       end
       render :show
