@@ -19,7 +19,6 @@ window.team_app = {
   // Toggle the team chat tray open/closed; reset unread count when opening
   toggle_chat: function() {
     $('#team-chat').toggleClass('down');
-    $('#team-chat').css('bottom', '' + (-1 * $('#team-chat').height() + $('#team-chat .row-topper').height() * 1.7 / 1.5) + 'px');
     if (!$('#team-chat').hasClass('down')) {
       team_app.unread_count = 0;
       $('#unread-chat-count').text('');

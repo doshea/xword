@@ -285,17 +285,15 @@ table#crossword {
   border-bottom: none;
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
-  transition: bottom var(--duration-slow) var(--ease-out);
+  bottom: 0;
+  transition: transform var(--duration-slow) var(--ease-out);
   z-index: var(--z-dropdown);
   box-shadow: var(--shadow-lg);
   font-family: var(--font-ui);
   font-size: var(--text-sm);
 
   &.down {
-    bottom: -2.7em;
-  }
-  &:not(.down) {
-    bottom: 0 !important;
+    transform: translateY(calc(100% - 2.2em));
   }
 
   .row-topper {
