@@ -75,6 +75,70 @@ describe CrosswordsController do
     end
   end
 
+  describe 'POST #create_team' do
+    context 'logged in' do
+      before { log_in(user) }
+
+      it 'creates a team solution and redirects to team path' do
+        expect {
+          post :create_team, params: { id: crossword.id }
+        }.to change(Solution, :count).by(1)
+
+        solution = Solution.last
+        expect(solution.team).to be true
+        expect(solution.key).to be_present
+        expect(response).to redirect_to(team_crossword_path(crossword, solution.key))
+      end
+    end
+
+    context 'anonymous' do
+      it 'redirects to login' do
+        post :create_team, params: { id: crossword.id }
+        expect(response).to redirect_to(account_required_path)
+      end
+    end
+  end
+
+  describe 'GET #team' do
+    let(:solution) { create(:solution, :team, user: user, crossword: crossword) }
+
+    context 'valid team key' do
+      before { log_in(user); get :team, params: { id: crossword.id, key: solution.key } }
+
+      it { should respond_with(200) }
+
+      it 'assigns @comments' do
+        expect(assigns(:comments)).not_to be_nil
+      end
+
+      it 'assigns @cells' do
+        expect(assigns(:cells)).to be_present
+      end
+
+      it 'sets @team to true' do
+        expect(assigns(:team)).to be true
+      end
+    end
+
+    context 'anonymous visitor with valid key' do
+      before { get :team, params: { id: crossword.id, key: solution.key } }
+
+      it { should respond_with(200) }
+
+      it 'assigns @comments' do
+        expect(assigns(:comments)).not_to be_nil
+      end
+    end
+
+    context 'invalid team key' do
+      before { log_in(user); get :team, params: { id: crossword.id, key: 'bogus' } }
+
+      it 'redirects to root' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
   describe 'POST #favorite' do
     before do
       request.accept = Mime[:turbo_stream].to_s
