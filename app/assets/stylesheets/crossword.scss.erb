@@ -183,6 +183,23 @@ table#crossword {
     width: 1.4em;
     height: 1.4em;
   }
+
+  // Team chat: full-width on phones instead of fixed 320px
+  #team-chat {
+    width: calc(100vw - 2em);
+    right: 1em;
+    left: 1em;
+  }
+
+  // Comments: full-width replies, reduced indent
+  .xw-comment__body li { width: 100%; }
+  .xw-reply { margin-left: var(--space-3); }
+
+  // Controls modal: single column on phones
+  #controls-modal .controls-modal__columns {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
 }
 
 // --- XL screens: widen container + scale up cells ---
@@ -191,7 +208,8 @@ table#crossword {
 // feels proportional to the screen. Clue columns auto-widen (flex: 1).
 @media (min-width: $bp-xl) {
   #body > .xw-container {
-    max-width: 75rem;  // 1200px
+    max-width: 75rem;          // 1200px
+    padding-inline: var(--space-8);  // 32px — more breathing room on wide screens
   }
   table#crossword .cell {
     font-size: 1.5em;  // 36px cells (up from 30px)
