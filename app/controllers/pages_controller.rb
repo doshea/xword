@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   layout 'logged_out_home', only: [:welcome]
+  before_action :find_nytimes_user, only: [:nytimes, :user_made]
 
   #GET /errors or error_path
   def error
@@ -88,16 +89,18 @@ class PagesController < ApplicationController
   #GET /nytimes or nytimes_path
   #TODO decide if this will be its own page or not
   def nytimes
-    @nytimes_user = User.find_by_username('nytimes')
     @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.includes(:user) : Crossword.none
   end
 
   #GET /user_made or user_made_path
   #TODO decide if this will be its own page or not
   def user_made
-    @nytimes_user = User.find_by_username('nytimes')
     @user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id).includes(:user) : Crossword.includes(:user).all
   end
 
+  private
 
+  def find_nytimes_user
+    @nytimes_user = User.find_by_username('nytimes')
+  end
 end
