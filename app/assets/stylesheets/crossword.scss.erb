@@ -15,8 +15,9 @@
   margin-top: 2.5em;
   margin-bottom: 0;
   padding-top: var(--space-6);
-  border-top-left-radius: 0.3em;
-  border-top-right-radius: 0.3em;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
   h1 {
     margin-bottom: 0.2em;
     #creator-credit {
@@ -34,8 +35,8 @@
   }
 }
 #meta-area {
-  border-bottom-left-radius: 0.3em;
-  border-bottom-right-radius: 0.3em;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
 }
 
 table#crossword {
@@ -132,18 +133,30 @@ table#crossword {
 
 .clue-column {
   float: left;
-  background: var(--color-surface-alt);
-  border: 1px solid var(--color-border);
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--color-border);
   margin-left: 0.4em;
   margin-right: 0;
   h3 {
     text-align: center;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+    margin: var(--space-2) var(--space-3) var(--space-3);
   }
   .clues {
     overflow: auto;
     width: 250px;
     overflow-x: hidden;
     background: var(--color-surface);
+    box-shadow: var(--shadow-inner);
+    border-radius: var(--radius-sm);
     font-size: smaller;
     padding: 0.1em 0.25em;
     height: 31em;
