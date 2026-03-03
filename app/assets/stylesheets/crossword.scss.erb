@@ -552,7 +552,8 @@ table#crossword {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  padding: var(--space-3) 0 var(--space-4);
+  padding: var(--space-3) 0 var(--space-3);
+  border-bottom: 1px solid var(--color-border);
 
   &__avatar img {
     width: 64px;
@@ -645,8 +646,8 @@ textarea:focus ~ .xw-comment__hint {
 
 .xw-comment {
   display: flex;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-2) var(--space-3);
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2) var(--space-2);
   border-radius: var(--radius-sm);
   transition: background-color var(--duration-base) var(--ease-in-out);
 
@@ -654,27 +655,29 @@ textarea:focus ~ .xw-comment__hint {
     background-color: rgba(28, 26, 23, 0.02);
   }
 
+  &__content {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+  }
   &__author {
     font-family: var(--font-ui);
     font-size: var(--text-sm);
     font-weight: var(--weight-semibold);
-    margin-bottom: var(--space-1);
+    margin-right: 0.4em;
     a {
       color: var(--color-text);
       text-decoration: none;
       &:hover { text-decoration: underline; }
     }
   }
-  &__text {
-    font-family: var(--font-body);
-    line-height: var(--leading-normal);
-  }
 
   &__avatar {
     flex-shrink: 0;
+    padding-top: 1px; // optical alignment with first line of text
     img {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -685,7 +688,7 @@ textarea:focus ~ .xw-comment__hint {
     position: relative; // anchor for overlay actions
 
     .xw-comment__actions {
-      margin-top: var(--space-2);
+      margin-top: var(--space-1);
     }
     .reply-form {
       width: 70%;
@@ -703,7 +706,7 @@ textarea:focus ~ .xw-comment__hint {
     font-size: var(--text-sm);
     color: var(--color-accent);
     font-weight: var(--weight-medium);
-    margin-top: var(--space-2);
+    margin-top: var(--space-1);
     cursor: pointer;
     &:hover { text-decoration: underline; }
     &:not(:empty)::before { content: '\25B8\00a0'; }
@@ -738,7 +741,7 @@ textarea:focus ~ .xw-comment__hint {
 .xw-reply {
   display: flex;
   gap: var(--space-2);
-  padding: var(--space-3) 0;
+  padding: var(--space-1) 0;
   margin-left: var(--space-6);
   position: relative;
 
