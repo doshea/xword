@@ -38,7 +38,8 @@ window.solve_app = {
     });
     $('#comments').on('click', '.xw-comment__reply-count', function() {
       $(this).next('.replies').slideToggle('fast');
-      $(this).toggleClass('xw-comment__reply-count--collapsed');
+      $(this).toggleClass('xw-comment__reply-count--expanded');
+      $(this).blur(); // prevent focus from keeping action overlay visible
     });
     // YouTube-style description truncation: hide "more" if content fits in 2 lines
     var desc = document.querySelector('.xw-byline__desc');

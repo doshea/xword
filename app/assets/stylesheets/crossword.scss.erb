@@ -739,8 +739,8 @@ textarea:focus ~ .xw-comment__hint {
     margin-top: var(--space-1);
     cursor: pointer;
     &:hover { text-decoration: underline; }
-    &:not(:empty)::before { content: '\25BE\00a0'; }
-    &--collapsed:not(:empty)::before { content: '\25B8\00a0'; }
+    &:not(:empty)::before { content: '\25B8\00a0'; }
+    &--expanded:not(:empty)::before { content: '\25BE\00a0'; }
   }
 
   // Overlay actions as a pill at top-right of comment body (pointer devices only)
@@ -762,7 +762,7 @@ textarea:focus ~ .xw-comment__hint {
       gap: var(--space-3);
     }
     &:hover .xw-comment__actions:not(.xw-comment__actions--expanded),
-    &:focus-within .xw-comment__actions:not(.xw-comment__actions--expanded) {
+    .xw-comment__actions:not(.xw-comment__actions--expanded):focus-within {
       opacity: 1;
       pointer-events: auto;
     }
@@ -788,12 +788,14 @@ textarea:focus ~ .xw-comment__hint {
   &__body {
     flex: 1;
     min-width: 0;
+    p { margin: 0; }
   }
 }
 
 // Initial display states for reply toggle (jQuery toggle_reply_form manages visibility)
 .cancel-button { display: none; }
 .reply-form { display: none; }
+.replies { display: none; } // collapsed by default; reply-count button toggles
 
 .reply-button {
   display: inline-flex;
