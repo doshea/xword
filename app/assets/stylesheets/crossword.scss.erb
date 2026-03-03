@@ -149,7 +149,7 @@ table#crossword {
   }
 }
 
-// --- Mobile: stack vertically, grid on top, clues below ---
+// --- Below desktop: stack vertically, grid on top, clues below ---
 @media (max-width: #{$bp-lg - 1}) {
   .xw-puzzle-layout {
     flex-direction: column;
@@ -172,19 +172,18 @@ table#crossword {
   }
 }
 
-// --- Tablet (768-1023px): side-by-side clues, intermediate spacing ---
-@media (min-width: $bp-md) and (max-width: #{$bp-lg - 1}) {
+// --- Tablet (640-1023px): puzzle on top, clues side-by-side below ---
+// Uses CSS Grid to guarantee both clue columns wrap together (no
+// asymmetric state where only one column sits beside the puzzle).
+@media (min-width: $bp-sm) and (max-width: #{$bp-lg - 1}) {
   .xw-puzzle-layout {
-    flex-direction: row;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
 
-    .clue-column {
-      width: auto;
-      min-width: 10em;
-
-      .clues {
-        max-height: none;
-      }
+    table#crossword {
+      grid-column: 1 / -1;
+      justify-self: center;
     }
   }
 
