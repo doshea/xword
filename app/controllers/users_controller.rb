@@ -1,7 +1,5 @@
 class UsersController < ApplicationController
   before_action :ensure_logged_in, only: [:account, :update, :change_password]
-  # TODO Fix this
-  # rescue_from ActiveRecord::Error::RecordNotFound with: :user_not_found
 
   #GET /users/:id or user_path
   def show
@@ -32,7 +30,10 @@ class UsersController < ApplicationController
 
   #PATCH/PUT /users/:id or user_path
   def update
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
+    unless @user
+      return redirect_to(error_path(prev: request.original_url), flash: { error: "Could not find User \##{params[:id]}" })
+    end
     unless @current_user == @user || @current_user.is_admin
       return redirect_to(unauthorized_path)
     end
@@ -47,7 +48,6 @@ class UsersController < ApplicationController
   end
 
   #GET /users/account or account_users_path
-  #TODO: should there be a separate account controller?
   def account
     @user = @current_user
   end
@@ -62,8 +62,7 @@ class UsersController < ApplicationController
   def send_password_reset
     user = @current_user || User.find_by(email: params[:email]) || User.find_by(username: params[:username])
     if user
-      # Rails 8.1 has_secure_password generates password_reset_token automatically
-      # (signed from password_salt — no DB storage needed; expiry handled by signed token)
+      # Rails 8.1 signed token: no DB storage needed; expiry built into signature.
       begin
         UserMailer.reset_password_email(user).deliver_now
       rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPFatalError,
@@ -88,8 +87,6 @@ class UsersController < ApplicationController
     if user
       if user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
         # Changing the password invalidates the old signed token automatically (password_salt changes)
-        # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
-        # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
         redirect_to account_users_path, flash: { success: 'Password updated successfully.' }
       else
         @errors = user.errors.full_messages.uniq
@@ -99,8 +96,6 @@ class UsersController < ApplicationController
         end
       end
     else
-      # Replaced: render :redirect_back (jquery_ujs JS window.location redirect)
-      # Now: HTTP redirect to reset password page — Turbo follows it
       redirect_to forgot_password_users_path, flash: { error: 'That password reset link has expired. Please request a new one.' }
     end
   end
@@ -109,8 +104,6 @@ class UsersController < ApplicationController
   def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
-        # Replaced: render :password_updated (jquery_ujs JS response clearing fields + slideDown success)
-        # Now: HTTP redirect — Turbo follows it and user sees account page with flash notice
         redirect_to account_users_path, flash: { success: 'Password updated successfully.' }
       else
         @errors = @current_user.errors.full_messages.uniq

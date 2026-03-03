@@ -323,6 +323,15 @@ describe Crossword do
         end
       end
 
+      describe '#randomize_letters_and_voids' do
+        subject { create(:crossword, :smaller) }
+
+        it 'does not raise when get_mirror_cell returns nil' do
+          allow_any_instance_of(Cell).to receive(:get_mirror_cell).and_return(nil)
+          expect { subject.randomize_letters_and_voids(true, true) }.not_to raise_error
+        end
+      end
+
       describe '#across/down_start_cells' do
         subject {create(:crossword)}
         it 'returns across start cells' do
@@ -472,6 +481,50 @@ describe Crossword do
             expect(result).to be_a Hash
             expect(result.keys).to all(be_a String)
           end
+        end
+      end
+
+      describe '#generate_words_and_link_clues' do
+        let(:crossword) { create(:predefined_five_by_five) }
+
+        before { crossword.generate_words_and_link_clues }
+
+        it 'creates Word records for each word in the puzzle' do
+          expect(Word.where(content: 'AMIGO')).to exist
+          expect(Word.where(content: 'AVAIL')).to exist
+        end
+
+        it 'links clues to their Word records' do
+          across_clue = crossword.across_start_cells.first.across_clue
+          expect(across_clue.reload.word).to be_present
+          expect(across_clue.word.content).to eq('AMIGO')
+        end
+
+        it 'creates Phrase records for clues with meaningful content' do
+          across_clue = crossword.across_start_cells.first.across_clue
+          expect(across_clue.reload.phrase).to be_present
+          expect(across_clue.phrase.content).to eq('A male friend')
+        end
+
+        it 'does not create Phrase records for default content clues' do
+          # Reset a clue to default content and re-run
+          clue = crossword.across_start_cells.first.across_clue
+          clue.update_column(:content, Clue::DEFAULT_CONTENT)
+          clue.update_column(:phrase_id, nil)
+          clue.update_column(:word_id, nil)
+
+          crossword.generate_words_and_link_clues
+          expect(clue.reload.phrase).to be_nil
+        end
+
+        it 'deduplicates phrases case-insensitively' do
+          # Set two clues to the same content with different case
+          clues = crossword.across_start_cells.map(&:across_clue)
+          clues[0].update_column(:content, 'A test clue')
+          clues[1].update_column(:content, 'a test clue')
+
+          crossword.generate_words_and_link_clues
+          expect(clues[0].reload.phrase).to eq(clues[1].reload.phrase)
         end
       end
 

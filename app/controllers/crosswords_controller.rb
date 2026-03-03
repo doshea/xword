@@ -21,7 +21,7 @@ class CrosswordsController < ApplicationController
 
   #POST /crosswords/:id/team or create_team_crossword_path
   def create_team
-    @crossword = Crossword.find(params[:id])
+    @crossword = Crossword.find_by(id: params[:id])
     if @crossword && @current_user
       preexisting_letters = @current_user.solutions
                               .where(team: false, crossword_id: @crossword.id)
@@ -111,7 +111,7 @@ class CrosswordsController < ApplicationController
   #GET /crosswords/batch or batch_crosswords_path
   #TODO fix the batching links so they can't be too long. Right now the "Next 12" button can throw a long URI error
   def batch
-    @crosswords = Crossword.find(params[:ids])
+    @crosswords = Crossword.where(id: params[:ids])
     @crosswords_remaining = @crosswords[Crossword.per_page..-1]
     @crosswords = @crosswords[0...Crossword.per_page]
   end

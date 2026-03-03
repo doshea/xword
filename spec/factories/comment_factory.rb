@@ -15,5 +15,7 @@
 FactoryBot.define do
   factory :comment do
     content { Faker::Lorem.sentences(number: 3).join(' ') }
+    user
+    crossword
   end
 end

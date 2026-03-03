@@ -28,6 +28,7 @@ class Clue < ApplicationRecord
     (across_crosswords + down_crosswords).uniq.sort_by(&:title)
   end
 
+  DEFAULT_CONTENT = 'ENTER CLUE'
   CONTENT_LENGTH_MAX = 100
 
   validates :content, presence: true, length: {maximum: CONTENT_LENGTH_MAX}

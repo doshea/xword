@@ -58,6 +58,15 @@ describe CrosswordsController do
   # (POST request specs with proper HTTP method and response assertions)
 
   describe 'POST #create_team' do
+    context 'when crossword does not exist' do
+      before { log_in(user) }
+
+      it 'redirects to root with error' do
+        post :create_team, params: { id: 0 }
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
     context 'logged in' do
       before { log_in(user) }
 

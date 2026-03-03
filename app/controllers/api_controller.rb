@@ -3,7 +3,7 @@ class ApiController < ApplicationController
   #GET /api/nyt/:year/:month/:date
   def nyt
     date_from_params
-    @data = Crossword.get_github_nyt_from_date(@date)
+    @data = NytPuzzleFetcher.from_github(@date)
 
     respond_to do |format|
       format.xml do
@@ -20,7 +20,7 @@ class ApiController < ApplicationController
   #GET /api/nyt_source/:year/:month/:date or api_path
   def nyt_source
     date_from_params
-    @data = Crossword.get_nyt_from_date(@date)
+    @data = NytPuzzleFetcher.from_xwordinfo(@date)
 
     respond_to do |format|
       format.xml do

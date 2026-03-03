@@ -16,7 +16,7 @@
 #
 
 class Crossword < ApplicationRecord
-  include Crosswordable, Publishable, Newyorkable
+  include Crosswordable, Publishable
 
   mount_uploader :preview, PreviewUploader
 
@@ -24,7 +24,7 @@ class Crossword < ApplicationRecord
   after_create :populate_cells, unless: :skip_callbacks
 
   default_scope -> { order(created_at: :desc) }
-  scope :unowned, -> (user) { where.not(user_id: user.id)} # DEBUG only
+  scope :unowned, -> (user) { where.not(user_id: user.id)}
 
   # Searchable by title using pg_search gem
   include PgSearch::Model
@@ -49,8 +49,7 @@ class Crossword < ApplicationRecord
 
   self.per_page = 100
 
-  #INSTANCE METHODS
-
+  # Spaces = unfilled cells, underscores = voids. Count only letter-bearing cells.
   def nonvoid_letter_count
     letters.delete(' _').length
   end
@@ -59,6 +58,7 @@ class Crossword < ApplicationRecord
     if letters.empty?
       false
     else
+      # index_from_rc is 1-based; string indexing is 0-based
       [' ','_'].include? letters[index_from_rc(row,col)-1]
     end
   end
@@ -67,7 +67,6 @@ class Crossword < ApplicationRecord
     cells.map(&:formatted_letter).join
   end
 
-  #TODO Keep looking for ways to turn this into a pure scope instead of a function/scope mix?
   def across_start_cells
     cells.across_start_cells
   end
@@ -97,12 +96,9 @@ class Crossword < ApplicationRecord
     end
   end
 
-  # The transaction in this method does not seem to help. Maaaybe 1% speed improvement.
+  # Transaction ensures cells are numbered atomically.
   def number_cells
-    #Again...make this work for NYT
-
     counter = 1
-    #order by index
     cells.each do |cell|
       cell.update_starts!
     end
@@ -134,15 +130,11 @@ class Crossword < ApplicationRecord
 
   # Bulk-inserts all clues and cells for a freshly created crossword.
   # Each cell gets one across clue + one down clue, all pre-filled with placeholder text.
-  # See: https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/
   def populate_cells
     raise "This crossword already has cells!" unless cells.empty?
 
-    # Insert all clues in one statement and get back their IDs via RETURNING.
-    # This is atomic: there is no gap between "read next ID" and "insert", so
-    # concurrent crossword creation can't accidentally share clue IDs (the old
-    # Clue.next_index approach had that race).
-    clue_values = (["('ENTER CLUE')"] * area * 2).join(", ")
+    # Atomic bulk insert via RETURNING to avoid ID race conditions.
+    clue_values = (["('#{Clue::DEFAULT_CONTENT}')"] * area * 2).join(", ")
     clue_ids = ActiveRecord::Base.connection
                  .execute("INSERT INTO clues (content) VALUES #{clue_values} RETURNING id;")
                  .map { |r| r["id"].to_i }
@@ -174,13 +166,8 @@ class Crossword < ApplicationRecord
     self
   end
 
-  #TODO get a better name
   def set_contents(letters_string)
-    # MAKE THIS WORK FOR NYT PUZZLES
-
     if letters_string.length == area
-      #WHY WOULD IT DO THIS TWICE
-  
       self.letters = letters_string
       if save
         update_cells_from_letters
@@ -193,8 +180,6 @@ class Crossword < ApplicationRecord
   end
 
   def set_clue(across, cell_num, content)
-    #Make this work for NYT
-
     cell = cells.find_by_cell_num(cell_num)
     if cell
       clue = across ? cell.across_clue : cell.down_clue
@@ -301,7 +286,8 @@ class Crossword < ApplicationRecord
           cell = cells.find_by_index(i)
           cell.is_void!
           if symmetrical
-            cell.get_mirror_cell.is_void!
+            mirror = cell.get_mirror_cell
+            mirror.is_void! if mirror
           end
         end
       end
@@ -345,10 +331,8 @@ class Crossword < ApplicationRecord
     output
   end
 
-  #Takes an existing crossword puzzle and figures out all of the words in that crossword by cell.
-  #Then constructs a hash whose keys are the words and whose values are the clues to those words
-
-  #TODO: This will not work if the same word is used multiple times in a puzzle!!!!
+  # Builds { word_string => [clue, ...] } for all across and down words.
+  # NOTE: duplicate words in a puzzle will merge their clues into one key.
   def get_words_hsh
     word_clues = {}
     collect_direction_words(word_clues, cells.across_start_cells, :across_clue, :right_cell)
@@ -359,9 +343,16 @@ class Crossword < ApplicationRecord
   def generate_words_and_link_clues
     words_hsh = self.get_words_hsh
 
-    words_hsh.each do |word, clue|
+    words_hsh.each do |word, clues|
       the_word = Word.find_or_create_by(content: word)
-      the_word.clues << clue
+
+      clues.each do |clue|
+        attrs = { word: the_word }
+        if clue.content.present? && clue.content != Clue::DEFAULT_CONTENT
+          attrs[:phrase] = Phrase.find_or_create_by_content(clue.content)
+        end
+        clue.update!(attrs)
+      end
     end
   end
 
@@ -376,8 +367,6 @@ class Crossword < ApplicationRecord
     update(letters: letters)
     self
   end
-
-  # CLASS METHODS
 
   def self.random_row_or_col
     (1..Crossword::MAX_DIMENSION).to_a.sample
@@ -415,7 +404,7 @@ class Crossword < ApplicationRecord
     end
   end
 
-  #Using a transaction cut down call times by 1.5x to 3.3x for this method
+  # Transaction batches cell saves to reduce DB round-trips.
   def update_cells_from_letters
     Cell.transaction do
       cells.each_with_index do |cell, i|

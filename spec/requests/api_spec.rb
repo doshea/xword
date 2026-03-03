@@ -89,7 +89,7 @@ RSpec.describe 'API', type: :request do
     let(:fake_json) { '{"title":"Test Puzzle","size":{"rows":15,"cols":15}}' }
 
     before do
-      allow(Crossword).to receive(:get_github_nyt_from_date).and_return(fake_json)
+      allow(NytPuzzleFetcher).to receive(:from_github).and_return(fake_json)
     end
 
     it 'returns JSON data' do
@@ -101,7 +101,7 @@ RSpec.describe 'API', type: :request do
 
   describe 'GET /api/nyt/:year/:month/:day (invalid JSON from upstream)' do
     before do
-      allow(Crossword).to receive(:get_github_nyt_from_date).and_return('not valid json {{')
+      allow(NytPuzzleFetcher).to receive(:from_github).and_return('not valid json {{')
     end
 
     it 'returns 502 when upstream returns invalid JSON' do
@@ -114,7 +114,7 @@ RSpec.describe 'API', type: :request do
     let(:fake_json) { '{"title":"NYT Puzzle","size":{"rows":15,"cols":15}}' }
 
     before do
-      allow(Crossword).to receive(:get_nyt_from_date).and_return(fake_json)
+      allow(NytPuzzleFetcher).to receive(:from_xwordinfo).and_return(fake_json)
     end
 
     it 'returns JSON data' do
@@ -126,7 +126,7 @@ RSpec.describe 'API', type: :request do
 
   describe 'GET /api/nyt_source/:year/:month/:day (invalid JSON from upstream)' do
     before do
-      allow(Crossword).to receive(:get_nyt_from_date).and_return('not valid json {{')
+      allow(NytPuzzleFetcher).to receive(:from_xwordinfo).and_return('not valid json {{')
     end
 
     it 'returns 502 when upstream returns invalid JSON' do

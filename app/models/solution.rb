@@ -56,6 +56,7 @@ class Solution < ApplicationRecord
   def percent_complete
     return { numerator: 0, denominator: 0, percent: 0.0 } unless crossword
     letter_count = self.crossword.nonvoid_letter_count
+    return { numerator: 0, denominator: 0, percent: 0.0 } if letter_count.zero?
     valid_letter_count = self.letters.gsub(/( |_)/, '').length
     percent = ((valid_letter_count.to_f)/(letter_count)*100).round(1)
     {numerator: valid_letter_count, denominator: letter_count, percent: percent}
@@ -67,6 +68,7 @@ class Solution < ApplicationRecord
     cw_letters = self.crossword.letters
 
     letter_count = self.crossword.nonvoid_letter_count
+    return { numerator: 0, denominator: 0, percent: 0.0 } if letter_count.zero?
 
     sum = 0
     current_letters.split(//).each_with_index do |char, index|

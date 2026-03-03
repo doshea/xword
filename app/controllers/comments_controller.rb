@@ -6,7 +6,8 @@ class CommentsController < ApplicationController
     # Guard first: calling user.id before this check would crash for anonymous requests
     return head :unauthorized unless @current_user
 
-    crossword = Crossword.find(params[:id])
+    crossword = Crossword.find_by(id: params[:id])
+    return head :not_found unless crossword
     if crossword.comments.where(user_id: @current_user.id).count < Comment::MAX_PER_CROSSWORD
       @new_comment = Comment.new(content: params[:content])
       crossword.comments << @new_comment

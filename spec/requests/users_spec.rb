@@ -34,6 +34,21 @@ RSpec.describe 'Users', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # PATCH /users/:id (update)
+  # -------------------------------------------------------------------------
+  describe 'PATCH /users/:id' do
+    context 'when user does not exist' do
+      before { log_in_as(user) }
+
+      it 'redirects to error page' do
+        patch "/users/0", params: { user: { first_name: 'Test' } }
+        expect(response).to have_http_status(:redirect)
+        expect(response.location).to include('/error')
+      end
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # POST /users (create / signup)
   # -------------------------------------------------------------------------
   describe 'POST /users (signup)' do

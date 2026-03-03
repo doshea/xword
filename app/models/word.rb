@@ -21,6 +21,7 @@ class Word < ApplicationRecord
                   }
 
   has_many :clues, inverse_of: :word
+  has_many :phrases, -> { distinct }, through: :clues
   has_many :across_cells, through: :clues
   has_many :down_cells, through: :clues
   has_many :across_crosswords, through: :across_cells, source: :crossword

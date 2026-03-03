@@ -35,7 +35,7 @@ class User < ApplicationRecord
   has_many :solution_partnerings, inverse_of: :user, dependent: :destroy
   has_many :team_solutions, through: :solution_partnerings, source: :solution
 
-  #Weird workaround to generate bidirectional HABTM with same model
+  # Bidirectional self-join: each friendship is stored once, queried from both sides.
   has_many :friendship_ones, :class_name => 'Friendship', :foreign_key => :friend_id
   has_many :friend_ones, class_name: 'User', through: :friendship_ones
   has_many :friendship_twos, :class_name => 'Friendship', :foreign_key => :user_id
@@ -57,9 +57,6 @@ class User < ApplicationRecord
                 }
 
   self.per_page = 50
-
-  # Password reset tokens expire after one hour.
-  scope :with_valid_reset_token, -> { where('password_reset_sent_at > ?', 1.hour.ago) }
 
   mount_uploader :image, AccountPicUploader
 
@@ -102,7 +99,7 @@ class User < ApplicationRecord
   def generate_token(column)
     begin
       self[column] = SecureRandom.urlsafe_base64
-    end while User.exists?(column => self[column]) #may need a colon
+    end while User.exists?(column => self[column])
   end
   def display_name
     if self.first_name.present?

@@ -58,32 +58,5 @@ FactoryBot.define do
       end
     end
 
-    #from http://www.rinkworks.com/brainfood/p/5box1.shtml
-    factory :repeating_five_by_five do
-      rows { 5 }
-      cols { 5 }
-      title { 'Repeating Puzzle' }
-
-      after(:create) do |crossword|
-        crossword.set_contents('WORLDOTHERRHYMELEMMADREAD')
-        crossword.set_clue(true, 1, 'complete environment')
-        crossword.set_clue(true, 6, 'not this one')
-        crossword.set_clue(true, 7, 'poetic device')
-        crossword.set_clue(true, 8, 'assumption')
-        crossword.set_clue(true, 9, 'foreboding')
-        crossword.set_clue(false, 1, 'planet')
-        crossword.set_clue(false, 2, 'alien')
-        crossword.set_clue(false, 3, 'similar sounder')
-        crossword.set_clue(false, 4, "with 'dil', a sticky situation")
-        crossword.set_clue(false, 5, 'apprehensive fear')
-      end
-    end
-
-  end
-
-  factory :five_by_five, parent: :predefined_five_by_five do
-    after(:create) do |crossword|
-      crossword.publish!
-    end
   end
 end

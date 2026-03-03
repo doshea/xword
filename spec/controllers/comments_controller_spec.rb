@@ -10,6 +10,15 @@ describe CommentsController do
   describe 'POST #add_comment' do
     let(:content) { 'This puzzle was absolutely delightful!' }
 
+    context 'when crossword does not exist' do
+      before { log_in(user) }
+
+      it 'returns 404' do
+        post :add_comment, params: { id: 0, content: content }
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
     context 'when anonymous' do
       it 'returns 401 unauthorized' do
         post :add_comment, params: { id: crossword.id, content: content }

@@ -11,6 +11,7 @@
 describe Word do
   context 'associations' do
     it {should have_many :clues}
+    it {should have_many(:phrases).through(:clues)}
     it {should have_many :across_cells}
     it {should have_many :down_cells}
     it {should have_many(:across_crosswords).through(:across_cells).source(:crossword) }

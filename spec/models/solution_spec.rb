@@ -71,6 +71,23 @@ describe Solution do
     end
   end
 
+  describe 'zero-letter crossword (all voids)' do
+    let(:void_crossword) do
+      cw = create(:crossword, :smaller)
+      cw.update_column(:letters, '_' * cw.letters.length)
+      cw
+    end
+    let(:solution) { create(:solution, user: user, crossword: void_crossword, letters: '_' * void_crossword.letters.length) }
+
+    it '#percent_complete returns zeroed hash without dividing by zero' do
+      expect(solution.percent_complete).to eq({ numerator: 0, denominator: 0, percent: 0.0 })
+    end
+
+    it '#percent_correct returns zeroed hash without dividing by zero' do
+      expect(solution.percent_correct).to eq({ numerator: 0, denominator: 0, percent: 0.0 })
+    end
+  end
+
   describe 'nil-crossword safety (orphaned solution)' do
     let(:orphaned) do
       s = create(:solution, user: user, crossword: crossword, letters: '')

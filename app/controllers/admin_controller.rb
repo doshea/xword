@@ -47,11 +47,10 @@ class AdminController < ApplicationController
 
   end
 
-  # Replaced: create_manual_nyt.js.erb (jquery_ujs + jQuery form reset + alert) → redirect with flash #
   def create_manual_nyt
     if params[:nyt_text]
-      Crossword.add_nyt_puzzle(JSON.parse(params[:nyt_text]))
-      Crossword.smart_record(params[:nyt_text])
+      NytPuzzleImporter.import(JSON.parse(params[:nyt_text]))
+      NytGithubRecorder.smart_record(params[:nyt_text])
       redirect_to admin_manual_nyt_path, flash: { success: 'NYT puzzle added.' }
     else
       redirect_to admin_manual_nyt_path, flash: { error: 'No NYT text provided.' }
