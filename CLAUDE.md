@@ -40,7 +40,10 @@ include team solving (ActionCable), NYT importing, user accounts, comments, and 
 
 - **`Crossword` default scope**: `order(created_at: :desc)` on all queries. Use `.unscoped`
   or `.reorder` when unwanted.
-- **Dead models**: `Phrase` (unused), `CellEdit` (unused in UI) — candidates for removal.
+- **`Phrase`** — reusable clue text (e.g., "Norse god of wisdom"). A `Clue` is an instance
+  of a `Phrase` tied to a `Word` in a specific puzzle. FK exists but is unpopulated. Planned
+  for clue suggestions during puzzle creation.
+- **`CellEdit`** — tracks individual cell edits; unused in current UI. Candidate for removal.
 - Raw SQL bulk inserts in `Crossword#populate_cells` (atomic `INSERT ... RETURNING id`).
 
 ## Architecture Direction
@@ -84,6 +87,12 @@ positioned ancestor. If CSS refactoring removes `position` from an ancestor, JS 
 math silently breaks. When changing CSS `position` properties, grep for `.position()` and
 `.offset()` in JS to check for coupling.
 
+**Comment overlay actions**: Reply/Delete buttons use `opacity: 0` + `pointer-events: none`
+at rest, revealed on `:hover` and `:focus-within`. The `:focus-within` selector must be scoped
+to `.xw-comment__actions`, NOT the parent `.xw-comment` — otherwise clicking the reply-count
+`<button>` (which is a sibling, not inside `__actions`) triggers focus on the comment article
+and keeps the overlay visible. See inline CSS comments in `crossword.scss.erb`.
+
 ## Visual Design
 
 **When asked about style, aesthetics, or visual design of this app, always use the `frontend-design`
@@ -119,7 +128,7 @@ height based on row count.
 
 ## Testing
 
-Run tests: `bundle exec rspec` — ~620 examples, 0 failures
+Run tests: `bundle exec rspec` — ~693 examples, 0 failures
 
 ### Writing Tests
 
