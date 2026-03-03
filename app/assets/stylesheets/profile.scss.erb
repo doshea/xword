@@ -1,38 +1,270 @@
-#profile-name {
-  font-size: var(--text-sm);
-  margin: 0;
+// =============================================================================
+// Profile Page — Public user profile
+// =============================================================================
+// BEM structure: .xw-profile-hero, .xw-profile-card, .xw-profile-comment,
+// .xw-profile-puzzle. Uses design tokens exclusively.
+// =============================================================================
+
+@import 'design_tokens';
+
+// -----------------------------------------------------------------------------
+// Hero Card
+// -----------------------------------------------------------------------------
+
+.xw-profile-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-6);
+  background-color: var(--color-bg-warm);
+  background-image: url("<%= asset_path 'paper.jpeg' %>");
+  background-size: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
+  margin-bottom: var(--space-6);
 }
-#profile-join {
-  font-size: var(--text-sm);
-}
-#profile-stats {
-  margin: var(--space-4) 0;
-  h3 {
-    text-align: center;
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wider);
-    color: var(--color-text-secondary);
+
+.xw-profile-hero__avatar {
+  flex-shrink: 0;
+
+  img {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-full);
+    border: 3px solid var(--color-surface);
+    box-shadow: var(--shadow-md);
+    object-fit: cover;
+    transition: var(--transition-shadow);
+
+    &:hover {
+      box-shadow: var(--shadow-lg);
+    }
   }
-  hr {
-    border: none;
-    border-top: 1px solid var(--color-border);
-    margin: var(--space-1) 0;
-  }
 }
-#recent-comments {
-  min-height: 22em;
+
+.xw-profile-hero__info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.xw-profile-hero__name {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  margin: 0 0 var(--space-1) 0;
+  line-height: var(--leading-tight);
+}
+
+.xw-profile-hero__joined {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.xw-profile-hero__stats {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
   background-color: var(--color-surface-sunken);
   border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+}
 
-  li {
-    padding: var(--space-2) var(--space-3);
+.xw-profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+}
+
+.xw-profile-stat__number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-accent);
+  line-height: var(--leading-none);
+}
+
+.xw-profile-stat__label {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  margin-top: var(--space-1);
+}
+
+// -----------------------------------------------------------------------------
+// Content Cards (Comments & Puzzles)
+// -----------------------------------------------------------------------------
+
+.xw-profile-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+}
+
+.xw-profile-card__heading {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  margin: 0 0 var(--space-5) 0;
+  display: inline-block;
+  border-bottom: 2px solid var(--color-accent);
+  padding-bottom: var(--space-1);
+}
+
+.xw-profile-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.xw-profile-card__empty {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--color-text-muted);
+  margin: var(--space-4) 0 0;
+}
+
+// -----------------------------------------------------------------------------
+// Comments
+// -----------------------------------------------------------------------------
+
+.xw-profile-comment {
+  border-left: 3px solid var(--color-accent-muted);
+  background-color: var(--color-surface-alt);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: var(--space-3) var(--space-4);
+  transition: border-color var(--duration-base) var(--ease-in-out),
+              background-color var(--duration-base) var(--ease-in-out);
+
+  &:hover {
+    border-left-color: var(--color-accent);
+    background-color: var(--color-accent-light);
   }
-  hr {
-    border: none;
-    border-top: 1px solid var(--color-border);
-    margin: 0;
+}
+
+.xw-profile-comment__text {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  margin: 0 0 var(--space-1) 0;
+  line-height: var(--leading-normal);
+}
+
+.xw-profile-comment__meta {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin: 0;
+
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.xw-profile-comment__dot {
+  margin: 0 var(--space-1);
+}
+
+// -----------------------------------------------------------------------------
+// Puzzles Grid
+// -----------------------------------------------------------------------------
+
+.xw-profile-puzzles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-4);
+}
+
+.xw-profile-puzzle {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform var(--duration-base) var(--ease-out);
+
+  &:hover {
+    transform: translateY(-2px);
+
+    .xw-profile-puzzle__thumb {
+      box-shadow: var(--shadow-lg);
+    }
+  }
+}
+
+.xw-profile-puzzle__thumb {
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  object-fit: cover;
+  width: 100%;
+  background-color: var(--color-surface-alt);
+  transition: var(--transition-shadow);
+
+  &--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.xw-profile-puzzle__title {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  margin-top: var(--space-2);
+  line-height: var(--leading-snug);
+  text-align: center;
+}
+
+// -----------------------------------------------------------------------------
+// Responsive
+// -----------------------------------------------------------------------------
+
+@media (max-width: $bp-sm - 1) {
+  .xw-profile-hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .xw-profile-hero__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .xw-profile-hero__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+  }
+}
+
+@media (min-width: $bp-lg) {
+  .xw-profile-hero {
+    flex-wrap: nowrap;
+  }
+
+  .xw-profile-hero__stats {
+    width: auto;
+    margin-top: 0;
   }
 }

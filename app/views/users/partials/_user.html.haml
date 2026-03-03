@@ -1,48 +1,64 @@
-.xw-col-12.xw-md-4.xw-lg-3
-  = image_tag @user.image.url
-  %h1#profile-name= @user.display_name
-  %p#profile-join
-    Joined:
-    %time{datetime: @user.created_at.iso8601}= @user.created_at.strftime("%b %d, %Y")
-  - if @current_user && (@current_user != @user)
-    - if @is_friend
-      %button.xw-btn.xw-btn--success.xw-btn--sm
-        = icon('check')
-        Friends!
-    - else
-      %button.xw-btn.xw-btn--ghost Not Friends
-  #profile-stats
-    %h3 Stats
-    %hr
-    %ul
-      %li
-        Crosswords
-        %ul.bulleted
-          %li #{@user.solutions.complete.count} solved
-          %li #{@crosswords.size} created
-          %li #{@user.unpublished_crosswords.count} in the works
-    %hr
-    %ul
-      %li Clues written: #{@user.clues.count}
-.xw-col-12.xw-md-8.xw-lg-5
-  %h2 Recent Comments
-  %ul#recent-comments
-    - @comments.each do |c|
-      %li
-        = link_to c.content, c.base_crossword
-        %br
-        %time.smaller{datetime: c.created_at.iso8601}= c.created_ago
-      %hr
+-# Hero card — full-width within the .xw-grid parent
+.xw-col-full
+  .xw-profile-hero
+    .xw-profile-hero__avatar
+      = image_tag @user.image.search.url, alt: @user.display_name
+    .xw-profile-hero__info
+      %h1.xw-profile-hero__name= @user.display_name
+      %p.xw-profile-hero__joined
+        Member since
+        %time{datetime: @user.created_at.iso8601}= @user.created_at.strftime("%B %Y")
+      - if @current_user && (@current_user != @user)
+        - if @is_friend
+          %button.xw-btn.xw-btn--success.xw-btn--sm
+            = icon('check')
+            Friends!
+        - else
+          %button.xw-btn.xw-btn--ghost Not Friends
+    .xw-profile-hero__stats
+      .xw-profile-stat
+        %span.xw-profile-stat__number= @user.solutions.complete.count
+        %span.xw-profile-stat__label Solved
+      .xw-profile-stat
+        %span.xw-profile-stat__number= @crosswords.size
+        %span.xw-profile-stat__label Created
+      .xw-profile-stat
+        %span.xw-profile-stat__number= @user.unpublished_crosswords.count
+        %span.xw-profile-stat__label In Progress
+      .xw-profile-stat
+        %span.xw-profile-stat__number= @user.clues.count
+        %span.xw-profile-stat__label Clues Written
 
-.xw-col-12.xw-lg-4
-  %h2 Puzzles
-  - if @crosswords.any?
-    %ul
-      - @crosswords.each do |cw|
-        %li
-          = link_to cw.title, cw
-          - if cw.preview.url
-            = link_to cw do
-              = image_tag cw.preview.url, class: 'xw-thumbnail'
-  - else
-    %p No puzzles created yet
+-# Comments card — 7 of 12 columns on desktop
+.xw-col-12.xw-lg-7
+  %section.xw-profile-card
+    %h2.xw-profile-card__heading Recent Comments
+    - if @comments.any?
+      .xw-profile-card__body
+        - @comments.each do |c|
+          - cw = c.base_crossword
+          .xw-profile-comment
+            %p.xw-profile-comment__text= c.content
+            %p.xw-profile-comment__meta
+              %time{datetime: c.created_at.iso8601}= c.created_ago
+              - if cw
+                %span.xw-profile-comment__dot &middot;
+                = link_to cw.title, cw
+    - else
+      %p.xw-profile-card__empty No comments yet.
+
+-# Puzzles card — 5 of 12 columns on desktop
+.xw-col-12.xw-lg-5
+  %section.xw-profile-card
+    %h2.xw-profile-card__heading Puzzles
+    - if @crosswords.any?
+      .xw-profile-puzzles
+        - @crosswords.each do |cw|
+          = link_to cw, class: 'xw-profile-puzzle' do
+            - if cw.preview.url
+              = image_tag cw.preview.url, class: 'xw-profile-puzzle__thumb', alt: cw.title
+            - else
+              .xw-profile-puzzle__thumb.xw-profile-puzzle__thumb--empty
+            %span.xw-profile-puzzle__title= cw.title
+    - else
+      %p.xw-profile-card__empty No puzzles created yet.
