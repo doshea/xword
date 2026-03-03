@@ -727,12 +727,22 @@ textarea:focus ~ .xw-comment__hint {
       margin-top: var(--space-1);
     }
     .reply-form {
-      width: 70%;
+      margin-top: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface-alt);
+      border-radius: var(--radius-sm);
     }
     textarea {
       height: 1em;
       min-height: 2.3em;
     }
+  }
+  // Persistent footer row for Reply/Cancel — always visible (not in hover overlay).
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
   }
   // Reply count toggle — collapses/expands the .replies container via JS slideToggle.
   // Default state: collapsed (▸ right chevron). JS adds --expanded class (▾ down chevron).
@@ -751,12 +761,11 @@ textarea:focus ~ .xw-comment__hint {
     &--expanded:not(:empty)::before { content: '\25BE\00a0'; } // ▾ expanded
   }
 
-  // Overlay actions as a pill at top-right of comment body (pointer devices only).
+  // Overlay pill at top-right of comment body (pointer devices only).
+  // Contains only the Delete button (admin/author). Reply lives in __footer (always visible).
   // On touch devices, actions stay in normal flow (no @media hover gate).
-  // JS adds --expanded class when reply form is open, reverting to normal flow so
-  // the cancel button and textarea are visible inline.
   @media (hover: hover) {
-    .xw-comment__actions:not(.xw-comment__actions--expanded) {
+    .xw-comment__actions {
       position: absolute;
       top: 0;
       right: 0;
@@ -772,11 +781,9 @@ textarea:focus ~ .xw-comment__hint {
       display: flex;
       gap: var(--space-3);
     }
-    // Show on comment hover. focus-within is scoped to .xw-comment__actions only
-    // (not the whole .xw-comment) so that focusing the reply-count button doesn't
-    // accidentally keep the overlay visible.
-    &:hover .xw-comment__actions:not(.xw-comment__actions--expanded),
-    .xw-comment__actions:not(.xw-comment__actions--expanded):focus-within {
+    // Show on comment hover or when delete link is focused.
+    &:hover .xw-comment__actions,
+    .xw-comment__actions:focus-within {
       opacity: 1;
       pointer-events: auto;
     }
@@ -809,7 +816,13 @@ textarea:focus ~ .xw-comment__hint {
 // Initial display states — jQuery manages visibility via toggle()/slideToggle().
 // cancel-button / reply-form: toggled by solve_app.toggle_reply_form (Reply/Cancel clicks).
 // replies: toggled by reply-count button click (start collapsed, expand on click).
-.cancel-button { display: none; }
+.cancel-button {
+  display: none;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  &:hover { color: var(--color-text-secondary); }
+}
 .reply-form { display: none; }
 .replies { display: none; }
 

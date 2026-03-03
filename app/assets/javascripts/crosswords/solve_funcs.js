@@ -1,11 +1,4 @@
-/*
-Crossword Solving Functions
----------------------------
-This file defines functions used only by the site's Javascript-based
-crossword solver. Functions are scoped inside of the 'solve_app'
-variable, with the exception of jQuery custom functions which may
-be called by any jQuery object.
-*/
+// Crossword solver: auto-save, check cell/word/puzzle, comment entry.
 
 window.solve_app = {
   logged_in: null,
@@ -28,9 +21,9 @@ window.solve_app = {
       solve_app.clock_updater = window.setInterval(solve_app.update_clock, 10000);
       $('#comments').on('keypress', '.reply-content', solve_app.add_comment_or_reply);
       $('#comments').on('click', '.reply-button.reply', solve_app.toggle_reply_form);
+      $('#comments').on('click', '.cancel-button', solve_app.toggle_reply_form);
       $('#solve-save').on('click', solve_app.save_solution);
       $('#add-comment').on('keypress', solve_app.add_comment_or_reply);
-      $('.cancel-button').on('click', solve_app.toggle_reply_form);
     }
     $('#controls-button').on('click', function(e) {
       e.preventDefault();
@@ -201,14 +194,16 @@ window.solve_app = {
 
   toggle_reply_form: function(e) {
     if (e) e.preventDefault();
-    $(this).closest('.xw-comment__actions').toggleClass('xw-comment__actions--expanded');
-    var reply_form = $(this).siblings('form');
+    var body = $(this).closest('.xw-comment__body');
+    var reply_btn = body.find('.reply-button.reply');
+    var cancel_btn = body.find('.cancel-button');
+    var reply_form = body.find('.reply-form');
+    var opening = reply_btn.is(':visible');
+    reply_btn.toggle();
+    cancel_btn.toggle();
     reply_form.toggle('fast');
-    $(this).siblings('a').toggle();
-    $(this).toggle();
-    var is_showing = (reply_form.css('opacity') < 0.5);
-    if (is_showing) {
-      reply_form.children('textarea').focus();
+    if (opening) {
+      reply_form.find('textarea').focus();
     } else {
       reply_form[0].reset();
     }
