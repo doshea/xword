@@ -54,12 +54,7 @@
 #meta-area {
   border-bottom-left-radius: var(--radius-lg);
   border-bottom-right-radius: var(--radius-lg);
-
-  hr {
-    border: none;
-    border-top: 1px solid var(--color-border);
-    margin: var(--space-4) 0;
-  }
+  padding-bottom: var(--space-6);
 }
 
 table#crossword {
@@ -552,20 +547,74 @@ table#crossword {
     font-style: italic;
   }
 }
+// --- Creator byline ---
+
+.xw-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0 var(--space-3);
+
+  &__avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  &__name {
+    font-family: var(--font-body);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+  }
+  &__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-style: italic;
+    color: var(--color-text-secondary);
+    &::before { content: '\2014\00a0'; }
+  }
+}
+
+// --- Meta area states ---
+
+.xw-meta-area__empty,
+.xw-meta-area__auth-prompt {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+// --- Comment divider (invisible; keeps DOM node for Turbo Stream removal) ---
+
+.xw-comment__divider {
+  border: none;
+  margin: 0;
+  height: 0;
+}
+
 #comments {
   h2 {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text-secondary);
     margin-bottom: var(--space-3);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
   }
   textarea {
     background-color: var(--color-surface-sunken);
     border-color: transparent;
     resize: none;
     overflow: auto;
+  }
+  .xw-textarea--compact {
+    height: 2.5rem;
+    min-height: 2.5rem;
+    transition: height var(--duration-base) var(--ease-out);
+    &:focus {
+      height: 5rem;
+    }
   }
 }
 
@@ -575,10 +624,20 @@ table#crossword {
   display: flex;
   gap: var(--space-3);
   padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-of-type {
+    border-bottom: none;
+  }
 
   &__avatar {
     flex-shrink: 0;
-    img { border-radius: 50%; }
+    img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
   }
   &__body {
     flex: 1;
@@ -602,13 +661,18 @@ table#crossword {
 
 .xw-reply {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-2);
   padding: var(--space-2) 0;
   margin-left: var(--space-6);
 
   &__avatar {
     flex-shrink: 0;
-    img { border-radius: 50%; }
+    img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
   }
   &__body {
     flex: 1;

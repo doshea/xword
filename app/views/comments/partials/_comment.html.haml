@@ -38,4 +38,4 @@
       - comment.replies.each do |reply|
         = render partial: 'comments/partials/reply', locals: {reply: reply}
 / id added so destroy.turbo_stream.erb can also remove this separator
-%hr{id: "hr_#{dom_id(comment)}"}/
+%hr.xw-comment__divider{id: "hr_#{dom_id(comment)}"}/

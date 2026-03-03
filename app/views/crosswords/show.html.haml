@@ -85,35 +85,28 @@
           %hr
           %li.check-completion
             %a{:href => "#"} Completion
-  %hr
   .xw-col-full
-    .xw-grid
-      .xw-col-12.xw-md-2
-        - if @crossword.user
-          = link_to @crossword.user do
-            = image_tag(@crossword.user.image.creator_pic.url, class: 'xw-thumbnail')
-      .xw-col-12.xw-md-10
-        %p
-          %em= @crossword.description
-          - if @crossword.user
-            &mdash;
-            = link_to @crossword.user.display_name, @crossword.user
-    %hr
+    .xw-byline
+      - if @crossword.user
+        = link_to @crossword.user, class: 'xw-byline__avatar' do
+          = image_tag(@crossword.user.image.creator_pic.url)
+        = link_to @crossword.user.display_name, @crossword.user, class: 'xw-byline__name'
+      - if @crossword.description.present?
+        %span.xw-byline__desc= @crossword.description
     %section#comments{aria: {labelledby: 'comments-heading'}}
-      %h2#comments-heading
-        = icon('message-square')
-        Comments
-      / Feed Entry
-      -if @current_user
+      %h2#comments-heading Comments
+      - if @current_user
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
         = form_with(url: add_comment_path(@crossword), id: 'comment-form', data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
-          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea', autocomplete: 'off', placeholder: 'What did you think of this crossword?')
-      -else
-        =link_to 'Sign up', new_user_path
-        or
-        = link_to 'Log in', login_path
-        to comment on this puzzle
-      %hr
+          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea xw-textarea--compact', rows: 1, autocomplete: 'off', placeholder: 'Add a comment...')
+      - else
+        %p.xw-meta-area__auth-prompt
+          = link_to 'Sign up', new_user_path
+          or
+          = link_to 'Log in', login_path
+          to comment on this puzzle
+      - if @comments.empty?
+        %p.xw-meta-area__empty No comments yet
       - @comments.each do |comment|
         = render partial: 'comments/partials/comment', locals: {comment: comment}
 
