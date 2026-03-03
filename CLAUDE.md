@@ -57,12 +57,12 @@ app/
   mailers/               # AdminMailer, UserMailer
   models/
     application_record.rb  # Abstract base class (primary_abstract_class)
-    concerns/              # Crosswordable, Publishable, Newyorkable
+    concerns/              # Crosswordable, Publishable, Newyorkable (3 active concerns)
     *.rb                   # 14 models (all inherit from ApplicationRecord)
   uploaders/             # CarrierWave uploaders (AccountPicUploader, PreviewUploader)
   views/                 # HAML templates
 config/
-  environment.rb         # ActiveRecord::Base extensions (skip_callbacks, next_index)
+  environment.rb         # Standard Rails environment loader
   routes.rb              # All routes
 lib/
   custom_funcs.rb        # Utility functions (manually required; excluded from Zeitwerk)
@@ -324,11 +324,9 @@ in Feb-Mar 2026. Key milestones:
 
 ### Dead code (safe to delete)
 
-1. **`Examplable` concern** (`app/models/concerns/examplable.rb`) — not included by any model
-2. **`Phrase` model** (`app/models/phrase.rb`) — unused; `phrase_id` FK on Clue is always nil
-3. **`next_index`** in `config/environment.rb` — unused after `populate_cells` atomic rewrite
-4. **`:clue` factory** (`spec/factories/clue_factory.rb`) — 0 uses in any spec
-5. **`User.with_valid_reset_token` scope** — superseded by Rails 8.1 signed password reset tokens
+1. **`Phrase` model** (`app/models/phrase.rb`) — unused; `phrase_id` FK on Clue is always nil
+2. **`:clue` factory** (`spec/factories/clue_factory.rb`) — 0 uses in any spec
+3. **`User.with_valid_reset_token` scope** — superseded by Rails 8.1 signed password reset tokens
 
 ### Low priority
 
