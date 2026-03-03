@@ -628,19 +628,19 @@ table#crossword {
   color: var(--color-text-secondary); // bumped from --color-text-muted for WCAG AA at small sizes
 }
 
-// "Enter to send" hint — appears on textarea focus
+// "Enter to send" hint — appears on textarea focus, subtle enough to read as a hint
 .xw-comment__hint {
   display: block;
   font-family: var(--font-ui);
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  margin-top: var(--space-1);
+  font-size: 0.625rem; // 10px — smaller than --text-xs to stay unobtrusive
+  color: var(--color-text-muted);
+  margin-top: 2px;
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-in-out);
 }
 textarea:focus ~ .xw-comment__hint,
 .reply-form__field:focus-within ~ .xw-comment__hint {
-  opacity: 1;
+  opacity: 0.7; // partial opacity so it blends with background
 }
 
 // --- Comment divider (invisible; keeps DOM node for Turbo Stream removal) ---
