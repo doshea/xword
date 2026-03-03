@@ -526,6 +526,28 @@ describe Crossword do
           crossword.generate_words_and_link_clues
           expect(clues[0].reload.phrase).to eq(clues[1].reload.phrase)
         end
+
+        it 'reuses pre-existing phrases without creating duplicates' do
+          existing = Phrase.find_or_create_by_content('A male friend')
+          phrase_count_before = Phrase.count
+
+          crossword.across_start_cells.first.across_clue.update_column(:phrase_id, nil)
+          crossword.generate_words_and_link_clues
+
+          clue = crossword.across_start_cells.first.across_clue.reload
+          expect(clue.phrase).to eq(existing)
+          expect(Phrase.count).to eq(phrase_count_before)
+        end
+
+        it 'links all clues in the puzzle to phrases and words' do
+          across_clues = crossword.across_start_cells.map { |c| c.across_clue.reload }
+          down_clues = crossword.down_start_cells.map { |c| c.down_clue.reload }
+
+          (across_clues + down_clues).each do |clue|
+            expect(clue.word).to be_present, "Clue #{clue.id} (#{clue.content}) missing word"
+            expect(clue.phrase).to be_present, "Clue #{clue.id} (#{clue.content}) missing phrase"
+          end
+        end
       end
 
 

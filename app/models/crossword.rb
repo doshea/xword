@@ -343,13 +343,25 @@ class Crossword < ApplicationRecord
   def generate_words_and_link_clues
     words_hsh = self.get_words_hsh
 
+    # Batch-load existing words and phrases to avoid N+1 queries
+    word_strings = words_hsh.keys
+    existing_words = Word.where(content: word_strings).index_by(&:content)
+
+    clue_texts = words_hsh.values.flatten
+      .select { |c| c.content.present? && c.content != Clue::DEFAULT_CONTENT }
+      .map { |c| c.content.strip.downcase }.uniq
+    existing_phrases = Phrase.where("LOWER(content) IN (?)", clue_texts)
+      .index_by { |p| p.content.strip.downcase } if clue_texts.any?
+    existing_phrases ||= {}
+
     words_hsh.each do |word, clues|
-      the_word = Word.find_or_create_by(content: word)
+      the_word = existing_words[word] ||= Word.find_or_create_by(content: word)
 
       clues.each do |clue|
         attrs = { word: the_word }
         if clue.content.present? && clue.content != Clue::DEFAULT_CONTENT
-          attrs[:phrase] = Phrase.find_or_create_by_content(clue.content)
+          key = clue.content.strip.downcase
+          attrs[:phrase] = existing_phrases[key] ||= Phrase.find_or_create_by_content(clue.content)
         end
         clue.update!(attrs)
       end
