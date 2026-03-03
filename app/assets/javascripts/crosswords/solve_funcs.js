@@ -21,7 +21,10 @@ window.solve_app = {
       solve_app.clock_updater = window.setInterval(solve_app.update_clock, 10000);
       $('#comments').on('keypress', '.reply-content', solve_app.add_comment_or_reply);
       $('#comments').on('click', '.reply-button.reply', solve_app.toggle_reply_form);
-      $('#comments').on('click', '.cancel-button', solve_app.toggle_reply_form);
+      $('#comments').on('click', '.reply-form__close', solve_app.toggle_reply_form);
+      $('#comments').on('keydown', '.reply-content', function(e) {
+        if (e.key === 'Escape') solve_app.toggle_reply_form.call(this, e);
+      });
       $('#solve-save').on('click', solve_app.save_solution);
       $('#add-comment').on('keypress', solve_app.add_comment_or_reply);
     }
@@ -63,18 +66,30 @@ window.solve_app = {
     // server-side flash error ("Solution could not be found") that persists across pages.
     if (!solve_app.solution_id) return;
     var letters = cw.get_puzzle_letters();
-    var settings = {
-      dataType: 'script',
+    var counter = solve_app.save_counter;
+    $.ajax({
+      dataType: 'json',
       type: 'PUT',
       url: "/solutions/" + solve_app.solution_id,
-      data: { letters: letters, save_counter: solve_app.save_counter },
+      data: { letters: letters, save_counter: counter },
+      success: function(data) {
+        if (solve_app.save_counter == data.save_counter) {
+          try {
+            solve_app.log_save();
+            solve_app.update_clock();
+          } catch (err) {
+            // Still clear the unsaved flag so auto-save doesn't loop forever
+            solve_app.unsaved_changes = false;
+            console.warn('save succeeded but UI update failed:', err);
+          }
+        }
+      },
       error: function(xhr) {
         $('#save-status').text('Save failed');
         $('#save-clock').empty();
         console.warn('save_solution failed:', xhr.status, xhr.statusText);
       }
-    };
-    $.ajax(settings);
+    });
   },
 
   log_save: function() {
@@ -185,7 +200,7 @@ window.solve_app = {
         if ($(this).val() !== '') {
           $('.replying').removeClass('replying');
           $(this).closest('.comment').addClass('replying');
-          $(this).parent().submit();
+          $(this).closest('form').submit();
           $(this).val('');
         }
       }
@@ -194,13 +209,10 @@ window.solve_app = {
 
   toggle_reply_form: function(e) {
     if (e) e.preventDefault();
-    var body = $(this).closest('.xw-comment__body');
-    var reply_btn = body.find('.reply-button.reply');
-    var cancel_btn = body.find('.cancel-button');
-    var reply_form = body.find('.reply-form');
-    var opening = reply_btn.is(':visible');
-    reply_btn.toggle();
-    cancel_btn.toggle();
+    var comment = $(this).closest('.xw-comment');
+    var reply_form = comment.find('.reply-form');
+    var opening = reply_form.is(':hidden');
+    comment.toggleClass('xw-comment--replying', opening);
     reply_form.toggle('fast');
     if (opening) {
       reply_form.find('textarea').focus();

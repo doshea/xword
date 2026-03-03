@@ -737,12 +737,10 @@ textarea:focus ~ .xw-comment__hint {
       min-height: 2.3em;
     }
   }
-  // Persistent footer row for Reply/Cancel — always visible (not in hover overlay).
-  &__footer {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin-top: var(--space-1);
+  // Hide the hover overlay while the reply form is open (avoids empty pill or
+  // showing Reply alongside the open form). Applies to both pointer and touch devices.
+  &--replying .xw-comment__actions {
+    display: none !important;
   }
   // Reply count toggle — collapses/expands the .replies container via JS slideToggle.
   // Default state: collapsed (▸ right chevron). JS adds --expanded class (▾ down chevron).
@@ -762,7 +760,7 @@ textarea:focus ~ .xw-comment__hint {
   }
 
   // Overlay pill at top-right of comment body (pointer devices only).
-  // Contains only the Delete button (admin/author). Reply lives in __footer (always visible).
+  // Contains Reply + Delete. Hidden via --replying class when reply form is open.
   // On touch devices, actions stay in normal flow (no @media hover gate).
   @media (hover: hover) {
     .xw-comment__actions {
@@ -814,17 +812,32 @@ textarea:focus ~ .xw-comment__hint {
 }
 
 // Initial display states — jQuery manages visibility via toggle()/slideToggle().
-// cancel-button / reply-form: toggled by solve_app.toggle_reply_form (Reply/Cancel clicks).
+// reply-form: toggled by solve_app.toggle_reply_form (Reply click, Escape key, or X button).
 // replies: toggled by reply-count button click (start collapsed, expand on click).
-.cancel-button {
-  display: none;
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  text-decoration: none;
-  &:hover { color: var(--color-text-secondary); }
-}
 .reply-form { display: none; }
 .replies { display: none; }
+
+// X button overlaid on the reply textarea to close the form.
+.reply-form__field {
+  position: relative;
+}
+.reply-form__close {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  line-height: 0;
+  border-radius: var(--radius-sm);
+  &:hover {
+    color: var(--color-text);
+    background: rgba(28, 26, 23, 0.06);
+  }
+  svg { width: 14px; height: 14px; }
+}
 
 .reply-button {
   display: inline-flex;
