@@ -39,6 +39,7 @@ feature 'Login' do
 
     context 'using nav login link', js: true do
       before :each do
+        page.driver.browser.cookies.clear
         visit user_path(@user)
       end
       scenario 'Login link is in the nav' do

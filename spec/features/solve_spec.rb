@@ -2,6 +2,7 @@ feature 'Solve', js: true do
   let!(:crossword) { create(:predefined_five_by_five) }
 
   before :each do
+    page.driver.browser.cookies.clear
     visit crossword_path(crossword)
   end
 

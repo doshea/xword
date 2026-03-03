@@ -18,10 +18,15 @@ feature 'Edit crossword', js: true do
     expect(page).to have_css('table#crossword')
   end
 
-  # Helper: wait for the 0.4s CSS slide-up transition to settle so Cuprite
-  # clicks hit the correct screen coordinates.
+  # Force-complete any in-progress CSS slide transitions so Cuprite clicks
+  # hit the correct screen coordinates (replaces sleep 0.5).
   def wait_for_panel_transition
-    sleep 0.5
+    page.execute_script(<<~JS)
+      document.querySelectorAll('#idea-container, #pattern-container').forEach(el => {
+        el.style.transition = 'none';
+        void el.offsetHeight;
+      });
+    JS
   end
 
   # -----------------------------------------------------------------------
