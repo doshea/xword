@@ -198,10 +198,22 @@ window.solve_app = {
       if (key === cw.ENTER) {
         e.preventDefault();
         if ($(this).val() !== '') {
-          $('.replying').removeClass('replying');
-          $(this).closest('.comment').addClass('replying');
-          $(this).closest('form')[0].requestSubmit();
+          var form = $(this).closest('form');
+          form[0].requestSubmit();
           $(this).val('');
+          // Close the reply form and expand replies so the new reply is visible
+          if ($(this).hasClass('reply-content')) {
+            var comment = $(this).closest('.xw-comment');
+            comment.removeClass('xw-comment--replying');
+            form.hide('fast');
+            form[0].reset();
+            var replies = comment.find('.replies');
+            var countBtn = comment.find('.xw-comment__reply-count');
+            if (replies.is(':hidden')) {
+              replies.slideDown('fast');
+              countBtn.addClass('xw-comment__reply-count--expanded');
+            }
+          }
         }
       }
     }
