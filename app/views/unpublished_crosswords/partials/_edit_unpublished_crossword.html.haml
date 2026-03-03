@@ -1,5 +1,5 @@
 .xw-puzzle-layout
-  %table#crossword.no-select{data: {id: @unpublished_crossword.id, rows: @unpublished_crossword.rows, cols: @unpublished_crossword.cols, :'auth-token' => form_authenticity_token}}
+  %table#crossword.no-select{data: {id: @unpublished_crossword.id, rows: @unpublished_crossword.rows, cols: @unpublished_crossword.cols}}
     - i = 0
     - for r in 1..@unpublished_crossword.rows
       %tr{data: {row: r}}
