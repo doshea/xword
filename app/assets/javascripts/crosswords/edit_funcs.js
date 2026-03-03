@@ -35,7 +35,7 @@ window.edit_app = {
 
   flip_switch: function(e) {
     $(this).parent().toggleClass('on off');
-    $(this).closest('form').submit();
+    $(this).closest('form')[0].requestSubmit();
   },
 
   add_potential_word: function(e) {
@@ -60,8 +60,8 @@ window.edit_app = {
 
     var id = $('#crossword').data('id');
 
-    var settings = {
-      dataType: 'script',
+    $.ajax({
+      dataType: 'json',
       type: 'PUT',
       url: "/unpublished_crosswords/" + id,
       data: {
@@ -78,25 +78,23 @@ window.edit_app = {
           title_status.removeClass('xw-status-ok xw-status-err').html('');
         });
       }
-    };
-    $.ajax(settings);
+    });
   },
 
   update_description: function(e) {
     var id = $('#crossword').data('id');
 
-    var settings = {
-      dataType: 'script',
+    $.ajax({
+      dataType: 'json',
       type: 'PUT',
       url: "/unpublished_crosswords/" + id,
       data: {
         unpublished_crossword: { description: $('#description').val() }
       },
       error: function() {
-        alert('Error updating description!');
+        cw.flash('Error updating description.', 'error');
       }
-    };
-    $.ajax(settings);
+    });
   },
 
   update_unsaved: function() {
@@ -179,7 +177,7 @@ window.edit_app = {
         }
       },
       error: function() {
-        alert('Error updating letters!');
+        cw.flash('Error saving puzzle.', 'error');
       }
     });
   },

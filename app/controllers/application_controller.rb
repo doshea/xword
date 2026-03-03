@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::Base
   include ActionView::Helpers::TextHelper
 
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
   before_action :authenticate
@@ -28,7 +26,7 @@ class ApplicationController < ActionController::Base
     render js: "alert(#{s.to_json});"
   end
 
-  #For use in finding generic classes and objects
+  # Convention-based lookup: derives model class from controller name (e.g., CrosswordsController → "Crossword").
   def associated_class_string
     controller_name.classify
   end
@@ -43,7 +41,7 @@ class ApplicationController < ActionController::Base
   def found_object
     instance_variable_get("@#{associated_class_string.underscore}")
   end
-  #
+
   def ensure_owner_or_admin
     obj = found_object
     unless @current_user && obj && (@current_user.is_admin || @current_user == obj.user)

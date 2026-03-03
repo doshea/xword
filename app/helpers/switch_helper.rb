@@ -1,4 +1,3 @@
-# app/helpers/switch_helper.rb
 module SwitchHelper
 
   def switch_tag(obj, attribute, label = false, hint = false)

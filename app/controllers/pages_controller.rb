@@ -29,7 +29,6 @@ class PagesController < ApplicationController
   #GET /account_required or account_required_path
   def account_required
     @redirect = params[:redirect]
-    # redirect_to send_password_reset_users_path(redirect: url_for({controller: :pages, action: :account_required, only_path: false}).html_safe)
   end
 
   #GET /faq or faq_path
@@ -47,6 +46,7 @@ class PagesController < ApplicationController
   end
 
   #GET /live_search or live_search_path
+  # Splits max_results evenly across non-empty categories so one type doesn't crowd others.
   def live_search
     query = params[:query]
     max_results = 15
@@ -62,7 +62,19 @@ class PagesController < ApplicationController
     @words = @words.first(split_results)
 
     @result_count = @users.size + @crosswords.size + @words.size
-    respond_to { |f| f.js }
+    respond_to do |f|
+      f.json do
+        result = { result_count: @result_count }
+        if @result_count > 0
+          result[:html] = render_to_string(
+            partial: 'layouts/partials/live_results',
+            formats: [:html]
+          )
+        end
+        render json: result
+      end
+      f.js # Legacy: live_search.js.erb
+    end
   end
 
   #GET /welcome or welcome_path
@@ -88,13 +100,11 @@ class PagesController < ApplicationController
   end
 
   #GET /nytimes or nytimes_path
-  #TODO decide if this will be its own page or not
   def nytimes
     @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.includes(:user) : Crossword.none
   end
 
   #GET /user_made or user_made_path
-  #TODO decide if this will be its own page or not
   def user_made
     @user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id).includes(:user) : Crossword.includes(:user).all
   end

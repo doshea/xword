@@ -5,7 +5,11 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
   let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }
   let(:solution)  { create(:solution, user: user, crossword: crossword, letters: blank_letters) }
 
-  let(:xhr_headers) do
+  let(:json_headers) do
+    { 'Accept' => 'application/json', 'X-Requested-With' => 'XMLHttpRequest' }
+  end
+
+  let(:js_headers) do
     { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
   end
 
@@ -36,7 +40,7 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
     it 'is rejected without a CSRF token' do
       post "/crosswords/#{crossword.id}/check_cell",
            params: { letters: ['A'], indices: ['0'] },
-           headers: xhr_headers
+           headers: json_headers
 
       expect(response).to have_http_status(:unprocessable_content)
     end
@@ -45,11 +49,11 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
       token = csrf_token
       post "/crosswords/#{crossword.id}/check_cell",
            params: { letters: ['A'], indices: ['0'] },
-           headers: xhr_headers.merge('X-CSRF-Token' => token)
+           headers: json_headers.merge('X-CSRF-Token' => token)
 
       expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq 'text/javascript'
-      expect(response.body).to include('mismatches[0] = false')
+      body = JSON.parse(response.body)
+      expect(body['mismatches']['0']).to be false
     end
   end
 
@@ -60,7 +64,7 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
     it 'is rejected without a CSRF token' do
       post "/crosswords/#{crossword.id}/check_completion",
            params: { letters: correct_letters },
-           headers: xhr_headers
+           headers: json_headers
 
       expect(response).to have_http_status(:unprocessable_content)
     end
@@ -70,10 +74,11 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
       token = csrf_token
       post "/crosswords/#{crossword.id}/check_completion",
            params: { letters: correct_letters, solution_id: solution.id },
-           headers: xhr_headers.merge('X-CSRF-Token' => token)
+           headers: json_headers.merge('X-CSRF-Token' => token)
 
       expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq 'text/javascript'
+      body = JSON.parse(response.body)
+      expect(body['correct']).to be true
     end
   end
 
@@ -86,11 +91,11 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
       token = csrf_token
       put "/solutions/#{solution.id}",
           params: { letters: blank_letters, save_counter: '0.1' },
-          headers: xhr_headers.merge('X-CSRF-Token' => token)
+          headers: json_headers.merge('X-CSRF-Token' => token)
 
       expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq 'text/javascript'
-      expect(response.body).to include('solve_app.log_save()')
+      body = JSON.parse(response.body)
+      expect(body['save_counter']).to eq '0.1'
     end
 
     it 'succeeds when authenticity_token is in form data' do
@@ -98,11 +103,11 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
       token = csrf_token
       put "/solutions/#{solution.id}",
           params: { letters: blank_letters, save_counter: '0.1', authenticity_token: token },
-          headers: xhr_headers
+          headers: json_headers
 
       expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq 'text/javascript'
-      expect(response.body).to include('solve_app.log_save()')
+      body = JSON.parse(response.body)
+      expect(body['save_counter']).to eq '0.1'
     end
   end
 
@@ -118,10 +123,11 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
       letters = Array.new(ucw.rows * ucw.cols) { ('A'..'Z').to_a.sample }
       patch "/unpublished_crosswords/#{ucw.id}/update_letters",
             params: { letters: letters, circles: '', across_clues: [], down_clues: [], save_counter: '0.5' },
-            headers: xhr_headers.merge('X-CSRF-Token' => token)
+            headers: json_headers.merge('X-CSRF-Token' => token)
 
       expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq 'text/javascript'
+      body = JSON.parse(response.body)
+      expect(body['save_counter']).to eq '0.5'
     end
   end
 

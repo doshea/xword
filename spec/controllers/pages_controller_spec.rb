@@ -13,43 +13,48 @@ describe PagesController do
   end
 
   # ---------------------------------------------------------------------------
-  # GET #live_search (JS format — $.ajax dataType:'script' from global.js)
+  # GET #live_search
   # ---------------------------------------------------------------------------
   describe 'GET #live_search' do
     before do
       request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
     end
 
-    context 'with matching results' do
+    context 'with JSON format (current client)' do
       let!(:user)      { create(:user, username: 'puzzlemaker') }
       let!(:crossword) { create(:crossword) }
       let!(:word)      { Word.create!(content: 'PUZZLE') }
 
-      before { get :live_search, params: { query: 'puzzle' }, format: :js }
+      it 'returns result_count and html when matches exist' do
+        get :live_search, params: { query: 'puzzle' }, format: :json
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body['result_count']).to be >= 1
+        expect(body['html']).to be_present
+      end
 
-      it { should respond_with(200) }
-      it 'assigns @result_count' do
-        expect(assigns(:result_count)).to be >= 1
+      it 'returns zero result_count with no html when no matches' do
+        get :live_search, params: { query: 'zzzznotfound' }, format: :json
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body['result_count']).to eq 0
+        expect(body).not_to have_key('html')
+      end
+
+      it 'handles blank query' do
+        get :live_search, params: { query: '' }, format: :json
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body['result_count']).to eq 0
       end
     end
 
-    context 'with no results' do
-      before { get :live_search, params: { query: 'zzzznotfound' }, format: :js }
+    context 'with JS format (legacy fallback)' do
+      let!(:crossword) { create(:crossword) }
 
-      it { should respond_with(200) }
-      it 'assigns zero result_count' do
-        expect(assigns(:result_count)).to eq 0
-      end
-    end
-
-    context 'with blank query' do
-      before { get :live_search, params: { query: '' }, format: :js }
-
-      it { should respond_with(200) }
-      it 'assigns empty collections' do
-        expect(assigns(:users)).to be_empty
-        expect(assigns(:crosswords)).to be_empty
-        expect(assigns(:words)).to be_empty
+      it 'returns JavaScript response' do
+        get :live_search, params: { query: crossword.title[0..4] }, format: :js
+        expect(response).to have_http_status(:ok)
       end
     end
   end

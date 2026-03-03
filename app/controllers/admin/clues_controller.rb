@@ -1,4 +1,5 @@
 class Admin::CluesController < Admin::BaseController
+  # UNION: clues that start an across word OR a down word (a clue can be both, DISTINCT dedupes).
   def index
     cw_ids = Crossword.pluck(:id)
     across_query = Clue.joins(:across_cells).where(cells: {crossword_id: cw_ids, is_across_start: true}).to_sql

@@ -120,7 +120,10 @@ class CrosswordsController < ApplicationController
   def check_cell
     indices = params[:indices]&.map(&:to_i)
     @mismatches = @crossword.cell_mismatches(params[:letters], indices: indices)
-    respond_to { |f| f.js }
+    respond_to do |f|
+      f.json { render json: { mismatches: @mismatches } }
+      f.js   # Legacy: check_cell.js.erb
+    end
   end
 
   #POST /crosswords/:id/check_completion or check_completion_crossword_path
@@ -133,7 +136,19 @@ class CrosswordsController < ApplicationController
                       .where(solution_partnerings: { user_id: @current_user.id })
                       .find_by(id: params[:solution_id], crossword_id: @crossword.id)
     end
-    respond_to { |f| f.js }
+    respond_to do |f|
+      f.json do
+        result = { correct: @correctness }
+        if @correctness
+          result[:win_modal_html] = render_to_string(
+            partial: 'solutions/partials/win_modal_contents',
+            formats: [:html]
+          )
+        end
+        render json: result
+      end
+      f.js # Legacy: check_completion.js.erb
+    end
   end
 
 end

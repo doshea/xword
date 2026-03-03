@@ -56,10 +56,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [:new, :create, :show, :update] do
-    member do
-      # TODO
-      # get :favorites
-    end
     collection do
       get :account
       get :forgot_password
@@ -89,9 +85,8 @@ Rails.application.routes.draw do
   get '/faq' => 'pages#faq'
   get '/contact' => 'pages#contact'
   get '/stats' => 'pages#stats'
-  get '/nytimes' => 'pages#nytimes' #TODO decide if this will be its own page or not
-  get '/user_made' => 'pages#user_made' #TODO decide if this will be its own page or not
-
+  get '/nytimes' => 'pages#nytimes'
+  get '/user_made' => 'pages#user_made'
   namespace :admin do
     get :email
     get :cheat

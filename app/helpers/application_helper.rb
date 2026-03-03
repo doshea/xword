@@ -9,6 +9,7 @@ module ApplicationHelper
     @current_user.present?
   end
 
+  # 65 = 'A'; rand(2)*32 randomly shifts to lowercase (97 = 'a').
   def random_char
     (65+rand(26) + rand(2)*32).chr
   end

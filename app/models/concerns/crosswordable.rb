@@ -2,9 +2,6 @@ module Crosswordable
   extend ActiveSupport::Concern
 
   included do
-    #attr_accessible
-    #scopes
-    #has_many and belongs_to
     belongs_to :user, optional: true
     validates :rows,
       presence: true,
@@ -26,7 +23,6 @@ module Crosswordable
   MIN_TITLE_LENGTH = 3
   MAX_TITLE_LENGTH = 35
 
-  #INSTANCE METHODS
   def random_row
     (1..rows).to_a.sample
   end

@@ -1,6 +1,6 @@
-// NOTE: Intentionally kept as .js.erb (not migrated to Turbo Stream).
-// Called via $.ajax({ dataType: 'script' }) from solve_funcs.js — Turbo does not intercept this.
-// All incorrect cells are marked with a class, their flags flash red, the class is removed
+// Legacy fallback — primary client uses JSON (dataType: 'json') since the
+// globalEval path (dataType: 'script') silently swallows runtime errors and
+// triggers jQuery's error callback with status 200.
 var mismatches = new Object();
 <% @mismatches.each do |k, v| %>
   mismatches[<%= k %>] = <%= v %>;

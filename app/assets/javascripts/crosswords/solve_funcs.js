@@ -113,23 +113,39 @@ window.solve_app = {
     }
   },
 
+  // Shared handler for check_cell/check_word/check_puzzle JSON responses.
+  // Marks cells as correct/incorrect based on the mismatches hash from the server.
+  apply_mismatches: function(data) {
+    var mismatches = data.mismatches;
+    Object.keys(mismatches).forEach(function(i) {
+      var v = mismatches[i];
+      var temp = $($('.cell')[i]);
+      if (v) {
+        temp.addClass('flagged incorrect').removeClass('correct');
+      } else {
+        if (temp.hasClass('incorrect')) {
+          temp.addClass('flagged correct').removeClass('incorrect');
+        }
+      }
+    });
+  },
+
   check_cell: function(e) {
     e.preventDefault();
     if (cw.selected) {
       if (cw.selected.is_empty_cell()) {
-        alert('This cell is empty.');
+        cw.flash('This cell is empty.', 'info');
       } else {
         var index = cw.selected.data('index');
         var letter = cw.selected.get_letter();
-        var settings = {
-          dataType: 'script',
+        $.ajax({
+          dataType: 'json',
           type: 'POST',
           url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
-          data: { letters: [letter], indices: [] }
-        };
-        settings.data.indices.push(index);
-        settings.error = function(xhr) { console.warn('check_cell failed:', xhr.status); };
-        $.ajax(settings);
+          data: { letters: [letter], indices: [index] },
+          success: solve_app.apply_mismatches,
+          error: function(xhr) { console.warn('check_cell failed:', xhr.status); }
+        });
         solve_app.save_solution();
       }
     }
@@ -138,25 +154,27 @@ window.solve_app = {
   check_word: function(e) {
     e.preventDefault();
     if (cw.selected) {
-      var settings = {
-        dataType: 'script',
-        type: 'POST',
-        url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
-        data: { letters: [], indices: [] }
-      };
+      var letters = [];
+      var indices = [];
       var word_cells = cw.selected.get_word_cells();
       for (var i = 0; i < word_cells.length; i++) {
         var cell = word_cells[i];
         if (!cell.is_empty_cell()) {
-          settings.data.indices.push(cell.data('index'));
-          settings.data.letters.push(cell.get_letter());
+          indices.push(cell.data('index'));
+          letters.push(cell.get_letter());
         }
       }
-      if (settings.data.letters.length === 0) {
-        alert('The selected word is empty.');
+      if (letters.length === 0) {
+        cw.flash('The selected word is empty.', 'info');
       } else {
-        settings.error = function(xhr) { console.warn('check_word failed:', xhr.status); };
-        $.ajax(settings);
+        $.ajax({
+          dataType: 'json',
+          type: 'POST',
+          url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
+          data: { letters: letters, indices: indices },
+          success: solve_app.apply_mismatches,
+          error: function(xhr) { console.warn('check_word failed:', xhr.status); }
+        });
         solve_app.save_solution();
       }
     }
@@ -165,31 +183,43 @@ window.solve_app = {
   check_puzzle: function(e) {
     e.preventDefault();
     solve_app.save_solution();
-    var settings = {
-      dataType: 'script',
+    $.ajax({
+      dataType: 'json',
       type: 'POST',
       url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
       data: { letters: cw.get_puzzle_letters() },
+      success: solve_app.apply_mismatches,
       error: function(xhr) { console.warn('check_puzzle failed:', xhr.status); }
-    };
-    $.ajax(settings);
+    });
   },
 
   check_completion: function(e) {
     e.preventDefault();
     solve_app.save_solution();
     var letters = cw.get_puzzle_letters();
-    var settings = {
-      dataType: 'script',
+    var data = { letters: letters };
+    if (!solve_app.anonymous) {
+      data['solution_id'] = solve_app.solution_id;
+    }
+    $.ajax({
+      dataType: 'json',
       type: 'POST',
       url: "/crosswords/" + solve_app.crossword_id + "/check_completion",
-      data: { letters: letters },
+      data: data,
+      success: function(data) {
+        if (data.correct) {
+          var win_modal = $('#win-modal');
+          if (!win_modal.attr('filled')) {
+            win_modal.prepend(data.win_modal_html);
+            win_modal.attr('filled', true);
+          }
+          document.getElementById('win-modal').showModal();
+        } else {
+          cw.flash('Your solution contains incorrect letters.', 'warning');
+        }
+      },
       error: function(xhr) { console.warn('check_completion failed:', xhr.status); }
-    };
-    if (!solve_app.anonymous) {
-      settings.data['solution_id'] = solve_app.solution_id;
-    }
-    $.ajax(settings);
+    });
   },
 
   add_comment_or_reply: function(e) {

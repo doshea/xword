@@ -16,7 +16,6 @@ module Publishable
     scope :partnered_solved, -> (user) {partnered(user).merge(Solution.complete)}
     scope :partnered_in_progress, -> (user) {partnered(user).merge(Solution.incomplete)}
 
-    # Actually used by the home page
     scope :all_in_progress, -> (user) { unowned(user).in_progress(user).union(partnered_in_progress(user)).distinct }
     scope :all_solved,      -> (user) { unowned(user).solved(user).union(partnered_solved(user)).distinct }
 

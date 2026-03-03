@@ -11,6 +11,7 @@ class CluesController < ApplicationController
   end
 
   #PATCH/PUT /clue/:id or clue_path
+  # NOTE: Does not update phrase_id — phrases are linked at publish time only.
   def update
     @clue.update(clue_params)
     head :ok

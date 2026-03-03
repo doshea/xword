@@ -1,11 +1,10 @@
-// Converted from team_funcs.js.coffee.erb
 // ActionCable-based real-time team solving: sends/receives cell updates, roster changes, chat, and clue highlights.
 // display_name and solver_id are pre-set on window.team_app by the view before this file loads.
 
 window.team_app = {
-  solver_red:            Math.floor(Math.random() * 266),  // random RGB color identifies this solver
-  solver_green:          Math.floor(Math.random() * 266),
-  solver_blue:           Math.floor(Math.random() * 266),
+  solver_red:            Math.floor(Math.random() * 256),  // random RGB color identifies this solver
+  solver_green:          Math.floor(Math.random() * 256),
+  solver_blue:           Math.floor(Math.random() * 256),
   cell_clack_sound:      new Audio('<%= audio_path("chuck.mp3") %>'),
   last_clack:            null,
   message_received_sound: new Audio('<%= audio_path("submarine.m4a") %>'),
@@ -83,7 +82,6 @@ window.team_app = {
   },
 
   // POST → server → ActionCable: asks all participants to re-announce themselves
-  // TODO: Figure out why this isn't properly getting all teammates
   roll_call: function() {
     $.ajax({
       type: 'POST',
@@ -93,7 +91,6 @@ window.team_app = {
   },
 
   // POST → server → ActionCable: broadcasts which clue this solver is currently viewing
-  // TODO: Figure out why this isn't properly getting all teammates
   show_team_clue: function() {
     var cell_num = $(this).data('cell-num');
     var across   = $(this).hasClass('across-clue');
@@ -167,7 +164,6 @@ window.team_app = {
 
   // Teammate left: fade out and remove their roster square
   farewell_teammate: function(data) {
-    console.log('So long, farewell');
     $("#teammates .teammate-box[solver_id=" + data.solver_id + "]").fadeOut(1000, function() {
       $(this).remove();
     });
@@ -228,8 +224,9 @@ window.team_app = {
       }
       window.setTimeout(function() { new_chat.css({'background-color': ''}); }, 400);
     }
-    var scroll_height = $chats.get(0).scrollHeight;
-    $chats.stop().animate({scrollTop: scroll_height}, 'fast');
+    if ($chats.get(0)) {
+      $chats.stop().animate({scrollTop: $chats.get(0).scrollHeight}, 'fast');
+    }
   },
 
   // Teammate clicked a clue: draw a dashed outline over those cells for 20 seconds
@@ -305,9 +302,17 @@ function team_funcs_ready() {
   team_app.roll_call();
   $('#team-chat .row-topper').on('click', team_app.toggle_chat);
   $('.clue').on('click', team_app.show_team_clue);
-  // Remove previous unload handler before adding to prevent stacking
+
+  // Notify teammates on departure. Two paths:
+  // 1. Browser unload (tab close, hard reload)
+  // 2. Turbo navigation (Turbo intercepts links without triggering unload)
   $(window).off('unload', team_app.leave_team);
   $(window).on('unload', team_app.leave_team);
+  if (team_app._turboBeforeVisitHandler) {
+    document.removeEventListener('turbo:before-visit', team_app._turboBeforeVisitHandler);
+  }
+  team_app._turboBeforeVisitHandler = function() { team_app.leave_team(); };
+  document.addEventListener('turbo:before-visit', team_app._turboBeforeVisitHandler);
 }
 
 if (window._teamTurboLoadHandler) document.removeEventListener("turbo:load", window._teamTurboLoadHandler);

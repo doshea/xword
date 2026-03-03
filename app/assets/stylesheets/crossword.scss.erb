@@ -882,6 +882,42 @@ textarea:focus ~ .xw-comment__hint {
     opacity: 1;
   }
 }
+
+// --- Comment/reply Turbo Stream animations ---
+// Insertion: warm ink-on-paper entrance (fade up + brief green highlight).
+// Removal: gentle opacity fade before the element leaves the DOM.
+// Classes are applied by the turbo:before-stream-render listener in global.js.
+
+@keyframes xw-ink-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes xw-highlight-flash {
+  from { background-color: var(--color-accent-light); }
+  to   { background-color: transparent; }
+}
+
+@keyframes xw-ink-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.xw-animate-in {
+  animation:
+    xw-ink-in var(--duration-slow) var(--ease-out) both,
+    xw-highlight-flash 600ms var(--ease-in-out) both;
+}
+
+.xw-animate-out {
+  animation: xw-ink-out var(--duration-slow) var(--ease-in-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xw-animate-in,
+  .xw-animate-out { animation: none; }
+}
+
 // --- Puzzle Stats sidebar ---
 
 .xw-stats-panel {

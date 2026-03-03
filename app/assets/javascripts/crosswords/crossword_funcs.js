@@ -11,11 +11,11 @@ window.cw = {
   COMMAND: 91,
   ENTER: 13,
   SPACE: 32,
-  DELETE: 8,
+  DELETE: 8,    // Same keyCode as BACKSPACE on most browsers
   SHIFT: 16,
   TAB: 9,
   ESCAPE: 27,
-  BACKSPACE: 8,
+  BACKSPACE: 8, // Alias for clarity; identical to DELETE above
   HYPHEN: 189,
 
   // Removes highlighting from the selected cell, word, and clue.
@@ -39,7 +39,7 @@ window.cw = {
     }
   },
 
-  // Scrolls to the selected clue
+  // Scrolls the clue list so the selected clue is vertically centered in the panel.
   scroll_to_selected: function() {
     var $sel_clue = $(".selected-clue");
     var $clues = $sel_clue.closest("ol");
@@ -100,7 +100,8 @@ window.cw = {
     }
   },
 
-  // Handles all keypresses: arrow navigation, tab, enter, escape, delete, typing
+  // Handles all keypresses: arrow navigation, tab, enter, escape, delete, typing.
+  // Skips when modifier keys are held or when an input/textarea has focus.
   keypress: function(e) {
     if (!(e.ctrlKey || e.altKey || e.metaKey) && (cw.selected && ($(":focus").length === 0))) {
       var key = e.which;
@@ -199,6 +200,29 @@ window.cw = {
     cw.select_across = $clue.closest(".clues").attr("id") === "across";
     $cell.highlight();
     if (cw.editing) $clue.children('textarea').select();
+  },
+
+  // Shows a temporary inline notification using the xw-alert design system.
+  // type: 'info' | 'error' | 'warning' | 'success'
+  // duration: auto-dismiss in ms (0 = manual dismiss only)
+  flash: function(message, type, duration) {
+    type = type || 'info';
+    duration = (duration === undefined) ? 3000 : duration;
+    var $alert = $('<div class="xw-alert xw-alert--' + type + '" data-controller="alert">')
+      .append($('<span>').text(message))
+      .append('<button class="xw-alert__dismiss" data-action="click->alert#dismiss" aria-label="Dismiss">&times;</button>')
+      .hide();
+    // Insert before the crossword grid so it's visible without scrolling
+    var $target = $('#crossword');
+    if ($target.length) {
+      $target.before($alert);
+    } else {
+      $('main, .xw-main, body').first().prepend($alert);
+    }
+    $alert.slideDown('fast');
+    if (duration > 0) {
+      setTimeout(function() { $alert.slideUp('fast', function() { $alert.remove(); }); }, duration);
+    }
   },
 
   // Prevents backspace from navigating back, prevents arrow keys/space from scrolling page

@@ -1,10 +1,4 @@
-/*
-Custom jQuery Functions for Cells
------------------------
-These functions are used by both the in-site crossword solver and editor. While they can
-technically be called by any jQuery object, they are intended to be called by the td.cell
-elements of the table#crossword
-*/
+// jQuery plugins for td.cell elements (used by both solver and editor).
 
 (function($) {
   $.fn.get_row = function() {
@@ -48,8 +42,7 @@ elements of the table#crossword
     return $(".cell[data-row=" + $("#crossword").data("rows") + "][data-col=" + col + "]");
   };
 
-  // Return booleans indicating whether there is a cell adjacent to the one calling
-  // the function and whether it is non-void
+  // True if a non-void neighbor exists in the given direction.
   $.fn.has_above = function() {
     if (this.in_top_row()) {
       return false;
@@ -227,7 +220,6 @@ elements of the table#crossword
     return cw.select_across ? this.get_across_end_cell() : this.get_down_end_cell();
   };
 
-  // Both a td.cell's number (if any) and its letter are stored as child divs
   $.fn.get_number = function() {
     var letter = this.children(".cell-num").text();
     return (letter.length > 0 ? letter : " ");
@@ -237,11 +229,13 @@ elements of the table#crossword
     this.children(".cell-num").text(number);
   };
 
+  // Strips whitespace/newlines injected by browser rendering of the .letter div.
   $.fn.get_letter = function() {
     var letter = this.children(".letter").first().text().replace(/\n/g, "").replace(RegExp("  +", "g"), "");
     return (letter.length > 0 ? letter : " ");
   };
 
+  // original=true means this is a local keystroke (broadcast to team); false means received from a teammate.
   $.fn.set_letter = function(letter, original) {
     this.children(".letter").first().text(letter);
     if (typeof team_app !== 'undefined') {

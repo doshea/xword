@@ -22,7 +22,7 @@ class UnpublishedCrosswordsController < ApplicationController
 
   def update
     found_object.update(update_params)
-    head :ok
+    render json: { ok: true }
   end
 
   def update_letters
