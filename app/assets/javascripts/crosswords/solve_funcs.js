@@ -36,6 +36,23 @@ window.solve_app = {
       e.preventDefault();
       document.getElementById('controls-modal').showModal();
     });
+    $('#comments').on('click', '.xw-comment__reply-count', function() {
+      $(this).next('.replies').slideToggle('fast');
+      $(this).toggleClass('xw-comment__reply-count--collapsed');
+    });
+    // YouTube-style description truncation: hide "more" if content fits in 2 lines
+    var desc = document.querySelector('.xw-byline__desc');
+    var moreBtn = document.querySelector('.xw-byline__more');
+    if (desc && moreBtn) {
+      if (desc.scrollHeight <= desc.clientHeight) {
+        desc.classList.add('xw-byline__desc--fits');
+        moreBtn.style.display = 'none';
+      }
+      moreBtn.addEventListener('click', function() {
+        desc.classList.toggle('xw-byline__desc--expanded');
+        moreBtn.textContent = desc.classList.contains('xw-byline__desc--expanded') ? 'less' : 'more';
+      });
+    }
     $('#check-cell').on('click', solve_app.check_cell);
     $('#check-word').on('click', solve_app.check_word);
     $('#check-puzzle').on('click', solve_app.check_puzzle);

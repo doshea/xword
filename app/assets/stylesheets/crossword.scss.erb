@@ -563,15 +563,44 @@ table#crossword {
   &__content {
     flex: 1;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
   }
   &__desc {
     font-family: var(--font-body);
     color: var(--color-text);
     line-height: var(--leading-normal);
     margin-bottom: var(--space-1);
+    max-height: 3em; // 2 lines at 1.5 line-height
+    overflow: hidden;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1.5em;
+      background: linear-gradient(to bottom, transparent, var(--color-surface));
+      pointer-events: none;
+    }
+    &--fits::after,
+    &--expanded::after {
+      display: none;
+    }
+    &--expanded {
+      max-height: none;
+    }
+  }
+  &__more {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    margin-bottom: var(--space-1);
+    &:hover { text-decoration: underline; }
   }
   &__name {
     font-family: var(--font-ui);
@@ -657,8 +686,9 @@ textarea:focus ~ .xw-comment__hint {
 
   &__content {
     font-family: var(--font-body);
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     line-height: var(--leading-snug);
+    margin: 0;
   }
   &__author {
     font-family: var(--font-ui);
@@ -709,7 +739,8 @@ textarea:focus ~ .xw-comment__hint {
     margin-top: var(--space-1);
     cursor: pointer;
     &:hover { text-decoration: underline; }
-    &:not(:empty)::before { content: '\25B8\00a0'; }
+    &:not(:empty)::before { content: '\25BE\00a0'; }
+    &--collapsed:not(:empty)::before { content: '\25B8\00a0'; }
   }
 
   // Overlay actions as a pill at top-right of comment body (pointer devices only)

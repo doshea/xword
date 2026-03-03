@@ -93,6 +93,7 @@
       .xw-byline__content
         - if @crossword.description.present?
           %p.xw-byline__desc= @crossword.description
+          %button.xw-byline__more{type: 'button'} more
         - if @crossword.user
           %p.xw-byline__name
             &mdash;
