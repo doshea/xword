@@ -24,10 +24,11 @@ class Comment < ApplicationRecord
 
   scope :order_recent, -> {order created_at: :desc}
 
-  MAX_PER_CROSSWORD = 2
+  MAX_PER_CROSSWORD = 50
 
   self.per_page = 50
 
+  # Template vocabulary for generating random wine-tasting-style placeholder comments.
   WINE_VOCAB = {
     advs:[
       'freakishly','longingly','forcefully','morally'
@@ -84,6 +85,8 @@ class Comment < ApplicationRecord
     structure.gsub(/\*adv/){|a| WINE_VOCAB[:advs].sample}.gsub(/\*adj/){|a| WINE_VOCAB[:adjs].sample}.gsub(/\*noun/){|a| WINE_VOCAB[:nouns].sample}.gsub(/\*amt/){|a| WINE_VOCAB[:amts].sample}.humanize + '...'
   end
 
+  # Walks up the reply chain to find the root comment's crossword.
+  # Replies don't store crossword_id directly; only top-level comments do.
   def base_crossword
     temp_cw = crossword
     temp_comment = self
