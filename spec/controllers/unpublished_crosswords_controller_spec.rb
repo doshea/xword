@@ -74,7 +74,7 @@ describe UnpublishedCrosswordsController do
   end
 
   # -----------------------------------------------------------------------
-  # PATCH #update_letters (JS format — $.ajax dataType:'script')
+  # PATCH #update_letters
   # -----------------------------------------------------------------------
   describe 'PATCH #update_letters' do
     before { log_in(user) }
@@ -83,24 +83,41 @@ describe UnpublishedCrosswordsController do
     let(:letters) { Array.new(area, 'A') }
     let(:circles) { ' ' * area }
 
-    it 'updates letters and renders js response' do
-      request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
-      patch :update_letters, params: {
-        id: ucw.id,
-        letters: letters,
-        circles: circles,
-        across_clues: Array.new(area),
-        down_clues: Array.new(area),
-        save_counter: '0.12345'
-      }, format: :js
+    context 'with JSON format (current client)' do
+      it 'updates letters and echoes save_counter in JSON' do
+        patch :update_letters, params: {
+          id: ucw.id,
+          letters: letters,
+          circles: circles,
+          across_clues: Array.new(area),
+          down_clues: Array.new(area),
+          save_counter: '0.12345'
+        }, format: :json
 
-      expect(response).to have_http_status(:ok)
-      expect(assigns(:save_counter)).to eq '0.12345'
-      expect(ucw.reload.letters).to eq letters
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body['save_counter']).to eq '0.12345'
+        expect(ucw.reload.letters).to eq letters
+      end
+    end
+
+    context 'with JS format (legacy fallback)' do
+      it 'updates letters and renders js response' do
+        patch :update_letters, params: {
+          id: ucw.id,
+          letters: letters,
+          circles: circles,
+          across_clues: Array.new(area),
+          down_clues: Array.new(area),
+          save_counter: '0.12345'
+        }, format: :js
+
+        expect(response).to have_http_status(:ok)
+        expect(ucw.reload.letters).to eq letters
+      end
     end
 
     it 'converts "0" values to nil in letters' do
-      request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
       mixed_letters = letters.dup
       mixed_letters[0] = '0'
       mixed_letters[3] = ''
@@ -112,7 +129,7 @@ describe UnpublishedCrosswordsController do
         across_clues: Array.new(area),
         down_clues: Array.new(area),
         save_counter: '0.999'
-      }, format: :js
+      }, format: :json
 
       saved_letters = ucw.reload.letters
       expect(saved_letters[0]).to be_nil

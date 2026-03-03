@@ -10,6 +10,9 @@ RSpec.describe 'Solutions', type: :request do
   # Solo solve — saving letters
   # -------------------------------------------------------------------------
   describe 'PUT /solutions/:id (solo save)' do
+    let(:json_headers) { { 'Accept' => 'application/json', 'X-Requested-With' => 'XMLHttpRequest' } }
+    let(:js_headers) { { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' } }
+
     before { log_in_as(user) }
 
     it 'persists the submitted letters to the database' do
@@ -17,31 +20,39 @@ RSpec.describe 'Solutions', type: :request do
       partial[0] = 'A'   # fill first cell
       partial[1] = 'M'
 
-      put "/solutions/#{solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: json_headers
       expect(response).to have_http_status(:ok)
       expect(solution.reload.letters[0..1]).to eq 'AM'
     end
 
-    it 'responds with JavaScript content type and save confirmation' do
+    it 'responds with JSON containing the save_counter' do
       put "/solutions/#{solution.id}",
           params: { letters: blank_letters, save_counter: '0.42' },
-          headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+          headers: json_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq 'application/json'
+      body = JSON.parse(response.body)
+      expect(body['save_counter']).to eq '0.42'
+    end
+
+    it 'still responds with JS when Accept is text/javascript (legacy fallback)' do
+      put "/solutions/#{solution.id}",
+          params: { letters: blank_letters, save_counter: '0.42' },
+          headers: js_headers
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq 'text/javascript'
-      expect(response.body).to include('solve_app.log_save()')
-      expect(response.body).to include('solve_app.update_clock()')
-      expect(response.body).to include('0.42')
     end
 
     it 'preserves the full letter string across multiple saves' do
       first_save = blank_letters.dup
       first_save[0] = 'A'
-      put "/solutions/#{solution.id}", params: { letters: first_save, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{solution.id}", params: { letters: first_save, save_counter: '0.1' }, headers: json_headers
 
       second_save = solution.reload.letters.dup
       second_save[5] = 'V'
-      put "/solutions/#{solution.id}", params: { letters: second_save, save_counter: '0.2' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{solution.id}", params: { letters: second_save, save_counter: '0.2' }, headers: json_headers
 
       result = solution.reload.letters
       expect(result[0]).to eq 'A'
@@ -49,7 +60,7 @@ RSpec.describe 'Solutions', type: :request do
     end
 
     it 'marks the solution complete when all letters are correct' do
-      put "/solutions/#{solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: json_headers
 
       solution.reload
       expect(solution.is_complete).to be true
@@ -59,13 +70,13 @@ RSpec.describe 'Solutions', type: :request do
     it 'leaves the solution incomplete when letters are wrong' do
       wrong = correct_letters.dup
       wrong[0] = 'Z'
-      put "/solutions/#{solution.id}", params: { letters: wrong, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{solution.id}", params: { letters: wrong, save_counter: '0.1' }, headers: json_headers
 
       expect(solution.reload.is_complete).to be false
     end
 
     it 'silently handles a null solution id from stale JS' do
-      put "/solutions/null", params: { letters: 'X' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/null", params: { letters: 'X' }, headers: json_headers
       expect(response).to have_http_status(:ok)
     end
   end
@@ -286,14 +297,14 @@ RSpec.describe 'Solutions', type: :request do
       partial[0] = 'A'
       partial[5] = 'V'
 
-      put "/solutions/#{team_solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{team_solution.id}", params: { letters: partial, save_counter: '0.1' }, headers: { 'Accept' => 'application/json', 'X-Requested-With' => 'XMLHttpRequest' }
       expect(team_solution.reload.letters[0]).to eq 'A'
       expect(team_solution.reload.letters[5]).to eq 'V'
     end
 
     it 'marks the team solution complete when saved with correct letters' do
       log_in_as(user)
-      put "/solutions/#{team_solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+      put "/solutions/#{team_solution.id}", params: { letters: correct_letters, save_counter: '0.1' }, headers: { 'Accept' => 'application/json', 'X-Requested-With' => 'XMLHttpRequest' }
 
       team_solution.reload
       expect(team_solution.is_complete).to be true

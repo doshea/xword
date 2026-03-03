@@ -30,7 +30,10 @@ class SolutionsController < ApplicationController
     @solution.letters = params[:letters]
     @save_counter = params[:save_counter]
     @solution.save
-    respond_to { |f| f.js }
+    respond_to do |f|
+      f.json { render json: { save_counter: @save_counter } }
+      f.js   # Legacy: update.js.erb
+    end
   end
 
   #POST /solutions/:id/get_incorrect or get_incorrect_solution_path
@@ -138,10 +141,9 @@ class SolutionsController < ApplicationController
     false
   end
 
-  # Silently absorbs PUT /solutions/null requests sent by stale JS when solution_id is not yet set.
-  # The JS guard in save_solution() should prevent this, but this is the server-side safety net.
+  # Safety net: absorbs PUT /solutions/null from stale JS (JS also guards client-side).
   def guard_null_solution_id
-    head :ok if params[:id].to_i <= 0
+    render(json: {}, status: :ok) if params[:id].to_i <= 0
   end
 
   # Verify the current user owns the solution or is a team partner.

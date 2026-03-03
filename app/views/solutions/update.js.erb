@@ -1,5 +1,6 @@
-// NOTE: Intentionally kept as .js.erb (not migrated to Turbo Stream).
-// Called via $.ajax({ dataType: 'script' }) from solve_funcs.js — Turbo does not intercept this.
+// Legacy fallback — primary client uses JSON (dataType: 'json') since the
+// globalEval path (dataType: 'script') silently swallows runtime errors and
+// triggers jQuery's error callback with status 200.
 if(solve_app.save_counter == <%= @save_counter.to_json %>){
   solve_app.log_save();
   solve_app.update_clock();

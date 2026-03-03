@@ -26,8 +26,10 @@ include team solving (ActionCable), NYT importing, user accounts, comments, and 
 - **Sprockets 4.2** asset pipeline (not importmap or jsbundling); manifest at `app/assets/config/manifest.js`
 - **jQuery** still required by `solve_funcs.js`, `edit_funcs.js`, and `remotipart`
 - **Turbo** (Drive + Streams) + **Stimulus** for modern interactions
-- 5 files use `.js.erb` + `format.js` (jQuery AJAX, NOT Turbo Streams):
-  `check_cell`, `check_completion`, `solutions/update`, `update_letters`, `live_search`
+- 4 files use `.js.erb` + `format.js` (jQuery AJAX, NOT Turbo Streams):
+  `check_cell`, `check_completion`, `update_letters`, `live_search`
+- `solutions/update` uses JSON (`dataType: 'json'`) — switched from `dataType: 'script'`
+  because `globalEval` silently swallows runtime errors and triggers jQuery's error callback
 
 ## Project Structure (non-obvious parts)
 

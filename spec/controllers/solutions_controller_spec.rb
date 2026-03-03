@@ -28,25 +28,40 @@ describe SolutionsController do
   end
 
   describe 'PATCH #update' do
-    # update.js.erb is called via $.ajax from solve_funcs.js (format.js, not Turbo)
-    before do
-      log_in(user)
-      patch :update, params: { id: solution.id, letters: 'ABCDE', save_counter: '0.12345' }, format: :js
+    context 'with JSON format (current client)' do
+      before do
+        log_in(user)
+        patch :update, params: { id: solution.id, letters: 'ABCDE', save_counter: '0.12345' }, format: :json
+      end
+
+      it { should respond_with(200) }
+      it 'updates the solution letters' do
+        expect(solution.reload.letters).to eq 'ABCDE'
+      end
+      it 'echoes save_counter in the JSON response' do
+        body = JSON.parse(response.body)
+        expect(body['save_counter']).to eq '0.12345'
+      end
     end
 
-    it { should respond_with(200) }
-    it 'updates the solution letters' do
-      expect(solution.reload.letters).to eq 'ABCDE'
-    end
-    it 'passes save_counter through to the response template' do
-      expect(assigns(:save_counter)).to eq '0.12345'
+    context 'with JS format (legacy fallback)' do
+      before do
+        log_in(user)
+        patch :update, params: { id: solution.id, letters: 'ABCDE', save_counter: '0.12345' }, format: :js
+      end
+
+      it { should respond_with(200) }
+      it 'updates the solution letters' do
+        expect(solution.reload.letters).to eq 'ABCDE'
+      end
     end
 
     context 'with a null/invalid id (stale JS sending solution_id before it was set)' do
       # guard_null_solution_id runs before find_object to absorb these silently without
       # setting a flash error that would persist and show up on subsequent pages
       it 'returns 200 and sets no flash' do
-        patch :update, params: { id: 'null', letters: 'X' }, format: :js
+        log_in(user)
+        patch :update, params: { id: 'null', letters: 'X' }, format: :json
         expect(response).to have_http_status(200)
         expect(flash[:error]).to be_nil
       end

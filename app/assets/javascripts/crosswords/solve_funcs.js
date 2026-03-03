@@ -200,7 +200,7 @@ window.solve_app = {
         if ($(this).val() !== '') {
           $('.replying').removeClass('replying');
           $(this).closest('.comment').addClass('replying');
-          $(this).closest('form').submit();
+          $(this).closest('form')[0].requestSubmit();
           $(this).val('');
         }
       }

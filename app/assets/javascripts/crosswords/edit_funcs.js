@@ -1,11 +1,4 @@
-/*
-Crossword Editing Functions
----------------------------
-This file defines functions used only by the site's Javascript-based
-crossword editor. Functions are scoped inside of the 'edit_app'
-variable, with the exception of jQuery custom functions which may
-be called by any jQuery object.
-*/
+// Crossword editor: auto-save, title/description/clue updates, void toggling.
 
 cw.editing = true;
 
@@ -75,11 +68,9 @@ window.edit_app = {
         unpublished_crossword: { title: $('#title').val() }
       },
       success: function() {
-        // Replaced: fi-check class (Foundation font icon) → inline SVG + xw-status-ok class
         title_status.html('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xw-icon xw-icon--check" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>').addClass('xw-status-ok').removeClass('xw-status-err');
       },
       error: function() {
-        // Replaced: fi-x class (Foundation font icon) → inline SVG + xw-status-err class
         title_status.html('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xw-icon xw-icon--x" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>').addClass('xw-status-err').removeClass('xw-status-ok');
       },
       complete: function() {
@@ -102,7 +93,7 @@ window.edit_app = {
         unpublished_crossword: { description: $('#description').val() }
       },
       error: function() {
-        alert('Error updating title!');
+        alert('Error updating description!');
       }
     };
     $.ajax(settings);
@@ -169,18 +160,28 @@ window.edit_app = {
     });
 
     var id = $('#crossword').data('id');
-    var settings = {
-      dataType: 'script',
+    var counter = edit_app.save_counter;
+    $.ajax({
+      dataType: 'json',
       contentType: 'application/json',
       type: 'PATCH',
       url: "/unpublished_crosswords/" + id + "/update_letters",
-      data: JSON.stringify({ letters: letters_array, circles: edit_app.circles, across_clues: across_clues, down_clues: down_clues, save_counter: edit_app.save_counter }),
-      success: function() { /* saved */ },
+      data: JSON.stringify({ letters: letters_array, circles: edit_app.circles, across_clues: across_clues, down_clues: down_clues, save_counter: counter }),
+      success: function(data) {
+        if (edit_app.save_counter == data.save_counter) {
+          try {
+            edit_app.log_save();
+            edit_app.update_clock();
+          } catch (err) {
+            edit_app.unsaved_changes = false;
+            console.warn('save succeeded but UI update failed:', err);
+          }
+        }
+      },
       error: function() {
         alert('Error updating letters!');
       }
-    };
-    $.ajax(settings);
+    });
   },
 
   log_save: function() {

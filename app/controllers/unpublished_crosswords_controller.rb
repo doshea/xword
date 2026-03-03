@@ -30,7 +30,10 @@ class UnpublishedCrosswordsController < ApplicationController
     @save_counter = params[:save_counter]
     puzzle_hash = {letters: letters, circles: params[:circles], across_clues: params[:across_clues], down_clues: params[:down_clues]}
     found_object.update(puzzle_hash)
-    respond_to { |f| f.js }
+    respond_to do |f|
+      f.json { render json: { save_counter: @save_counter } }
+      f.js   # Legacy: update_letters.js.erb
+    end
   end
 
   def publish
