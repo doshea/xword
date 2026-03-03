@@ -21,6 +21,8 @@ class Phrase < ApplicationRecord
   def self.find_or_create_by_content(text)
     stripped = text.strip
     where("LOWER(content) = LOWER(?)", stripped).first_or_create!(content: stripped)
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    where("LOWER(content) = LOWER(?)", stripped).first!
   end
 
   def crosswords
