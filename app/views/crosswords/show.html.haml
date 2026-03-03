@@ -85,7 +85,7 @@
           %hr
           %li.check-completion
             %a{:href => "#"} Completion
-  .xw-col-full
+  .xw-col-12.xw-lg-8
     .xw-byline
       - if @crossword.user
         = link_to @crossword.user, class: 'xw-byline__avatar' do
@@ -97,6 +97,8 @@
           %p.xw-byline__name
             &mdash;
             = link_to @crossword.user.display_name, @crossword.user
+  .xw-col-12.xw-lg-4.xw-stats-col
+    = render partial: 'crosswords/partials/puzzle_stats'
   .xw-col-12.xw-lg-8
     %section#comments{aria: {labelledby: 'comments-heading'}}
       %h2#comments-heading Comments
@@ -114,8 +116,6 @@
         %p.xw-meta-area__empty No comments yet
       - @comments.each do |comment|
         = render partial: 'comments/partials/comment', locals: {comment: comment}
-  .xw-col-12.xw-lg-4
-    = render partial: 'crosswords/partials/puzzle_stats'
 
 = render partial: 'solutions/partials/win_modal'
 = render partial: 'crosswords/partials/controls_modal'

@@ -817,8 +817,11 @@ table#crossword {
   }
 }
 
-// Desktop: sticky stats sidebar
+// Desktop: stats column spans both byline + comments rows
 @media (min-width: $bp-lg) {
+  .xw-stats-col {
+    grid-row: span 2;
+  }
   .xw-stats-panel {
     position: sticky;
     top: 1rem;
