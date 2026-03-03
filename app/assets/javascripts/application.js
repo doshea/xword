@@ -3,7 +3,7 @@
 //= require foundation5/jquery
 //= require turbo_sprockets
 // turbo_sprockets.js: Sprockets-compatible build of turbo.min.js (ES module export stripped).
-// jquery_ujs removed — Turbo now handles all form/link interception.
+// jquery_ujs removed — Turbo handles form/link interception; CSRF for jQuery AJAX is in global.js.
 //
 // require turbolinks (removed — replaced by turbo above)
 // underscore-min removed — usages replaced with Array.prototype.includes / Object.keys().forEach()

@@ -30,6 +30,7 @@ class UnpublishedCrosswordsController < ApplicationController
     @save_counter = params[:save_counter]
     puzzle_hash = {letters: letters, circles: params[:circles], across_clues: params[:across_clues], down_clues: params[:down_clues]}
     found_object.update(puzzle_hash)
+    respond_to { |f| f.js }
   end
 
   def publish

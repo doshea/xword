@@ -120,6 +120,7 @@ class CrosswordsController < ApplicationController
   def check_cell
     indices = params[:indices]&.map(&:to_i)
     @mismatches = @crossword.cell_mismatches(params[:letters], indices: indices)
+    respond_to { |f| f.js }
   end
 
   #POST /crosswords/:id/check_completion or check_completion_crossword_path
@@ -132,6 +133,7 @@ class CrosswordsController < ApplicationController
                       .where(solution_partnerings: { user_id: @current_user.id })
                       .find_by(id: params[:solution_id], crossword_id: @crossword.id)
     end
+    respond_to { |f| f.js }
   end
 
 end

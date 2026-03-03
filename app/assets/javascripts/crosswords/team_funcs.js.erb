@@ -38,12 +38,10 @@ window.team_app = {
   send_team_cell: function($cell, letter) {
     var key = $cell.data('row') + ',' + $cell.data('col');
     team_app.cellTimestamps[key] = Infinity; // protect cell until our echo returns
-    var token = $('#crossword').data('auth-token');
     $.ajax({
       type: 'PATCH',
       url:  '/solutions/' + solve_app.solution_id + '/team_update',
       data: {
-        authenticity_token: token,
         letter:    letter,
         col:       $cell.data('col'),
         row:       $cell.data('row'),
@@ -58,12 +56,10 @@ window.team_app = {
 
   // POST → server → ActionCable: announces this solver joined; teammates add to roster
   join_team: function() {
-    var token = $('#crossword').data('auth-token');
     $.ajax({
       type: 'POST',
       url:  '/solutions/' + solve_app.solution_id + '/join_team',
       data: {
-        authenticity_token: token,
         display_name: team_app.display_name,
         red:          team_app.solver_red,
         green:        team_app.solver_green,
@@ -76,12 +72,10 @@ window.team_app = {
 
   // POST → server → ActionCable: announces departure; teammates remove from roster
   leave_team: function() {
-    var token = $('#crossword').data('auth-token');
     $.ajax({
       type: 'POST',
       url:  '/solutions/' + solve_app.solution_id + '/leave_team',
       data: {
-        authenticity_token: token,
         solver_id: team_app.solver_id
       },
       error: function(xhr) { console.warn('leave_team failed:', xhr.status); }
@@ -91,11 +85,9 @@ window.team_app = {
   // POST → server → ActionCable: asks all participants to re-announce themselves
   // TODO: Figure out why this isn't properly getting all teammates
   roll_call: function() {
-    var token = $('#crossword').data('auth-token');
     $.ajax({
       type: 'POST',
       url:  '/solutions/' + solve_app.solution_id + '/roll_call',
-      data: { authenticity_token: token },
       error: function(xhr) { console.warn('roll_call failed:', xhr.status); }
     });
   },
@@ -103,14 +95,12 @@ window.team_app = {
   // POST → server → ActionCable: broadcasts which clue this solver is currently viewing
   // TODO: Figure out why this isn't properly getting all teammates
   show_team_clue: function() {
-    var token    = $('#crossword').data('auth-token');
     var cell_num = $(this).data('cell-num');
     var across   = $(this).hasClass('across-clue');
     $.ajax({
       type: 'POST',
       url:  '/solutions/' + solve_app.solution_id + '/show_team_clue/',
       data: {
-        authenticity_token: token,
         cell_num:  cell_num,
         across:    across,
         red:       team_app.solver_red,

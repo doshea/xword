@@ -62,6 +62,7 @@ class PagesController < ApplicationController
     @words = @words.first(split_results)
 
     @result_count = @users.size + @crosswords.size + @words.size
+    respond_to { |f| f.js }
   end
 
   #GET /welcome or welcome_path

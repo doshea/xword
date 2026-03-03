@@ -65,7 +65,6 @@ window.edit_app = {
     var title_status = $('#title-status');
     title_status.css('opacity', 1);
 
-    var token = $('#crossword').data('auth-token');
     var id = $('#crossword').data('id');
 
     var settings = {
@@ -73,8 +72,7 @@ window.edit_app = {
       type: 'PUT',
       url: "/unpublished_crosswords/" + id,
       data: {
-        unpublished_crossword: { title: $('#title').val() },
-        authenticity_token: token
+        unpublished_crossword: { title: $('#title').val() }
       },
       success: function() {
         // Replaced: fi-check class (Foundation font icon) → inline SVG + xw-status-ok class
@@ -94,7 +92,6 @@ window.edit_app = {
   },
 
   update_description: function(e) {
-    var token = $('#crossword').data('auth-token');
     var id = $('#crossword').data('id');
 
     var settings = {
@@ -102,8 +99,7 @@ window.edit_app = {
       type: 'PUT',
       url: "/unpublished_crosswords/" + id,
       data: {
-        unpublished_crossword: { description: $('#description').val() },
-        authenticity_token: token
+        unpublished_crossword: { description: $('#description').val() }
       },
       error: function() {
         alert('Error updating title!');
@@ -172,14 +168,13 @@ window.edit_app = {
       down_clues.push($(this).children('textarea').val());
     });
 
-    var token = $('#crossword').data('auth-token');
     var id = $('#crossword').data('id');
     var settings = {
       dataType: 'script',
       contentType: 'application/json',
       type: 'PATCH',
       url: "/unpublished_crosswords/" + id + "/update_letters",
-      data: JSON.stringify({ letters: letters_array, circles: edit_app.circles, across_clues: across_clues, down_clues: down_clues, authenticity_token: token, save_counter: edit_app.save_counter }),
+      data: JSON.stringify({ letters: letters_array, circles: edit_app.circles, across_clues: across_clues, down_clues: down_clues, save_counter: edit_app.save_counter }),
       success: function() { /* saved */ },
       error: function() {
         alert('Error updating letters!');

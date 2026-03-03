@@ -30,6 +30,7 @@ class SolutionsController < ApplicationController
     @solution.letters = params[:letters]
     @save_counter = params[:save_counter]
     @solution.save
+    respond_to { |f| f.js }
   end
 
   #POST /solutions/:id/get_incorrect or get_incorrect_solution_path

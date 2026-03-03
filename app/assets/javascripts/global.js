@@ -1,3 +1,15 @@
+// Replaces jquery_ujs CSRF setup (removed during Hotwire migration).
+// Attaches the CSRF token from the meta tag to every non-GET jQuery AJAX
+// request via the X-CSRF-Token header, which Rails' forgery protection accepts.
+$.ajaxSetup({
+  beforeSend: function(xhr, settings) {
+    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+      var token = $('meta[name="csrf-token"]').attr('content');
+      if (token) xhr.setRequestHeader('X-CSRF-Token', token);
+    }
+  }
+});
+
 window.global = {
   _searchTimer: null,
 

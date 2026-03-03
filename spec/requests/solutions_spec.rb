@@ -22,6 +22,18 @@ RSpec.describe 'Solutions', type: :request do
       expect(solution.reload.letters[0..1]).to eq 'AM'
     end
 
+    it 'responds with JavaScript content type and save confirmation' do
+      put "/solutions/#{solution.id}",
+          params: { letters: blank_letters, save_counter: '0.42' },
+          headers: { 'Accept' => 'text/javascript', 'X-Requested-With' => 'XMLHttpRequest' }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq 'text/javascript'
+      expect(response.body).to include('solve_app.log_save()')
+      expect(response.body).to include('solve_app.update_clock()')
+      expect(response.body).to include('0.42')
+    end
+
     it 'preserves the full letter string across multiple saves' do
       first_save = blank_letters.dup
       first_save[0] = 'A'

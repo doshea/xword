@@ -17,12 +17,13 @@ RSpec.describe 'Check functions', type: :request do
     before { log_in_as(user) }
 
     context 'single cell (correct letter)' do
-      it 'returns 200 with the cell marked as not incorrect' do
+      it 'returns JavaScript with the cell marked as not incorrect' do
         post "/crosswords/#{crossword.id}/check_cell",
              params: { letters: ['A'], indices: ['0'] },
              headers: xhr_headers
 
         expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq 'text/javascript'
         expect(response.body).to include('mismatches[0] = false')
       end
     end

@@ -51,13 +51,12 @@ window.solve_app = {
     // Without this, the auto-save timer would send PUT /solutions/null, which triggers a
     // server-side flash error ("Solution could not be found") that persists across pages.
     if (!solve_app.solution_id) return;
-    var token = $('#crossword').data('auth-token');
     var letters = cw.get_puzzle_letters();
     var settings = {
       dataType: 'script',
       type: 'PUT',
       url: "/solutions/" + solve_app.solution_id,
-      data: { authenticity_token: token, letters: letters, save_counter: solve_app.save_counter },
+      data: { letters: letters, save_counter: solve_app.save_counter },
       error: function(xhr) {
         $('#save-status').text('Save failed');
         $('#save-clock').empty();
