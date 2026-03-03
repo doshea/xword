@@ -13,6 +13,15 @@ describe CluesController do
     end
   end
 
+  describe 'GET #show for an orphaned clue' do
+    let(:orphan) { create(:clue) }
+
+    it 'redirects to error page' do
+      get :show, params: { id: orphan.id }
+      expect(response).to redirect_to(error_path)
+    end
+  end
+
   describe 'PATCH #update' do
     before do
       log_in(user)

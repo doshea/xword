@@ -6,6 +6,7 @@ class CluesController < ApplicationController
   #GET /clue/:id or clue_path
   def show
     @crosswords = @clue.crosswords_by_title
+    return redirect_to error_path if @crosswords.empty?
     @count = @clue.across_crosswords.size + @clue.down_crosswords.size
   end
 
