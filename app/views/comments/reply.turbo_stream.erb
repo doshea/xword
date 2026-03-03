@@ -1,11 +1,12 @@
-<%# Replaces: reply.js.erb (jquery_ujs + jQuery appendTo('.replying .replies') + update count + trigger cancel click) %>
-<%# Turbo Stream: appends the new reply and updates the reply count display %>
-<%# Note: cancel button auto-trigger is dropped; the user dismisses the reply form manually %>
+<%# Turbo Stream: appends the new reply and updates the count (with expanded chevron). %>
+<%# The JS already slideDown's the .replies container before this response arrives, %>
+<%# so even the first reply (empty container) will be visible when this appends into it. %>
 <%= turbo_stream.append "replies-#{@base_comment.id}" do %>
   <%= render partial: 'comments/partials/reply', locals: { reply: @new_reply } %>
 <% end %>
 <%= turbo_stream.replace "reply-count-#{@base_comment.id}" do %>
-  <button type="button" class="xw-comment__reply-count" id="reply-count-<%= @base_comment.id %>">
+  <button type="button" class="xw-comment__reply-count xw-comment__reply-count--expanded" id="reply-count-<%= @base_comment.id %>">
     <%= pluralize(@base_comment.replies.count, 'Reply') %>
   </button>
 <% end %>
+
