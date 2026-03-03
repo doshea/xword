@@ -106,6 +106,7 @@
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
         = form_with(url: add_comment_path(@crossword), id: 'comment-form', data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
           = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea xw-textarea--compact', rows: 1, autocomplete: 'off', placeholder: 'Add a comment...')
+          %span.xw-comment__hint Enter to send
       - else
         %p.xw-meta-area__auth-prompt
           = link_to 'Sign up', new_user_path

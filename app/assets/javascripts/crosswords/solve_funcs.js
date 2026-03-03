@@ -183,6 +183,7 @@ window.solve_app = {
 
   toggle_reply_form: function(e) {
     if (e) e.preventDefault();
+    $(this).closest('.xw-comment__actions').toggleClass('xw-comment__actions--expanded');
     var reply_form = $(this).siblings('form');
     reply_form.toggle('fast');
     $(this).siblings('a').toggle();

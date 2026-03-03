@@ -26,9 +26,9 @@ describe 'comments/partials/_comment' do
       expect(rendered).to have_selector("article##{dom_id(comment)}", text: comment.content, visible: :all)
     end
 
-    it 'renders the reply count as a <p>, not an <h6>' do
-      expect(rendered).to have_selector("p.xw-comment__reply-count", visible: :all)
-      expect(rendered).not_to have_selector("h6.reply-count", visible: :all)
+    it 'renders the reply count as a <button> for accessibility' do
+      expect(rendered).to have_selector("button.xw-comment__reply-count", visible: :all)
+      expect(rendered).not_to have_selector("p.xw-comment__reply-count", visible: :all)
     end
   end
 end
