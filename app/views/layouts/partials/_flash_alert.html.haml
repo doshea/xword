@@ -1,0 +1,3 @@
+.xw-alert{data: {controller: 'alert'}, class: "xw-alert--#{type}"}
+  %span= message
+  %button.xw-alert__dismiss{data: {action: 'click->alert#dismiss'}, aria: {label: 'Dismiss'}} &times;

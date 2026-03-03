@@ -18,9 +18,9 @@
     Solve puzzles with your friends in
     %strong real-time
     &mdash; just send them the link to this puzzle!
-  .team-modal__url-row
-    %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', autofocus: true, onclick: "this.select();navigator.clipboard.writeText(this.value);var b=this.nextElementSibling;b.dataset.xwTooltip='Copied!';b.classList.add('xw-tooltip--flash');setTimeout(function(){b.dataset.xwTooltip='Copy link';b.classList.remove('xw-tooltip--flash')},1500)"}
-    %button.team-modal__url-copy{type: 'button', data: {'xw-tooltip': 'Copy link'}, aria: {label: 'Copy link'}, onclick: "var i=this.previousElementSibling;i.select();navigator.clipboard.writeText(i.value);this.dataset.xwTooltip='Copied!';this.classList.add('xw-tooltip--flash');var b=this;setTimeout(function(){b.dataset.xwTooltip='Copy link';b.classList.remove('xw-tooltip--flash')},1500)"}= icon('link')
+  .team-modal__url-row{data: {controller: 'copy-link'}}
+    %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', autofocus: true, data: {'copy-link-target': 'input', action: 'click->copy-link#copy'}}
+    %button.team-modal__url-copy{type: 'button', data: {'xw-tooltip': 'Copy link', 'copy-link-target': 'button', action: 'click->copy-link#copy'}, aria: {label: 'Copy link'}}= icon('link')
   %p.team-modal__footnote Now to find some friends&hellip;
 
 #team-chat.down

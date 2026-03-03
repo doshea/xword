@@ -22,8 +22,10 @@ class ApplicationController < ActionController::Base
     redirect_to(unauthorized_path) if (@current_user.nil? || !@current_user.is_admin)
   end
 
-  def alert_js(s)
-    render js: "alert(#{s.to_json});"
+  def flash_stream(message, type = 'info')
+    render turbo_stream: turbo_stream.prepend("flash-alerts",
+      partial: "layouts/partials/flash_alert",
+      locals: { message: message, type: type })
   end
 
   # Convention-based lookup: derives model class from controller name (e.g., CrosswordsController → "Crossword").

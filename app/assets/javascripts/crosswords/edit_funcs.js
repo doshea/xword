@@ -183,14 +183,14 @@ window.edit_app = {
   },
 
   log_save: function() {
-    edit_app.last_save = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+    edit_app.last_save = new Date();
     edit_app.unsaved_changes = false;
   },
 
   update_clock: function() {
     if (edit_app.last_save) {
       $('#save-status').text('Saved ');
-      $('#save-clock').text(moment(edit_app.last_save).fromNow());
+      $('#save-clock').text(cw.timeAgo(edit_app.last_save));
     }
   }
 };

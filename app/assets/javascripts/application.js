@@ -16,7 +16,7 @@
 //= require controllers/application
 //= require_tree ./controllers
 //
-// moment.min moved to solve.js and edit.js (only used there)
+// moment.min removed — replaced by cw.timeAgo() in crossword_funcs.js
 // sugar.min removed (completely unused)
 //= require global
 //

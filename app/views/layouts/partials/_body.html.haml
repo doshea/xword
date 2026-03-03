@@ -1,3 +1,4 @@
-- if flash.any?
-  = render partial: 'layouts/partials/alert_boxes'
+#flash-alerts
+  - if flash.any?
+    = render partial: 'layouts/partials/alert_boxes'
 = yield

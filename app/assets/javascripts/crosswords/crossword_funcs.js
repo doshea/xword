@@ -225,6 +225,20 @@ window.cw = {
     }
   },
 
+  // Returns a relative time string ("just now", "3 minutes ago", etc.) for short durations.
+  // Used by solve/edit auto-save clocks — replaces moment.js dependency.
+  timeAgo: function(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 10) return 'just now';
+    if (seconds < 60) return seconds + ' seconds ago';
+    var minutes = Math.floor(seconds / 60);
+    if (minutes === 1) return '1 minute ago';
+    if (minutes < 60) return minutes + ' minutes ago';
+    var hours = Math.floor(minutes / 60);
+    if (hours === 1) return '1 hour ago';
+    return hours + ' hours ago';
+  },
+
   // Prevents backspace from navigating back, prevents arrow keys/space from scrolling page
   suppressBackspaceAndNav: function(evt) {
     evt = evt || window.event;

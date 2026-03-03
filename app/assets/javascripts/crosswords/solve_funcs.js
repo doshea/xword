@@ -93,14 +93,14 @@ window.solve_app = {
   },
 
   log_save: function() {
-    solve_app.last_save = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+    solve_app.last_save = new Date();
     solve_app.unsaved_changes = false;
   },
 
   update_clock: function() {
     if (solve_app.last_save && !solve_app.anonymous) {
       $('#save-status').text('Saved ');
-      $('#save-clock').text(moment(solve_app.last_save).fromNow());
+      $('#save-clock').text(cw.timeAgo(solve_app.last_save));
     }
   },
 

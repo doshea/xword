@@ -66,7 +66,7 @@ class CrosswordsController < ApplicationController
   def favorite
     if @crossword && @current_user
       if @current_user.favorites.exists?(@crossword.id)
-        alert_js('You have already favorited that crossword.')
+        flash_stream('You have already favorited that crossword.')
       else
         if FavoritePuzzle.create(user_id: @current_user.id, crossword_id: @crossword.id)
           render :favorite_unfavorite
@@ -83,10 +83,10 @@ class CrosswordsController < ApplicationController
         if existing_favorite.destroy
           render :favorite_unfavorite
         else
-          alert_js('There was an error removing this crossword from favorites.')
+          flash_stream('There was an error removing this crossword from favorites.', 'error')
         end
       else
-        alert_js('That crossword is not in your favorites.')
+        flash_stream('That crossword is not in your favorites.')
       end
     end
   end

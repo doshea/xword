@@ -48,8 +48,8 @@
               var key = e.which
               if(key == cw.ENTER){
                 e.preventDefault();
-                if(!$(this).val() == ''){
-                  $(this).parent().submit();
+                if($(this).val() !== ''){
+                  $(this).parent()[0].requestSubmit();
                   $(this).val('');
                   var thank_you = $('<h3 class="win-modal__thanks">');
                   thank_you.text('Thank you!');
