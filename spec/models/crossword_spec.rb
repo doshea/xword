@@ -501,10 +501,7 @@ describe Crossword do
         end
 
         it 'saves to database Crossword' do
-          subject #ensure that it is present
-          expect(Crossword.count).to eq 1
-          create(:crossword)
-          expect(Crossword.count).to eq 2
+          expect { subject }.to change(Crossword, :count).by(1)
         end
       end
 

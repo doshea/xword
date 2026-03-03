@@ -55,8 +55,17 @@ RSpec.configure do |c|
     if example.metadata[:dirty_inside]
       example.run
     elsif example.metadata[:js]
-      DatabaseCleaner.strategy = :truncation
-      DatabaseCleaner.cleaning { example.run }
+      DatabaseCleaner.strategy = :deletion
+      retries = 0
+      begin
+        DatabaseCleaner.cleaning { example.run }
+      rescue ActiveRecord::Deadlocked => e
+        retries += 1
+        raise if retries > 2
+        ActiveRecord::Base.connection_pool.disconnect!
+        sleep 0.5
+        retry
+      end
     else
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.cleaning { example.run }
