@@ -638,7 +638,8 @@ table#crossword {
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-in-out);
 }
-textarea:focus ~ .xw-comment__hint {
+textarea:focus ~ .xw-comment__hint,
+.reply-form__field:focus-within ~ .xw-comment__hint {
   opacity: 1;
 }
 
