@@ -3,14 +3,13 @@
     - if comment.user
       = link_to (image_tag comment.user.image.comment_size.url), comment.user
   .xw-comment__body
-    %p
+    %p.xw-comment__author
       - if comment.user
-        = link_to "#{comment.user.display_name}: ", comment.user
+        = link_to comment.user.display_name, comment.user
       - else
-        %strong [deleted]:
-      %br
-      = comment.content
-    %ul.xw-flex.xw-gap-2
+        %span [deleted]
+    %p.xw-comment__text= comment.content
+    %ul.xw-comment__actions.xw-flex.xw-gap-2
       %li
         - if @current_user
           %a.reply-button.reply

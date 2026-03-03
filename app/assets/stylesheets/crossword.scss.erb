@@ -602,7 +602,7 @@ table#crossword {
     text-transform: uppercase;
     letter-spacing: var(--tracking-wider);
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
   }
   textarea {
     background-color: var(--color-surface-sunken);
@@ -632,6 +632,22 @@ table#crossword {
     border-bottom: none;
   }
 
+  &__author {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    margin-bottom: var(--space-1);
+    a {
+      color: var(--color-text);
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
+  &__text {
+    font-family: var(--font-body);
+    line-height: var(--leading-normal);
+  }
+
   &__avatar {
     flex-shrink: 0;
     img {
@@ -645,7 +661,7 @@ table#crossword {
     flex: 1;
     min-width: 0;
 
-    > ul {
+    .xw-comment__actions {
       margin-top: var(--space-2);
     }
     li {
@@ -658,9 +674,24 @@ table#crossword {
   }
   &__reply-count {
     font-size: var(--text-sm);
-    color: var(--color-text-muted);
+    color: var(--color-accent);
+    font-weight: var(--weight-medium);
     margin-top: var(--space-2);
     cursor: pointer;
+    &:hover { text-decoration: underline; }
+    &:not(:empty)::before { content: '\25B8\00a0'; }
+  }
+
+  // Hover-reveal for comment actions (pointer devices only)
+  @media (hover: hover) {
+    .xw-comment__actions .reply-button {
+      opacity: 0;
+      transition: opacity var(--duration-fast) var(--ease-in-out);
+    }
+    &:hover .xw-comment__actions .reply-button,
+    &:focus-within .xw-comment__actions .reply-button {
+      opacity: 1;
+    }
   }
 }
 
@@ -669,6 +700,7 @@ table#crossword {
   gap: var(--space-2);
   padding: var(--space-3) 0;
   margin-left: var(--space-6);
+  position: relative;
 
   &__avatar {
     flex-shrink: 0;
@@ -700,15 +732,101 @@ table#crossword {
 }
 
 .reply-controls {
+  position: absolute;
+  top: var(--space-3);
+  right: 0;
   display: flex;
   gap: var(--space-2);
-  margin-top: var(--space-1);
   a {
     color: var(--color-text-muted);
     cursor: pointer;
     &:hover { color: var(--color-text); }
   }
 }
+
+// Hover-reveal for reply controls (pointer devices only)
+@media (hover: hover) {
+  .reply-controls {
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-in-out);
+  }
+  .xw-reply:hover .reply-controls,
+  .xw-reply:focus-within .reply-controls {
+    opacity: 1;
+  }
+}
+// --- Puzzle Stats sidebar ---
+
+.xw-stats-panel {
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+
+  &__heading {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-3);
+  }
+}
+
+.xw-stats-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-3);
+  align-items: baseline;
+
+  dt {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+  dd {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+    text-align: right;
+    margin: 0;
+  }
+
+  &__divider {
+    grid-column: 1 / -1;
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: var(--space-2) 0;
+  }
+
+  &__placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+}
+
+// Desktop: sticky stats sidebar
+@media (min-width: $bp-lg) {
+  .xw-stats-panel {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+// Phone/tablet: stats stacks below comments with a top border
+@media (max-width: #{$bp-lg - 1}) {
+  .xw-stats-panel {
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--color-border);
+    border-radius: 0;
+    padding: var(--space-3) 0 0;
+  }
+}
+
 .team-outline {
   position: absolute;
   z-index: 999;
