@@ -1,4 +1,4 @@
-# Xword — Crossword Café
+# Xword — Crossword Cafe
 
 ## Working Style
 
@@ -18,88 +18,34 @@
 
 ## Overview
 
-A Rails web app for solving and creating crossword puzzles. Features include:
-- Solving crosswords (solo and team-based via ActionCable/WebSockets)
-- Creating/publishing user-made crosswords
-- NYT crossword importing
-- User accounts, friendships, favorites, comments
-- Admin panel for content management
-- Real-time collaboration via ActionCable
-- Image uploads to AWS S3 via CarrierWave + Fog
+Rails 8.1 web app for solving, creating, and collaborating on crossword puzzles. Features
+include team solving (ActionCable), NYT importing, user accounts, comments, and an admin panel.
 
-## Tech Stack
+## Tech Stack Notes
 
-| Component | Version | Notes |
-|-----------|---------|-------|
-| Ruby | 3.4.8 | Pinned in `.ruby-version` and `Gemfile` |
-| Rails | 8.1.2 | `config.load_defaults 8.1` |
-| PostgreSQL | Any modern version | Uses `pg ~> 1.2` gem |
-| Redis | 5.4.1 | Required for ActionCable |
-| Heroku | heroku-24 | Ubuntu 24.04 LTS |
-| Puma | 7.2.0 | Declared in Procfile |
-| HAML | 7.2.0 | Views use HAML 7 |
-| Sprockets | 4.2.2 | Asset pipeline; manifest at `app/assets/config/manifest.js` |
-| Turbo | 2.0.23 | Turbo Drive (page navigation) + Turbo Streams (DOM updates) |
-| Stimulus | 1.3.4 | JS framework for controllers |
-| jQuery | via `jquery-rails` | Required by solve_funcs.js, edit_funcs.js, remotipart |
+- **Sprockets 4.2** asset pipeline (not importmap or jsbundling); manifest at `app/assets/config/manifest.js`
+- **jQuery** still required by `solve_funcs.js`, `edit_funcs.js`, and `remotipart`
+- **Turbo** (Drive + Streams) + **Stimulus** for modern interactions
+- 5 files use `.js.erb` + `format.js` (jQuery AJAX, NOT Turbo Streams):
+  `check_cell`, `check_completion`, `solutions/update`, `update_letters`, `live_search`
 
-## Project Structure
+## Project Structure (non-obvious parts)
 
-```
-app/
-  assets/javascripts/    # Plain JS (converted from CoffeeScript Feb 2026)
-  channels/              # ActionCable channels (messages_channel.rb, teams_channel.rb)
-  controllers/
-    admin/               # Admin CRUD controllers inherit from Admin::BaseController
-    api/                 # JSON API (crosswords, users)
-    *.rb                 # Main app controllers
-  helpers/               # ApplicationHelper (icon helper, etc.), SwitchHelper
-  mailers/               # AdminMailer, UserMailer
-  models/
-    application_record.rb  # Abstract base class (primary_abstract_class)
-    concerns/              # Crosswordable, Publishable, Newyorkable (3 active concerns)
-    *.rb                   # 14 models (all inherit from ApplicationRecord)
-  uploaders/             # CarrierWave uploaders (AccountPicUploader, PreviewUploader)
-  views/                 # HAML templates
-config/
-  environment.rb         # Standard Rails environment loader
-  routes.rb              # All routes
-lib/
-  custom_funcs.rb        # Utility functions (manually required; excluded from Zeitwerk)
-spec/
-  requests/              # Request specs (preferred for new HTTP-layer tests)
-  controllers/           # Legacy controller specs (don't add new ones here)
-  models/                # Model specs
-  features/              # Capybara + Cuprite JS integration specs
-  factories/             # FactoryBot factories
-  support/auth_helpers.rb  # AuthHelpers (controller) + RequestAuthHelpers (request)
-```
+- `app/controllers/admin/` — all inherit from `Admin::BaseController` (shared CRUD)
+- `spec/requests/` — preferred for new HTTP-layer tests; `spec/controllers/` is legacy
+- `spec/support/auth_helpers.rb` — `AuthHelpers` (controller) + `RequestAuthHelpers` (request)
+- `lib/custom_funcs.rb` — manually required; excluded from Zeitwerk
 
-## Domain Model
+## Domain Model Notes
 
-Core entities and their relationships:
-
-- **User** — accounts with authentication (bcrypt), PgSearch for name/username search
-- **Crossword** — the main entity; includes Crosswordable, Publishable, Newyorkable concerns
-- **UnpublishedCrossword** — draft crosswords with PostgreSQL array columns (letters, clues)
-- **Cell** — individual cells in a crossword grid
-- **Clue** — across/down clues linked to cells; has `crosswords_by_title` aggregation method
-- **Word** — dictionary words with PgSearch full-text search; has `crosswords_by_title` method
-- **Solution** — a user's solve attempt for a crossword
-- **SolutionPartnering** — links users to team solutions
-- **Comment** — threaded comments on crosswords (self-referential via `base_comment_id`)
-- **FavoritePuzzle** — user favorites
-- **Friendship / FriendRequest** — bidirectional friendships (self-join, no primary key)
-
-**Dead or undecided models** (candidates for removal):
-- **Phrase** — TODO from original author; not used by any code
-- **CellEdit** — tracks individual cell edits; unused in current UI
+- **`Crossword` default scope**: `order(created_at: :desc)` on all queries. Use `.unscoped`
+  or `.reorder` when unwanted.
+- **Dead models**: `Phrase` (unused), `CellEdit` (unused in UI) — candidates for removal.
+- Raw SQL bulk inserts in `Crossword#populate_cells` (atomic `INSERT ... RETURNING id`).
 
 ## Architecture Direction
 
-The app was upgraded from Rails 5.1 to 8.1 in Feb-Mar 2026. The front-end modernization
-(Foundation removal, design tokens, accessibility, mobile responsiveness) is complete. The
-next phase of improvement is **backend architecture cleanup**:
+The front-end modernization is complete. The next phase is **backend architecture cleanup**:
 
 ### Principles
 
@@ -131,18 +77,9 @@ These are bugs or crash paths that exist in production code today:
 5. **`UsersController#update`** — bare `User.find(params[:id])` without RecordNotFound rescue
 6. **`CommentsController#add_comment`** — bare `Crossword.find(params[:id])` without rescue
 
-## Frontend / Asset Pipeline
+## Frontend Hazards
 
-Sprockets 4.2 pipeline with manifest at `app/assets/config/manifest.js`:
-- **Plain JS** — 12 files (crossword interactions, ActionCable, account, global)
-- **SASS** via `sassc-rails`; design tokens in `_design_tokens.scss`
-- **Turbo** — Turbo Drive (page navigation) + Turbo Streams (DOM updates)
-- **Stimulus** — nav, dropdown, tab, alert controllers
-- Manifests: `application.js`, `solve.js`, `edit.js`
-- 5 files use `.js.erb` + `format.js` (jQuery AJAX, NOT Turbo Streams):
-  `check_cell`, `check_completion`, `solutions/update`, `update_letters`, `live_search`
-
-**JS/CSS coupling hazard**: jQuery `.position()` returns coordinates relative to the nearest
+**JS/CSS coupling**: jQuery `.position()` returns coordinates relative to the nearest
 positioned ancestor. If CSS refactoring removes `position` from an ancestor, JS scroll/position
 math silently breaks. When changing CSS `position` properties, grep for `.position()` and
 `.offset()` in JS to check for coupling.
@@ -167,44 +104,22 @@ DM Sans (clean sans for UI chrome), Courier Prime (monospace for cells).
 All visual properties use CSS custom properties defined in `_design_tokens.scss`. Never introduce
 hardcoded colors, font stacks, or shadows — use existing tokens or add new ones to the token file.
 
-Key patterns established:
-- BEM naming for components (`xw-comment`, `xw-reply`, `xw-btn`, `xw-alert`)
-- `xw-` prefix for all custom CSS Grid classes
+Key patterns:
+- BEM naming (`xw-comment`, `xw-reply`, `xw-btn`, `xw-alert`); `xw-` prefix for CSS Grid classes
 - Ghost buttons (no border) for toolbar actions
 - Warm cream `--color-surface-alt` for nested paper-within-paper containers
-- `span.clue-num` with `--color-text-muted` for clue numbers on both pages
+- `span.clue-num` with `--color-text-muted` for clue numbers
 
-### Design Status
+### Responsive Puzzle Layout
 
-The front-end modernization is complete (Foundation fully removed, 21 polish versions).
-Primary pages (solve, edit) are polished. Secondary pages (home, search, profile, login) are
-tokenized and functional. Remaining opportunities:
-- Tablet range (768-1024px) refinements
-- About / FAQ / Contact visual treatment
-- Admin panel design polish (low priority)
+The `.xw-puzzle-layout` uses flex (phone/desktop) and CSS Grid (tablet 640-1023px). The tablet
+breakpoint uses `grid-template-columns: 1fr 1fr` to keep both clue columns together — flexbox
+`wrap` caused one column to wrap alone. Desktop/XL use inline `<style>` from HAML for clue
+height based on row count.
 
 ## Testing
 
-Run tests: `bundle exec rspec`  — ~620 examples, 0 failures
-
-### Stack
-
-| Tool | Purpose |
-|------|---------|
-| RSpec 8.0.3 | Test framework |
-| FactoryBot 6.5 | Test data (block syntax) |
-| DatabaseCleaner 2.1 | Transactions for unit specs, truncation for `js: true` |
-| Capybara + Cuprite | Headless Chrome for JS feature specs (`js: true`) |
-| SimpleCov | Coverage reporting |
-| shoulda-matchers 7.0 | Association/validation one-liners |
-
-### Auth Helpers
-
-Two modules in `spec/support/auth_helpers.rb`:
-- **`AuthHelpers`** — for controller specs: `log_in(user)` sets `session[:user_id]` directly
-- **`RequestAuthHelpers`** — for request specs: `log_in_as(user)` performs real POST to `/login`
-  - `TEST_PASSWORD` constant defined here; used by `:with_test_password` factory trait
-  - Auto-included for `type: :request` specs via `spec_helper.rb`
+Run tests: `bundle exec rspec` — ~620 examples, 0 failures
 
 ### Writing Tests
 
@@ -227,7 +142,7 @@ real value is testing methods that compute, transform, or make decisions.
 **Don't test broken state as expected behavior.** If an action raises `MissingExactTemplate`,
 fix it — don't write a spec asserting the error.
 
-### Test Patterns (reference for writing new specs)
+### Test Patterns
 
 ```ruby
 # Request spec auth
@@ -258,57 +173,7 @@ allow(Word).to receive(:word_match).and_return([...])
 allow(UserMailer).to receive_message_chain(:reset_password_email, :deliver_now)
 ```
 
-## PostgreSQL-Specific Features
-
-- **Array columns** on `unpublished_crosswords` (letters, potential_words, across_clues, down_clues)
-- **PgSearch** full-text search (tsearch with prefix) on Crossword, User, and Word models
-- **RANDOM()** for random puzzle selection
-- **plpgsql** extension enabled
-- Raw SQL bulk inserts in `Crossword#populate_cells` (atomic `INSERT ... RETURNING id`)
-- `Crossword` has a `default_scope -> { order(created_at: :desc) }` — be aware this
-  affects all queries; use `.unscoped` or `.reorder` when it's unwanted
-
-## Key Commands
-
-```bash
-bundle install          # Install dependencies
-rails db:create         # Create dev + test databases
-rails db:migrate        # Run migrations
-rails server            # Start dev server (Puma)
-bundle exec rspec       # Run test suite (~620 examples, 0 failures)
-rails console           # Interactive console
-```
-
-## Deployment
-
-- **App name**: `crosswordcafe`
-- **URL**: https://crosswordcafe.herokuapp.com/
-- **Stack**: heroku-24 (Ruby 3.4.8)
-
-```bash
-git push origin master && git push heroku master
-```
-
-After any Ruby version change: `bundle lock --add-platform x86_64-linux` before pushing.
-
-## History
-
-The app was originally built on Rails 5.1 / Ruby 2.x and upgraded to Rails 8.1 / Ruby 3.4
-in Feb-Mar 2026. Key milestones:
-
-- **Framework upgrade**: Rails 5.1 → 6.1 → 7.0 → 7.2 → 8.0 → 8.1; Ruby 2.x → 3.4.8
-- **Hotwire migration**: turbolinks + jquery_ujs → turbo-rails + stimulus-rails
-- **Pusher → ActionCable**: real-time team collaboration moved to ActionCable; pusher gem removed
-- **Front-end overhaul**: Foundation removed entirely (6 phases); replaced with custom design
-  tokens, CSS Grid, Lucide SVGs, Stimulus controllers, native `<dialog>` modals
-- **Accessibility audit**: semantic HTML, heading hierarchy, ARIA labels, keyboard navigation
-- **Mobile responsiveness**: phone (<640px) and XL (1280px+) breakpoints
-- **Test suite**: ~620 examples covering controllers, models, requests, features, views
-- **Security**: signed auth cookies, atomic SQL for race conditions, FK indexes
-
-## Technical Debt
-
-### Active (should be addressed)
+## Technical Debt (Active)
 
 1. **`remotipart` 1.4.4** — multipart AJAX file uploads (profile pic); Rails 8 + Turbo
    compatibility untested. jQuery dependency.
@@ -321,31 +186,3 @@ in Feb-Mar 2026. Key milestones:
 5. **`SolutionsController` auth duplication** — 3 custom before_actions reimplementing access
    control that should be a model method (`Solution#accessible_by?`).
 6. **`Crossword` default scope** — `order(created_at: :desc)` applied to all queries implicitly.
-
-### Dead code (safe to delete)
-
-1. **`Phrase` model** (`app/models/phrase.rb`) — unused; `phrase_id` FK on Clue is always nil
-2. **`:clue` factory** (`spec/factories/clue_factory.rb`) — 0 uses in any spec
-3. **`User.with_valid_reset_token` scope** — superseded by Rails 8.1 signed password reset tokens
-
-### Low priority
-
-1. **Ruby 3.5** — upgrade when stable release is available
-2. **Missing `inverse_of`** on several `belongs_to` associations
-3. **`Comment` factory** missing associations (user, crossword) — all tests assign manually
-
-## Notable Gems
-
-| Gem | Purpose |
-|-----|---------|
-| `pg` / `pg_search` | PostgreSQL adapter + full-text search |
-| `carrierwave` + `fog-aws` + `rmagick` | Image uploads to S3 with resizing |
-| `redis` | ActionCable WebSocket backend |
-| `bcrypt` | Password hashing |
-| `haml` | View templates |
-| `will_paginate` | Pagination |
-| `httparty` | HTTP client (NYT puzzle fetching) |
-| `turbo-rails` + `stimulus-rails` | Hotwire (Turbo Drive/Streams + Stimulus) |
-| `remotipart` | Multipart AJAX file uploads (requires jQuery) |
-| `jbuilder` | JSON API views |
-| `cuprite` | Headless Chrome for Capybara JS specs |
