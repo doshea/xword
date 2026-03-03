@@ -1,0 +1,18 @@
+%aside.xw-stats-panel{aria: {label: 'Puzzle statistics'}}
+  %h3.xw-stats-panel__heading Puzzle Stats
+  %dl.xw-stats-list
+    %dt Grid Size
+    %dd= "#{@crossword.rows}×#{@crossword.cols}"
+    %dt Words
+    %dd= @crossword.across_clues.count + @crossword.down_clues.count
+    %dt Solvers
+    %dd= @crossword.solutions.count
+
+    %hr.xw-stats-list__divider
+
+    %dt.xw-stats-list__placeholder Best Time
+    %dd.xw-stats-list__placeholder --:--
+    %dt.xw-stats-list__placeholder Avg Time
+    %dd.xw-stats-list__placeholder --:--
+    %dt.xw-stats-list__placeholder Your Time
+    %dd.xw-stats-list__placeholder --:--

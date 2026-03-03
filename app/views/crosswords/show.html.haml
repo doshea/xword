@@ -90,9 +90,14 @@
       - if @crossword.user
         = link_to @crossword.user, class: 'xw-byline__avatar' do
           = image_tag(@crossword.user.image.creator_pic.url)
-        = link_to @crossword.user.display_name, @crossword.user, class: 'xw-byline__name'
-      - if @crossword.description.present?
-        %span.xw-byline__desc= @crossword.description
+      .xw-byline__content
+        - if @crossword.description.present?
+          %p.xw-byline__desc= @crossword.description
+        - if @crossword.user
+          %p.xw-byline__name
+            &mdash;
+            = link_to @crossword.user.display_name, @crossword.user
+  .xw-col-12.xw-lg-8
     %section#comments{aria: {labelledby: 'comments-heading'}}
       %h2#comments-heading Comments
       - if @current_user
@@ -109,6 +114,8 @@
         %p.xw-meta-area__empty No comments yet
       - @comments.each do |comment|
         = render partial: 'comments/partials/comment', locals: {comment: comment}
+  .xw-col-12.xw-lg-4
+    = render partial: 'crosswords/partials/puzzle_stats'
 
 = render partial: 'solutions/partials/win_modal'
 = render partial: 'crosswords/partials/controls_modal'
