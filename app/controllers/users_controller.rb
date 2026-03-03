@@ -10,9 +10,9 @@ class UsersController < ApplicationController
     end
     @crosswords = @user.crosswords.to_a
     @comments   = @user.comments.order_recent.limit(20)
-                       .includes(:crossword, base_comment: :crossword)
-    @is_friend  = @current_user && @current_user != @user &&
-                  @current_user.friends_with?(@user)
+                       .includes(:crossword, base_comment: [:crossword, { base_comment: :crossword }])
+    @is_friend  = !!(@current_user && @current_user != @user &&
+                     @current_user.friends_with?(@user))
   end
 
   #GET /users/new or new_user_path

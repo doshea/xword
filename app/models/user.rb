@@ -121,7 +121,9 @@ class User < ApplicationRecord
     friend_ones + friend_twos
   end
   def friends_with?(user)
-    Friendship.where(user_id: [id, user.id], friend_id: [id, user.id]).exists?
+    Friendship.where(user_id: id, friend_id: user.id)
+              .or(Friendship.where(user_id: user.id, friend_id: id))
+              .exists?
   end
   def self.rand_unowned_puzzle(user = nil)
     user.present? ? Crossword.unowned(user).order("RANDOM()").first : Crossword.order("RANDOM()").first

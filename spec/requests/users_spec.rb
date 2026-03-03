@@ -32,8 +32,8 @@ RSpec.describe 'Users', type: :request do
       expect(response.location).to include('/error')
     end
 
-    it 'renders profile with comments and replies without N+1 queries' do
-      crossword = create(:crossword)
+    it 'renders profile with comments, replies, and crosswords' do
+      crossword = create(:crossword, user: user)
       comment   = create(:comment, user: user, crossword: crossword)
       reply     = create(:comment, user: user, crossword: nil, base_comment: comment)
 
@@ -41,6 +41,7 @@ RSpec.describe 'Users', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(comment.content)
       expect(response.body).to include(reply.content)
+      expect(response.body).to include(crossword.title)
     end
 
     it 'shows friendship status when viewed by a logged-in user' do
