@@ -638,9 +638,16 @@ table#crossword {
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-in-out);
 }
-textarea:focus ~ .xw-comment__hint,
-.reply-form__field:focus-within ~ .xw-comment__hint {
-  opacity: 0.7; // partial opacity so it blends with background
+// Top-level comment form: hint is sibling of textarea
+textarea:focus ~ .xw-comment__hint {
+  opacity: 0.7;
+}
+// Reply form: hint is inside .reply-form__field, right-aligned as a footnote annotation
+.reply-form__field .xw-comment__hint {
+  text-align: right;
+}
+.reply-form__field:focus-within .xw-comment__hint {
+  opacity: 0.7;
 }
 
 // --- Comment divider (invisible; keeps DOM node for Turbo Stream removal) ---
@@ -670,9 +677,13 @@ textarea:focus ~ .xw-comment__hint,
   .xw-textarea--compact {
     height: 2.5rem;
     min-height: 2.5rem;
+    padding-top: var(--space-1);    // 4px — centers caret vertically in compact height
+    padding-bottom: var(--space-1);
     transition: height var(--duration-base) var(--ease-out);
     &:focus {
       height: 5rem;
+      padding-top: var(--space-2);  // restore normal padding when expanded
+      padding-bottom: var(--space-2);
     }
   }
 }
@@ -682,7 +693,7 @@ textarea:focus ~ .xw-comment__hint,
 .xw-comment {
   display: flex;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-2) var(--space-2);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
   transition: background-color var(--duration-base) var(--ease-in-out);
 
@@ -728,14 +739,11 @@ textarea:focus ~ .xw-comment__hint,
       margin-top: var(--space-1);
     }
     .reply-form {
-      margin-top: var(--space-2);
-      padding: var(--space-2) var(--space-3);
+      margin-top: var(--space-1);
+      padding: var(--space-2);
       background: var(--color-surface-alt);
       border-radius: var(--radius-sm);
-    }
-    textarea {
-      height: 1em;
-      min-height: 2.3em;
+      max-width: 80%;
     }
   }
   // Hide the hover overlay while the reply form is open (avoids empty pill or

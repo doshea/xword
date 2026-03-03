@@ -22,10 +22,10 @@
     - if @current_user
       = form_with(url: reply_to_comment_path(comment), class: 'reply-form') do |f|
         .reply-form__field
-          = text_area_tag('content', nil, id: nil, class: 'reply-content xw-textarea', autocomplete: 'off')
+          = text_area_tag('content', nil, id: nil, class: 'reply-content xw-textarea xw-textarea--compact', autocomplete: 'off')
           %button.reply-form__close{type: 'button', aria: {label: 'Close reply'}}
             = icon('x')
-        %span.xw-comment__hint Enter to send
+          %span.xw-comment__hint Enter to send
     / id added so reply.turbo_stream.erb can update the reply count display
     %button.xw-comment__reply-count{type: 'button', id: "reply-count-#{comment.id}"}<
       - if (reply_count = comment.replies.size) > 0
