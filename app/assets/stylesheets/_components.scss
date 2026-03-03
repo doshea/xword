@@ -674,7 +674,7 @@
   font-family: var(--font-ui);
   background-color: var(--color-footer-bg);
   color: var(--color-footer-text);
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
   padding: var(--space-6) 0 var(--space-4);
 
   a {
@@ -707,7 +707,7 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   transition: var(--transition-colors);
 
   &:hover, &:focus-visible {
@@ -746,6 +746,7 @@
   border-top: 1px solid var(--color-nav-border);
   font-size: var(--text-xs);
   color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
 }
 
 @media (max-width: #{$bp-sm - 1}) {
