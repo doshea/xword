@@ -5,7 +5,7 @@
     Joined:
     %time{datetime: @user.created_at.iso8601}= @user.created_at.strftime("%b %d, %Y")
   - if @current_user && (@current_user != @user)
-    - if @current_user.friends.include? @user
+    - if @is_friend
       %button.xw-btn.xw-btn--success.xw-btn--sm
         = icon('check')
         Friends!
@@ -27,7 +27,7 @@
 .xw-col-12.xw-md-8.xw-lg-5
   %h2 Recent Comments
   %ul#recent-comments
-    - @user.comments.order_recent.each do |c|
+    - @comments.each do |c|
       %li
         = link_to c.content, c.base_crossword
         %br
@@ -36,9 +36,9 @@
 
 .xw-col-12.xw-lg-4
   %h2 Puzzles
-  - if @user.crosswords.any?
+  - if @crosswords.any?
     %ul
-      - @user.crosswords.each do |cw|
+      - @crosswords.each do |cw|
         %li
           = link_to cw.title, cw
           = link_to cw do

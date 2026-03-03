@@ -31,6 +31,26 @@ RSpec.describe 'Users', type: :request do
       expect(response).to have_http_status(:redirect)
       expect(response.location).to include('/error')
     end
+
+    it 'renders profile with comments and replies without N+1 queries' do
+      crossword = create(:crossword)
+      comment   = create(:comment, user: user, crossword: crossword)
+      reply     = create(:comment, user: user, crossword: nil, base_comment: comment)
+
+      get "/users/#{user.id}"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(comment.content)
+      expect(response.body).to include(reply.content)
+    end
+
+    it 'shows friendship status when viewed by a logged-in user' do
+      viewer = create(:user, :with_test_password)
+      log_in_as(viewer)
+
+      get "/users/#{user.id}"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('Not Friends')
+    end
   end
 
   # -------------------------------------------------------------------------
