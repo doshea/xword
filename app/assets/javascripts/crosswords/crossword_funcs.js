@@ -186,7 +186,11 @@ window.cw = {
               }
             }
             if (!cw.selected.is_word_end()) {
-              cw.selected.next_empty_cell_in_word().highlight();
+              if (cw.selected.in_directional_finished_word()) {
+                cw.selected.next_cell().highlight();
+              } else {
+                cw.selected.next_empty_cell_in_word().highlight();
+              }
             }
           }
       }
