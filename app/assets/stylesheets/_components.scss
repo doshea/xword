@@ -781,6 +781,7 @@
     font-size: var(--text-3xl);
     font-weight: var(--weight-bold);
     margin-bottom: var(--space-4);
+    letter-spacing: var(--tracking-tight);
 
     &:first-child { margin-top: 0; }
   }
@@ -791,6 +792,11 @@
     font-weight: var(--weight-semibold);
     margin-top: var(--space-8);
     margin-bottom: var(--space-3);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    // Subtle left accent bar — editorial section marker
+    padding-left: var(--space-3);
+    border-left: 3px solid var(--color-accent-muted);
 
     &:first-child { margin-top: 0; }
   }
@@ -809,12 +815,21 @@
     &:hover { color: var(--color-accent-hover); }
   }
 
+  // Editorial section break — centered dinkus replaces plain line
   hr {
     border: none;
-    border-top: 1px solid var(--color-border);
-    margin: var(--space-6) 0;
+    margin: var(--space-8) 0;
+    text-align: center;
 
-    + h2 { margin-top: var(--space-4); }  // tighter gap: divider belongs to the next section
+    &::after {
+      content: '\2726  \2726  \2726';
+      display: block;
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-widest);
+      color: var(--color-text-muted);
+    }
+
+    + h2 { margin-top: var(--space-4); }
   }
 
   s {

@@ -440,7 +440,7 @@ describe Crossword do
       end
       describe '#circles_from_array' do
         subject {create(:crossword)}
-        let(:circle_count){rand(subject.area).ceil}
+        let(:circle_count){rand(1..subject.area-1)}
         let(:circle_inputs){([0]*(subject.area-circle_count)+[1]*circle_count).shuffle}
 
         context 'before running' do
