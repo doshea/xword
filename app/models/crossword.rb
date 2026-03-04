@@ -369,18 +369,6 @@ class Crossword < ApplicationRecord
     end
   end
 
-  def publish!
-    letters = string_from_cells
-    cells.each do |cell|
-      cell.delete_extraneous_cells!
-    end
-    number_cells
-    generate_words_and_link_clues
-    # published/published_at columns removed from schema; omit from update for now.
-    update(letters: letters)
-    self
-  end
-
   def self.random_row_or_col
     (1..Crossword::MAX_DIMENSION).to_a.sample
   end

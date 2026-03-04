@@ -190,12 +190,7 @@ allow(UserMailer).to receive_message_chain(:reset_password_email, :deliver_now)
 
 1. **`remotipart` 1.4.4** — multipart AJAX file uploads (profile pic); Rails 8 + Turbo
    compatibility untested. jQuery dependency.
-2. **`published` column removed** from Crossword schema; `publish!` and `error_if_published`
-   are no-ops; all "published crossword" guards disabled until column is restored.
-3. **`Newyorkable` concern** — 100+ lines of ETL (HTTP calls, JSON parsing, record creation)
-   living in a model concern. Should be a service object. Has no timeout on HTTP calls.
-4. **`UnpublishedCrosswordsController#publish`** — 40 lines of crossword construction logic
-   in the controller. Should be a service object.
-5. **`SolutionsController` auth duplication** — 3 custom before_actions reimplementing access
-   control that should be a model method (`Solution#accessible_by?`).
-6. **`Crossword` default scope** — `order(created_at: :desc)` applied to all queries implicitly.
+2. **`published` column removed** from Crossword schema; `error_if_published` is a no-op;
+   all "published crossword" guards disabled until column is restored. `publish!` deleted
+   (was dead code after `CrosswordPublisher` extraction).
+3. **`Crossword` default scope** — `order(created_at: :desc)` applied to all queries implicitly.
