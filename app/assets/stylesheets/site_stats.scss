@@ -11,5 +11,10 @@
     font-size: var(--text-xl);
     font-weight: var(--weight-semibold);
     text-align: center;
+    margin-top: var(--space-6);
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 }

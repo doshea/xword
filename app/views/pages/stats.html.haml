@@ -1,73 +1,19 @@
 - title 'Stats'
 = content_for :head do
   = stylesheet_link_tag 'site_stats'
-  = javascript_include_tag 'chart.min'
+  = javascript_include_tag 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js'
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Site Stats'} do
-  .xw-stats
+  .xw-stats{data: {controller: 'stats'}}
     %h2 Total Users by Date
-    %canvas#total-users{width: 800, height: 400}
-    :javascript
-      var ctx = $("#total-users").get(0).getContext("2d");
-      var data = {
-        labels : #{@days_operational.map{|date| ((date == @days_operational.first) or (date == @days_operational.last) or ([1,15].include?(date.day))) ? date.to_s : ''}},
-        datasets : [
-          {
-            fillColor : "rgba(58,125,92,0.5)",
-            strokeColor : "rgba(58,125,92,1)",
-            pointColor : "rgba(58,125,92,1)",
-            pointStrokeColor : "#fff",
-            data : #{@running_signup_counts}
-          }
-        ]
-      }
-      var options = {
-        scaleOverride : false,
-        scaleSteps : 5,
-        scaleStepWidth : 1,
-        scaleStartValue : 0,
-        scaleGridLineWidth : 1,
-        bezierCurve : true,
-        pointDot : true,
-        pointDotRadius : 3,
-        pointDotStrokeWidth : 1,
-        datasetStroke : true,
-        datasetStrokeWidth : 2,
-        datasetFill : true,
-        animation : false
-      }
-      new Chart(ctx).Line(data, options);
+    %canvas{data: {'stats-target': 'canvas',
+                    labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
+                    values: @running_signup_counts.to_json,
+                    'chart-label': 'Total Users'}}
 
-    %hr
+    %hr.xw-hr--accent
 
     %h2 Daily User Signups
-    %canvas#signup-counts{width: 800, height: 400}
-    :javascript
-      var ctx = $("#signup-counts").get(0).getContext("2d");
-      var data = {
-        labels : #{@days_operational.map{|date| ((date == @days_operational.first) or (date == @days_operational.last) or ([1,15].include?(date.day))) ? date.to_s : ''}},
-        datasets : [
-          {
-            fillColor : "rgba(58,125,92,0.5)",
-            strokeColor : "rgba(58,125,92,1)",
-            pointColor : "rgba(58,125,92,1)",
-            pointStrokeColor : "#fff",
-            data : #{@signup_counts}
-          }
-        ]
-      }
-      var options = {
-        scaleOverride : true,
-        scaleSteps : 5,
-        scaleStepWidth : 1,
-        scaleStartValue : 0,
-        scaleGridLineWidth : 1,
-        bezierCurve : true,
-        pointDot : true,
-        pointDotRadius : 3,
-        pointDotStrokeWidth : 1,
-        datasetStroke : true,
-        datasetStrokeWidth : 2,
-        datasetFill : true,
-        animation : false
-      }
-      new Chart(ctx).Line(data, options);
+    %canvas{data: {'stats-target': 'canvas',
+                    labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
+                    values: @signup_counts.to_json,
+                    'chart-label': 'Signups'}}
