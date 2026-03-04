@@ -38,6 +38,15 @@ class Clue < ApplicationRecord
 
   private
   def strip_tags
+    # Guard against ASCII-8BIT encoding (common from HTTParty responses).
+    # Without this, Loofah interprets raw bytes as Latin-1 and re-encodes
+    # to UTF-8, double-encoding characters like "Québéc" → "QuÃ©bÃ©c".
+    if self.content&.encoding == Encoding::ASCII_8BIT
+      self.content = self.content.dup.force_encoding('UTF-8')
+      unless self.content.valid_encoding?
+        self.content = self.content.encode('UTF-8', 'ISO-8859-1')
+      end
+    end
     self.content = ActionController::Base.helpers.strip_tags(self.content)
   end
 end
