@@ -118,14 +118,6 @@ class CrosswordsController < ApplicationController
     end
   end
 
-  #GET /crosswords/batch or batch_crosswords_path
-  def batch
-    ids = Array(params[:ids]).first(100)
-    @crosswords = Crossword.where(id: ids).order(created_at: :desc)
-    @crosswords_remaining = @crosswords[Crossword.per_page..-1]
-    @crosswords = @crosswords[0...Crossword.per_page]
-  end
-
   #POST /crosswords/:id/check_cell or check_cell_crossword_path
   def check_cell
     indices = params[:indices]&.map(&:to_i)

@@ -1,9 +1,9 @@
 - if collection.any?
-  %ul{id: (defined?(list_id) ? list_id : nil)}
+  %ul{id: list_id}
     - collection.each do |cw|
       %li
         = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
-  - if count > Crossword.per_page
-    %p.center.smaller Showing #{Crossword.per_page} of #{count} puzzles.
+  - if count > collection.size
+    = render partial: 'pages/home/load_more_button', locals: {scope: scope, page: 2, remaining: count - collection.size}
 - else
   %p= empty_message

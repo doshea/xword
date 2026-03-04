@@ -22,6 +22,35 @@ class PagesController < ApplicationController
     end
   end
 
+  # POST /home/load_more
+  # Returns Turbo Stream: appends next page of puzzle cards, updates load-more button.
+  def load_more
+    page = [params[:page].to_i, 1].max
+    per = Crossword.per_page
+    scope_name = params[:scope]
+
+    scope = if @current_user
+              case scope_name
+              when 'unstarted'   then Crossword.new_to_user(@current_user)
+              when 'in_progress' then Crossword.all_in_progress(@current_user)
+              when 'solved'      then Crossword.all_solved(@current_user)
+              else return head :bad_request
+              end
+            else
+              return head :bad_request unless scope_name == 'unstarted'
+              Crossword.all
+            end
+
+    @total      = scope.count
+    @crosswords = scope.order(created_at: :desc).includes(:user)
+                       .offset((page - 1) * per).limit(per)
+    @list_id    = "#{scope_name.dasherize}-list"
+    @scope      = scope_name
+    @next_page  = page + 1
+    @remaining  = [@total - (page * per), 0].max
+    @has_more   = @remaining > 0
+  end
+
   #GET /unauthorized or unauthorized_path
   def unauthorized
   end

@@ -1,0 +1,9 @@
+- @crosswords.each do |cw|
+  = turbo_stream.append @list_id do
+    %li
+      = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
+- if @has_more
+  = turbo_stream.replace "load-more-#{@scope}" do
+    = render partial: 'pages/home/load_more_button', locals: {scope: @scope, page: @next_page, remaining: @remaining}
+- else
+  = turbo_stream.remove "load-more-#{@scope}"

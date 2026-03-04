@@ -1,0 +1,4 @@
+- next_batch = [remaining, Crossword.per_page].min
+%div{id: "load-more-#{scope}"}
+  = button_to "Load next #{next_batch} puzzles", home_load_more_path, params: {scope: scope, page: page}, class: 'xw-btn xw-btn--secondary xw-btn--full', data: {disable_with: 'Loading...'}
+  %p.center.smaller #{remaining} more #{remaining == 1 ? 'puzzle' : 'puzzles'} available

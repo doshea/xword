@@ -1,2 +1,1 @@
-/ id added so batch.turbo_stream.erb can append new crossword tabs here
-= render partial: 'pages/home/crossword_list', locals: { collection: @unstarted, count: @unstarted_count, list_id: 'crossword-tab-list', empty_message: "You're already working on all of the puzzles we've got!" }
+= render partial: 'pages/home/crossword_list', locals: { collection: @unstarted, count: @unstarted_count, list_id: 'unstarted-list', scope: 'unstarted', empty_message: "You're already working on all of the puzzles we've got!" }

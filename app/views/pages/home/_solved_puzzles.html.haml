@@ -1,4 +1,4 @@
 - if @current_user
-  = render partial: 'pages/home/crossword_list', locals: { collection: @solved, count: @solved_count, empty_message: "You haven't finished any puzzles yet -- go check out the New tab and try one!" }
+  = render partial: 'pages/home/crossword_list', locals: { collection: @solved, count: @solved_count, list_id: 'solved-list', scope: 'solved', empty_message: "You haven't finished any puzzles yet -- go check out the New tab and try one!" }
 - else
   %p Make an account or log in and you'll be able to track which crosswords you've finished!

@@ -31,9 +31,6 @@ Rails.application.routes.draw do
       post :admin_reveal_puzzle
       post :reveal
     end
-    collection do
-      post :batch
-    end
   end
 
   resources :unpublished_crosswords do
@@ -110,6 +107,7 @@ Rails.application.routes.draw do
   get '/random' => 'pages#random_puzzle', as: 'random_puzzle'
   get '/nytimes' => 'pages#nytimes'
   get '/user_made' => 'pages#user_made'
+  post '/home/load_more' => 'pages#load_more', as: 'home_load_more'
   namespace :admin do
     get :email
     post :test_emails

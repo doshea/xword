@@ -45,15 +45,6 @@ describe CrosswordsController do
     end
   end
 
-  describe 'GET #batch' do
-    # batch renders batch.turbo_stream.erb (lazy-load of crossword tabs)
-    before do
-      request.accept = Mime[:turbo_stream].to_s
-      get :batch, params: { ids: [crossword.id] }
-    end
-    it { should respond_with(200) }
-  end
-
   # check_cell and check_completion specs moved to spec/requests/check_functions_spec.rb
   # (POST request specs with proper HTTP method and response assertions)
 
