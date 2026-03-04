@@ -243,6 +243,64 @@
 
 **Low priority** — mechanical rename, no bugs, no visual change. ~2 hours.
 
+### 2026-03-04: Solve Timer + Next Puzzle on Win — detailed design
+
+**Feature gap analysis** identified 4 high-value missing features. User approved designing the top 2:
+
+**Solve Timer findings from codebase review:**
+1. `#puzzle-controls` already has `#save-status` + `#save-clock` — timer fits naturally alongside.
+2. `solution.created_at` available server-side but NOT currently passed to JS (only `solution_id` + `crossword_id`). Need to add.
+3. Win modal already calculates elapsed time via `time_difference_hash(updated_at, created_at)` — but only server-side on win. Timer during play is pure client-side.
+4. `solution.solved_at` set by `before_save :check_completion` callback when `letters == crossword.letters`. Used to freeze timer on completed puzzles.
+5. Existing interval cleanup pattern in `ready()` prevents stale timers on Turbo navigation.
+
+**Next Puzzle findings:**
+1. `Crossword.new_to_user(user)` scope exists — chains through `unowned`, `unstarted`, excludes partnered puzzles. Perfect for "what haven't you tried?"
+2. Must use `.reorder("RANDOM()")` not `.order("RANDOM()")` — same default scope bug as `/random` (pre-removal).
+3. Win modal content rendered server-side in `check_completion` as `render_to_string(partial:)`. Controller is the right place for the next puzzle query.
+4. Current puzzle guaranteed excluded from `new_to_user` results because solution already exists when `check_completion` fires.
+5. Anonymous users have no `@solution` in the win modal path — but the "Next Puzzle" link should still appear. Handled with fallback to `/random`.
+
+**Remaining feature candidates** (not yet designed):
+- Reveal Hints (letter/word) — reduces puzzle abandonment, needs `hints_used` column on Solution
+- Clue Suggestions from Phrase DB — creator experience, 53K phrases exist, infrastructure ready
+
+### 2026-03-04: Welcome Page Rebuild — comprehensive design review + plan
+
+**Scope:** Full audit of all 21 stylesheets, 117 view templates, and design token coverage.
+
+**Overall assessment: A−.** Primary pages polished. Token adoption ~88%. Three areas below the bar:
+
+1. **Welcome page** (HIGH) — Biggest gap. ~15 hardcoded colors, no accessibility, dead Foundation attributes, jQuery animation, no responsive. Full rebuild planned.
+2. **Stats page** (LOW) — Chart.js v1 (EOL), inline JS, hardcoded rgba. ~3 hours. Low traffic.
+3. **Housekeeping** (TRIVIAL) — empty `layouts.scss.erb`, single-var `_dimensions.scss`, dead CSS block. Bundled with welcome rebuild.
+
+**Key findings:**
+- `welcome.html.haml` is 0 bytes. Content in `_chalkboard.html.haml` rendered by layout. Antipattern.
+- `UsersController#create` fails → `/users/new`, not `/welcome`. Form errors never shown on chalkboard.
+- `logged_out_home.html.haml` doesn't load Google Fonts — welcome page uses fallback fonts.
+- `data-abide: true` dead (Foundation removed). Dev comment left in. No responsive CSS.
+- Chalkboard 23.3em × 29.5em overflows on phones <375px.
+
+**Decision:** Rebuild implementation, keep visual concept. Desktop: chalkboard image + CSS slide. Mobile: dark container, show/hide.
+
+**Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Sleeker Footer — Colophon Strip Redesign
+
+**Request:** Replace chunky dark footer with transparent colophon strip.
+
+**Review findings:**
+- Plan is clean. 2 files, no JS, no tests, no model changes.
+- All 10 design tokens referenced in the CSS exist in `_design_tokens.scss`.
+- `$bp-sm` SCSS variable exists (640px) for mobile breakpoint.
+- `icon()` helper confirmed (accepts `name` + `size:` kwarg) — same calls as current footer, just smaller size (14 vs 18).
+- `--color-footer-bg` becomes unused but harmless — no cleanup needed.
+- Both layouts (`application.html.haml`, `logged_out_home.html.haml`) render same `_footer` partial — no layout changes.
+- No existing footer specs, so rspec is a regression check only.
+
+**Risk:** Very low. Pure visual change. No behavior, no JS, no data.
+
 ## Open Questions
 
 - ~~Default scope removal plan needed (future session)~~ **DONE** — plan written, fixes 3 bugs.
@@ -265,3 +323,35 @@
 5. `users_spec.rb:47` — Order-dependent, likely related to deadlock. No specific fix needed.
 
 **Key correction:** The MEMORY.md note about "1 pre-existing flaky failure: PagesController#live_search" was wrong — it's a deterministic failure caused by missing `render_views`, not flakiness.
+
+### 2026-03-04: Clue UTF-8 double-encoding — root cause + fix
+
+**Symptom:** Clues with accented characters display as mojibake: "Québéc" → "QuÃ©bÃ©c"
+
+**Root cause confirmed via reproduction:** `Clue#strip_tags` uses Loofah (via `ActionController::Base.helpers.strip_tags`). When the input string has `ASCII-8BIT` encoding (which HTTParty can produce), Loofah's Nokogiri HTML parser interprets the bytes as Latin-1 and re-encodes to UTF-8. The 2-byte UTF-8 sequence `c3 a9` (é) becomes 4 bytes `c3 83 c2 a9` (Ã©).
+
+**Key finding:** `strip_tags` and `sanitize` both handle UTF-8 correctly when encoding is tagged properly. The bug is ONLY triggered when the Ruby string's encoding metadata is `ASCII-8BIT` instead of `UTF-8`. The security measures are correct and should stay.
+
+**Fix:** 3 changes — encoding guard in Clue model (before strip_tags), data migration for existing corrupted clues, source-level encoding fix in NytPuzzleFetcher.
+
+**No cell changes needed.** Cell letters are A-Z only by data model design, rendered with HAML auto-escaping.
+
+**Handoff:** Written to shared.md with full code snippets for Builder.
+
+### 2026-03-04: Reveal Hints (Letter + Word) — feature design
+
+**Feature:** Solvers can reveal the correct letter for a single cell or an entire word when stuck. Tracked per solution.
+
+**Key design decisions:**
+1. **Single endpoint** `POST /crosswords/:id/reveal` — cell vs word is just different `indices` arrays. Follows `check_cell` pattern on CrosswordsController.
+2. **Returns only requested letters** — never the full answer key. Security: can't get full grid from one request.
+3. **`hints_used` integer on solutions** — atomic `increment!`, counts per cell revealed (5-letter word = 5 hints).
+4. **UI in Check dropdown** — Reveal Cell + Reveal Word after a divider. Natural grouping: check → reveal.
+5. **Team broadcasting** — `set_letter(letter, true)` handles it automatically.
+6. **No Reveal Puzzle** for regular users — stays admin-only. Cell + word only for v1.
+7. **Win modal shows hint count** if > 0 — subtle muted text, not judgmental.
+8. **Anonymous users** can reveal (no auth required, same as check_cell) but no tracking.
+
+**Files:** 7 modified + 1 new migration + 1 new spec file. Low risk — purely additive.
+
+**Full plan:** `claude_personas/memory/plan.md`

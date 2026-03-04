@@ -663,99 +663,84 @@
 }
 
 
-// ---------------------------------------------------------------------------
 // FOOTER — .xw-footer
 // ---------------------------------------------------------------------------
-// Dark bar matching nav aesthetic. Two-group flexbox: nav links left, social
-// icons right, stacks centered on mobile.
+// Transparent colophon strip on wood. Single centered row: links · social · ©
 // ---------------------------------------------------------------------------
 
 .xw-footer {
   font-family: var(--font-ui);
-  background-color: var(--color-footer-bg);
-  color: var(--color-footer-text);
   margin-top: var(--space-8);
-  padding: var(--space-6) 0 var(--space-4);
+  padding: var(--space-5) 0 var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.xw-footer__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.xw-footer__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 
   a {
-    color: var(--color-footer-link);
+    color: var(--color-footer-text);
     text-decoration: none;
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
     transition: var(--transition-colors);
-    &:hover { color: var(--color-footer-link-hover); }
-  }
-}
 
-.xw-footer__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.xw-footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.xw-footer__nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  transition: var(--transition-colors);
-
-  &:hover, &:focus-visible {
-    background-color: rgba(255, 255, 255, 0.12);
-    outline: none;
+    &:hover, &:focus-visible {
+      color: var(--color-accent-muted);
+    }
   }
 }
 
 .xw-footer__social {
   display: flex;
+  align-items: center;
   gap: var(--space-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+
+  a {
+    color: var(--color-footer-link);
+    text-decoration: none;
+    transition: var(--transition-colors);
+    line-height: 1;
+
+    &:hover, &:focus-visible {
+      color: var(--color-accent-muted);
+    }
+  }
 }
 
-.xw-footer__social-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: var(--radius-full);
-  transition: var(--transition-colors);
-
-  &:hover, &:focus-visible {
-    background-color: rgba(255, 255, 255, 0.12);
-    outline: none;
-  }
+.xw-footer__dot {
+  color: rgba(255, 255, 255, 0.20);
+  font-size: var(--text-sm);
+  user-select: none;
 }
 
 .xw-footer__copyright {
-  text-align: center;
-  margin: var(--space-4) 0 0;
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-nav-border);
+  color: var(--color-footer-link);
   font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: var(--tracking-wider);
 }
 
 @media (max-width: #{$bp-sm - 1}) {
-  .xw-footer__inner {
+  .xw-footer__row {
     flex-direction: column;
-    text-align: center;
+    gap: var(--space-2);
   }
 
-  .xw-footer__nav {
+  .xw-footer__dot { display: none; }
+
+  .xw-footer__links {
     justify-content: center;
   }
 

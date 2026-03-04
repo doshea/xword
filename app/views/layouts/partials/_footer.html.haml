@@ -1,29 +1,16 @@
 .xw-footer
   .xw-container
-    .xw-footer__inner
-      %nav{aria: {label: 'Site information'}}
-        %ul.xw-footer__nav
-          %li
-            = link_to about_path, class: 'xw-footer__nav-link' do
-              = icon('users', size: 16)
-              %span About
-          %li
-            = link_to faq_path, class: 'xw-footer__nav-link' do
-              = icon('info', size: 16)
-              %span FAQ
-          %li
-            = link_to contact_path, class: 'xw-footer__nav-link' do
-              = icon('mail', size: 16)
-              %span Contact
-          %li
-            = link_to stats_path, class: 'xw-footer__nav-link' do
-              = icon('chart-bar', size: 16)
-              %span Stats
-      %ul.xw-footer__social
-        %li
-          %a.xw-footer__social-link{href: 'https://www.facebook.com/pages/Crossword-Caf%C3%A9/522004927841403', target: '_blank', rel: 'noopener', aria: {label: 'Facebook'}}
-            = icon('facebook', size: 18)
-        %li
-          %a.xw-footer__social-link{href: 'https://github.com/doshea/xword', target: '_blank', rel: 'noopener', aria: {label: 'GitHub'}}
-            = icon('github', size: 18)
-    %p.xw-footer__copyright &copy; Dylan O'Shea
+    .xw-footer__row
+      %nav.xw-footer__links{aria: {label: 'Site information'}}
+        = link_to 'About', about_path
+        = link_to 'FAQ', faq_path
+        = link_to 'Contact', contact_path
+        = link_to 'Stats', stats_path
+      %span.xw-footer__dot ·
+      .xw-footer__social
+        %a{href: 'https://www.facebook.com/pages/Crossword-Caf%C3%A9/522004927841403', target: '_blank', rel: 'noopener', aria: {label: 'Facebook'}}
+          = icon('facebook', size: 14)
+        %a{href: 'https://github.com/doshea/xword', target: '_blank', rel: 'noopener', aria: {label: 'GitHub'}}
+          = icon('github', size: 14)
+      %span.xw-footer__dot ·
+      %span.xw-footer__copyright &copy; Dylan O'Shea

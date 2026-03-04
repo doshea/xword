@@ -4,6 +4,29 @@ This file is read by all personas (Planner, Builder, Deployer). Use it for cross
 
 ## Current Focus
 
+### 🔧 Homepage "Load More" Pagination
+**Status:** Planner complete → Builder ready
+
+**Problem:** Homepage shows "100 out of 300 puzzles" with no way to see the rest. All 3 tabs (unstarted, in-progress, solved) capped at 100. Anonymous users have the same issue.
+
+**Approach:** Turbo Stream "Load More" button. `button_to` POSTs to new `POST /home/load_more` with `scope` + `page` params. Server returns Turbo Streams that append `<li>` cards to the `<ul>` and replace/remove the button.
+
+**Planner → Builder: Full plan in `claude_personas/memory/plan.md`**
+
+Summary of changes:
+1. **Route:** `post '/home/load_more' => 'pages#load_more'`
+2. **Controller:** `PagesController#load_more` — offset pagination on Publishable scopes
+3. **New view:** `pages/load_more.turbo_stream.haml` — append cards + replace button
+4. **New partial:** `_load_more_button.html.haml` — replaces broken `_load_next_button`
+5. **Modified:** `_crossword_list.html.haml` — button replaces "Showing X of Y" text
+6. **Modified:** 3 tab partials — add `list_id` + `scope` locals
+7. **Delete dead code:** `batch` endpoint + route + view + broken button partial
+8. **Specs:** `spec/requests/pages_load_more_spec.rb`
+
+**Bug found during audit:** `_in_progress.html.haml` empty-state links to `#panel2` (itself) instead of `#panel1` (New Puzzles). Fixed in plan.
+
+---
+
 ### ✅ Reveal Hints (Letter + Word)
 **Status:** Builder complete (2026-03-04). 842 examples, 0 failures. Needs deploy + visual verification.
 
