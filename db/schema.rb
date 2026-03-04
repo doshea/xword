@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_04_082830) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_04_102456) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_04_082830) do
     t.integer "user_id"
     t.index ["friend_id"], name: "index_friendships_on_friend_id"
     t.index ["user_id"], name: "index_friendships_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer "actor_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.integer "notifiable_id"
+    t.string "notifiable_type"
+    t.string "notification_type", null: false
+    t.datetime "read_at"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["user_id", "actor_id", "notification_type", "notifiable_type", "notifiable_id"], name: "index_notifications_on_dedup", unique: true
+    t.index ["user_id", "actor_id", "notification_type"], name: "index_notifications_on_dedup_no_notifiable", unique: true, where: "(notifiable_type IS NULL)"
+    t.index ["user_id", "read_at", "created_at"], name: "index_notifications_on_inbox"
   end
 
   create_table "phrases", force: :cascade do |t|

@@ -13,8 +13,17 @@ class UsersController < ApplicationController
     @comments   = @user.comments.order_recent
                        .includes(:crossword, base_comment: [:crossword, { base_comment: :crossword }])
                        .paginate(page: params[:comments_page], per_page: 10)
-    @is_friend  = !!(@current_user && @current_user != @user &&
-                     @current_user.friends_with?(@user))
+    if @current_user && @current_user != @user
+      if @current_user.friends_with?(@user)
+        @friend_status = :friends
+      elsif FriendRequest.where(sender_id: @current_user.id, recipient_id: @user.id).exists?
+        @friend_status = :pending_sent
+      elsif FriendRequest.where(sender_id: @user.id, recipient_id: @current_user.id).exists?
+        @friend_status = :pending_received
+      else
+        @friend_status = :none
+      end
+    end
   end
 
   #GET /users/new or new_user_path

@@ -41,6 +41,11 @@ class User < ApplicationRecord
   has_many :friendship_twos, :class_name => 'Friendship', :foreign_key => :user_id
   has_many :friend_twos, class_name: 'User', through: :friendship_twos
 
+  has_many :notifications, inverse_of: :user, dependent: :destroy
+
+  has_many :sent_friend_requests, class_name: 'FriendRequest', foreign_key: :sender_id, dependent: :delete_all
+  has_many :received_friend_requests, class_name: 'FriendRequest', foreign_key: :recipient_id, dependent: :delete_all
+
   before_create { generate_token(:auth_token); generate_token(:verification_token); }
 
   include PgSearch::Model

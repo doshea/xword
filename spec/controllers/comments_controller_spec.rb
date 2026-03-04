@@ -1,6 +1,6 @@
 describe CommentsController do
-  let(:user)      { create(:user) }
-  let(:crossword) { create(:crossword) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:crossword) { create(:crossword) }
 
   # All three actions render .turbo_stream.erb templates with no HTML fallback.
   # Setting the Accept header tells Rails to expect turbo_stream format;

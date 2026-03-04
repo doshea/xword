@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe 'comments/partials/_reply' do
-  let(:user)         { create(:user) }
-  let(:crossword)    { create(:crossword, :smaller, user: user) }
-  let(:base_comment) { create(:comment, user: user, crossword: crossword) }
-  let(:reply)        { create(:comment, user: user, crossword: crossword, base_comment: base_comment) }
+  let_it_be(:user)         { create(:user) }
+  let_it_be(:crossword)    { create(:crossword, user: user) }
+  let_it_be(:base_comment) { create(:comment, user: user, crossword: crossword) }
+  let_it_be(:reply)        { create(:comment, user: user, crossword: crossword, base_comment: base_comment) }
 
   # Anonymous context: the logged-in branch (`.reply-controls`) is skipped,
   # avoiding the `link_to reply` turbo_method delete path which requires

@@ -166,12 +166,31 @@
   i { font-size: 1.15rem; }
 }
 
-// Unread mail pulse (used by global.js adding .unread class)
+// Unread notification pulse (used by notifications_channel.js adding .unread class)
 #nav-mail.unread { animation: xw-unread-pulse 2s infinite; }
 
 @keyframes xw-unread-pulse {
   0%, 100% { background-color: transparent; }
   50%       { background-color: var(--color-accent); }
+}
+
+// Notification badge — red circle with count
+.xw-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.3rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-danger);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: var(--weight-semibold);
+  line-height: 1.1rem;
+  text-align: center;
+  pointer-events: none;
 }
 
 

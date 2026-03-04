@@ -7,6 +7,7 @@ SimpleCov.start 'rails'
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'test_prof/recipes/rspec/let_it_be'
 require 'capybara/rspec'
 require 'capybara/cuprite'
 require 'launchy'
@@ -68,7 +69,16 @@ RSpec.configure do |c|
       end
     else
       DatabaseCleaner.strategy = :transaction
-      DatabaseCleaner.cleaning { example.run }
+      retries = 0
+      begin
+        DatabaseCleaner.cleaning { example.run }
+      rescue ActiveRecord::Deadlocked => e
+        retries += 1
+        raise if retries > 2
+        ActiveRecord::Base.connection_pool.disconnect!
+        sleep 0.5
+        retry
+      end
     end
   end
 

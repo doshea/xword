@@ -16,14 +16,16 @@ describe PagesController do
   # GET #live_search
   # ---------------------------------------------------------------------------
   describe 'GET #live_search' do
+    render_views
+
     before do
       request.env["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
     end
 
     context 'with JSON format (current client)' do
-      let!(:user)      { create(:user, username: 'puzzlemaker') }
-      let!(:crossword) { create(:crossword) }
-      let!(:word)      { Word.create!(content: 'PUZZLE') }
+      let_it_be(:user)      { create(:user, username: 'puzzlemaker') }
+      let_it_be(:crossword) { create(:crossword) }
+      let_it_be(:word)      { Word.create!(content: 'PUZZLE') }
 
       it 'returns result_count and html when matches exist' do
         get :live_search, params: { query: 'puzzle' }, format: :json
@@ -50,7 +52,7 @@ describe PagesController do
     end
 
     context 'with JS format (legacy fallback)' do
-      let!(:crossword) { create(:crossword) }
+      let_it_be(:crossword) { create(:crossword) }
 
       it 'returns JavaScript response' do
         get :live_search, params: { query: crossword.title[0..4] }, format: :js

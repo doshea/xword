@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe 'solutions/partials/_win_modal_contents' do
-  let(:user)      { create(:user) }
-  let(:crossword) { create(:crossword, :smaller, user: user) }
-  let(:solution)  { create(:solution, user: user, crossword: crossword) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:crossword) { create(:crossword, user: user) }
+  let_it_be(:solution)  { create(:solution, user: user, crossword: crossword) }
 
   context 'logged-in user who solved the puzzle (no prior comment)' do
     before do

@@ -13,8 +13,8 @@
 #
 
 describe Comment do
-  let(:user)      { create(:user) }
-  let(:crossword) { create(:crossword) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:crossword) { create(:crossword) }
 
   context 'associations' do
     it {should belong_to(:user).optional}

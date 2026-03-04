@@ -1,0 +1,91 @@
+// =============================================================================
+// Notifications Inbox — .xw-notifications
+// =============================================================================
+
+.xw-notifications__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.xw-notifications__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.xw-notifications__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.xw-notifications__empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+}
+
+// Individual notification row
+.xw-notification {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.xw-notification--unread {
+  border-left: 3px solid var(--color-accent);
+  background-color: var(--color-surface-alt);
+}
+
+.xw-notification__avatar-img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.xw-notification__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.xw-notification__message {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-relaxed);
+
+  a {
+    font-weight: var(--weight-semibold);
+    color: var(--color-accent);
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.xw-notification__meta {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.xw-notification__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}

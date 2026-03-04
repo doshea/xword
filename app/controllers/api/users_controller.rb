@@ -11,6 +11,19 @@ class Api::UsersController < ApplicationController
     render json: api_attributes(user)
   end
 
+  # GET /api/users/friends
+  def friends
+    return head :unauthorized unless @current_user
+
+    render json: @current_user.friends.select(:id, :first_name, :last_name, :username, :image)
+                               .map { |u| {
+                                 id: u.id,
+                                 username: u.username,
+                                 display_name: u.display_name,
+                                 avatar_url: u.image.present? ? u.image.search.url : ActionController::Base.helpers.asset_path('default_images/user.jpg')
+                               }}
+  end
+
   private
   def api_attributes(user)
     acceptable_keys = [:first_name, :last_name, :username, :created_at]

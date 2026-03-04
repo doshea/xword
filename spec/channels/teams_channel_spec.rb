@@ -1,7 +1,7 @@
 RSpec.describe TeamsChannel, type: :channel do
-  let(:user)          { create(:user) }
-  let(:crossword)     { create(:crossword, :smaller) }
-  let(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
+  let_it_be(:user)          { create(:user) }
+  let_it_be(:crossword)     { create(:crossword) }
+  let_it_be(:team_solution) { create(:solution, :team, user: user, crossword: crossword) }
 
   describe '#subscribed' do
     context 'with a valid team key' do

@@ -10,7 +10,18 @@ class CommentsController < ApplicationController
     return head :not_found unless crossword
     if crossword.comments.where(user_id: @current_user.id).count < Comment::MAX_PER_CROSSWORD
       @new_comment = Comment.new(content: params[:content], crossword: crossword, user: @current_user)
-      return head :unprocessable_entity unless @new_comment.save
+      if @new_comment.save
+        if crossword.user && crossword.user != @current_user
+          NotificationService.notify(
+            user: crossword.user, actor: @current_user,
+            type: 'comment_on_puzzle', notifiable: @new_comment,
+            metadata: { crossword_id: crossword.id, crossword_title: crossword.title }
+          )
+        end
+        # Falls through to implicit render of add_comment.turbo_stream.erb
+      else
+        return head :unprocessable_entity
+      end
     else
       head :forbidden
     end
@@ -26,6 +37,18 @@ class CommentsController < ApplicationController
     @new_reply = Comment.new(content: params[:content], user: @current_user)
     @base_comment.replies << @new_reply
     return head :unprocessable_entity unless @new_reply.persisted?
+
+    if @base_comment.user && @base_comment.user != @current_user
+      NotificationService.notify(
+        user: @base_comment.user, actor: @current_user,
+        type: 'comment_reply', notifiable: @new_reply,
+        metadata: {
+          crossword_id: @base_comment.base_crossword&.id,
+          crossword_title: @base_comment.base_crossword&.title,
+          comment_excerpt: @new_reply.content.truncate(80)
+        }
+      )
+    end
   end
 
   #DELETE /comments/:id or comment_path

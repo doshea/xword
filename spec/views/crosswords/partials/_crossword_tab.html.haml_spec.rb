@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'crosswords/partials/_crossword_tab' do
   context 'with a published Crossword' do
-    let(:crossword) { create(:predefined_five_by_five) }
+    let_it_be(:crossword) { create(:predefined_five_by_five) }
 
     before do
       render partial: 'crosswords/partials/crossword_tab',

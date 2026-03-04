@@ -70,6 +70,30 @@
 
 **Full plan:** `claude_personas/memory/plan.md` — ~600 lines with code snippets for every file.
 
+### 2026-03-04: Notification System plan v3 — builder-ready with all corrections applied
+
+**Replaced plan.md** with complete builder-ready implementation plan. All 4 must-fix issues from v2 review are now embedded directly in the code snippets (not listed separately). Every file has exact code. Builder should follow plan.md as single source of truth.
+
+**Key architectural validations confirmed against current codebase:**
+- `friend_requests` table: `id: false`, columns: sender_id, recipient_id, accompany_message, timestamps. Indexes on sender_id and recipient_id individually.
+- `friendships` table: `id: false`, columns: user_id, friend_id. Both indexed.
+- `User#friends` returns AR::Relation via `.or()` query — suitable for API serialization.
+- `User#friends_with?` uses `.exists?` — efficient for profile page status check.
+- `ApplicationCable::Connection` returns nil for anonymous (no reject). `TeamsChannel` rejects based on params. `NotificationsChannel` will reject nil current_user.
+- `team_funcs.js.erb` creates its own consumer (line 291) — completely independent of `cable.js`. Confirmed dead code.
+- `ApiController` routes use `namespace :api, defaults: {format: :json}` with nested `namespace :users`. Friends endpoint adds as sibling `get :friends`.
+- `application.scss` uses only Sprockets `*= require` directives (not SCSS `@import`). New `_notifications.scss` must follow this pattern.
+- Existing Stimulus pattern: IIFE → `class extends Stimulus.Controller` → `window.StimulusApp.register()`. invite_controller.js follows this.
+- `topper_stopper` layout partial used by 20+ pages including `users/show.html.haml`. Notifications inbox will use it with `columns_class: 'xw-md-center-8'`.
+
+**Design decisions finalized:**
+- Accept/Decline from inbox: `data: { turbo: false }` → full redirect (simple, reliable for v1)
+- Avatar in notification partial: `actor.image.present?` guard with fallback to `default_images/user.jpg`
+- `mark_all_read`: re-renders full notification list via Turbo Stream replace
+- Phase 2 routes added in Phase 1 to prevent NoMethodError in notification partial
+- Puzzle invite sends `head :ok` (no Turbo Stream) — button state managed in Stimulus JS
+- `NotificationService.broadcast` wrapped in rescue to prevent broadcast failures from blocking notification creation
+
 ### 2026-03-04: Cell check flash effect designed
 
 **Feature:** Golden flash cascade on cell check (check cell / word / puzzle). Flash sweeps L→R, T→B then fades to reveal error flags.
@@ -91,8 +115,48 @@
 
 **Files:** `_design_tokens.scss` (1 token), `crossword.scss.erb` (flash rules + reduced-motion), `solve_funcs.js` (replace `apply_mismatches`)
 
+### 2026-03-04: Blurry puzzle preview thumbnails — root cause + fix
+
+**Root cause:** `generate_preview` creates images at 5px/cell (75×75 for 15×15). CSS `width: 100%` in `minmax(140px, 1fr)` grid stretches them ~2x. Browser bilinear interpolation blurs the pixel-art grid lines.
+
+**Fix:** Display at native 75×75 (matching home page `.minipic img` which already does this correctly). Tighten grid to `minmax(100px, 1fr)`. Black border (`--color-cell-border`). `image-rendering: pixelated` as insurance. Minimal `border-radius`.
+
+**Files:** `search.scss.erb` (grid + thumb), `profile.scss.erb` (grid + thumb). No view/backend changes.
+
+**User preference:** Wants them small. Confirmed 75px.
+
+### 2026-03-04: Test suite performance audit
+
+**Problem:** 814 examples in ~127s. Crossword factory is the bottleneck — each `create(:crossword)` inserts 76–2,700 DB records via `after_create :populate_cells`. RSpec `let` re-creates these per example even when tests only read the record. Conservative estimate: ~150 redundant crossword creates per run = ~11,400 unnecessary DB writes.
+
+**Root causes identified:**
+1. No `let_it_be` — every `let(:crossword)` rebuilds the full cell/clue tree per example
+2. Random dimensions on bare `create(:crossword)` — 4×4 to 30×30 makes timing unpredictable
+3. No `test-prof` gem installed — no profiling or optimization tooling
+4. CSRF spec does full crossword page render to extract tokens (minor)
+
+**Recommendation:** Add `test-prof` gem, convert ~10 spec files to `let_it_be`, pin dimensions. Target: suite under 80s (45% improvement).
+
+**Key risk:** `let_it_be` + DatabaseCleaner interaction. `let_it_be` uses `before(:all)` + savepoints; our spec_helper uses `DatabaseCleaner.cleaning` with transaction strategy. Need to verify compatibility in Phase 1 before bulk conversion. Feature specs (`:deletion` strategy) may not be compatible — may need to keep `let!` there.
+
 ## Open Questions
 
 - Default scope removal plan needed (future session). Key risk: queries that use `.first`/`.last` without explicit order.
 - 4 unused Publishable scopes (`standard`, `nonstandard`, `solo`, `teamed`) — prune when convenient, not urgent.
 - FriendRequest model spec (line 6-8) uses `should` syntax — should be migrated to `expect()` when touching that file.
+- `let_it_be` compatibility with DatabaseCleaner `:deletion` strategy (feature specs) — needs testing.
+
+### 2026-03-04: Test failure root cause analysis (8 failures → 4 fixes)
+
+**Investigation method:** Full suite run (8 failures), then isolated runs to classify always-failing vs intermittent.
+
+**Always-failing (4 tests):**
+1. `edit_spec.rb:35, 41, 115` — CSS nesting bug. `.side-button { #settings-button { ... } }` compiles to descendant selector, but element has both class+id. `position: fixed` never applies. Settings button overlaps ideas button at viewport bottom. Also a **production visual bug** (settings gear was never fixed-positioned on right edge).
+2. `pages_controller_spec.rb:28` — Missing `render_views` in controller spec. `render_to_string(partial:)` returns `""` without it. **Not flaky** — correcting earlier memory note.
+
+**Intermittent (4 tests):**
+3. `admin/clues_controller_spec.rb` (2 tests) — PG deadlock. JS test Puma thread + non-JS test both creating crosswords → bulk `INSERT INTO clues` deadlocks. Non-JS branch lacked retry.
+4. `login_spec.rb:48` — Cuprite timing. Missing positive assertion before negative check after Turbo redirect.
+5. `users_spec.rb:47` — Order-dependent, likely related to deadlock. No specific fix needed.
+
+**Key correction:** The MEMORY.md note about "1 pre-existing flaky failure: PagesController#live_search" was wrong — it's a deterministic failure caused by missing `render_views`, not flakiness.

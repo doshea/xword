@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :authenticate
+  before_action :load_unread_notification_count
 
   private
   def authenticate
@@ -13,6 +14,10 @@ class ApplicationController < ActionController::Base
     @current_user = User.find_by_auth_token(token) if token
     # Legacy fallback: session-based auth (kept in case any old code still sets it).
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id].present?
+  end
+
+  def load_unread_notification_count
+    @unread_notification_count = @current_user&.notifications&.unread&.count || 0
   end
 
   def ensure_logged_in

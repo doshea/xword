@@ -52,6 +52,7 @@ feature 'Login' do
           fill_in :password, with: @user.password
           click_button 'Log in'
         end
+        expect(page).to have_text('Welcome back')
         expect(page).not_to have_link('Login')
       end
       scenario 'bad credentials show error message' do

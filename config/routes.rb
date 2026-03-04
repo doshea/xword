@@ -72,6 +72,24 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :notifications, only: [:index] do
+    member do
+      patch :mark_read
+    end
+    collection do
+      patch :mark_all_read
+    end
+  end
+
+  resources :friend_requests, only: [:create] do
+    collection do
+      post :accept
+      delete :reject
+    end
+  end
+
+  resources :puzzle_invites, only: [:create]
+
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'
@@ -118,6 +136,7 @@ Rails.application.routes.draw do
     namespace :users do
       get '/' => :index
       get :search
+      get :friends
     end
     namespace :crosswords do
       get :search

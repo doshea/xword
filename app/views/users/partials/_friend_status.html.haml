@@ -1,0 +1,18 @@
+- case status
+- when :friends
+  %span.xw-btn.xw-btn--success.xw-btn--sm
+    = icon('check')
+    Friends!
+- when :pending_sent
+  %span.xw-btn.xw-btn--ghost.xw-btn--sm{ disabled: true }
+    = icon('clock', size: 16)
+    Request Sent
+- when :pending_received
+  .xw-profile-hero__friend-actions
+    = button_to 'Accept', accept_friend_requests_path(sender_id: user.id),
+                method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm'
+    = button_to 'Decline', reject_friend_requests_path(sender_id: user.id),
+                method: :delete, class: 'xw-btn xw-btn--ghost xw-btn--sm'
+- when :none
+  = button_to 'Add Friend', friend_requests_path(recipient_id: user.id),
+              method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm'

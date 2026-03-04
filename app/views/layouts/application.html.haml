@@ -9,6 +9,9 @@
     %link{rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Courier+Prime&family=DM+Sans:wght@400;500;600&family=Lora:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap'}
     = stylesheet_link_tag    "application", media: "all"
     = javascript_include_tag "application"
+    - if is_logged_in?
+      = javascript_include_tag 'actioncable'
+      = javascript_include_tag 'notifications_channel'
     %title
       = yield(:title) + title_backup
 

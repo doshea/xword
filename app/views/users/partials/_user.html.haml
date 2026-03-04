@@ -9,12 +9,9 @@
         Member since
         %time{datetime: @user.created_at.iso8601}= @user.created_at.strftime("%B %Y")
       - if @current_user && (@current_user != @user)
-        - if @is_friend
-          %button.xw-btn.xw-btn--success.xw-btn--sm
-            = icon('check')
-            Friends!
-        - else
-          %button.xw-btn.xw-btn--ghost Not Friends
+        = turbo_frame_tag "friend-status-#{@user.id}" do
+          = render partial: 'users/partials/friend_status',
+                   locals: { user: @user, status: @friend_status }
     .xw-profile-hero__stats
       .xw-profile-stat
         %span.xw-profile-stat__number= @user.solutions.complete.count

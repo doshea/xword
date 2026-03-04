@@ -1,0 +1,13 @@
+<%= turbo_stream.replace "notification-#{@notification.id}" do %>
+  <%= render partial: 'notifications/partials/notification',
+             locals: { notification: @notification } %>
+<% end %>
+
+<% unread_count = @current_user.notifications.unread.count %>
+<%= turbo_stream.replace "notification-badge" do %>
+  <span id="notification-badge">
+    <% if unread_count > 0 %>
+      <span class="xw-badge"><%= unread_count > 99 ? '99+' : unread_count %></span>
+    <% end %>
+  </span>
+<% end %>

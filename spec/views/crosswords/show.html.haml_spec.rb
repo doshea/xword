@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'crosswords/show' do
-  let(:owner)     { create(:user) }
-  let(:crossword) { create(:predefined_five_by_five, user: owner) }
+  let_it_be(:owner)     { create(:user) }
+  let_it_be(:crossword) { create(:predefined_five_by_five, user: owner) }
 
   def base_assigns(current_user: nil, solution: nil, is_favorited: false)
     assign(:crossword,    crossword)

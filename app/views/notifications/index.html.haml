@@ -1,0 +1,21 @@
+- content_for(:title) { 'Notifications | ' }
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-md-center-8'} do
+  .xw-notifications
+    .xw-notifications__header
+      %h1.xw-notifications__title
+        = icon('bell')
+        Notifications
+      - if @notifications.any? { |n| n.read_at.nil? }
+        = button_to mark_all_read_notifications_path, method: :patch,
+                    class: 'xw-btn xw-btn--ghost xw-btn--sm' do
+          = icon('check-check', size: 16)
+          Mark all read
+
+    #notifications-list.xw-notifications__list
+      - if @notifications.any?
+        - @notifications.each do |notification|
+          = render partial: 'notifications/partials/notification',
+                   locals: { notification: notification }
+      - else
+        #notifications-empty.xw-notifications__empty
+          %p No notifications yet.

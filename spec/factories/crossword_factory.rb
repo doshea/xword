@@ -17,8 +17,8 @@
 
 FactoryBot.define do
   factory :crossword do
-    rows { Crossword.random_dimension }
-    cols { Crossword.random_dimension }
+    rows { 5 }
+    cols { 5 }
     title { Faker::Lorem.characters(number: (Crossword::MIN_TITLE_LENGTH..Crossword::MAX_TITLE_LENGTH).to_a.sample) }
     # letters { Faker::Lorem.characters(number: rows * cols) }
     description { Faker::Lorem.paragraph(sentence_count: 2) }
@@ -29,10 +29,11 @@ FactoryBot.define do
       letters { Faker::Lorem.characters(number: area) }
     end
 
-    # Permits faster testing of size-independent features
+    # Legacy alias — base factory is now 5×5, so :smaller is a no-op.
+    # Kept to avoid breaking existing specs that reference it.
     trait :smaller do
-      rows { Crossword.random_dimension(15) }
-      cols { Crossword.random_dimension(15) }
+      rows { 5 }
+      cols { 5 }
     end
 
     #from http://www.goobix.com/crosswords/0505/4/

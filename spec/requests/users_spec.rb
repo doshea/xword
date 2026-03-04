@@ -50,7 +50,7 @@ RSpec.describe 'Users', type: :request do
 
       get "/users/#{user.id}"
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('Not Friends')
+      expect(response.body).to include('Add Friend')
     end
   end
 

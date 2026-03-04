@@ -1,0 +1,56 @@
+- actor = notification.actor
+.xw-notification{ id: "notification-#{notification.id}",
+                   class: ('xw-notification--unread' if notification.read_at.nil?) }
+  .xw-notification__avatar
+    - if actor.image.present?
+      = image_tag actor.image.search.url, alt: actor.display_name,
+                  class: 'xw-notification__avatar-img'
+    - else
+      = image_tag 'default_images/user.jpg', alt: actor.display_name,
+                  class: 'xw-notification__avatar-img'
+  .xw-notification__body
+    .xw-notification__message
+      - case notification.notification_type
+      - when 'friend_request'
+        = link_to actor.display_name, user_path(actor)
+        sent you a friend request.
+      - when 'friend_accepted'
+        = link_to actor.display_name, user_path(actor)
+        accepted your friend request!
+      - when 'comment_on_puzzle'
+        = link_to actor.display_name, user_path(actor)
+        commented on
+        - if notification.metadata['crossword_id']
+          = link_to notification.metadata['crossword_title'],
+                    crossword_path(notification.metadata['crossword_id'])
+        - else
+          your puzzle.
+      - when 'comment_reply'
+        = link_to actor.display_name, user_path(actor)
+        replied to your comment
+        - if notification.metadata['crossword_id']
+          on
+          = link_to notification.metadata['crossword_title'],
+                    crossword_path(notification.metadata['crossword_id'])
+      - when 'puzzle_invite'
+        = link_to actor.display_name, user_path(actor)
+        invited you to team-solve
+        - if notification.metadata['crossword_title']
+          = link_to notification.metadata['crossword_title'],
+                    notification.metadata['team_path']
+    .xw-notification__meta
+      %time{ datetime: notification.created_at.iso8601 }
+        = time_ago_in_words(notification.created_at)
+        ago
+    - if notification.notification_type == 'friend_request' && notification.read_at.nil?
+      .xw-notification__actions
+        = button_to 'Accept', accept_friend_requests_path(sender_id: notification.actor_id),
+                    method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm',
+                    data: { turbo: false }
+        = button_to 'Decline', reject_friend_requests_path(sender_id: notification.actor_id),
+                    method: :delete, class: 'xw-btn xw-btn--ghost xw-btn--sm',
+                    data: { turbo: false }
+    - if notification.notification_type == 'puzzle_invite' && notification.metadata['team_path']
+      .xw-notification__actions
+        = link_to 'Join', notification.metadata['team_path'],
+                  class: 'xw-btn xw-btn--primary xw-btn--sm'

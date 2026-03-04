@@ -1,0 +1,12 @@
+<%= turbo_stream.replace "notifications-list" do %>
+  <div id="notifications-list" class="xw-notifications__list">
+    <% @current_user.notifications.includes(:actor).recent.each do |notification| %>
+      <%= render partial: 'notifications/partials/notification',
+                 locals: { notification: notification } %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "notification-badge" do %>
+  <span id="notification-badge"></span>
+<% end %>

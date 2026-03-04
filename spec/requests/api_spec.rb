@@ -3,7 +3,7 @@ RSpec.describe 'API', type: :request do
   # Api::CrosswordsController
   # -------------------------------------------------------------------------
   describe 'GET /api/crosswords/search' do
-    let!(:crossword) { create(:predefined_five_by_five) }
+    let_it_be(:crossword) { create(:predefined_five_by_five) }
 
     it 'returns crossword data as JSON when found' do
       get '/api/crosswords/search', params: { title: crossword.title }
@@ -28,7 +28,7 @@ RSpec.describe 'API', type: :request do
   end
 
   describe 'GET /api/crosswords/simple' do
-    let!(:crossword) { create(:predefined_five_by_five) }
+    let_it_be(:crossword) { create(:predefined_five_by_five) }
 
     it 'returns crossword as plain text' do
       get '/api/crosswords/simple', params: { title: crossword.title }

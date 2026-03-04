@@ -1,6 +1,6 @@
 RSpec.describe 'Check functions', type: :request do
-  let(:user)      { create(:user, :with_test_password) }
-  let(:crossword) { create(:predefined_five_by_five) }
+  let_it_be(:user)      { create(:user, :with_test_password) }
+  let_it_be(:crossword) { create(:predefined_five_by_five) }
   # 5x5 grid, correct letters = 'AMIGOVOLOWANIONIDOSELONER' (25 chars, 0-indexed)
   let(:correct_letters) { crossword.letters }
   let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }

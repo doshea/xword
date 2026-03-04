@@ -1,6 +1,12 @@
 RSpec.describe 'Comments', type: :request do
-  let(:user)      { create(:user, :with_test_password) }
-  let(:crossword) { create(:crossword, :smaller) }
+  let_it_be(:user)      { create(:user, :with_test_password) }
+  let_it_be(:crossword) { create(:crossword) }
+
+  before do
+    # Stub ActionCable broadcasts
+    allow(ActionCable.server).to receive(:broadcast)
+    allow(ApplicationController).to receive(:render).and_call_original
+  end
 
   # -------------------------------------------------------------------------
   # POST /comments/:id/reply — parent-child threading
@@ -66,6 +72,64 @@ RSpec.describe 'Comments', type: :request do
            headers: { 'Accept' => Mime[:turbo_stream].to_s }
 
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # Comment Notifications
+  # -------------------------------------------------------------------------
+  describe 'comment notifications' do
+    let(:puzzle_owner) { create(:user) }
+    let(:owned_crossword) { create(:crossword, :smaller, user: puzzle_owner) }
+
+    before { log_in_as(user) }
+
+    it 'notifies puzzle owner when someone else comments' do
+      expect {
+        post "/comments/#{owned_crossword.id}/add_comment",
+             params: { content: 'Nice puzzle!' },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      }.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.user).to eq(puzzle_owner)
+      expect(notification.actor).to eq(user)
+      expect(notification.notification_type).to eq('comment_on_puzzle')
+    end
+
+    it 'does not notify when commenting on your own puzzle' do
+      my_crossword = create(:crossword, :smaller, user: user)
+
+      expect {
+        post "/comments/#{my_crossword.id}/add_comment",
+             params: { content: 'My own comment' },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      }.not_to change(Notification, :count)
+    end
+
+    it 'notifies comment author when someone else replies' do
+      other_user = create(:user)
+      base_comment = Comment.create!(content: 'Original', user: other_user, crossword: crossword)
+
+      expect {
+        post "/comments/#{base_comment.id}/reply",
+             params: { content: 'Great point!' },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      }.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.user).to eq(other_user)
+      expect(notification.notification_type).to eq('comment_reply')
+    end
+
+    it 'does not notify when replying to your own comment' do
+      my_comment = Comment.create!(content: 'My comment', user: user, crossword: crossword)
+
+      expect {
+        post "/comments/#{my_comment.id}/reply",
+             params: { content: 'Adding more context' },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      }.not_to change(Notification, :count)
     end
   end
 end

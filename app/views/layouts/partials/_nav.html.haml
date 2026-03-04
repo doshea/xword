@@ -61,12 +61,15 @@
                     data: { xw_tooltip: 'Create' } do
             = icon('lightbulb')
 
-        / Messages — #nav-mail preserved (CSS unread pulse animation)
+        / Notifications — #nav-mail preserved (CSS unread pulse animation)
         - if is_logged_in?
-          .xw-nav__item#nav-mail
-            = link_to '#', class: 'xw-nav__icon-btn',
-                      data: { xw_tooltip: 'Messages' } do
-              = icon('mail')
+          .xw-nav__item#nav-mail{ class: (@unread_notification_count > 0 ? 'unread' : nil) }
+            = link_to notifications_path, class: 'xw-nav__icon-btn',
+                      data: { xw_tooltip: 'Notifications' } do
+              = icon('bell')
+              #notification-badge
+                - if @unread_notification_count > 0
+                  %span.xw-badge= @unread_notification_count > 99 ? '99+' : @unread_notification_count
 
         / User menu or login button
         - if is_logged_in?

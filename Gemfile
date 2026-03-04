@@ -67,6 +67,7 @@ group :test do
   gem 'guard-rspec'
   gem 'faker'
   gem 'simplecov', '~> 0.22', require: false
+  gem 'test-prof', '~> 1.4'
 end
 
 group :development do

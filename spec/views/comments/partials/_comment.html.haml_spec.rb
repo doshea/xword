@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe 'comments/partials/_comment' do
-  let(:user)      { create(:user) }
-  let(:crossword) { create(:crossword, :smaller, user: user) }
-  let(:comment)   { create(:comment, user: user, crossword: crossword) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:crossword) { create(:crossword, user: user) }
+  let_it_be(:comment)   { create(:comment, user: user, crossword: crossword) }
 
   # Anonymous context: the logged-in branch (`- if @current_user`) is entirely
   # skipped, so `link_to nil` (cancel-button) is never reached.  The article

@@ -15,6 +15,11 @@ _claude_persona() {
     return 1
   fi
 
+  # Auto-cd into project dir when called from home
+  if [[ "$PWD" == "$HOME" ]]; then
+    cd ~/xword || return 1
+  fi
+
   echo -ne "\033]0;Claude: ${name}\007"
   printf '\e]1337;SetBadge=%s\a' $(echo -n "$name" | base64)
   printf '\e]11;%s\a' "$bg"
@@ -29,18 +34,18 @@ _claude_persona() {
 
 # Planner: Opus for deep reasoning, skip permission prompts
 claude-plan() {
-  _claude_persona "Planner" "#1b2d2d" "planner.md" \
+  _claude_persona "Planner" "#2d1b1b" "planner.md" \
     --dangerously-skip-permissions --model opus
 }
 
 # Builder: full access, no permission prompts, Sonnet for speed
 claude-build() {
-  _claude_persona "Builder" "#1b2d24" "builder.md" \
+  _claude_persona "Builder" "#2d2b1b" "builder.md" \
     --dangerously-skip-permissions
 }
 
 # Deployer: full access, no permission prompts
 claude-deploy() {
-  _claude_persona "Deployer" "#1b1b2d" "deployer.md" \
+  _claude_persona "Deployer" "#1b2d1b" "deployer.md" \
     --dangerously-skip-permissions
 }

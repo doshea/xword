@@ -21,7 +21,19 @@
   .team-modal__url-row{data: {controller: 'copy-link'}}
     %input.team-modal__url-input{value: request.original_url, readonly: 'readonly', autofocus: true, data: {'copy-link-target': 'input', action: 'click->copy-link#copy'}}
     %button.team-modal__url-copy{type: 'button', data: {'xw-tooltip': 'Copy link', 'copy-link-target': 'button', action: 'click->copy-link#copy'}, aria: {label: 'Copy link'}}= icon('link')
-  %p.team-modal__footnote Now to find some friends&hellip;
+  - if @current_user
+    .team-modal__invite{ data: { controller: 'invite',
+                                  'invite-solution-id-value': @solution.id,
+                                  'invite-friends-url-value': api_users_friends_path } }
+      %h3.team-modal__invite-heading
+        = icon('user-plus', size: 18)
+        Invite a Friend
+      .team-modal__invite-body{ data: { 'invite-target': 'body' } }
+        %button.xw-btn.xw-btn--ghost.xw-btn--sm{ type: 'button',
+                                                    data: { action: 'invite#loadFriends' } }
+          Load friends list
+  - else
+    %p.team-modal__footnote Now to find some friends&hellip;
 
 #team-chat.down
   .row-topper.no-select
