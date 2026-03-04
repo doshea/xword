@@ -66,5 +66,12 @@ RSpec.describe NytPuzzleImporter do
       crossword = Crossword.unscoped.last
       expect(crossword.circled).to be true
     end
+
+    it 'rolls back on failure, leaving no orphaned crossword' do
+      allow_any_instance_of(Crossword).to receive(:set_clue).and_raise(StandardError, 'clue assignment failed')
+      expect {
+        NytPuzzleImporter.import(puzzle_hash) rescue nil
+      }.not_to change(Crossword, :count)
+    end
   end
 end

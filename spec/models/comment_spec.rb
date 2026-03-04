@@ -49,5 +49,15 @@ describe Comment do
         expect(reply.base_crossword).to eq crossword
       end
     end
+
+    context 'with a cycle in the reply chain (data corruption)' do
+      it 'returns nil instead of looping forever' do
+        a = Comment.create!(content: 'a', user: user)
+        b = Comment.create!(content: 'b', base_comment: a, user: user)
+        # Create cycle: a -> b -> a
+        a.update_column(:base_comment_id, b.id)
+        expect(a.base_crossword).to be_nil
+      end
+    end
   end
 end

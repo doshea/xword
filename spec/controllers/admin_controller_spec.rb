@@ -25,11 +25,6 @@ describe AdminController do
       it { should respond_with(200) }
     end
 
-    describe 'GET #cheat' do
-      before { get :cheat }
-      it { should redirect_to(admin_crosswords_path) }
-    end
-
     # -----------------------------------------------------------------------
     # POST #user_search (Turbo Stream)
     # -----------------------------------------------------------------------

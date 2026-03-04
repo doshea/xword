@@ -915,3 +915,23 @@
   bottom: var(--space-2);
   height: 1.5em;
 }
+
+
+// ---------------------------------------------------------------------------
+// LEGACY OVERRIDES (moved from foundation_overrides.scss)
+// ---------------------------------------------------------------------------
+
+.clue-column {
+  ol {
+    margin-left: 0;
+    margin-bottom: 0.15em;
+  }
+}
+
+.puzzle-tabs {
+  .xw-tabs__nav {
+    a {
+      padding: 0.5em 1.5em 0.3em;
+    }
+  }
+}

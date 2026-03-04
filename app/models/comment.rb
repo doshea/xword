@@ -90,9 +90,11 @@ class Comment < ApplicationRecord
   def base_crossword
     temp_cw = crossword
     temp_comment = self
+    seen = Set.new([id])
     while temp_cw.nil?
       temp_comment = temp_comment.base_comment
-      break if temp_comment.nil?
+      break if temp_comment.nil? || seen.include?(temp_comment.id)
+      seen.add(temp_comment.id)
       temp_cw = temp_comment.crossword
     end
     temp_cw

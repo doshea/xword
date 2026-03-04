@@ -1,4 +1,4 @@
--# Admin dropdown: indices (flattened), email, clone, manual NYT, cheat.
+-# Admin dropdown: indices (flattened), email, clone, manual NYT.
 -# Replaces: Foundation nested .has-dropdown with Stimulus dropdown controller.
 -# "Indices" sub-dropdown flattened to a labeled group in a single dropdown.
 
@@ -19,5 +19,3 @@
     = link_to 'Emails',     admin_email_path,      class: 'xw-nav__dropdown-item'
     = link_to 'Clone User', admin_clone_user_path, class: 'xw-nav__dropdown-item'
     = link_to 'Manual NYT', admin_manual_nyt_path, class: 'xw-nav__dropdown-item'
-    - if @crossword
-      = link_to 'Cheat (JS)', admin_cheat_path,    class: 'xw-nav__dropdown-item'

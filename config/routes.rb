@@ -90,7 +90,6 @@ Rails.application.routes.draw do
   get '/user_made' => 'pages#user_made'
   namespace :admin do
     get :email
-    get :cheat
     post :test_emails
     get :clone_user, action: :cloning_tank, as: :cloning_tank
     post :user_search

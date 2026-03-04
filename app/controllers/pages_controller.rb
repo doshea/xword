@@ -31,6 +31,14 @@ class PagesController < ApplicationController
     @redirect = params[:redirect]
   end
 
+  #GET /about or about_path
+  def about
+  end
+
+  #GET /contact or contact_path
+  def contact
+  end
+
   #GET /faq or faq_path
   def faq
   end

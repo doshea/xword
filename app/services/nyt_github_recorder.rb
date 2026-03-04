@@ -6,13 +6,7 @@ class NytGithubRecorder
   # Parse the puzzle JSON to extract the date, then upload to GitHub.
   def self.smart_record(puzzle_json)
     pz = JSON.parse(puzzle_json)
-    pz_title = pz['title'] || pz[:title]
-    begin
-      pz_date = Date.parse(pz_title)
-    rescue ArgumentError
-      alt_date = pz['date'] || pz[:date]
-      pz_date = Date.strptime(alt_date, '%m/%d/%Y')
-    end
+    pz_date = NytPuzzleFetcher.parse_puzzle_date(pz)
     record_on_github(puzzle_json, pz_date)
   end
 

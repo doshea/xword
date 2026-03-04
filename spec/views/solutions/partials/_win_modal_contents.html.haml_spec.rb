@@ -5,12 +5,13 @@ describe 'solutions/partials/_win_modal_contents' do
   let(:crossword) { create(:crossword, :smaller, user: user) }
   let(:solution)  { create(:solution, user: user, crossword: crossword) }
 
-  context 'logged-in user who solved the puzzle' do
+  context 'logged-in user who solved the puzzle (no prior comment)' do
     before do
       assign(:correctness, true)
       assign(:current_user, user)
       assign(:crossword, crossword)
       assign(:solution, solution)
+      assign(:has_commented, false)
       render partial: 'solutions/partials/win_modal_contents'
     end
 
@@ -33,6 +34,21 @@ describe 'solutions/partials/_win_modal_contents' do
 
     it 'does not use the legacy .lead class' do
       expect(rendered).not_to have_selector('.lead', visible: :all)
+    end
+  end
+
+  context 'logged-in user who already commented' do
+    before do
+      assign(:correctness, true)
+      assign(:current_user, user)
+      assign(:crossword, crossword)
+      assign(:solution, solution)
+      assign(:has_commented, true)
+      render partial: 'solutions/partials/win_modal_contents'
+    end
+
+    it 'does not render the comment form' do
+      expect(rendered).not_to have_selector('textarea', visible: :all)
     end
   end
 

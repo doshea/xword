@@ -42,7 +42,7 @@ class Word < ApplicationRecord
   def self.word_match(pattern)
     sanitized = ERB::Util.url_encode(pattern.to_s[0, 100])
     url = "https://www.a2zwordfinder.com/cgi-bin/crossword.cgi?SearchType=Crossword&Pattern=#{sanitized}&Search=Find+Words"
-    page = Nokogiri::HTML(URI.open(url))
+    page = Nokogiri::HTML(URI.open(url, open_timeout: 10, read_timeout: 10))
     results = page.css('font[face=Courier]').text.split(", \n")
     results
   rescue StandardError => e

@@ -118,7 +118,8 @@ class User < ApplicationRecord
     self.full_name.blank? ? self.email : "#{self.full_name} <#{self.email}>"
   end
   def friends
-    friend_ones + friend_twos
+    User.where(id: Friendship.where(user_id: id).select(:friend_id))
+        .or(User.where(id: Friendship.where(friend_id: id).select(:user_id)))
   end
   def friends_with?(user)
     Friendship.where(user_id: id, friend_id: user.id)

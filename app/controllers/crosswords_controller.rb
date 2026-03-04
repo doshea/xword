@@ -147,6 +147,9 @@ class CrosswordsController < ApplicationController
                       .where(solution_partnerings: { user_id: @current_user.id })
                       .find_by(id: params[:solution_id], crossword_id: @crossword.id)
     end
+    if @correctness && @current_user && @solution
+      @has_commented = @current_user.comments.where(crossword_id: @solution.crossword_id).exists?
+    end
     respond_to do |f|
       f.json do
         result = { correct: @correctness }

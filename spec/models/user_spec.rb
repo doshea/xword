@@ -73,4 +73,28 @@ describe User do
     it { should have_many(:solution_partnerings).dependent(:destroy) }
     it { should have_many(:team_solutions).through(:solution_partnerings).source(:solution) }
   end
+
+  describe '#friends' do
+    let(:user)     { create(:user) }
+    let(:friend_a) { create(:user) }
+    let(:friend_b) { create(:user) }
+    let(:stranger) { create(:user) }
+
+    before do
+      Friendship.create!(user_id: user.id, friend_id: friend_a.id)
+      Friendship.create!(user_id: friend_b.id, friend_id: user.id)
+    end
+
+    it 'returns friends from both sides of the friendship' do
+      expect(user.friends).to contain_exactly(friend_a, friend_b)
+    end
+
+    it 'does not include non-friends' do
+      expect(user.friends).not_to include(stranger)
+    end
+
+    it 'returns an ActiveRecord::Relation' do
+      expect(user.friends).to be_a(ActiveRecord::Relation)
+    end
+  end
 end
