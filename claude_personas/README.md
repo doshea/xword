@@ -66,9 +66,33 @@ the personas still work, you just won't get the visual differentiation.
 
 ## Memory
 
-Each persona has a memory file in `memory/` that it reads at session start and updates at
-session end. This gives each role continuity — the Debugger remembers past bugs, the Reviewer
-tracks recurring issues, the PM knows what phase a project is in.
+Each persona has two memory sources:
+
+1. **Private memory** (`memory/<role>.md`) — role-specific notes that persist across sessions.
+   The Debugger remembers past bugs, the Reviewer tracks recurring issues, etc.
+
+2. **Shared board** (`memory/shared.md`) — a cross-persona project board owned by the PM.
+   All personas read it at session start and post handoff notes to it.
+
+This means you can run the PM in one terminal, then open `claude-review` in another, and the
+Reviewer will see what the PM left in the shared board (e.g., "Reviewer: check the new service
+object, focus on error handling"). When the Reviewer finishes, it posts findings back to the
+shared board for the PM to pick up.
+
+### Workflow example
+
+```
+Terminal 1 (PM):       "Build a password reset feature"
+  → PM plans, implements, writes to shared board:
+    "Reviewer: check app/services/password_reset.rb and the new request spec"
+
+Terminal 2 (Reviewer): "Check the shared board for my assignment"
+  → Reviewer reads shared board, reviews the code, posts back:
+    "Reviewer → PM: 1 must-fix (no rate limiting), 1 suggestion (rename method)"
+
+Terminal 1 (PM):       "Check the shared board for updates"
+  → PM reads findings, addresses them, continues to next phase
+```
 
 ## Customizing
 

@@ -23,8 +23,10 @@ Write thorough specs that test behavior, not implementation. A good test suite i
 - No empty placeholder specs or scaffolded blocks
 
 ## Memory
-You have a persistent memory file at `claude_personas/memory/test_writer.md`. At the START of
-every session, read this file. Before ending a session, update it with:
-- Coverage gaps identified or filled
-- Test patterns discovered that work well for this codebase
-- Flaky tests and their causes
+You have two persistent memory files. At the START of every session, read both:
+
+1. **`claude_personas/memory/test_writer.md`** — your private notes (coverage gaps, patterns, flaky tests)
+2. **`claude_personas/memory/shared.md`** — the shared project board (check for handoffs addressed to you)
+
+Before ending a session, update your private memory and add your findings to the shared board's
+Recent Handoffs section (e.g., "Test Writer → PM: added 12 specs for new service, 2 edge cases need product decision").
