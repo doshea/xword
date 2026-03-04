@@ -211,7 +211,7 @@
 
 .xw-profile-puzzles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: var(--space-4);
 }
 
@@ -261,6 +261,15 @@
   margin-top: var(--space-2);
   line-height: var(--leading-snug);
   text-align: center;
+}
+
+// -----------------------------------------------------------------------------
+// Pagination — center within profile cards
+// -----------------------------------------------------------------------------
+
+.xw-profile-card .xw-pagination {
+  justify-content: center;
+  margin-top: var(--space-5);
 }
 
 // -----------------------------------------------------------------------------

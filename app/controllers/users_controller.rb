@@ -8,9 +8,11 @@ class UsersController < ApplicationController
       return redirect_to error_path(prev: request.original_url),
                          flash: { error: "Could not find User \##{params[:id]}" }
     end
-    @crosswords = @user.crosswords.to_a
-    @comments   = @user.comments.order_recent.limit(20)
+    @crosswords = @user.crosswords.paginate(page: params[:puzzles_page], per_page: 10)
+    @crossword_count = @user.crosswords.count
+    @comments   = @user.comments.order_recent
                        .includes(:crossword, base_comment: [:crossword, { base_comment: :crossword }])
+                       .paginate(page: params[:comments_page], per_page: 10)
     @is_friend  = !!(@current_user && @current_user != @user &&
                      @current_user.friends_with?(@user))
   end

@@ -20,7 +20,7 @@
         %span.xw-profile-stat__number= @user.solutions.complete.count
         %span.xw-profile-stat__label Solved
       .xw-profile-stat
-        %span.xw-profile-stat__number= @crosswords.size
+        %span.xw-profile-stat__number= @crossword_count
         %span.xw-profile-stat__label Created
       .xw-profile-stat
         %span.xw-profile-stat__number= @user.unpublished_crosswords.count
@@ -29,8 +29,25 @@
         %span.xw-profile-stat__number= @user.clues.count
         %span.xw-profile-stat__label Clues Written
 
--# Comments card — 7 of 12 columns on desktop
-.xw-col-12.xw-lg-7
+-# Puzzles card — full width, above comments
+.xw-col-full
+  %section.xw-profile-card
+    %h2.xw-profile-card__heading Puzzles
+    - if @crosswords.any?
+      .xw-profile-puzzles
+        - @crosswords.each do |cw|
+          = link_to cw, class: 'xw-profile-puzzle' do
+            - if cw.preview.url
+              = image_tag cw.preview.url, class: 'xw-profile-puzzle__thumb', alt: cw.title
+            - else
+              .xw-profile-puzzle__thumb.xw-profile-puzzle__thumb--empty
+            %span.xw-profile-puzzle__title= cw.title
+      = will_paginate @crosswords, class: 'xw-pagination', param_name: 'puzzles_page'
+    - else
+      %p.xw-profile-card__empty No puzzles created yet.
+
+-# Comments card — full width, below puzzles
+.xw-col-full
   %section.xw-profile-card
     %h2.xw-profile-card__heading Recent Comments
     - if @comments.any?
@@ -44,21 +61,6 @@
               - if cw
                 %span.xw-profile-comment__dot &middot;
                 = link_to cw.title, cw
+      = will_paginate @comments, class: 'xw-pagination', param_name: 'comments_page'
     - else
       %p.xw-profile-card__empty No comments yet.
-
--# Puzzles card — 5 of 12 columns on desktop
-.xw-col-12.xw-lg-5
-  %section.xw-profile-card
-    %h2.xw-profile-card__heading Puzzles
-    - if @crosswords.any?
-      .xw-profile-puzzles
-        - @crosswords.each do |cw|
-          = link_to cw, class: 'xw-profile-puzzle' do
-            - if cw.preview.url
-              = image_tag cw.preview.url, class: 'xw-profile-puzzle__thumb', alt: cw.title
-            - else
-              .xw-profile-puzzle__thumb.xw-profile-puzzle__thumb--empty
-            %span.xw-profile-puzzle__title= cw.title
-    - else
-      %p.xw-profile-card__empty No puzzles created yet.
