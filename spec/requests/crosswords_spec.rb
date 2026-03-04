@@ -333,6 +333,22 @@ RSpec.describe 'Crosswords', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # GET /crosswords/:id — multiple solutions branch (Switch solution link)
+  # -------------------------------------------------------------------------
+  describe 'GET /crosswords/:id with multiple solutions' do
+    before { log_in_as(user) }
+
+    let!(:solo_solution) { create(:solution, user: user, crossword: crossword, letters: blank_letters) }
+    let!(:team_solution) { create(:solution, :team, user: user, crossword: crossword, letters: blank_letters) }
+
+    it 'renders successfully when user has both solo and team solutions' do
+      get "/crosswords/#{crossword.id}"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('Switch solution')
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # XSS protection — clue content must be escaped on the solve page
   # -------------------------------------------------------------------------
   describe 'XSS protection on solve page' do
