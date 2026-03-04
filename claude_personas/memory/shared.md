@@ -573,7 +573,21 @@ grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 
 **Builder → Deployer:** No migration. Purely additive — new route, new controller action, admin-only HAML conditional, new JS function. Non-admin experience unchanged.
 
-**Future admin tools** (planned, not implemented): Reveal Puzzle, Clear Puzzle, Trigger Flash Cascade, Set Timer. See `plan.md` for details.
+### 🔨 Admin Test Tools v2 — Reveal Puzzle, Clear Puzzle, Flash Cascade
+**Status:** Plan ready (2026-03-04). Awaiting approval.
+
+**Goal:** Extend the existing Admin dropdown (Fake Win) with 3 additional tools.
+
+**Planner → Builder:** Full implementation plan in `claude_personas/memory/plan.md`. Same 4 files as v1 + spec. Key steps:
+1. Add `POST /crosswords/:id/admin_reveal_puzzle` route + controller action (admin guard, returns `@crossword.letters`)
+2. Add 3 dropdown items to existing Admin dropdown in `show.html.haml` (Reveal Puzzle, Clear Puzzle, Flash Cascade) with `<hr>` grouping
+3. Add 3 JS handlers in `solve_funcs.js`:
+   - `reveal_puzzle` — fetches correct letters, fills cells via direct DOM `.text()` (avoids team broadcast + per-cell `check_finisheds`), calls `check_all_finished()` once
+   - `clear_puzzle` — empties all cell letters, removes flag classes + crossed-off clues
+   - `flash_cascade` — calls existing `apply_mismatches()` with synthetic all-correct data (pure visual sweep)
+4. Add 3 request specs for `admin_reveal_puzzle` (admin gets letters, non-admin 403, anonymous 403)
+
+**No migration. No model changes. No new CSS. No new Stimulus controllers.** Clear Puzzle and Flash Cascade are pure client-side (no server endpoints).
 
 ---
 
@@ -763,14 +777,18 @@ box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 
 ---
 
-### 🔨 Admin Test Tools Dropdown on Solve Page
-**Status:** Plan ready (2026-03-04). Awaiting approval.
+### ✅ Admin Test Tools Dropdown on Solve Page
+**Status:** Builder complete (2026-03-04). 828 examples, 0 failures (intermittent feature spec flakes from concurrent default scope work — pass in isolation). Committed.
 
-**Goal:** Admin-only dropdown on solve page with "Fake Win" to trigger win modal without completing a puzzle.
+**What shipped (4 tools):**
+1. **Fake Win** — triggers win modal without completing puzzle
+2. **Reveal Puzzle** — fills all cells with correct letters (server endpoint)
+3. **Clear Puzzle** — empties all cells, resets check flags (client-side)
+4. **Flash Cascade** — golden flash sweep across grid (client-side)
 
-**Planner → Builder:** Full implementation plan in `claude_personas/memory/plan.md`. 4 files modified, 0 new. Key steps:
-1. Add `POST /crosswords/:id/admin_fake_win` route
-2. Add `admin_fake_win` action to `CrosswordsController` (admin guard, renders win modal HTML)
+**Files:** `routes.rb`, `crosswords_controller.rb`, `show.html.haml`, `solve_funcs.js`, `tool.svg`, `crosswords_spec.rb`
+
+**Builder → Deployer:** No migration. Purely additive. Admin-only (non-admin never sees dropdown). `admin_reveal_puzzle` is the security-sensitive endpoint (returns answer key) — admin guard tested.
 3. Add Admin dropdown in HAML (`- if is_admin?` guard), `tool` icon, ghost button style
 4. Add `fake_win` JS handler in `solve_funcs.js` (re-triggerable, clears previous modal content)
 5. Add 4 request specs (admin success, no-solution success, non-admin 403, anonymous 403)
@@ -781,8 +799,36 @@ box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 
 ---
 
-### Next candidate: `Crossword` default scope removal
-**Status:** Not started — needs Planner design (34 call sites, high blast radius)
+### ✅ Remove `Crossword` Default Scope — 3 Production Bugs Fixed
+**Status:** Builder complete (2026-03-04). 828 examples, 0 real failures (1 pre-existing flaky login in edit_spec). Needs commit + deploy.
+
+**What shipped:**
+- Deleted `default_scope -> { order(created_at: :desc) }` from Crossword model
+- Added explicit `.order(created_at: :desc)` to 6 controller queries (home tabs, anonymous home, NYT, user-made, profile, batch)
+- Admin: `.order(created_at: :asc)` (explicit direction)
+- Model cleanups: `.reorder(:title)` → `.order(:title)` in phrase, clue, word
+- Spec cleanups: `Crossword.unscoped.last` / `Crossword.last` → `Crossword.order(:created_at).last`
+- CLAUDE.md updated
+
+**3 bugs fixed:**
+1. Random puzzle now actually random (was always returning newest)
+2. Search results now ranked by pg_search relevance (was overridden by date)
+3. Admin crosswords now sort oldest-first as intended
+
+**Builder → Deployer:** No migration. No new files. Purely query changes. Verify: random puzzle button returns different puzzles, search results are relevance-ordered, admin crosswords page shows oldest first.
+
+---
+
+### 📋 Puzzle Card BEM Rename (Low Priority)
+**Status:** Plan ready (2026-03-04). Planner → Builder. Mechanical rename, no visual change.
+
+**What:** Rename legacy class names in `_crossword_tab` partial from `.result-crossword`, `.minipic`, `.metadata`, etc. to `.xw-puzzle-card` BEM pattern. Also `.puzzle-tabs` → `.xw-puzzle-grid`. Delete 1 dead CSS block.
+
+**Files:** 12 (1 partial, 1 SCSS, 1 spec, ~9 views). ~2 hours mechanical work.
+
+**Full plan in `claude_personas/memory/plan.md`.** Zero visual or behavioral change. Do when convenient.
+
+---
 
 ## Recent Handoffs
 

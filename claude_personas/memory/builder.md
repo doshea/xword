@@ -111,6 +111,32 @@
 - Created `app/assets/images/icons/tool.svg` (Feather-style wrench icon).
 - 4 new request specs: admin with solution, admin without solution, non-admin (403), anonymous (403).
 - Route added to `find_object` before_action list.
+- **Extended with 3 more tools (2026-03-04):**
+  - **Reveal Puzzle**: `POST /crosswords/:id/admin_reveal_puzzle` returns `{ letters: "..." }`.
+    JS fills cells via direct `.text()` (not `set_letter`) to avoid 225 team broadcasts.
+    Single `check_all_finished()` call at end for clue crossing-off.
+  - **Clear Puzzle**: Pure client-side. Empties letters, removes check flags, un-crosses-off clues.
+  - **Flash Cascade**: Pure client-side. Builds synthetic `{ mismatches: { index: false, ... } }`
+    and calls `apply_mismatches()` — all values `false` so no flag classes, just golden flash.
+  - 3 new request specs for reveal_puzzle (admin, non-admin 403, anonymous 403).
+- **Concurrent agent conflict:** Other agent (default scope removal) reverted my changes from
+  shared files. Had to re-apply all 4 file edits. Watch for this pattern with concurrent agents.
+
+### Remove Crossword default_scope (2026-03-04)
+- **3 production bugs fixed:**
+  1. "Random puzzle" always returned newest — `ORDER BY created_at DESC, RANDOM()` meant RANDOM() never consulted
+  2. Search results ignored pg_search relevance — `ORDER BY created_at DESC, pg_search_rank DESC`
+  3. Admin crosswords sort broken — `ORDER BY created_at DESC, created_at ASC` (DESC always won)
+- **What changed:**
+  - Deleted `default_scope -> { order(created_at: :desc) }` from `crossword.rb`
+  - Added explicit `.order(created_at: :desc)` to 6 controller queries (home tabs, anonymous home, NYT, user-made, profile, batch)
+  - Admin controller: `.order(:created_at)` → `.order(created_at: :asc)` (explicit direction)
+  - Search/live_search: NO explicit order added — pg_search relevance ranking takes over naturally
+  - Random: `.order("RANDOM()")` unchanged — works correctly now that there's no default scope to prepend
+  - Model cleanups: `.reorder(:title)` → `.order(:title)` in phrase.rb, clue.rb, word.rb (no scope to override)
+  - Spec cleanups: `Crossword.unscoped.last` → `Crossword.order(:created_at).last` in 3 spec files; `Crossword.last` → same in 1 spec file
+  - CLAUDE.md updated: domain notes + removed tech debt item
+- **Key rule going forward:** Any new Crossword query that needs ordering must add explicit `.order()`. No implicit ordering exists.
 
 ## Workflow Rules
 - **Always commit before declaring done.** Implement → test → commit → update memory.
