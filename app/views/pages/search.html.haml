@@ -2,18 +2,93 @@
 = content_for :head do
   = stylesheet_link_tag :search
 
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: @query.blank? ? 'Site Search' : 'Search Results', row_class: 'puzzle-tabs'} do
+= render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true} do
+  -# Hero — search input with paper texture, dominant element
+  .xw-col-full
+    .xw-search-hero
+      - if @query.present?
+        %h2.xw-search-hero__heading
+          Results for
+          %em= "\u201C#{@query}\u201D"
+        - total = @crosswords.length + @users.count + @words.count
+        - if total > 0
+          .xw-search-hero__stats
+            - if @crosswords.any?
+              %span.xw-search-stat
+                %strong= @crosswords.length
+                = 'crossword'.pluralize(@crosswords.length)
+            - if @users.any?
+              %span.xw-search-stat
+                %strong= @users.count
+                = 'user'.pluralize(@users.count)
+            - if @words.any?
+              %span.xw-search-stat
+                %strong= @words.count
+                = 'word'.pluralize(@words.count)
+        - else
+          %p.xw-search-hero__empty No results found. Try a different search term.
+      - else
+        %h2.xw-search-hero__heading Site Search
+        %p.xw-search-hero__subtitle Find puzzles, solvers, and clue words.
+      = form_tag search_path, method: :get, class: 'xw-search-hero__form', data: { controller: 'loading', action: 'submit->loading#submit' } do
+        = label_tag :query, 'Search', class: 'sr-only'
+        .xw-search-hero__input-wrap
+          = search_field_tag :query, @query, id: 'search2', class: 'xw-search-hero__input', placeholder: 'A puzzle title, username, clue or word\u2026', autofocus: @query.blank?
+          = submit_tag 'Search', class: 'xw-btn xw-btn--success xw-search-hero__submit', data: { loading_target: 'button' }
+
+  -# Crossword results
   - if @crosswords.any?
-    = render partial: 'pages/partials/crossword_search'
-    %hr
+    .xw-col-full
+      %section.xw-search-card
+        %h3.xw-search-card__heading
+          = icon('clipboard-list', class: 'xw-search-card__icon')
+          Crosswords
+          %span.xw-search-card__count= @crosswords.length
+        .xw-search-puzzles
+          - @crosswords.each do |cw|
+            = link_to solution_choice_crossword_path(cw), class: 'xw-search-puzzle' do
+              .xw-search-puzzle__thumb-wrap
+                = image_tag cw.try(:preview_url) || asset_path('example_puzzle.jpg'), class: 'xw-search-puzzle__thumb', alt: cw.title
+                - if cw.user&.username == 'nytimes'
+                  %span.xw-search-puzzle__badge NYT
+              .xw-search-puzzle__info
+                %span.xw-search-puzzle__title= cw.title.html_safe
+                - unless cw.user.nil? || cw.user.username == 'nytimes'
+                  %span.xw-search-puzzle__byline= "by #{cw.user.display_name}"
+                %span.xw-search-puzzle__dims= "#{cw.rows} \u00D7 #{cw.cols}"
+
+  -# User results
   - if @users.any?
-    = render partial: 'pages/partials/user_search'
-    %hr
+    .xw-col-full
+      %section.xw-search-card
+        %h3.xw-search-card__heading
+          = icon('user', class: 'xw-search-card__icon')
+          Users
+          %span.xw-search-card__count= @users.count
+        .xw-search-users
+          - @users.each do |user|
+            = link_to user, class: 'xw-search-user' do
+              .xw-search-user__avatar
+                = image_tag user.image.search.url, alt: user.display_name
+              %span.xw-search-user__name= user.display_name
+
+  -# Word results
   - if @words.any?
-    = render partial: 'pages/partials/word_search'
-    %hr
-  = form_tag search_path, method: :get, data: { controller: 'loading', action: 'submit->loading#submit' } do
-    = label_tag :query, 'Search', class: 'sr-only'
-    = search_field_tag :query, @query, id: 'search2', class: 'xw-nav__search-input', placeholder: 'A puzzle title, username, clue or word...'
-    %br
-    = submit_tag 'Search', class: 'xw-btn xw-btn--success', data: { loading_target: 'button' }
+    .xw-col-full
+      %section.xw-search-card
+        %h3.xw-search-card__heading
+          = icon('pencil', class: 'xw-search-card__icon')
+          Words
+          %span.xw-search-card__count= @words.count
+        .xw-search-words
+          - @words.each do |word|
+            .xw-search-word
+              %span.xw-search-word__content= word.content
+              .xw-search-word__meta
+                %span.xw-search-word__stat
+                  %strong= word.clues.count
+                  = 'clue'.pluralize(word.clues.count)
+                %span.xw-search-word__dot &middot;
+                %span.xw-search-word__stat
+                  %strong= word.crosswords.count
+                  = 'puzzle'.pluralize(word.crosswords.count)

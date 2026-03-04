@@ -1,5 +1,7 @@
-<%# Replaces: users/update.js.erb (jquery_ujs + jQuery .attr('src', ...) on .profile-pic-updateable) %>
-<%# Turbo Stream: replaces the profile picture element with the newly-uploaded image %>
+<%# Turbo Stream: replaces profile picture in photo section and header avatar %>
 <%= turbo_stream.replace "profile-pic" do %>
-  <%= image_tag @user.image.url, id: "profile-pic", class: "profile-pic-updateable" %>
+  <%= image_tag @user.image.url, id: "profile-pic", alt: @user.display_name, class: "profile-pic-updateable" %>
+<% end %>
+<%= turbo_stream.replace "header-pic" do %>
+  <%= image_tag @user.image.url, id: "header-pic", alt: @user.display_name %>
 <% end %>

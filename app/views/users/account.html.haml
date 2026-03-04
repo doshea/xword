@@ -2,5 +2,5 @@
 = content_for :head do
   = stylesheet_link_tag :account
   = javascript_include_tag :account, 'data-turbo-track': 'reload'
-= render layout: 'layouts/partials/topper_stopper' do
+= render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true} do
   = render partial: 'users/partials/account_form', locals: {user: @user}

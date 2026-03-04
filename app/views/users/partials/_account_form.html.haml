@@ -1,5 +1,20 @@
-= render layout: 'layouts/partials/topper_stopper' do
-  .xw-tabs.xw-tabs--vertical{data: {controller: 'tabs'}}
+-# Account header — identity banner
+.xw-col-full
+  .xw-account-header
+    .xw-account-header__avatar
+      = image_tag user.image.url, id: 'header-pic', alt: user.display_name
+    .xw-account-header__info
+      %h1.xw-account-header__name= user.display_name
+      %p.xw-account-header__meta
+        Member since
+        %time{datetime: user.created_at.iso8601}= user.created_at.strftime("%B %Y")
+        - if user.location.present?
+          %span.xw-account-header__dot &middot;
+          = user.location
+
+-# Tab interface
+.xw-col-full
+  .xw-account-tabs.xw-tabs.xw-tabs--vertical{data: {controller: 'tabs'}}
     .xw-tabs__nav
       = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Personal
@@ -9,56 +24,72 @@
         Emails
       = link_to '#panel4', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Password
+
     .xw-tab-panels
+      -# ── Personal ──
       #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
-        / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; multipart for file upload)
         = form_with model: user, html: { multipart: true } do |f|
           = token_tag nil
-          %fieldset
-            %legend Profile Picture
-            .xw-grid
-              .xw-col-12.xw-lg-5
-                / id added so users/update.turbo_stream.erb can replace this element with the new image
-              = image_tag user.image.url, id: 'profile-pic', class: 'profile-pic-updateable'
-              .xw-col-12.xw-lg-7
-                %p
-                  Upload an image from your computer:
-                = f.file_field :image
-                %p
-                  OR
-                %p
-                  paste an image URL:
-                = url_field_tag "user[remote_image_url]", nil, placeholder: "http://www.example.com/willshortz"
-          %fieldset
-            %legend Personal Info
-            = f.label :first_name
-            = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH
-            = f.label :last_name
-            = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH
-            = f.label :location
-            = f.text_field :location, placeholder: 'Lost in thought'
-            = f.submit 'Update Account', class: 'xw-btn'
+
+          %section.xw-account-section
+            %h2.xw-account-section__heading Profile Photo
+            .xw-account-photo
+              .xw-account-photo__preview
+                = image_tag user.image.url, id: 'profile-pic', alt: user.display_name
+              .xw-account-photo__controls
+                .xw-field
+                  %label.xw-label{for: 'user_image'} Upload from your computer
+                  = f.file_field :image, class: 'xw-input xw-input--file', id: 'user_image'
+                .xw-account-photo__divider
+                  %span or
+                .xw-field
+                  %label.xw-label{for: 'user_remote_image_url'} Paste an image URL
+                  = url_field_tag "user[remote_image_url]", nil, placeholder: "https://example.com/photo.jpg", class: 'xw-input', id: 'user_remote_image_url'
+
+          %section.xw-account-section
+            %h2.xw-account-section__heading Personal Info
+            .xw-account-form-grid
+              .xw-field
+                = f.label :first_name, 'First Name', class: 'xw-label'
+                = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH, class: 'xw-input'
+              .xw-field
+                = f.label :last_name, 'Last Name', class: 'xw-label'
+                = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH, class: 'xw-input'
+            .xw-field
+              = f.label :location, 'Location', class: 'xw-label'
+              = f.text_field :location, placeholder: 'Lost in thought', class: 'xw-input'
+            .xw-account-section__actions
+              = f.submit 'Update Account', class: 'xw-btn'
+
+      -# ── Puzzles ──
       #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}
-        = form_tag root_path do
-          %fieldset
-            %legend Puzzle Settings
-            Coming soon!
+        %section.xw-account-section
+          %h2.xw-account-section__heading Puzzle Settings
+          %p.xw-account-section__empty Coming soon!
+
+      -# ── Emails ──
       #panel3.xw-tab-panel{data: {tabs_target: 'panel'}}
-        = form_tag root_path do
-          %fieldset
-            %legend Email Settings
-            -# = form_for @current_user do |f|
+        %section.xw-account-section
+          %h2.xw-account-section__heading Email Settings
+          %p.xw-account-section__empty Coming soon!
+
+      -# ── Password ──
       #panel4.xw-tab-panel{data: {tabs_target: 'panel'}}
-        / = form_tag root_path do
-        %fieldset
+        %section.xw-account-section
+          %h2.xw-account-section__heading Change Password
           #password-errors.xw-alert.xw-alert--error.hidden
             %p
             %a.slide-close{href: "#"} &times;
           #password-success.xw-alert.xw-alert--success.hidden Password updated!
-          %legend Change Password
-          / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
           = form_with(url: change_password_users_path, method: :post) do |f|
-            = password_field_tag :old_password, nil, placeholder: 'Old Password', required: true
-            = password_field_tag :new_password, nil, placeholder: 'New Password', required: true, maxlength: User::MAX_PASSWORD_LENGTH
-            = password_field_tag :new_password_confirmation, nil, placeholder: 'New Password Again', required: true, maxlength: User::MAX_PASSWORD_LENGTH
-            = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing...'}
+            .xw-field
+              %label.xw-label{for: 'old_password'} Current Password
+              = password_field_tag :old_password, nil, placeholder: 'Enter current password', required: true, class: 'xw-input', id: 'old_password'
+            .xw-field
+              %label.xw-label{for: 'new_password'} New Password
+              = password_field_tag :new_password, nil, placeholder: 'Choose a new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password'
+            .xw-field
+              %label.xw-label{for: 'new_password_confirmation'} Confirm New Password
+              = password_field_tag :new_password_confirmation, nil, placeholder: 'Re-enter new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password_confirmation'
+            .xw-account-section__actions
+              = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing...'}

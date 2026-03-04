@@ -1,90 +1,420 @@
-$standard-img-dim: 75px;
+// =============================================================================
+// Search Page — Redesigned to match Profile / Solve aesthetic
+// =============================================================================
+// BEM structure: .xw-search-hero, .xw-search-card, .xw-search-puzzle,
+// .xw-search-user, .xw-search-word. Uses design tokens exclusively.
+//
+// Design hierarchy: hero card is dominant (paper texture, shadow, green accent
+// border, search input). Result cards are subordinate (clean white, lighter
+// shadow). Follows the same visual pattern as Profile page.
+// =============================================================================
 
-.puzzle-tabs {
-  padding: var(--space-4);
+@import 'design_tokens';
 
-  // Multi-column grid for crossword card lists — replaces Foundation .large-3.columns
-  // that was removed from _crossword_tab.html.haml in Phase 3.
-  ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: var(--space-2);
-    margin-bottom: var(--space-4);
-  }
+// -----------------------------------------------------------------------------
+// Page-level: warmer container bg so white cards pop (matches profile)
+// -----------------------------------------------------------------------------
 
-  .result-user {
-    text-align: center;
-    border-radius: var(--radius-lg);
-    filter: grayscale(80%);
-    transition: all var(--duration-slower) var(--ease-in-out);
-    &:hover {
-      filter: grayscale(0%);
-      background: var(--color-surface-alt);
-    }
-    img {
-      margin-top: var(--space-2);
-    }
-    p.name {
-      text-align: center;
-    }
-  }
+#body > .xw-container.xw-grid {
+  background-color: var(--color-surface-alt);
+  gap: var(--space-6);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 
-.result-crossword {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  transition: background var(--duration-slow) var(--ease-in-out);
-  &:hover {
-    background: var(--color-surface-alt);
-  }
-  .xw-grid {
-    padding: var(--space-2) 0;
-    .metadata {
-      padding-left: var(--space-4);
-      p {
-        margin: 0;
-        &.title {
-          font-weight: var(--weight-semibold);
-          font-size: var(--text-sm);
-          line-height: var(--leading-tight);
-        }
-        &.byline {
-          font-style: italic;
-          font-size: var(--text-sm);
-        }
-        &.dimensions {
-          font-size: var(--text-sm);
-          color: var(--color-text-muted);
-        }
-      }
-    }
-  }
-  .minipic img {
-    max-width: none;
-    width: $standard-img-dim;
-    height: $standard-img-dim;
-  }
-}
+// -----------------------------------------------------------------------------
+// Hero Card — dominant visual element with search input
+// -----------------------------------------------------------------------------
 
-.puzzle-tabs {
-  a {
-    color: inherit;
-  }
-  p {
-    margin: 0;
-  }
-}
-
-.search-result-count {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
-  color: var(--color-text-secondary);
+.xw-search-hero {
+  padding: var(--space-8) var(--space-6);
+  background-color: var(--color-bg-warm);
+  background-image: url("<%= asset_path 'paper.jpeg' %>");
+  background-size: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
+  border-top: 3px solid var(--color-accent);
   margin-bottom: var(--space-2);
 }
 
-.nyt-watermark {
+.xw-search-hero__heading {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  margin: 0 0 var(--space-2) 0;
+  line-height: var(--leading-tight);
+
+  em {
+    font-style: italic;
+    color: var(--color-accent);
+  }
+}
+
+.xw-search-hero__subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-6) 0;
+}
+
+.xw-search-hero__empty {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--color-text-muted);
+  margin: var(--space-2) 0 var(--space-6) 0;
+}
+
+// Stats summary — inline badges
+.xw-search-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.xw-search-stat {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+
+  strong {
+    font-weight: var(--weight-bold);
+    color: var(--color-text);
+    margin-right: 0.2em;
+  }
+}
+
+// Search form — inline input + button
+.xw-search-hero__form {
+  margin-top: var(--space-4);
+}
+
+.xw-search-hero__input-wrap {
+  display: flex;
+  gap: var(--space-3);
+  max-width: 36rem;
+}
+
+.xw-search-hero__input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color var(--duration-base) var(--ease-in-out),
+              box-shadow var(--duration-base) var(--ease-in-out);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-light);
+  }
+}
+
+.xw-search-hero__submit {
+  flex-shrink: 0;
+}
+
+// -----------------------------------------------------------------------------
+// Result Cards — subordinate to hero, clean and simple (matches profile cards)
+// -----------------------------------------------------------------------------
+
+.xw-search-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+}
+
+.xw-search-card__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.xw-search-card__icon {
+  width: 1em;
+  height: 1em;
+  opacity: 0.6;
+}
+
+.xw-search-card__count {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  color: var(--color-accent);
+  background-color: var(--color-accent-light);
+  padding: 0.1em 0.5em;
+  border-radius: var(--radius-full);
+  margin-left: var(--space-1);
+}
+
+// -----------------------------------------------------------------------------
+// Crossword Results — card grid with thumbnails
+// -----------------------------------------------------------------------------
+
+.xw-search-puzzles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--space-4);
+}
+
+.xw-search-puzzle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  text-decoration: none;
+  color: var(--color-text);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  transition: background-color var(--duration-base) var(--ease-in-out),
+              box-shadow var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out);
+
+  &:hover {
+    background-color: var(--color-surface-alt);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+}
+
+.xw-search-puzzle__thumb-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.xw-search-puzzle__thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  object-fit: cover;
+}
+
+.xw-search-puzzle__badge {
   position: absolute;
-  right: var(--space-4);
-  bottom: var(--space-2);
-  height: 1.5em;
+  top: -4px;
+  right: -4px;
+  font-family: var(--font-ui);
+  font-size: 0.5625rem;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-inverse);
+  background-color: var(--color-text);
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  line-height: var(--leading-snug);
+}
+
+.xw-search-puzzle__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.xw-search-puzzle__title {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.xw-search-puzzle__byline {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.xw-search-puzzle__dims {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+// -----------------------------------------------------------------------------
+// User Results — avatar grid
+// -----------------------------------------------------------------------------
+
+.xw-search-users {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-4);
+}
+
+.xw-search-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-text);
+  padding: var(--space-4) var(--space-2);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--duration-base) var(--ease-in-out),
+              transform var(--duration-base) var(--ease-out);
+
+  &:hover {
+    background-color: var(--color-accent-light);
+    transform: translateY(-2px);
+
+    .xw-search-user__avatar img {
+      border-color: var(--color-accent);
+      box-shadow: var(--shadow-md);
+    }
+  }
+}
+
+.xw-search-user__avatar {
+  margin-bottom: var(--space-2);
+
+  img {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+    object-fit: cover;
+    transition: border-color var(--duration-base) var(--ease-in-out),
+                box-shadow var(--duration-base) var(--ease-out);
+  }
+}
+
+.xw-search-user__name {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-align: center;
+  line-height: var(--leading-snug);
+}
+
+// -----------------------------------------------------------------------------
+// Word Results — styled list (replaces raw table)
+// -----------------------------------------------------------------------------
+
+.xw-search-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.xw-search-word {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--color-border);
+  background-color: var(--color-surface-alt);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: border-color var(--duration-base) var(--ease-in-out),
+              background-color var(--duration-base) var(--ease-in-out);
+
+  &:hover {
+    border-left-color: var(--color-accent);
+    background-color: var(--color-accent-light);
+  }
+}
+
+.xw-search-word__content {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.xw-search-word__meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.xw-search-word__stat {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+
+  strong {
+    color: var(--color-text-secondary);
+    font-weight: var(--weight-semibold);
+  }
+}
+
+.xw-search-word__dot {
+  color: var(--color-text-muted);
+}
+
+// -----------------------------------------------------------------------------
+// Responsive
+// -----------------------------------------------------------------------------
+
+@media (max-width: $bp-sm - 1) {
+  .xw-search-hero {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .xw-search-hero__heading {
+    font-size: var(--text-2xl);
+  }
+
+  .xw-search-hero__input-wrap {
+    flex-direction: column;
+  }
+
+  .xw-search-puzzles {
+    grid-template-columns: 1fr;
+  }
+
+  .xw-search-users {
+    grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+    gap: var(--space-3);
+  }
+
+  .xw-search-user__avatar img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .xw-search-word {
+    flex-direction: column;
+    gap: var(--space-1);
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: $bp-md) {
+  .xw-search-puzzles {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
 }
