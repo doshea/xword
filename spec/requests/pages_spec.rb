@@ -174,6 +174,51 @@ RSpec.describe 'Pages', type: :request do
       get '/nytimes'
       expect(response).to have_http_status(:ok)
     end
+
+    context 'with nytimes user and puzzles' do
+      let!(:nytimes_user) { create(:user, username: 'nytimes') }
+
+      before do
+        # Monday puzzle (wday=1)
+        create(:crossword, :smaller, user: nytimes_user, created_at: Date.new(2024, 1, 15))
+        # Saturday puzzle (wday=6)
+        create(:crossword, :smaller, user: nytimes_user, created_at: Date.new(2024, 1, 20))
+      end
+
+      it 'renders successfully' do
+        get '/nytimes'
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'includes day-of-week tab labels' do
+        get '/nytimes'
+        body = response.body
+        expect(body).to include('Mon')
+        expect(body).to include('Tue')
+        expect(body).to include('Sat')
+        expect(body).to include('Sun')
+      end
+
+      it 'includes calendar data attribute with puzzle dates' do
+        get '/nytimes'
+        expect(response.body).to include('calendar-puzzles-value')
+        expect(response.body).to include('2024-01-15')
+        expect(response.body).to include('2024-01-20')
+      end
+
+      it 'shows puzzle counts in tab labels' do
+        get '/nytimes'
+        expect(response.body).to include('Mon (1)')
+        expect(response.body).to include('Sat (1)')
+        expect(response.body).to include('Tue (0)')
+      end
+
+      it 'groups puzzles by year within each tab' do
+        get '/nytimes'
+        expect(response.body).to include('xw-year-header')
+        expect(response.body).to include('2024')
+      end
+    end
   end
 
   describe 'GET /user_made' do

@@ -42,7 +42,14 @@ Items built but not yet deployed to production.
 
 ## Active / In Progress
 
-Nothing currently in progress.
+### Planner → Builder: NYT Page Day-of-Week Tabs + Calendar View
+Full plan in `claude_personas/memory/plan.md`. 6 files, 0 migrations. Key points:
+- Controller: `.to_a` before `.group_by` (single query). Set all ivars on nil-user early return.
+- View: nyt-view controller (toggle) wraps tabs controller (7 day tabs). No nesting conflict.
+- Calendar: Stimulus controller reads JSON data attribute. **Test values API first** — fallback
+  to `this.element.dataset` if not supported.
+- CSS: `.nyt-view-panel` visibility rules (missing from original plan) are included.
+- Specs: expand existing `GET /nytimes` block in `spec/requests/pages_spec.rb`.
 
 ## Backlog
 

@@ -399,3 +399,23 @@
 **Bug found:** `_in_progress.html.haml` empty-state links `#panel2` (itself) instead of `#panel1` (New Puzzles). Fixed in plan.
 
 **Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: NYT Page Day-of-Week Tabs + Calendar View — plan review
+
+**Plan source:** User provided a multi-file implementation plan. I reviewed against codebase.
+
+**Key findings from codebase review:**
+1. `Crossword.created_at` is set to actual NYT publication date (NytPuzzleImporter line 62), NOT import date. Day-of-week grouping is correct.
+2. Existing tabs Stimulus controller hardcodes `xw-tab--active` / `xw-tab-panel--active` class names — can't reuse for view toggle. Separate nyt-view controller is correct approach.
+3. Nested Stimulus controllers (nyt-view wrapping tabs) — different identifiers, no target scoping conflict. Verified.
+4. `.puzzle-tabs ul` CSS Grid rule provides card layout. `columns_class: 'puzzle-tabs'` must be preserved in topper_stopper call.
+5. Mobile tabs: `.xw-tabs__nav` already has `overflow-x: auto` with hidden scrollbar. 7 tabs will scroll on narrow screens. Works.
+6. No existing controllers use Stimulus `values` API — only `targets`. Sprockets-bundled Stimulus may not support it. Builder must test; dataset fallback provided.
+
+**Issues found and fixed in plan:**
+- (must-fix) Nil ivars on early return — view would crash if `@nytimes_user` nil
+- (must-fix) Double DB query — `.size` then `.group_by` = 2 roundtrips. Fixed with `.to_a` first
+- (should-fix) View panel visibility CSS missing from original plan — `.nyt-view-panel { display: none }` added
+- (should-fix) Stimulus values API uncertain — fallback pattern provided
+
+**Full plan (revised):** `claude_personas/memory/plan.md`

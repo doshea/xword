@@ -146,7 +146,25 @@ class PagesController < ApplicationController
 
   #GET /nytimes or nytimes_path
   def nytimes
-    @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.order(created_at: :desc).includes(:user) : Crossword.none
+    unless @nytimes_user
+      @puzzles_by_wday = {}
+      @puzzle_dates = {}
+      @total_count = 0
+      return
+    end
+
+    all_puzzles = @nytimes_user.crosswords.order(created_at: :desc).includes(:user).to_a
+    @total_count = all_puzzles.size
+
+    # Day-of-week tabs: group by wday (Ruby: 0=Sun, 1=Mon..6=Sat)
+    @puzzles_by_wday = all_puzzles.group_by { |c| c.created_at.wday }
+
+    # Calendar: date string => crossword path (JSON for Stimulus)
+    @puzzle_dates = all_puzzles.each_with_object({}) do |c, h|
+      h[c.created_at.to_date.iso8601] = crossword_path(c)
+    end
+    @calendar_min = all_puzzles.last&.created_at&.to_date&.iso8601
+    @calendar_max = all_puzzles.first&.created_at&.to_date&.iso8601
   end
 
   #GET /user_made or user_made_path

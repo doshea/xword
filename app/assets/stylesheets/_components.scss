@@ -918,6 +918,127 @@
 
 
 // ---------------------------------------------------------------------------
+// NYT VIEW TOGGLE — .xw-view-toggle / .nyt-view-panel
+// ---------------------------------------------------------------------------
+
+.xw-view-toggle {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.xw-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover { color: var(--color-text); border-color: var(--color-border-strong); }
+
+  &.xw-view-btn--active {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-light);
+  }
+
+  svg { width: 1em; height: 1em; }
+}
+
+.nyt-view-panel {
+  display: none;
+  &.nyt-view-panel--active { display: block; }
+}
+
+
+// ---------------------------------------------------------------------------
+// CALENDAR — .xw-calendar
+// ---------------------------------------------------------------------------
+
+.xw-calendar {
+  max-width: 32rem;
+}
+
+.xw-calendar__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.xw-calendar__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.xw-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.xw-calendar__header {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-1) 0;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.xw-calendar__cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+
+  &--has-puzzle {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    transition: var(--transition-colors);
+
+    &:hover {
+      background: var(--color-accent);
+      color: white;
+    }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// YEAR SEPARATOR — within day-of-week tabs
+// ---------------------------------------------------------------------------
+
+.xw-year-header {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  margin: var(--space-4) 0 var(--space-2);
+  padding-bottom: var(--space-1);
+}
+
+
+// ---------------------------------------------------------------------------
 // LEGACY OVERRIDES (moved from foundation_overrides.scss)
 // ---------------------------------------------------------------------------
 
