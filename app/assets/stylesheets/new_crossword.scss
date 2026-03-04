@@ -1,11 +1,14 @@
 // =============================================================================
 // New Crossword Page — puzzle creation form + live preview
 // =============================================================================
+// Single card layout: form left, preview right — like a worksheet.
+// Matches the solve page pattern where grid and clues share one surface.
+// =============================================================================
 
 @import 'design_tokens';
 
 // -----------------------------------------------------------------------------
-// Page-level: warm container bg, top padding for breathing room
+// Page-level
 // -----------------------------------------------------------------------------
 
 #body > .xw-container.xw-grid {
@@ -38,7 +41,7 @@
 }
 
 // -----------------------------------------------------------------------------
-// Cards — clean white surfaces on warm bg
+// Card — single white surface
 // -----------------------------------------------------------------------------
 
 .xw-newcw-card {
@@ -60,8 +63,30 @@
 }
 
 // -----------------------------------------------------------------------------
-// Form layout
+// Layout — form left, preview right
 // -----------------------------------------------------------------------------
+
+.xw-newcw-layout {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.xw-newcw-layout__form {
+  flex: 1;
+  min-width: 0;
+}
+
+.xw-newcw-layout__preview {
+  flex-shrink: 0;
+}
+
+// -----------------------------------------------------------------------------
+// Form
+// -----------------------------------------------------------------------------
+
+.xw-newcw-form .xw-field {
+  gap: var(--space-2);
+}
 
 .xw-newcw-form__row {
   display: flex;
@@ -80,32 +105,32 @@
 }
 
 .xw-newcw-form__submit {
-  margin-top: var(--space-2);
+  margin-top: var(--space-4);
 }
 
 // -----------------------------------------------------------------------------
-// Preview grid — paper feel
+// Preview grid
 // -----------------------------------------------------------------------------
 
 #preview-crossword {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-cell-bg);
+  border: 2px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
-  padding: var(--space-3);
+  padding: var(--space-1);
   display: inline-block;
 
   .preview-row {
     background: var(--color-cell-bg);
-    width: 300px;
-    height: 9px;
+    width: 360px;
+    height: 11px;
   }
 
   .preview-cell {
     margin: 1px -2px -2px 1px;
     float: left;
-    width: 10px;
-    height: 10px;
-    border: 1px solid var(--color-cell-border);
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--color-border-strong);
     cursor: pointer;
     transition: background-color var(--duration-fast) var(--ease-in-out);
 
@@ -127,8 +152,32 @@
 // Responsive
 // -----------------------------------------------------------------------------
 
+@media (max-width: $bp-lg - 1) {
+  .xw-newcw-layout {
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .xw-newcw-layout__preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 @media (max-width: $bp-sm - 1) {
   .xw-newcw-form__dim {
     width: calc(50% - var(--space-2));
+  }
+
+  #preview-crossword {
+    .preview-row {
+      width: 300px;
+    }
+
+    .preview-cell {
+      width: 10px;
+      height: 10px;
+    }
   }
 }

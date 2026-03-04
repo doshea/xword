@@ -5,11 +5,11 @@
       = f.text_field :title, placeholder: 'Untitled', required: true, class: 'xw-input'
     .xw-field.xw-newcw-form__dim
       = f.label :rows, class: 'xw-label'
-      = f.number_field :rows, min: 4, max: 30, class: 'xw-input'
+      = f.number_field :rows, min: 4, max: 30, value: f.object.rows || 8, class: 'xw-input'
     .xw-field.xw-newcw-form__dim
       = f.label :cols, class: 'xw-label'
-      = f.number_field :cols, min: 4, max: 30, class: 'xw-input'
+      = f.number_field :cols, min: 4, max: 30, value: f.object.cols || 8, class: 'xw-input'
   .xw-field
     = f.label :description, class: 'xw-label'
-    = f.text_area :description, class: 'xw-textarea', rows: 4
+    = f.text_area :description, class: 'xw-textarea', rows: 3
   = f.submit 'Create Crossword', class: 'xw-btn xw-btn--success xw-newcw-form__submit'
