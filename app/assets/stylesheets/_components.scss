@@ -967,6 +967,44 @@
   max-width: 32rem;
 }
 
+.xw-calendar__years {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.xw-calendar__year-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-text);
+    border-color: var(--color-border-strong);
+  }
+
+  &--active {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-light);
+  }
+}
+
+.xw-calendar__count {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-normal);
+  color: var(--color-text-muted);
+}
+
 .xw-calendar__nav {
   display: flex;
   justify-content: space-between;

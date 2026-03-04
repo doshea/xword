@@ -218,6 +218,18 @@ RSpec.describe 'Pages', type: :request do
         expect(response.body).to include('xw-year-header')
         expect(response.body).to include('2024')
       end
+
+      it 'sets calendar min/max to oldest/newest puzzle dates' do
+        get '/nytimes'
+        body = response.body
+        expect(body).to include('calendar-min-value="2024-01-15"')
+        expect(body).to include('calendar-max-value="2024-01-20"')
+      end
+
+      it 'includes crossword paths in puzzle dates JSON' do
+        get '/nytimes'
+        expect(response.body).to match(/calendar-puzzles-value.*crosswords\/\d+/)
+      end
     end
   end
 
