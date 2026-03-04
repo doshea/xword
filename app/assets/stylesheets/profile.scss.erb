@@ -211,7 +211,7 @@
 
 .xw-profile-puzzles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: var(--space-4);
 }
 
@@ -232,12 +232,14 @@
 }
 
 .xw-profile-puzzle__thumb {
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  width: 75px;
+  height: 75px;
+  margin: 0 auto;
+  border: 1px solid var(--color-cell-border);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   object-fit: cover;
-  width: 100%;
+  image-rendering: pixelated;
   background-color: var(--color-surface-alt);
   transition: var(--transition-shadow);
 
