@@ -4,14 +4,15 @@ This file is read by all personas (Planner, Builder, Deployer). Use it for cross
 
 ## Current Focus
 
-### ✅ Fix 8 Test Failures (4 always-failing, 4 intermittent)
-**Status:** Builder complete (2026-03-04). 814 examples, 0 failures — 3 consecutive green runs.
+### ✅ Fix 8 Test Failures (4 always-failing, 4 intermittent) + 1 Flaky
+**Status:** Builder complete (2026-03-04). 814 examples, 0 failures.
 
-**What shipped (4 fixes):**
+**What shipped (5 fixes):**
 1. CSS nesting bug: `#settings-button` → `&#settings-button` in `edit.scss.erb` (compound selector)
 2. `render_views` added to `pages_controller_spec.rb` `live_search` describe block
 3. Deadlock retry wrapper added to non-JS branch in `spec_helper.rb`
 4. Positive wait (`have_text('Welcome back')`) before negative assertion in `login_spec.rb`
+5. Flaky `circle_count` in `crossword_spec.rb:443`: `rand(subject.area).ceil` → `rand(1..subject.area-1)` (rand could return 0, making `circle_inputs.index(1)` nil)
 
 **⚠️ Visual verify needed:** Settings gear on edit page should now be fixed-positioned at right edge, 40% viewport height.
 
@@ -179,7 +180,9 @@ end
 ---
 
 ### ✅ Notification System + Friend Requests + Puzzle Invites
-**Status:** Builder complete (2026-03-04). All 4 phases implemented. 48 new specs, 752 total (1 pre-existing flaky). Needs deploy + visual verification.
+**Status:** Builder complete (2026-03-04). Committed in `8322603`. All 4 phases implemented. 48 new specs, 814 total, 0 failures. Needs deploy + visual verification.
+
+**Commit:** `8322603 Add notification system: friend requests, comments, puzzle invites` (65 files, on master)
 
 **What shipped:**
 - Notification model + migration (4 indexes incl. dedup + dedup-null-notifiable partial index)
@@ -190,8 +193,10 @@ end
 - Comment notifications (add_comment + reply hooks in CommentsController)
 - Puzzle invites (friends API, PuzzleInvitesController, Stimulus invite_controller.js in team modal)
 - Dead code deleted: cable.js, channels/chatrooms.js
+- Test fixes (CSS compound selector, render_views, deadlock retry, Cuprite timing)
+- Test perf (test-prof gem, let_it_be, factory pinned 5×5)
 
-**Builder → Deployer:** Migration adds `notifications` table with 4 indexes. Standard `rails db:migrate`. No data backfill needed. Verify ActionCable WebSocket connects on login (check browser Network tab for `/cable`).
+**Builder → Deployer:** Committed on master, ready to push. Migration adds `notifications` table with 4 indexes. Standard `rails db:migrate`. No data backfill needed. Verify ActionCable WebSocket connects on login (check browser Network tab for `/cable`).
 
 ---
 
@@ -551,6 +556,228 @@ grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 - Feature specs untouched (`:deletion` strategy incompatible with `let_it_be`)
 
 **Files changed:** Gemfile, Gemfile.lock, spec/spec_helper.rb, spec/factories/crossword_factory.rb, 17 spec files
+
+---
+
+### ✅ Admin Test Tools Dropdown
+**Status:** Builder complete (2026-03-04). 825 examples, 0 failures. Needs visual + functional verification.
+
+**What shipped:**
+- `POST /crosswords/:id/admin_fake_win` endpoint — triggers win modal without completing puzzle
+- Admin dropdown (wrench icon + "Admin ▾") on solve page, only visible to admin users
+- Re-triggerable: clears previous modal content on each click
+- `tool.svg` icon created (Feather-style wrench)
+- 4 request specs (admin with/without solution, non-admin 403, anonymous 403)
+
+**Files changed:** `config/routes.rb`, `crosswords_controller.rb`, `show.html.haml`, `solve_funcs.js`, `tool.svg`, `crosswords_spec.rb`
+
+**Builder → Deployer:** No migration. Purely additive — new route, new controller action, admin-only HAML conditional, new JS function. Non-admin experience unchanged.
+
+**Future admin tools** (planned, not implemented): Reveal Puzzle, Clear Puzzle, Trigger Flash Cascade, Set Timer. See `plan.md` for details.
+
+---
+
+### ✅ Design Polish Pass — Info Pages + Token Bug Fixes
+**Status:** Builder complete (2026-03-04). 821 examples, 0 failures. Needs visual verification.
+
+**Goal:** Elevate the lesser pages (about, FAQ, contact, error, account_required, unauthorized) from "functional" to "polished." Fix token bugs. Bring visual quality closer to the primary pages.
+
+**Planner → Builder: 4 changes, in priority order:**
+
+---
+
+#### Fix 1 (must-fix): `--font-heading` → `--font-display` in notifications (5 min)
+
+**Bug:** `_notifications.scss` line 17 references `var(--font-heading)` which doesn't exist in `_design_tokens.scss`. Browser falls back to default sans-serif — breaks the editorial serif aesthetic.
+
+**File:** `app/assets/stylesheets/_notifications.scss` line 17
+
+**Change:** `font-family: var(--font-heading);` → `font-family: var(--font-display);`
+
+**Also fix in:** `claude_personas/memory/plan.md` line 321 — the notification dropdown plan has the same bug in `.xw-notification-dropdown__title`. Change `var(--font-heading)` → `var(--font-display)`.
+
+---
+
+#### Fix 2 (should-fix): Enhanced `.xw-prose` styles for editorial feel (30 min)
+
+**Problem:** Info pages (about, FAQ, contact) use `.xw-prose` which has solid fundamentals (tokens, spacing, font stacks) but reads flat. No visual character — just paragraphs on white. The About page has genuinely good storytelling content that deserves better presentation.
+
+**File:** `app/assets/stylesheets/_components.scss` lines 774–834
+
+**Changes to `.xw-prose` block — replace lines 774–834 with:**
+
+```scss
+.xw-prose {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-bottom: var(--space-6);
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    margin-bottom: var(--space-4);
+    letter-spacing: var(--tracking-tight);
+
+    &:first-child { margin-top: 0; }
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text);
+    // Subtle left accent bar — editorial section marker
+    padding-left: var(--space-3);
+    border-left: 3px solid var(--color-accent-muted);
+
+    &:first-child { margin-top: 0; }
+  }
+
+  p {
+    font-family: var(--font-body);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-4);
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover { color: var(--color-accent-hover); }
+  }
+
+  // Editorial section break — centered dinkus (⁂) replaces plain line
+  hr {
+    border: none;
+    margin: var(--space-8) 0;
+    text-align: center;
+
+    &::after {
+      content: '✦  ✦  ✦';
+      display: block;
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-widest);
+      color: var(--color-text-muted);
+    }
+
+    + h2 { margin-top: var(--space-4); }
+  }
+
+  s {
+    color: var(--color-text-muted);
+  }
+
+  .xw-btn {
+    margin-top: var(--space-6);
+  }
+
+  .xw-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+}
+```
+
+**What changed and why:**
+| Element | Before | After | Why |
+|---|---|---|---|
+| `h2` | Plain heading | Left accent bar (`border-left: 3px solid --color-accent-muted`) + `padding-left` | Gives visual structure. Scans like a newspaper section header. Accent bar uses muted green, not full accent, to avoid competing with links. |
+| `h1`, `h2` | Default tracking | `letter-spacing: var(--tracking-tight)` | Tighter tracking on headings is standard editorial typography. Playfair Display benefits from it. |
+| `hr` | `1px solid var(--color-border)` | Centered dinkus ornament (`✦  ✦  ✦`) | Classic editorial section break. Used by The New Yorker, Paris Review, etc. Fits the café/newspaper aesthetic perfectly. Replaces a generic horizontal line with actual typographic character. |
+| `hr` margin | `--space-6` | `--space-8` | More breathing room around section breaks — the ornament needs visual space. |
+
+**Risk:** Very low. Pure additive CSS. No DOM changes, no JS, no tests. The `.xw-prose` block is used by 8 pages — all should benefit from these enhancements. Visual verification recommended on about, FAQ, and contact pages.
+
+**Watch for:** The `h2` border-left adds 3px + `--space-3` (12px) padding. Check that clues/show and words/show pages (which also use `.xw-prose`) still look correct — those pages have section headings too.
+
+---
+
+#### Fix 3 (should-fix): Tokenize edit page switch colors (10 min)
+
+**Problem:** `edit.scss.erb` lines 346-347 have hardcoded SCSS variables for toggle switch colors:
+```scss
+$switch-on-color: #3a7d5c;   // forest green — matches --color-accent
+$switch-off-color: #c4bbb2;  // warm neutral gray
+```
+
+**File:** `app/assets/stylesheets/edit.scss.erb` lines 346-347
+
+**Change:** Replace SCSS variables with CSS custom properties:
+```scss
+$switch-on-color: var(--color-accent);
+$switch-off-color: var(--color-border);
+```
+
+**Why:** The hex values are already identical to existing tokens (`#3a7d5c` = `--color-accent`, `#c4bbb2` ≈ `--color-border`). Using tokens means the switches automatically follow any future palette changes. No visual difference today.
+
+**Risk:** None. Values are the same. `var()` works in SCSS when the value is used in a CSS property (not in Sass math). All uses of `$switch-on-color` and `$switch-off-color` are in `background:` and `border-color:` — safe.
+
+**Caveat:** `$switch-off-color: #c4bbb2` is not exactly `--color-border` (`#d4c9b8`) — it's slightly darker. Using `--color-border` gives a slightly lighter off state. If the user prefers the darker original, add a dedicated `--color-switch-off: #c4bbb2` token instead.
+
+---
+
+#### Fix 4 (suggestion): Thumbnail shadow tokenization (5 min)
+
+**Problem:** `global.scss.erb` line ~25 has hardcoded shadow on `.xw-thumbnail`:
+```scss
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+```
+
+**Change:** Replace with `box-shadow: var(--shadow-sm);`
+
+**Why:** Warm-tinted shadows (`rgba(28, 26, 23, ...)`) are the design system standard. Cold black shadows are inconsistent.
+
+---
+
+**Acceptance criteria:**
+- Notification page title renders in Playfair Display (not browser default)
+- About/FAQ/Contact pages have visible h2 accent bars and ✦ section breaks
+- Edit page switches still toggle correctly with correct green/gray colors
+- `bundle exec rspec` passes (no test changes needed)
+- Visual verification on about, FAQ, contact, clues/show, words/show pages
+
+---
+
+### 🔨 Notification Dropdown (DotA2-style)
+**Status:** Plan ready (2026-03-04). Awaiting approval.
+
+**Goal:** Bell icon opens in-nav dropdown panel instead of navigating to /notifications page.
+
+**Planner → Builder:** Full implementation plan in `claude_personas/memory/plan.md`. 9 files (2 new, 7 modified), no model/service changes. Key steps:
+1. Add `GET /notifications/dropdown` route + controller action (returns HTML partial)
+2. New dropdown partial (`_dropdown_list.html.haml`) — reuses existing `_notification` partial
+3. Nav HAML: bell `link_to` → `button` with Stimulus `notification-dropdown` controller
+4. New Stimulus controller: lazy-fetch on open, markAllRead, refresh from ActionCable
+5. CSS: light-bg dropdown panel (22rem × 28rem max), compact notification rows
+6. ActionCable JS: extend to call `controller.refresh()` when new notification arrives
+7. Tests: dropdown endpoint + JSON mark_all_read specs
+
+**No migration. No model changes. No service changes.** This is purely a view/controller/JS change.
+
+---
+
+### 🔨 Admin Test Tools Dropdown on Solve Page
+**Status:** Plan ready (2026-03-04). Awaiting approval.
+
+**Goal:** Admin-only dropdown on solve page with "Fake Win" to trigger win modal without completing a puzzle.
+
+**Planner → Builder:** Full implementation plan in `claude_personas/memory/plan.md`. 4 files modified, 0 new. Key steps:
+1. Add `POST /crosswords/:id/admin_fake_win` route
+2. Add `admin_fake_win` action to `CrosswordsController` (admin guard, renders win modal HTML)
+3. Add Admin dropdown in HAML (`- if is_admin?` guard), `tool` icon, ghost button style
+4. Add `fake_win` JS handler in `solve_funcs.js` (re-triggerable, clears previous modal content)
+5. Add 4 request specs (admin success, no-solution success, non-admin 403, anonymous 403)
+
+**No migration. No model changes. No new CSS. No new Stimulus controllers.** Reuses existing `.xw-dropdown` pattern.
+
+**Future tools proposed:** Reveal Puzzle, Clear Puzzle, Trigger Flash Cascade, Set Timer.
 
 ---
 

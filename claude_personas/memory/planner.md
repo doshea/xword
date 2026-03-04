@@ -139,12 +139,80 @@
 
 **Key risk:** `let_it_be` + DatabaseCleaner interaction. `let_it_be` uses `before(:all)` + savepoints; our spec_helper uses `DatabaseCleaner.cleaning` with transaction strategy. Need to verify compatibility in Phase 1 before bulk conversion. Feature specs (`:deletion` strategy) may not be compatible — may need to keep `let!` there.
 
+### 2026-03-04: Notification dropdown design (DotA2-style)
+
+**Request:** Convert notifications from full-page redirect to in-nav dropdown panel.
+
+**Approach:** New Stimulus controller (`notification-dropdown`) with lazy-load on first open. Fetches `/notifications/dropdown` (new route → HTML partial, no layout). Reuses existing `_notification.html.haml` partial in both dropdown and full page.
+
+**Key architecture decisions:**
+- Lazy fetch (not preloaded) — don't add notification HTML to every page
+- Separate Stimulus controller — too much behavior for generic dropdown (fetch, markAllRead, refresh)
+- JSON response for mark_all_read from dropdown — avoids Turbo Stream targeting conflicts (different container IDs between dropdown and full page)
+- ActionCable calls `controller.refresh()` via `getControllerForElementAndIdentifier` — risk: API may not exist in our Stimulus version. Fails silently.
+- Light background on desktop (paper aesthetic), dark in mobile hamburger menu (matches other dropdowns)
+- Full `/notifications` page preserved via "See all" link
+
+**Files:** 2 new (dropdown partial, Stimulus controller), 7 modified (routes, controller, nav HAML, nav SCSS, channel JS, notification spec). No model/service changes.
+
+**Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Comprehensive Site Design Review
+
+**Scope:** Full audit of all view templates, stylesheets, and design token usage.
+
+**Overall grade: B+.** Primary pages (solve, edit, profile, nav, search) are well-polished. Secondary pages use tokens correctly but lack visual character.
+
+**Findings by severity:**
+
+**Must-fix (1):**
+- `_notifications.scss` line 17: `var(--font-heading)` doesn't exist in tokens → `var(--font-display)`. Same bug propagated to plan.md notification dropdown design (line 321).
+
+**Should-fix (3):**
+1. Info pages (about/FAQ/contact) visually barren. `.xw-prose` styles are technically correct but flat. Designed h2 accent bars + editorial dinkus (`✦  ✦  ✦`) section breaks + tighter heading tracking.
+2. Edit page switch colors hardcoded as SCSS variables when identical tokens exist.
+3. `_crossword_tab.html.haml` uses legacy class names (`.result-crossword`, `.minipic`, `.metadata`, `.title`, `.byline`, `.dimensions`, `.nyt-watermark`). Should be `xw-puzzle-card` BEM — but this is a 2-hour refactor touching 20+ template references. **Deferred** to a dedicated session.
+
+**Suggestions (3):**
+1. `.xw-thumbnail` has cold black shadow (`rgba(0,0,0,0.1)`) — should use `var(--shadow-sm)`.
+2. Error/unauthorized/account_required pages are functional but could have more personality (illustrations, warmer messaging). Low priority.
+3. Stats page uses Chart.js v1 API with hardcoded rgba colors and inline JS. Roughest page on the site. Modernization would take 3-4 hours — very low priority.
+
+**Design token adoption:** ~88% of visual properties use CSS custom properties. Remaining holdouts are mostly in legacy puzzle-tab styles and edit.scss switches.
+
+**Key insight:** The "paper on wood" aesthetic works well for primary pages but the info pages feel like they're missing the editorial layer. Adding Playfair Display tracking, accent bars on headings, and typographic section breaks (instead of plain `<hr>`) would bring them into line with the overall feel without touching any HTML.
+
+**Builder handoff:** Written to shared.md with 4 prioritized changes. All CSS-only, no DOM/test changes.
+
+### 2026-03-04: Admin test tools dropdown on solve page
+
+**Request:** Admin-only dropdown on solve page with "Fake Win" to trigger win pathway without completing the puzzle.
+
+**Approach:** Reuse existing `.xw-dropdown` + Stimulus `dropdown` controller. Separate dropdown from Check (different intent). `xw-btn--ghost` style with `tool` (wrench) icon. Server-side action because win modal needs rendered HTML (time calc, comment form, flightboard JS).
+
+**Key design decisions:**
+- Separate `admin_fake_win` controller action (not a param on `check_completion`) — clean separation
+- Admin guard: `return head :forbidden unless @current_user&.is_admin` — returns 403 for non-admin AND anonymous
+- Re-triggerable: JS clears previous modal content before prepending new (removes children except close button)
+- Solution lookup duplicated from `check_completion` (~6 lines) — extracting a shared method would be premature for 2 callers
+
+**Future admin tools proposed (not built):**
+1. Reveal Puzzle — fill correct letters (server endpoint + JS cell iteration)
+2. Clear Puzzle — reset cells (client-side only)
+3. Trigger Flash Cascade — test golden check animation (client-side only)
+4. Set Timer — modify solution timestamps for timer display testing (server endpoint, higher risk)
+
+**Files:** 4 modified (routes, controller, show.html.haml, solve_funcs.js), 0 new. 4 request specs added.
+
+**Full plan:** `claude_personas/memory/plan.md`
+
 ## Open Questions
 
 - Default scope removal plan needed (future session). Key risk: queries that use `.first`/`.last` without explicit order.
 - 4 unused Publishable scopes (`standard`, `nonstandard`, `solo`, `teamed`) — prune when convenient, not urgent.
 - FriendRequest model spec (line 6-8) uses `should` syntax — should be migrated to `expect()` when touching that file.
 - `let_it_be` compatibility with DatabaseCleaner `:deletion` strategy (feature specs) — needs testing.
+- Stimulus version check: does `StimulusApp.getControllerForElementAndIdentifier()` exist? If not, need fallback pattern for ActionCable → dropdown refresh.
 
 ### 2026-03-04: Test failure root cause analysis (8 failures → 4 fixes)
 

@@ -231,6 +231,54 @@ RSpec.describe 'Crosswords', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # POST /crosswords/:id/admin_fake_win — Admin test tool
+  # -------------------------------------------------------------------------
+  describe 'POST /crosswords/:id/admin_fake_win' do
+    context 'when admin' do
+      let(:admin) { create(:user, :with_test_password, is_admin: true) }
+
+      before { log_in_as(admin) }
+
+      it 'returns win modal HTML with solution' do
+        solution = create(:solution, user: admin, crossword: crossword)
+        post admin_fake_win_crossword_path(crossword),
+             params: { solution_id: solution.id },
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['correct']).to be true
+        expect(json['win_modal_html']).to include('SOLVED!')
+      end
+
+      it 'works without a solution' do
+        post admin_fake_win_crossword_path(crossword),
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['correct']).to be true
+      end
+    end
+
+    context 'when non-admin' do
+      before { log_in_as(user) }
+
+      it 'returns forbidden' do
+        post admin_fake_win_crossword_path(crossword),
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when not logged in' do
+      it 'returns forbidden' do
+        post admin_fake_win_crossword_path(crossword),
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # XSS protection — clue content must be escaped on the solve page
   # -------------------------------------------------------------------------
   describe 'XSS protection on solve page' do

@@ -85,6 +85,33 @@
 - **Fix 4 (Cuprite timing):** `login_spec.rb:55`: negative assertion `not_to have_link('Login')`
   ran before Turbo redirect completed. Added positive wait `have_text('Welcome back')` first.
 
+### Fix flaky circle_count test (2026-03-04)
+- **Test:** `crossword_spec.rb:460` — `#circles_from_array` "errors if some cells are missing"
+- **Root cause:** `let(:circle_count){rand(subject.area).ceil}` — `rand(25)` can return 0
+  (integer), `.ceil` is a no-op on integers. With 0 circles, `circle_inputs` is all zeros,
+  so `circle_inputs.index(1)` returns nil → `NoMethodError: undefined method '+' for nil`.
+- **Fix:** Changed to `rand(1..subject.area-1)` — guarantees at least 1 circle.
+- **Surfaced by:** 5×5 factory pinning (smaller area = higher probability of rand returning 0).
+
+### Design Polish Pass (2026-03-04)
+- **Fix 1:** `_notifications.scss` line 17: `var(--font-heading)` → `var(--font-display)` (token didn't exist, fell back to sans-serif). Also fixed in `plan.md` line 321.
+- **Fix 2:** `.xw-prose` in `_components.scss`: added `letter-spacing: var(--tracking-tight)` to h1/h2, h2 left accent bar (`border-left: 3px solid var(--color-accent-muted)` + `padding-left`), replaced hr line with centered dinkus ornament (`✦ ✦ ✦`), increased hr margin to `--space-8`.
+- **Fix 3:** `edit.scss.erb` toggle switches: `$switch-on-color: #3a7d5c` → `var(--color-accent)`, `$switch-off-color: #c4bbb2` → `var(--color-border)`. Both vars only used in `background:` and `border-color:` (no Sass math), so `var()` is safe.
+- **Fix 4:** `global.scss.erb` `.xw-thumbnail`: `box-shadow: 2px 2px 4px rgba(0,0,0,0.2)` → `var(--shadow-sm)` (warm-tinted shadow token).
+- **Note:** `$switch-off-color` changed from `#c4bbb2` to `--color-border` (`#d4c9b8`) — slightly lighter off state. If user prefers darker, add dedicated token.
+
+### Admin Test Tools Dropdown (2026-03-04)
+- **Fake Win** admin-only endpoint: `POST /crosswords/:id/admin_fake_win`
+- Controller: `@current_user&.is_admin` guard → `head :forbidden`. Sets `@correctness = true`,
+  renders `_win_modal_contents` partial as JSON `{ correct: true, win_modal_html: "..." }`.
+- HAML: Separate `.xw-dropdown` after Check dropdown, wrapped in `- if is_admin?`. Uses
+  `xw-btn--ghost` style and `tool` (wrench) icon.
+- JS: `solve_app.fake_win` clears previous modal content (`.not('.xw-modal__close').remove()`)
+  for re-triggerability, then prepends new HTML and calls `showModal()`.
+- Created `app/assets/images/icons/tool.svg` (Feather-style wrench icon).
+- 4 new request specs: admin with solution, admin without solution, non-admin (403), anonymous (403).
+- Route added to `find_object` before_action list.
+
 ## Patterns
 - Service objects follow class-method pattern: `ServiceName.action(args)` with
   `private_class_method` for helpers. Transaction wraps the pipeline. See `NytPuzzleImporter`,
