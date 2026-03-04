@@ -112,6 +112,10 @@
 - 4 new request specs: admin with solution, admin without solution, non-admin (403), anonymous (403).
 - Route added to `find_object` before_action list.
 
+## Workflow Rules
+- **Always commit before declaring done.** Implement → test → commit → update memory.
+  Deployer can't deploy uncommitted work. Don't leave it for them to discover.
+
 ## Patterns
 - Service objects follow class-method pattern: `ServiceName.action(args)` with
   `private_class_method` for helpers. Transaction wraps the pipeline. See `NytPuzzleImporter`,
