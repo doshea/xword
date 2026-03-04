@@ -34,5 +34,10 @@ module Xword
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Disable automatic Link preload headers for stylesheets/scripts.
+    # Turbo Drive doesn't use these on subsequent navigations, causing
+    # "preloaded but not used" browser warnings.
+    config.action_view.preload_links_header = false
   end
 end
