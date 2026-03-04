@@ -56,6 +56,7 @@ window.solve_app = {
     $('#check-word').on('click', solve_app.check_word);
     $('#check-puzzle').on('click', solve_app.check_puzzle);
     $("#solve-controls").on('click', '.check-completion :not(span)', solve_app.check_completion);
+    $('#admin-fake-win').on('click', solve_app.fake_win);
     $('input, textarea').on('click', function() { cw.unhighlight_all(); });
     solve_app.check_all_finished();
     return true;
@@ -261,6 +262,40 @@ window.solve_app = {
         }
       },
       error: function(xhr) { console.warn('check_completion failed:', xhr.status); }
+    });
+  },
+
+  // Admin-only: trigger win modal without completing the puzzle.
+  // Bypasses letter comparison on the server. Re-triggerable (clears previous content).
+  fake_win: function(e) {
+    e.preventDefault();
+    var data = {};
+    if (!solve_app.anonymous) {
+      data['solution_id'] = solve_app.solution_id;
+    }
+    $.ajax({
+      dataType: 'json',
+      type: 'POST',
+      url: "/crosswords/" + solve_app.crossword_id + "/admin_fake_win",
+      data: data,
+      success: function(data) {
+        if (data.correct) {
+          var win_modal = $('#win-modal');
+          // Clear previous content for re-trigger (keep close button)
+          win_modal.children().not('.xw-modal__close').remove();
+          win_modal.prepend(data.win_modal_html);
+          win_modal.attr('filled', true);
+          document.getElementById('win-modal').showModal();
+        }
+      },
+      error: function(xhr) {
+        if (xhr.status === 403) {
+          cw.flash('Admin access required.', 'error');
+        } else {
+          cw.flash('Fake win failed.', 'error');
+          console.warn('admin_fake_win failed:', xhr.status);
+        }
+      }
     });
   },
 

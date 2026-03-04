@@ -93,6 +93,14 @@
           %hr
           %li.check-completion
             %a{:href => "#"} Completion
+      - if is_admin?
+        .xw-dropdown{data: {controller: 'dropdown'}}
+          %button.xw-btn.xw-btn--sm.xw-btn--ghost{data: {action: 'click->dropdown#toggle'}}
+            = icon('tool')
+            Admin ▾
+          %ul.xw-dropdown-menu{data: {dropdown_target: 'menu'}}
+            %li
+              %a#admin-fake-win{:href => "#"} Fake Win
   .xw-col-12.xw-lg-8
     .xw-byline
       - if @crossword.user

@@ -1,5 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :admin_fake_win]
   before_action :ensure_logged_in, only: [:create_team, :favorite, :unfavorite]
 
   #GET /crosswords/:id or crossword_path
@@ -162,6 +162,28 @@ class CrosswordsController < ApplicationController
       end
       f.js # Legacy: check_completion.js.erb
     end
+  end
+
+  # POST /crosswords/:id/admin_fake_win — Admin-only: trigger win modal without completing puzzle
+  def admin_fake_win
+    return head :forbidden unless @current_user&.is_admin
+
+    @correctness = true
+    if params[:solution_id].present?
+      @solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
+      @solution ||= Solution.joins(:solution_partnerings)
+                      .where(solution_partnerings: { user_id: @current_user.id })
+                      .find_by(id: params[:solution_id], crossword_id: @crossword.id)
+    end
+    @has_commented = @current_user.comments.where(crossword_id: @crossword.id).exists? if @solution
+
+    render json: {
+      correct: true,
+      win_modal_html: render_to_string(
+        partial: 'solutions/partials/win_modal_contents',
+        formats: [:html]
+      )
+    }
   end
 
 end
