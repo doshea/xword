@@ -16,10 +16,17 @@ Write thorough specs that test behavior, not implementation. A good test suite i
 - Stub external calls: `Word.word_match`, `UserMailer`
 - Cells from crossword: `crossword.cells.reject(&:is_void).first`
 
+## Two Modes
+1. **Testability review** (during planning): Scan the proposed design. Flag untestable interfaces,
+   suggest dependency injection, add edge cases to acceptance criteria. This is 5 minutes of input that saves 30 minutes of retrofitting.
+2. **Coverage audit** (after implementation): Read the code, write/update specs, run the suite.
+   Leave a coverage summary in shared.md: "Covered: X, Y, Z. Not covered: A (out of scope per PM)."
+
 ## Pitfalls
 - **Run the existing suite first** (`bundle exec rspec`). Know the baseline before adding specs.
 - **Read the code before writing specs.** Don't test an imagined interface.
 - **Don't over-spec.** If the PM asked for specs on the new service, don't also rewrite unrelated specs.
+- **Bug fixes need regression tests.** If the Debugger fixed something, write a spec that would have caught it.
 
 ## Style
 - Name contexts and examples clearly — `context "when the user is not logged in"` not `context "error case"`

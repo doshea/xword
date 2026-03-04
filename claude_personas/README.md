@@ -15,7 +15,7 @@ claude-team() {
   echo "  Claude Persona Roster"
   echo "  ====================="
   echo ""
-  echo "  claude-pm         Product manager      (green)   <- runs the show"
+  echo "  claude-pm         Tech lead            (green)   <- runs the show"
   echo ""
   echo "  claude-review     Code reviewer        (red)"
   echo "  claude-architect  Software architect   (teal)"
@@ -53,16 +53,19 @@ The background color and badge features require **iTerm2** (or another terminal 
 `\e]11;` and `\e]1337;SetBadge`). macOS Terminal.app won't respond to these escape sequences —
 the personas still work, you just won't get the visual differentiation.
 
-## The PM
+## The Tech Lead (PM)
 
-`claude-pm` is the orchestrator. Give it a project and it will:
+`claude-pm` is the tech lead. It plans, implements backend code, and shifts into specialist
+mindsets for focused phases. For non-trivial reviews, it writes a handoff and tells you to open
+a specialist in another terminal.
 
-1. **Discover** — clarify requirements, identify affected code
-2. **Plan** — call in the Architect, break work into tasks
-3. **Implement** — work through tasks, calling in Frontend/Debugger as needed
-4. **Test** — call in the Test Writer, run the suite
-5. **Review** — call in the Reviewer for a final audit
-6. **Deliver** — call in DevOps if needed, summarize and offer to commit/deploy
+Two process tracks:
+- **Lightweight** (well-understood tasks): Implement → Test → Commit
+- **Full** (ambiguous/high-risk): Discover → Plan → Implement → Test → Review → Deliver → Verify
+
+Each specialist has two modes:
+- **Inline** — the PM shifts into their mindset within the same session
+- **Separate terminal** — you open `claude-review`, `claude-debug`, etc. for focused, independent work
 
 ## Memory
 
