@@ -1,13 +1,7 @@
 ;(function () {
   class StatsController extends Stimulus.Controller {
     connect() {
-      // Chart.js loads via CDN in the <head> — should be available by connect().
-      // Belt-and-suspenders: wait for window load if CDN is slow.
-      if (typeof Chart === 'undefined') {
-        window.addEventListener('load', () => this.renderCharts())
-      } else {
-        this.renderCharts()
-      }
+      this.renderCharts()
     }
 
     renderCharts() {
