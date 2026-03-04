@@ -42,8 +42,9 @@ include team solving (ActionCable), NYT importing, user accounts, comments, and 
 
 ## Domain Model Notes
 
-- **`Crossword` default scope**: `order(created_at: :desc)` on all queries. Use `.unscoped`
-  or `.reorder` when unwanted.
+- **`Crossword` has no default scope.** Queries that need ordering must add explicit
+  `.order(created_at: :desc)` or similar. Controllers for home, profile, NYT, and user-made
+  pages already include this. Search relies on pg_search relevance ranking (no explicit order).
 - **`Phrase`** — reusable clue text (e.g., "Norse god of wisdom"). A `Clue` is an instance
   of a `Phrase` tied to a `Word` in a specific puzzle. FK exists but is unpopulated. Planned
   for clue suggestions during puzzle creation.
@@ -193,4 +194,3 @@ allow(UserMailer).to receive_message_chain(:reset_password_email, :deliver_now)
 2. **`published` column removed** from Crossword schema; `error_if_published` is a no-op;
    all "published crossword" guards disabled until column is restored. `publish!` deleted
    (was dead code after `CrosswordPublisher` extraction).
-3. **`Crossword` default scope** — `order(created_at: :desc)` applied to all queries implicitly.

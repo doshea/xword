@@ -31,7 +31,7 @@ RSpec.describe NytPuzzleImporter do
 
     it 'creates a crossword with correct attributes' do
       expect { NytPuzzleImporter.import(puzzle_hash) }.to change(Crossword, :count).by(1)
-      crossword = Crossword.unscoped.last
+      crossword = Crossword.order(:created_at).last
       expect(crossword.rows).to eq 5
       expect(crossword.cols).to eq 5
       expect(crossword.letters).to eq 'AMIGOVOLOWANIONIDOSELONER'
@@ -55,7 +55,7 @@ RSpec.describe NytPuzzleImporter do
     it 'handles rebus entries by replacing with hyphens' do
       puzzle_hash['grid'][0] = 'AB'
       NytPuzzleImporter.import(puzzle_hash)
-      crossword = Crossword.unscoped.last
+      crossword = Crossword.order(:created_at).last
       expect(crossword.letters[0]).to eq '-'
     end
 
@@ -63,7 +63,7 @@ RSpec.describe NytPuzzleImporter do
       circles = [1] + [0] * 24
       puzzle_hash['circles'] = circles
       NytPuzzleImporter.import(puzzle_hash)
-      crossword = Crossword.unscoped.last
+      crossword = Crossword.order(:created_at).last
       expect(crossword.circled).to be true
     end
 

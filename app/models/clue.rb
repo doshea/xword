@@ -27,7 +27,7 @@ class Clue < ApplicationRecord
   def crosswords_by_title
     Crossword.where(id: across_crosswords.select(:id))
              .or(Crossword.where(id: down_crosswords.select(:id)))
-             .reorder(:title)
+             .order(:title)
   end
 
   DEFAULT_CONTENT = 'ENTER CLUE'

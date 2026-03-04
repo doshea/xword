@@ -8,7 +8,7 @@ class UsersController < ApplicationController
       return redirect_to error_path(prev: request.original_url),
                          flash: { error: "Could not find User \##{params[:id]}" }
     end
-    @crosswords = @user.crosswords.paginate(page: params[:puzzles_page], per_page: 10)
+    @crosswords = @user.crosswords.order(created_at: :desc).paginate(page: params[:puzzles_page], per_page: 10)
     @crossword_count = @user.crosswords.count
     @comments   = @user.comments.order_recent
                        .includes(:crossword, base_comment: [:crossword, { base_comment: :crossword }])

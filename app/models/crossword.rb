@@ -23,7 +23,6 @@ class Crossword < ApplicationRecord
   before_create :populate_letters, unless: :skip_callbacks
   after_create :populate_cells, unless: :skip_callbacks
 
-  default_scope -> { order(created_at: :desc) }
   scope :unowned, -> (user) { where.not(user_id: user.id)}
 
   # Searchable by title using pg_search gem

@@ -13,11 +13,11 @@ class PagesController < ApplicationController
       @unstarted_count   = Crossword.new_to_user(@current_user).count
       @in_progress_count = Crossword.all_in_progress(@current_user).count
       @solved_count      = Crossword.all_solved(@current_user).count
-      @unstarted   = Crossword.new_to_user(@current_user).includes(:user).limit(per)
-      @in_progress = Crossword.all_in_progress(@current_user).includes(:user).limit(per)
-      @solved      = Crossword.all_solved(@current_user).includes(:user).limit(per)
+      @unstarted   = Crossword.new_to_user(@current_user).order(created_at: :desc).includes(:user).limit(per)
+      @in_progress = Crossword.all_in_progress(@current_user).order(created_at: :desc).includes(:user).limit(per)
+      @solved      = Crossword.all_solved(@current_user).order(created_at: :desc).includes(:user).limit(per)
     else
-      @unstarted = Crossword.all.includes(:user).paginate(page: params[:page])
+      @unstarted = Crossword.all.order(created_at: :desc).includes(:user).paginate(page: params[:page])
       @unstarted_count = @unstarted.total_entries
     end
   end
@@ -117,12 +117,12 @@ class PagesController < ApplicationController
 
   #GET /nytimes or nytimes_path
   def nytimes
-    @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.includes(:user) : Crossword.none
+    @nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.order(created_at: :desc).includes(:user) : Crossword.none
   end
 
   #GET /user_made or user_made_path
   def user_made
-    @user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id).includes(:user) : Crossword.includes(:user).all
+    @user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id).order(created_at: :desc).includes(:user) : Crossword.order(created_at: :desc).includes(:user).all
   end
 
   private

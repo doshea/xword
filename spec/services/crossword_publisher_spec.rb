@@ -14,7 +14,7 @@ RSpec.describe CrosswordPublisher do
   describe '.publish' do
     it 'creates a crossword with correct attributes' do
       expect { CrosswordPublisher.publish(ucw) }.to change(Crossword, :count).by(1)
-      crossword = Crossword.unscoped.last
+      crossword = Crossword.order(:created_at).last
       expect(crossword.title).to eq ucw.title
       expect(crossword.rows).to eq 5
       expect(crossword.cols).to eq 5

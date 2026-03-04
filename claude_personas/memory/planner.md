@@ -196,19 +196,56 @@
 - Re-triggerable: JS clears previous modal content before prepending new (removes children except close button)
 - Solution lookup duplicated from `check_completion` (~6 lines) — extracting a shared method would be premature for 2 callers
 
-**Future admin tools proposed (not built):**
-1. Reveal Puzzle — fill correct letters (server endpoint + JS cell iteration)
-2. Clear Puzzle — reset cells (client-side only)
-3. Trigger Flash Cascade — test golden check animation (client-side only)
-4. Set Timer — modify solution timestamps for timer display testing (server endpoint, higher risk)
-
 **Files:** 4 modified (routes, controller, show.html.haml, solve_funcs.js), 0 new. 4 request specs added.
+
+**Full plan (v1):** built by builder. See shared.md.
+
+### 2026-03-04: Admin tools v2 — Reveal Puzzle, Clear Puzzle, Flash Cascade
+
+**Extending existing Admin dropdown** (Fake Win already built) with 3 additional tools.
+
+**Design decisions:**
+- **Reveal Puzzle** — server endpoint returns `@crossword.letters`. JS fills cells via direct DOM `.text()` (NOT `set_letter()`) to avoid: (a) 225 individual team broadcasts, (b) 225 `check_finisheds()` calls. One `check_all_finished()` at end. `update_unsaved()` triggers auto-save → `check_completion` callback marks solution complete automatically.
+- **Clear Puzzle** — pure client-side. Clears letter text, removes flag classes (`flagged`, `incorrect`, `correct`, `cell-flash`), removes `crossed-off` from clues. Note: `check_completion` callback only sets `is_complete = true`, never reverts — clearing doesn't undo completion. Fine for testing.
+- **Flash Cascade** — pure client-side. Calls existing `apply_mismatches()` with synthetic data (all cells, all `v=false`). No flag changes (only flash animation). Minor side effect: any cells with `incorrect` class get flipped to `correct` — acceptable for admin tool.
+- **Set Timer** — deferred. Higher risk (modifying timestamps), needs UI for duration input, lower ROI since Fake Win already shows timer.
+
+**Security:** `admin_reveal_puzzle` returns the full answer key — most sensitive endpoint. Same admin guard as `admin_fake_win`. Non-admin/anonymous get 403.
+
+**Files:** Same 4 as v1 (routes, controller, show.html.haml, solve_funcs.js) + spec. 1 new route, 1 new action, 3 dropdown items, 3 JS functions, 3 click bindings, 3 request specs.
 
 **Full plan:** `claude_personas/memory/plan.md`
 
+### 2026-03-04: Default Scope Removal — comprehensive audit + plan
+
+**Audit:** ~40 Crossword query call sites examined. 14 safe (find_by, any?, reorder). 8 need explicit `.order(created_at: :desc)`. 4 have active bugs caused by default scope.
+
+**3 production bugs discovered and confirmed via `rails runner` SQL output:**
+1. Random puzzle (`/random`) — `ORDER BY created_at DESC, RANDOM()` → RANDOM() never consulted, always returns newest puzzle
+2. Search — `ORDER BY created_at DESC, pg_search_rank DESC` → date trumps relevance
+3. Admin crosswords — `ORDER BY created_at DESC, created_at ASC` → explicit ASC ignored
+
+**Key Rails insight:** `default_scope` ordering is prepended. Subsequent `.order()` calls APPEND (not replace). Only `.reorder()` replaces. This is why `.order("RANDOM()")` doesn't work — it becomes `ORDER BY created_at DESC, RANDOM()` and RANDOM() is never reached.
+
+**Design decisions:**
+- Search/live_search deliberately get NO explicit ordering — pg_search provides relevance ranking that was being suppressed
+- `.order("RANDOM()")` → `.reorder("RANDOM()")` instead of just relying on scope removal (defensive — communicates intent)
+- Admin `.order(:created_at)` → `.order(created_at: :asc)` for clarity even though `:asc` is the default
+- Test cleanup: `Crossword.unscoped.last` → `Crossword.order(:created_at).last` (remove workaround, use explicit intent)
+
+**Full plan:** `claude_personas/memory/plan.md` (replaced admin tools plan; that plan was already built)
+
+### 2026-03-04: Puzzle Card BEM Rename — audit + plan
+
+**Audit:** 8 render sites, 10+ CSS selectors, 2 test assertions, 0 JS references. 1 dead CSS block found (`.puzzle-tabs .xw-tabs__nav` → no matching HTML).
+
+**Class mapping:** `.result-crossword` → `.xw-puzzle-card`, `.minipic` → `__thumb`, `.metadata` → `__meta`, `.title` → `__title`, `.byline` → `__byline`, `.dimensions` → `__dims`, `.nyt-watermark` → `__nyt`, `.puzzle-tabs` → `.xw-puzzle-grid`.
+
+**Low priority** — mechanical rename, no bugs, no visual change. ~2 hours.
+
 ## Open Questions
 
-- Default scope removal plan needed (future session). Key risk: queries that use `.first`/`.last` without explicit order.
+- ~~Default scope removal plan needed (future session)~~ **DONE** — plan written, fixes 3 bugs.
 - 4 unused Publishable scopes (`standard`, `nonstandard`, `solo`, `teamed`) — prune when convenient, not urgent.
 - FriendRequest model spec (line 6-8) uses `should` syntax — should be migrated to `expect()` when touching that file.
 - `let_it_be` compatibility with DatabaseCleaner `:deletion` strategy (feature specs) — needs testing.

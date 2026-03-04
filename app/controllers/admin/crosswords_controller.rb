@@ -3,7 +3,7 @@ class Admin::CrosswordsController < Admin::BaseController
   before_action :find_object, only: [:edit, :update, :destroy, :generate_preview]
 
   def index
-    @crosswords = Crossword.includes(:user).order(:created_at).paginate(page: params[:page])
+    @crosswords = Crossword.includes(:user).order(created_at: :asc).paginate(page: params[:page])
   end
 
   def generate_preview

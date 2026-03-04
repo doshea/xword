@@ -31,6 +31,6 @@ class Phrase < ApplicationRecord
   end
 
   def crosswords_by_title
-    crosswords.reorder(:title)
+    crosswords.order(:title)
   end
 end

@@ -1,201 +1,227 @@
-# Plan: Remove `Crossword` Default Scope
+# Plan: Admin Test Tools — Reveal Puzzle, Clear Puzzle, Flash Cascade
 
 ## Overview
 
-Remove `default_scope -> { order(created_at: :desc) }` from `Crossword` model. This default scope silently prepends `ORDER BY created_at DESC` to every query, causing **3 active production bugs** and making code harder to reason about.
+Extend the existing Admin dropdown on the solve page (which currently has "Fake Win") with 3 additional testing tools:
 
----
+1. **Reveal Puzzle** — Fill all cells with correct letters instantly
+2. **Clear Puzzle** — Reset all cells to empty
+3. **Flash Cascade** — Trigger the golden check-flash animation across the grid
 
-## Discovered Bugs (confirmed via SQL output)
-
-### Bug 1: "Random puzzle" always returns the newest puzzle
-```sql
--- Current (broken):
-SELECT * FROM crosswords ORDER BY created_at DESC, RANDOM() LIMIT 1
--- RANDOM() never consulted because created_at has unique values
-```
-**Affected:** `PagesController#random_puzzle`, `User.rand_unowned_puzzle`
-
-### Bug 2: Search results sorted by date, not relevance
-```sql
--- Current (broken):
-SELECT * FROM crosswords ... ORDER BY created_at DESC, pg_search_rank DESC
--- Relevance ranking from pg_search is secondary to date
-```
-**Affected:** `PagesController#search`, `PagesController#live_search`
-
-### Bug 3: Admin crosswords page sorted DESC despite explicit ASC
-```sql
--- Current (broken):
-SELECT * FROM crosswords ORDER BY created_at DESC, created_at ASC
--- First DESC wins, admin always sees newest first
-```
-**Affected:** `Admin::CrosswordsController#index`
+Only Reveal Puzzle needs a server endpoint (returns the answer key). Clear Puzzle and Flash Cascade are pure client-side.
 
 ---
 
 ## Architecture
 
-### Strategy: Explicit-order-everywhere, then delete
+### Tool breakdown
 
-1. Add explicit `.order(created_at: :desc)` to every query that needs newest-first
-2. Change `.order()` to `.reorder()` where the intent is to REPLACE ordering (random, admin ASC, search relevance)
-3. Remove the default scope
-4. Fix test specs that rely on implicit ordering
-5. Clean up `.unscoped` calls that were workarounds for the default scope
+| Tool | Server? | Why | Effect on solution |
+|---|---|---|---|
+| Reveal Puzzle | Yes — `POST admin_reveal_puzzle` | Correct letters live on the server (`@crossword.letters`), not the client | Auto-save fires within 5s → `check_completion` callback → marks `is_complete = true` |
+| Clear Puzzle | No — pure client JS | Only needs to empty DOM text content | Auto-save fires within 5s → saves empty letters to DB |
+| Flash Cascade | No — pure client JS | Reuses existing `apply_mismatches` with synthetic data | None — flash is visual only (no flag classes applied) |
 
-### Why not keep it?
+### Key decisions
 
-Default scopes are a well-known Rails anti-pattern:
-- They infect every query silently — joins, subqueries, associations
-- `.order()` appends instead of replacing, causing bugs 1-3 above
-- Future developers won't know it exists until something breaks
-- CLAUDE.md already flags it as "when, not if" bug source
+| Decision | Choice | Rationale |
+|---|---|---|
+| Reveal: set letters via DOM vs. `set_letter()` | Direct DOM (`.text()`) | `set_letter(letter, true)` broadcasts each cell to team (225 ActionCable messages for 15×15). `set_letter(letter, false)` calls `check_finisheds()` per cell (225 calls). Direct DOM + one `check_all_finished()` at end is O(1) broadcast, O(n) crossing-off. |
+| Reveal: save immediately vs. let auto-save | Let auto-save | `update_unsaved()` triggers auto-save within 5s. No need for an immediate save call. Admin can also click Save manually. The `before_save :check_completion` callback handles marking the solution complete automatically. |
+| Reveal: security | Admin-only endpoint | Returns the answer key (`@crossword.letters`). Must be 403 for non-admin. Same guard pattern as `admin_fake_win`. |
+| Clear: also clear flags/crossed-off? | Yes | A clean slate: no letters, no check flags (`flagged`, `incorrect`, `correct`), no crossed-off clues. Admin gets a fresh-solve state. |
+| Clear: un-set `is_complete`? | No | `check_completion` callback only sets `is_complete = true`, never reverts it. Clearing and re-saving won't undo completion. For a true reset, admin would delete the solution. This is fine for visual testing purposes. |
+| Flash: all cells or only filled? | All non-void cells | The point is to see the visual sweep across the full grid. Empty cells flash too (same as "Check Puzzle" when cells are empty). |
+| Flash: flag state changes? | None | All mismatches set to `false` (correct). `apply_mismatches` only adds `correct` class when cell already has `incorrect`. So for clean cells: flash animation only, no flag class changes. |
 
 ---
 
-## Files to change (8 files)
+## Files to change (4 modified, 0 new)
 
-### Phase 1: Fix ordering at all call sites (no behavioral change yet)
+### 1. `config/routes.rb` — Add admin_reveal_puzzle route
 
-#### 1. `app/models/crossword.rb` line 26 — DELETE default scope
+Add `post :admin_reveal_puzzle` to the crosswords member block (next to `admin_fake_win`):
 
 ```ruby
-# DELETE THIS LINE:
-default_scope -> { order(created_at: :desc) }
-```
-
-#### 2. `app/controllers/pages_controller.rb` — Add explicit ordering
-
-**Lines 16-18** — Home page tabs (logged-in user). Add `.order(created_at: :desc)`:
-```ruby
-@unstarted   = Crossword.new_to_user(@current_user).order(created_at: :desc).includes(:user).limit(per)
-@in_progress = Crossword.all_in_progress(@current_user).order(created_at: :desc).includes(:user).limit(per)
-@solved      = Crossword.all_solved(@current_user).order(created_at: :desc).includes(:user).limit(per)
-```
-
-**Line 20** — Home page (anonymous user). Add `.order(created_at: :desc)`:
-```ruby
-@unstarted = Crossword.all.order(created_at: :desc).includes(:user).paginate(page: params[:page])
-```
-
-**Lines 50** — Search page results. **DON'T add date ordering** — let pg_search rank by relevance:
-```ruby
-# No change needed — after removing default scope, pg_search ranking
-# will correctly be the primary sort. This FIXES Bug 2.
-@crosswords = Crossword.starts_with(@query).includes(:user).load
-```
-
-**Line 60** — Live search. Same as above — let relevance rank:
-```ruby
-# No change needed — pg_search relevance ranking will be primary.
-@crosswords = Crossword.starts_with(query).limit(max_results).load
-```
-
-**Lines 89-91** — Random puzzle. Change `.order` to `.reorder` to **fix Bug 1**:
-```ruby
-crossword = if @current_user
-              Crossword.unowned(@current_user).reorder("RANDOM()").first
-            else
-              Crossword.reorder("RANDOM()").first
-            end
-```
-
-**Note:** After removing default scope, `.order("RANDOM()")` would work too, but `.reorder()` is defensive — communicates intent explicitly.
-
-**Line 120** — NYT puzzles page. Add `.order(created_at: :desc)`:
-```ruby
-@nytimes_puzzles = @nytimes_user ? @nytimes_user.crosswords.order(created_at: :desc).includes(:user) : Crossword.none
-```
-
-**Line 125** — User-made page. Add `.order(created_at: :desc)`:
-```ruby
-@user_puzzles = @nytimes_user ? Crossword.where.not(user_id: @nytimes_user.id).order(created_at: :desc).includes(:user) : Crossword.order(created_at: :desc).includes(:user).all
-```
-
-#### 3. `app/controllers/users_controller.rb` line 11 — User profile puzzles
-
-Add `.order(created_at: :desc)`:
-```ruby
-@crosswords = @user.crosswords.order(created_at: :desc).paginate(page: params[:puzzles_page], per_page: 10)
-```
-
-#### 4. `app/controllers/crosswords_controller.rb` line 124 — Batch endpoint
-
-Add `.order(created_at: :desc)`:
-```ruby
-@crosswords = Crossword.where(id: ids).order(created_at: :desc)
-```
-
-#### 5. `app/controllers/admin/crosswords_controller.rb` line 6 — Admin index
-
-Change `.order(:created_at)` to `.order(created_at: :asc)` (explicit direction, **fixes Bug 3**):
-```ruby
-@crosswords = Crossword.includes(:user).order(created_at: :asc).paginate(page: params[:page])
-```
-
-**Note:** After removing default scope, `.order(:created_at)` would also correctly default to ASC, but explicit `:asc` communicates intent.
-
-#### 6. `app/models/user.rb` lines 140-141 — `rand_unowned_puzzle`
-
-Change `.order` to `.reorder` (defensive, same as pages_controller fix):
-```ruby
-def self.rand_unowned_puzzle(user = nil)
-  user.present? ? Crossword.unowned(user).reorder("RANDOM()").first : Crossword.reorder("RANDOM()").first
+member do
+  post :check_cell
+  post :check_completion
+  post :admin_fake_win
+  post :admin_reveal_puzzle
+  # ... existing routes
 end
 ```
 
-### Phase 2: Fix test specs
+### 2. `app/controllers/crosswords_controller.rb` — Add admin_reveal_puzzle action
 
-#### 7. `spec/requests/unpublished_crosswords_spec.rb` — lines 42, 50, 61, 71
-
-Replace `Crossword.last` with `Crossword.order(:created_at).last`:
+Add after `admin_fake_win` (~line 187). Simple — returns the answer key.
 
 ```ruby
-# Line 42:
-crossword = Crossword.order(:created_at).last
+# POST /crosswords/:id/admin_reveal_puzzle — Admin-only: return correct letters
+def admin_reveal_puzzle
+  return head :forbidden unless @current_user&.is_admin
 
-# Line 50:
-cw = Crossword.order(:created_at).last
-
-# Line 61:
-cw = Crossword.order(:created_at).last
-
-# Line 71:
-cw = Crossword.order(:created_at).last
+  render json: { letters: @crossword.letters }
+end
 ```
 
-**Why `.order(:created_at).last`:** These tests create a crossword via publish, then need to find the one just created. Without default scope, `.last` uses database natural order (not guaranteed). `.order(:created_at).last` explicitly gets the most recently created record.
+**Note:** This is the most security-sensitive endpoint — it returns the full answer. The admin guard is essential. No solution lookup needed; the answer lives on the crossword.
 
-### Phase 3: Clean up workarounds
+### 3. `app/views/crosswords/show.html.haml` — Add 3 dropdown items
 
-#### 8. `spec/services/nyt_puzzle_importer_spec.rb` — lines 34, 58, 66
-#### 9. `spec/services/crossword_publisher_spec.rb` — line 17
+Extend the existing Admin dropdown (lines 101-103). Add separator + new items:
 
-Replace `Crossword.unscoped.last` with `Crossword.order(:created_at).last`:
+```haml
+      - if is_admin?
+        .xw-dropdown{data: {controller: 'dropdown'}}
+          %button.xw-btn.xw-btn--sm.xw-btn--ghost{data: {action: 'click->dropdown#toggle'}}
+            = icon('tool')
+            Admin ▾
+          %ul.xw-dropdown-menu{data: {dropdown_target: 'menu'}}
+            %li
+              %a#admin-fake-win{:href => "#"} Fake Win
+            %hr
+            %li
+              %a#admin-reveal-puzzle{:href => "#"} Reveal Puzzle
+            %li
+              %a#admin-clear-puzzle{:href => "#"} Clear Puzzle
+            %hr
+            %li
+              %a#admin-flash-cascade{:href => "#"} Flash Cascade
+```
+
+**Grouping:**
+- **Fake Win** — experience testing (top, separated)
+- **Reveal Puzzle / Clear Puzzle** — puzzle state manipulation (middle group)
+- **Flash Cascade** — visual effect testing (bottom, separated)
+
+### 4. `app/assets/javascripts/crosswords/solve_funcs.js` — Add 3 handlers + bindings
+
+**Click bindings** — add after existing `$('#admin-fake-win')` binding (~line 59):
+
+```javascript
+$('#admin-fake-win').on('click', solve_app.fake_win);
+$('#admin-reveal-puzzle').on('click', solve_app.reveal_puzzle);
+$('#admin-clear-puzzle').on('click', solve_app.clear_puzzle);
+$('#admin-flash-cascade').on('click', solve_app.flash_cascade);
+```
+
+**Handler functions** — add after `fake_win` function (~line 300), before `add_comment_or_reply`:
+
+```javascript
+// Admin-only: fill all cells with correct letters.
+// Sets letter text directly (not via set_letter) to avoid 225 individual
+// team broadcasts and per-cell check_finisheds calls. Batches the
+// crossing-off into a single check_all_finished() call at the end.
+reveal_puzzle: function(e) {
+  e.preventDefault();
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: "/crosswords/" + solve_app.crossword_id + "/admin_reveal_puzzle",
+    success: function(data) {
+      var letters = data.letters;
+      var $cells = $('.cell');
+      $cells.each(function(index) {
+        var $cell = $(this);
+        if (!$cell.hasClass('void')) {
+          $cell.children('.letter').first().text(letters[index]);
+        }
+      });
+      // Clear any check flags from previous checks
+      $cells.removeClass('flagged incorrect correct cell-flash');
+      // Cross off all clues (all words are now complete)
+      solve_app.check_all_finished();
+      // Mark as unsaved — auto-save will fire within 5s
+      solve_app.update_unsaved();
+      cw.flash('Puzzle revealed!', 'success');
+    },
+    error: function(xhr) {
+      if (xhr.status === 403) {
+        cw.flash('Admin access required.', 'error');
+      } else {
+        cw.flash('Reveal failed.', 'error');
+        console.warn('admin_reveal_puzzle failed:', xhr.status);
+      }
+    }
+  });
+},
+
+// Admin-only: clear all letters and reset visual state.
+// Pure client-side — no server endpoint needed.
+clear_puzzle: function(e) {
+  e.preventDefault();
+  // Clear all letters from non-void cells
+  $('.cell:not(.void)').each(function() {
+    $(this).children('.letter').first().empty();
+  });
+  // Clear check flags from all cells
+  $('.cell').removeClass('flagged incorrect correct cell-flash');
+  // Un-cross-off all clues
+  $('.crossed-off').removeClass('crossed-off');
+  // Mark as unsaved — auto-save will fire within 5s
+  solve_app.update_unsaved();
+  cw.flash('Puzzle cleared.', 'info');
+},
+
+// Admin-only: trigger golden flash cascade across all non-void cells.
+// Pure client-side — reuses apply_mismatches with synthetic data.
+// All values set to false (correct) so no flag classes are applied —
+// only the golden flash animation sweeps the grid.
+flash_cascade: function(e) {
+  e.preventDefault();
+  var mismatches = {};
+  $('.cell').each(function(index) {
+    if (!$(this).hasClass('void')) {
+      mismatches[index] = false;
+    }
+  });
+  solve_app.apply_mismatches({ mismatches: mismatches });
+},
+```
+
+### 5. Tests — `spec/requests/crosswords_spec.rb`
+
+Add a describe block for `admin_reveal_puzzle`. Clear Puzzle and Flash Cascade are client-side only — no server specs needed.
 
 ```ruby
-# Was a workaround for default scope — no longer needed
-crossword = Crossword.order(:created_at).last
+describe 'POST /crosswords/:id/admin_reveal_puzzle' do
+  let_it_be(:crossword) { create(:crossword, rows: 5, cols: 5) }
+
+  context 'when admin' do
+    let(:admin) { create(:user, :with_test_password, is_admin: true) }
+    before { log_in_as(admin) }
+
+    it 'returns the correct letters' do
+      post admin_reveal_puzzle_crossword_path(crossword),
+           headers: { 'Accept' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['letters']).to eq(crossword.letters)
+      expect(json['letters'].length).to eq(crossword.rows * crossword.cols)
+    end
+  end
+
+  context 'when non-admin' do
+    let(:user) { create(:user, :with_test_password) }
+    before { log_in_as(user) }
+
+    it 'returns forbidden' do
+      post admin_reveal_puzzle_crossword_path(crossword),
+           headers: { 'Accept' => 'application/json' }
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context 'when not logged in' do
+    it 'returns forbidden' do
+      post admin_reveal_puzzle_crossword_path(crossword),
+           headers: { 'Accept' => 'application/json' }
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+end
 ```
-
-**Optional but recommended:** `.unscoped` was only there to avoid the default scope. Removing it makes the intent clearer — we're just getting the most recent crossword.
-
----
-
-## Call sites NOT changed (and why)
-
-| Call site | Why no change needed |
-|---|---|
-| `CommentsController` — `Crossword.find_by(id:)` | Single record lookup, order irrelevant |
-| `CrosswordsController` — `Crossword.find_by(id:)` | Single record lookup, order irrelevant |
-| `Api::CrosswordsController` — `Crossword.find_by(title:)` | Single record lookup, order irrelevant |
-| `NytPuzzleImporter` — `Crossword.where(title:).any?` | Existence check, order irrelevant |
-| `Word#crosswords_by_title` | Already uses `.reorder(:title)` |
-| `Phrase#crosswords_by_title` | Already uses `.reorder(:title)` |
-| `Clue#crosswords_by_title` | Already uses `.reorder(:title)` |
-| `Publishable` scopes | No internal ordering — controllers add it |
-| `PagesController` `.count` calls (lines 13-15) | Aggregate, order irrelevant |
 
 ---
 
@@ -203,14 +229,34 @@ crossword = Crossword.order(:created_at).last
 
 | # | Step | Files | Risk |
 |---|---|---|---|
-| 1 | Add explicit `.order(created_at: :desc)` to 6 controller call sites | pages, users, crosswords, admin controllers | None — same behavior as today |
-| 2 | Change `.order("RANDOM()")` → `.reorder("RANDOM()")` | pages_controller, user.rb | **Bug fix** — random actually random now |
-| 3 | Change admin `.order(:created_at)` → `.order(created_at: :asc)` | admin/crosswords_controller | **Bug fix** — admin sort now ASC as intended |
-| 4 | Delete default scope | crossword.rb line 26 | **The switch.** All queries now use explicit or pg_search ordering. |
-| 5 | Fix test specs | unpublished_crosswords_spec | Tests pass with explicit ordering |
-| 6 | Clean up `.unscoped` workarounds | nyt_puzzle_importer_spec, crossword_publisher_spec | Clarity improvement, not behavioral |
+| 1 | Add route | `routes.rb` | None — additive |
+| 2 | Add controller action | `crosswords_controller.rb` | Low — 5-line action with admin guard |
+| 3 | Add HAML dropdown items | `show.html.haml` | None — inside existing `- if is_admin?` block |
+| 4 | Add JS handlers + bindings | `solve_funcs.js` | Low — 3 new functions, 3 no-op bindings for non-admins |
+| 5 | Add tests | `crosswords_spec.rb` | None |
 
-**Critical:** Steps 1-3 should be done BEFORE step 4 to ensure zero behavioral regression (except the 3 bug fixes). Step 4 is the actual scope deletion. Steps 5-6 fix tests.
+All steps are purely additive. No existing behavior is modified.
+
+---
+
+## Interaction with existing features
+
+### Reveal Puzzle → then Check Completion
+After Reveal, all cells contain correct letters. Auto-save fires → `check_completion` callback marks `is_complete = true`. Clicking "Check → Completion" will then show the real win modal (not the admin Fake Win). This provides a way to test the **genuine** win pathway.
+
+### Reveal Puzzle → then Check Puzzle
+After Reveal, "Check → Entire Puzzle" will show the golden flash cascade with all cells correct — no error flags. Useful for seeing the flash on a fully-correct grid.
+
+### Clear Puzzle → then Reveal Puzzle
+Admin can cycle between empty and filled states without leaving the page. Useful for testing different puzzle states.
+
+### Flash Cascade → on empty grid
+Flash sweeps across all cells even when empty. The mismatches are all `false` (correct), so no flags. Pure visual effect.
+
+### Flash Cascade → on grid with existing errors
+If admin has previously run "Check Puzzle" and cells have `incorrect` flags, Flash Cascade will re-flash all cells. The `false` mismatch value will flip any `incorrect` cells to `correct` (since `apply_mismatches` adds `correct` class when cell has `incorrect`). This is a minor side effect but acceptable — admin is testing visuals.
+
+**Note on that last point:** If this side effect is undesirable, the Flash Cascade could strip `incorrect`/`correct`/`flagged` classes before running. But since it's an admin tool, the simpler approach (reuse `apply_mismatches` as-is) is better. The admin can run "Clear Puzzle" to reset flag state.
 
 ---
 
@@ -218,137 +264,43 @@ crossword = Crossword.order(:created_at).last
 
 | Risk | Severity | Mitigation |
 |---|---|---|
-| Missed call site | Medium | Comprehensive audit found ~40 sites. Run `bundle exec rspec` after step 4 to catch any failures. Manual spot-check of home page, search, profile. |
-| Publishable `.union()` scopes | Low | Union scopes don't rely on ordering — controllers add `.order()` after the scope chain. Verified: `.count`, `.limit()`, `.distinct` are order-agnostic. |
-| Association queries (`.crosswords`) | Low | Only used via `crosswords_by_title` (which reorders) or with explicit `.order()` added in step 1. |
-| pg_search relevance change | Low-positive | **Intentional fix.** Search results will now sort by relevance, which is correct behavior. Users may notice improved search quality. |
-| Random puzzle change | Low-positive | **Intentional fix.** `/random` will now actually return random puzzles. |
-
----
-
-## Acceptance criteria
-
-1. `bundle exec rspec` — all examples pass, 0 failures
-2. Home page tabs show newest puzzles first (same as today)
-3. `/random` returns genuinely random puzzles (fixed!)
-4. Search results sort by relevance, not date (fixed!)
-5. Admin crosswords page sorts oldest-first (fixed!)
-6. User profile shows their puzzles newest-first (same as today)
-7. NYT / User-made pages show newest-first (same as today)
-8. No `default_scope` in `crossword.rb`
-9. No `.unscoped` workarounds remaining in test specs
-
----
-
-## Verification checklist (manual)
-
-After `rspec` passes, manually verify in browser:
-- [ ] Home page: logged in → puzzles in each tab are newest-first
-- [ ] Home page: anonymous → puzzles are newest-first, pagination works
-- [ ] Search: type a word → results should be relevant, not just newest
-- [ ] Random: click "Random" 3 times → should get different puzzles
-- [ ] Profile: view a user's puzzles → newest-first
-- [ ] NYT page: puzzles are newest-first
-- [ ] Admin crosswords: puzzles are oldest-first (creation order)
-- [ ] Publish a crossword: redirects correctly to the new puzzle
-
----
-
-# Plan: Puzzle Card BEM Rename
-
-## Overview
-
-Rename legacy class names in the `_crossword_tab` partial and its CSS from generic names (`.result-crossword`, `.minipic`, `.metadata`, `.title`, `.byline`, `.dimensions`) to BEM-namespaced `.xw-puzzle-card` pattern. Also rename `.puzzle-tabs` → `.xw-puzzle-grid`.
-
-**This is a mechanical rename with no behavioral or visual change.** Pure code quality.
-
----
-
-## Class name mapping
-
-| Old | New | Element |
-|---|---|---|
-| `.puzzle-tabs` | `.xw-puzzle-grid` | Grid container context |
-| `.result-crossword` | `.xw-puzzle-card` | Card root |
-| `.minipic` | `.xw-puzzle-card__thumb` | Image column |
-| `.metadata` | `.xw-puzzle-card__meta` | Text column |
-| `.title` | `.xw-puzzle-card__title` | Puzzle title |
-| `.byline` | `.xw-puzzle-card__byline` | Creator attribution |
-| `.dimensions` | `.xw-puzzle-card__dims` | Rows × cols |
-| `.nyt-watermark` | `.xw-puzzle-card__nyt` | NYT logo badge |
-
----
-
-## Files to change (12 files)
-
-### 1. Partial — `app/views/crosswords/partials/_crossword_tab.html.haml`
-
-```haml
-- unpublished = (defined?(unpublished) && unpublished == true)
-= link_to (unpublished ? edit_unpublished_crossword_path(cw) : crossword_path(cw)) do
-  .xw-puzzle-card
-    .xw-grid
-      .xw-col-12.xw-lg-4.xw-puzzle-card__thumb
-        = image_tag cw.try(:preview_url) || asset_path('example_puzzle.jpg'), class: "xw-thumbnail cols-#{cw.cols} rows-#{cw.rows}#{' unpublished' if unpublished}"
-      .xw-col-12.xw-lg-8.xw-puzzle-card__meta
-        %p.xw-puzzle-card__title= cw.title
-        - unless unpublished or cw.user.nil? or (cw.user.username == 'nytimes')
-          %p.xw-puzzle-card__byline= "by #{cw.user.display_name}"
-        %p.xw-puzzle-card__dims= "#{cw.rows} x #{cw.cols}"
-      - if (cw.user&.username == 'nytimes')
-        = image_tag 'nyt_black.png', class: 'xw-puzzle-card__nyt'
-```
-
-### 2. CSS — `app/assets/stylesheets/_components.scss` lines 843-937
-
-Rename all selectors:
-- `.puzzle-tabs` → `.xw-puzzle-grid`
-- `.result-crossword` → `.xw-puzzle-card`
-- `.minipic` → `.xw-puzzle-card__thumb`
-- `.metadata` → `.xw-puzzle-card__meta`
-- `.title` → `.xw-puzzle-card__title`
-- `.byline` → `.xw-puzzle-card__byline`
-- `.dimensions` → `.xw-puzzle-card__dims`
-- `.nyt-watermark` → `.xw-puzzle-card__nyt`
-- **DELETE** lines 931-937 (`.puzzle-tabs .xw-tabs__nav` — dead code, no matching HTML)
-
-### 3. View spec — `spec/views/crosswords/partials/_crossword_tab.html.haml_spec.rb`
-
-Update assertions:
-- `have_selector('.result-crossword')` → `have_selector('.xw-puzzle-card')`
-
-### 4-11. Views that pass `columns_class: 'puzzle-tabs'` — Change to `'xw-puzzle-grid'`
-
-These views pass `columns_class` to the `topper_stopper` layout. Update the string:
-
-| File | Change |
-|---|---|
-| `app/views/create/dashboard.html.haml` | `columns_class: 'puzzle-tabs'` → `'xw-puzzle-grid'` |
-| `app/views/pages/nytimes.html.haml` | `columns_class: 'puzzle-tabs'` → `'xw-puzzle-grid'` |
-| `app/views/pages/user_made.html.haml` | `columns_class: 'puzzle-tabs'` → `'xw-puzzle-grid'` |
-
-**Note:** `clues/show.html.haml` and `words/show.html.haml` render `_crossword_tab` inside `.xw-prose` — they use the partial but not the `.puzzle-tabs` grid wrapper. No `columns_class` change needed there.
-
-### 12. Home page list — `app/views/pages/home/_crossword_list.html.haml`
-
-Check if it wraps cards in `.puzzle-tabs` — if so, rename to `.xw-puzzle-grid`.
+| Reveal endpoint leaks answer key | Critical if no guard | `return head :forbidden unless @current_user&.is_admin` — same pattern as `admin_fake_win`. Tested with non-admin and anonymous specs. |
+| Reveal floods team channel | None | Letters set via direct DOM `.text()`, not `set_letter(letter, true)`. No team broadcasting. |
+| Reveal causes 225 `check_finisheds` calls | None | Avoided by using `.text()` instead of `set_letter()`. Single `check_all_finished()` call at end. |
+| Clear doesn't un-mark `is_complete` | Low | By design — `check_completion` callback only sets `true`, never reverts. Admin can delete solution for true reset. Documented in architecture decisions above. |
+| Flash Cascade flips error flags to correct | Low | Side effect of reusing `apply_mismatches`. Admin tool — acceptable. Can run Clear Puzzle to reset. |
+| No-op bindings for non-admin | None | `$('#admin-reveal-puzzle')` matches nothing when element isn't rendered. jQuery silently ignores. |
 
 ---
 
 ## What stays the same
 
-- **`.xw-thumbnail`** class on the `<img>` — this is a separate utility class in `global.scss.erb`
-- **`.unpublished`** modifier on the image — applied conditionally, unchanged
-- **`.xw-grid` / `.xw-col-12` / `.xw-lg-4` / `.xw-lg-8`** — grid utility classes, unchanged
-- **All visual appearance** — purely a class rename, identical CSS properties
+- **Fake Win** — unchanged, still first item in dropdown
+- **Check dropdown** — unchanged, works normally
+- **Non-admin experience** — completely unchanged (dropdown not rendered)
+- **Existing admin_fake_win specs** — no modifications
+- **`apply_mismatches` function** — reused as-is (not modified)
+- **`check_all_finished` function** — reused as-is (not modified)
+- **Solution model** — no changes
 
-## Risk
-
-**Very low.** Mechanical find-and-replace. No JS references. No behavioral change. Run `rspec` to catch any broken assertions.
+---
 
 ## Acceptance criteria
 
-1. `bundle exec rspec` passes — all examples including view spec
-2. All puzzle card lists render identically (visual spot-check: home, NYT, user-made, create dashboard, word/clue show)
-3. No remaining references to `.result-crossword`, `.minipic`, `.metadata .title`, `.metadata .byline`, `.metadata .dimensions`, `.nyt-watermark` in SCSS or HAML
-4. Dead CSS block (`.puzzle-tabs .xw-tabs__nav`) is deleted
+1. Admin dropdown shows 4 items: Fake Win, Reveal Puzzle, Clear Puzzle, Flash Cascade
+2. Reveal Puzzle fills all cells with correct letters and crosses off all clues
+3. Clear Puzzle empties all cells, removes check flags, un-crosses-off clues
+4. Flash Cascade triggers golden sweep across all non-void cells
+5. Non-admin POST to `/admin_reveal_puzzle` returns 403
+6. Reveal + auto-save correctly triggers `is_complete` via `check_completion` callback
+7. `bundle exec rspec` passes with new specs
+
+---
+
+## Future: Set Timer (deferred)
+
+**What:** Modify `solution.created_at` to simulate different solve durations for timer display testing.
+
+**Why deferred:** Higher risk (modifying timestamps with `update_column`), needs UI for duration selection (sub-menu or prompt), and the admin can already test timer display by combining Fake Win with their actual solution time. The ROI is lower than the other 3 tools.
+
+**If built later:** `POST /crosswords/:id/admin_set_timer` with `duration` param in minutes. Controller uses `solution.update_column(:created_at, solution.updated_at - duration.minutes)` to skip callbacks. Dropdown items could be presets: "1 min", "30 min", "2 hours", "3 days".

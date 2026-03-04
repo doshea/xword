@@ -39,7 +39,7 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
         }.to change(Crossword, :count).by(1)
          .and change(UnpublishedCrossword, :count).by(-1)
 
-        crossword = Crossword.last
+        crossword = Crossword.order(:created_at).last
         expect(response).to redirect_to(crossword_path(crossword))
       end
 
@@ -47,7 +47,7 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
         ucw = create_publishable_ucw(user: owner)
         patch "/unpublished_crosswords/#{ucw.id}/publish"
 
-        cw = Crossword.last
+        cw = Crossword.order(:created_at).last
         expect(cw.title).to eq ucw.title
         expect(cw.rows).to eq 4
         expect(cw.cols).to eq 4
@@ -58,7 +58,7 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
         ucw = create_publishable_ucw(user: owner)
         patch "/unpublished_crosswords/#{ucw.id}/publish"
 
-        cw = Crossword.last
+        cw = Crossword.order(:created_at).last
         expect(cw.letters[3]).to eq '_'   # void at index 3
         expect(cw.letters[12]).to eq '_'  # void at index 12
         expect(cw.letters[0]).to eq 'A'   # non-void letter preserved
@@ -68,7 +68,7 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
         ucw = create_publishable_ucw(user: owner)
         patch "/unpublished_crosswords/#{ucw.id}/publish"
 
-        cw = Crossword.last
+        cw = Crossword.order(:created_at).last
         across_contents = cw.cells.select(&:is_across_start).filter_map { |c| c.across_clue&.content }
         expect(across_contents).to include('First across')
       end
