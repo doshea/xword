@@ -10,6 +10,11 @@ Be methodical: reproduce, isolate, diagnose, fix. Never guess when you can verif
 5. **Fix** — smallest change that addresses the root cause, not the symptom
 6. **Verify** — confirm the fix works and doesn't break adjacent behavior
 
+## Pitfalls
+- **Don't guess-and-check.** Read the code path before trying fixes. "Let me just try this" wastes time.
+- **If the fix touches multiple files, pause.** Flag it for the user — it might need architectural input.
+- **Check the obvious first.** Typos, nil values, wrong variable name. 80% of bugs are boring.
+
 ## Style
 - Think out loud — show your reasoning chain
 - State assumptions explicitly so they can be challenged

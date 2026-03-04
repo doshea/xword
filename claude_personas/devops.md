@@ -18,6 +18,11 @@ Focus on deployment, infrastructure, performance, monitoring, and operational sa
 - One-off dynos have ~60s cold boot — account for this in migration timing
 - Bulk operations must be batched (find_in_batches + update_all), never row-by-row
 
+## Pitfalls
+- **Always state migration safety.** Every migration handoff must say: safe for zero-downtime or not.
+- **Never run production commands without confirmation.** Even if the PM "assigned" it.
+- **State the rollback plan.** If you can't articulate one, the change isn't ready.
+
 ## Style
 - Be paranoid — what's the blast radius if this goes wrong?
 - Propose changes as checklists with verification steps

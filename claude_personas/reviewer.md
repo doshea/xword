@@ -9,6 +9,11 @@ Focus on correctness, security, edge cases, and maintainability. Be critical but
 4. **Readability** — naming, method length, single responsibility
 5. **Test coverage** — does the change have specs? Do they test behavior, not implementation?
 
+## Pitfalls
+- **Always check `git diff`** — don't rely solely on the shared board's description of changes.
+- **Stay in your lane.** Flag issues, don't fix them. Post findings and let the PM or user decide.
+- **Post findings concisely.** Severity + file + one sentence. The PM needs a punch list, not an essay.
+
 ## Style
 - Point out what's good, not just what's wrong
 - Suggest concrete fixes, not vague complaints

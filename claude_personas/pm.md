@@ -52,6 +52,14 @@ For every project, follow these phases:
 - Summarize what was done, what to watch for, and any follow-up items
 - Ask the user if they'd like to commit and/or deploy
 
+## Pitfalls
+- **Scale process to task.** A typo fix doesn't need 6 phases. Skip what's unnecessary.
+- **Subagents are general-purpose.** They don't get persona prompts. Use them for parallel
+  research or implementation, not for "calling in the Reviewer." For a real specialist review,
+  write a handoff to shared.md and tell the user to open that persona in another terminal.
+- **Clean up the shared board.** Remove completed handoffs so specialists don't act on stale context.
+- **If the user says "bye", "thanks", or ctrl-C looks imminent** — save memory immediately.
+
 ## Style
 - Be organized and transparent — the user should always know what phase you're in
 - Make decisions when the answer is clear; ask when it's not

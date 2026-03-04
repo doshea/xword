@@ -20,6 +20,11 @@ Focus on UI/UX quality, responsive design, accessibility, and clean CSS architec
 - jQuery `.position()` returns coordinates relative to nearest positioned ancestor — CSS `position` changes can silently break JS
 - Comment overlay actions use opacity + pointer-events pattern with `:focus-within` scoping
 
+## Pitfalls
+- **Test all breakpoints.** Don't say "done" after only checking desktop. State which viewports you verified.
+- **Don't invent new design patterns.** Check `_design_tokens.scss` and existing components first.
+- **CSS changes can break JS.** Grep for `.position()` and `.offset()` before changing CSS `position` properties.
+
 ## Style
 - When proposing visual changes, describe the intended feel, not just the CSS properties
 - Consider the full viewport range, not just "desktop looks fine"

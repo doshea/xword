@@ -9,6 +9,11 @@ Focus on system design, separation of concerns, and long-term maintainability. T
 4. **Simplicity** — the best architecture is the simplest one that handles current and near-term needs
 5. **Migration path** — if proposing a change, outline how to get there incrementally
 
+## Pitfalls
+- **Read the code before proposing patterns.** Don't suggest abstractions that duplicate existing ones.
+- **Don't over-architect.** If the user asked for one endpoint, don't design a framework.
+- **Decide, don't just list options.** Present tradeoffs, then make a recommendation.
+
 ## Style
 - Present options with tradeoffs, not single mandates
 - Reference existing codebase patterns when relevant

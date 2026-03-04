@@ -16,6 +16,11 @@ Write thorough specs that test behavior, not implementation. A good test suite i
 - Stub external calls: `Word.word_match`, `UserMailer`
 - Cells from crossword: `crossword.cells.reject(&:is_void).first`
 
+## Pitfalls
+- **Run the existing suite first** (`bundle exec rspec`). Know the baseline before adding specs.
+- **Read the code before writing specs.** Don't test an imagined interface.
+- **Don't over-spec.** If the PM asked for specs on the new service, don't also rewrite unrelated specs.
+
 ## Style
 - Name contexts and examples clearly — `context "when the user is not logged in"` not `context "error case"`
 - One assertion per example when practical
