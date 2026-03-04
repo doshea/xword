@@ -1,0 +1,77 @@
+.xw-chalkboard{ data: { controller: 'chalkboard' } }
+  .xw-chalkboard__slider{ data: { 'chalkboard-target': 'slider' } }
+
+    /--- SIGNUP PANEL (visible by default) ---
+    .xw-chalkboard__panel.xw-chalkboard__panel--signup{ data: { 'chalkboard-target': 'signupPanel' },
+                                                         role: 'region', aria: { label: 'Sign up' } }
+      .xw-chalkboard__welcome
+        = image_tag 'welcome/welcome_board.png', alt: 'Welcome to Crossword Café',
+                    class: 'xw-chalkboard__welcome-img'
+
+      = render partial: 'shared/form_errors', locals: { object: @user }
+
+      = form_for @user, html: { class: 'xw-chalkboard__form' } do |f|
+        .xw-chalkboard__field
+          = f.label :username, class: 'sr-only'
+          = f.text_field :username, placeholder: 'username', autocomplete: 'username',
+                         class: 'xw-chalkboard__input', required: true,
+                         maxlength: User::MAX_USERNAME_LENGTH
+        .xw-chalkboard__field
+          = f.label :email, class: 'sr-only'
+          = f.email_field :email, placeholder: 'email', autocomplete: 'email',
+                          class: 'xw-chalkboard__input', required: true,
+                          maxlength: User::MAX_EMAIL_LENGTH
+        .xw-chalkboard__field
+          = f.label :password, class: 'sr-only'
+          = f.password_field :password, placeholder: 'password', autocomplete: 'new-password',
+                             class: 'xw-chalkboard__input', required: true,
+                             maxlength: User::MAX_PASSWORD_LENGTH
+        .xw-chalkboard__field
+          = f.label :password_confirmation, 'Confirm password', class: 'sr-only'
+          = f.password_field :password_confirmation, placeholder: 'confirm password',
+                             autocomplete: 'new-password', class: 'xw-chalkboard__input',
+                             required: true, maxlength: User::MAX_PASSWORD_LENGTH
+        = f.submit 'Sign up!', class: 'xw-chalkboard__btn'
+
+      %span.xw-chalkboard__or or
+
+      %button.xw-chalkboard__btn.xw-chalkboard__toggle{ type: 'button',
+              data: { action: 'chalkboard#showLogin' } }
+        Log In
+        = icon('arrow-right')
+
+    /--- LOGIN PANEL ---
+    .xw-chalkboard__panel.xw-chalkboard__panel--login{ data: { 'chalkboard-target': 'loginPanel' },
+                                                        role: 'region', aria: { label: 'Log in' } }
+      %h2.xw-chalkboard__heading Log In
+
+      = form_tag login_path, class: 'xw-chalkboard__form' do
+        = hidden_field_tag :redirect, params[:redirect]
+        .xw-chalkboard__field
+          = label_tag :username, 'Username', class: 'sr-only'
+          = text_field_tag :username, params[:username], placeholder: 'username',
+                           autocomplete: 'username', class: 'xw-chalkboard__input', required: true
+        .xw-chalkboard__field
+          = label_tag :password, 'Password', class: 'sr-only'
+          = password_field_tag :password, nil, placeholder: 'password',
+                               autocomplete: 'current-password', class: 'xw-chalkboard__input',
+                               required: true
+        .xw-chalkboard__remember
+          = check_box_tag :remember_me, 1, true, class: 'xw-chalkboard__checkbox'
+          = label_tag :remember_me, 'remember me', class: 'xw-chalkboard__remember-label'
+        = submit_tag 'Log in', class: 'xw-chalkboard__btn'
+
+      %span.xw-chalkboard__or or
+
+      %button.xw-chalkboard__btn.xw-chalkboard__toggle{ type: 'button',
+              data: { action: 'chalkboard#showSignup' } }
+        = icon('arrow-left')
+        Sign Up
+
+      = link_to 'Forgot your password?', forgot_password_users_path,
+                class: 'xw-chalkboard__forgot'
+
+%p.xw-welcome-bypass
+  = link_to root_path, class: 'xw-welcome-bypass__link' do
+    Just browsing? Skip to puzzles
+    = icon('arrow-right', size: 14)

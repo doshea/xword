@@ -21,6 +21,7 @@ $bp-xl:  1280px;
 
 $max-content-width: 80rem;   // 1280px — matches existing $header-width intent
 $max-puzzle-width:  72rem;   // 1152px — solve page wrapper
+$row-width:         62.5em;  // legacy crossword layout width (from _dimensions.scss)
 
 
 // -----------------------------------------------------------------------------

@@ -3,15 +3,17 @@
   %head
     = render partial: 'layouts/partials/meta_tags'
     = render partial: 'layouts/partials/knowledge_graph'
+    %link{rel: 'preconnect', href: 'https://fonts.googleapis.com'}
+    %link{rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: true}
+    %link{rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Courier+Prime&family=DM+Sans:wght@400;500;600&family=Lora:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap'}
     %title Crossword Caf&eacute; | Welcome
-    = stylesheet_link_tag    "application", media: "all"
-    = stylesheet_link_tag    "welcome"
+    = stylesheet_link_tag "application", media: "all"
+    = stylesheet_link_tag "welcome"
     = javascript_include_tag "application"
-    = javascript_include_tag "welcome", 'data-turbo-track': 'reload'
     = csrf_meta_tags
   %body
+    = link_to 'Skip to main content', '#body', class: 'skip-to-content'
     %main#body
       = yield
-      = render partial: 'layouts/partials/chalkboard'
     %footer#footer
       = render partial: 'layouts/partials/footer'
