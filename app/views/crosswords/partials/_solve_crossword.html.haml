@@ -6,7 +6,7 @@
         - for c in 1..@crossword.cols
           - letter = @crossword.letters[i]
           - unless letter == '_'
-            %td.cell{:'data-row' => r, :'data-col' => c, :'data-index' => i}
+            %td.cell{:'data-row' => r, :'data-col' => c, :'data-index' => i, class: ('flagged revealed' if @revealed_set&.include?(i))}
               .flag
               .letter= @solution.letters[i] if @solution
               - cell = @cells[i]

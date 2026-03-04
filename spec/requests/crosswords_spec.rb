@@ -53,6 +53,23 @@ RSpec.describe 'Crosswords', type: :request do
       end
     end
 
+    context 'when the solution has revealed_indices' do
+      before do
+        log_in_as(user)
+        solution = Solution.find_or_create_by(user: user, crossword: crossword, team: false)
+        solution.fill_letters
+        # First non-void cell index
+        idx = crossword.letters.chars.each_with_index.find { |c, _| c != '_' }&.last || 0
+        solution.update_column(:revealed_indices, [idx].to_json)
+      end
+
+      it 'renders revealed cells with flagged and revealed classes' do
+        get "/crosswords/#{crossword.id}"
+        expect(response.body).to include('flagged')
+        expect(response.body).to include('revealed')
+      end
+    end
+
     context 'when anonymous' do
       it 'does not create a solution' do
         expect {

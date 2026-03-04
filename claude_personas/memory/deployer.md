@@ -2,6 +2,20 @@
 
 ## Deploy History
 
+### v541 — 2026-03-04
+**Commit:** `c2ff36e`
+**Changes:** Edit page void/empty cell swap fix: integer 0 vs string "0" normalization, JS hardening, regression test, repair rake task.
+**Migration:** None
+**Rollback:** `git revert c2ff36e`
+**Post-deploy:** Clean. ⚠️ Run `heroku run bundle exec rails repair:void_cells` to fix existing corrupted UCWs.
+
+### v540 — 2026-03-04
+**Commits:** `5dc0897`, `cc099c6`
+**Changes:** Homepage "Load More" pagination — Turbo Stream offset pagination for all 3 tabs (unstarted, in_progress, solved). Dead code deleted: `CrosswordsController#batch`, `batch.turbo_stream.erb`, `_load_next_button.html.haml`. Bug fix: in-progress empty-state link pointed to self instead of New Puzzles tab. 6 new request specs.
+**Migration:** None
+**Rollback:** `git revert cc099c6 5dc0897`
+**Post-deploy:** Clean. Release phase exit 0. Puma restarted ~3s. Homepage 200.
+
 ### v539 — 2026-03-04
 **Commit:** `0c8a75d`
 **Changes:** Footer redesign — dark bar → transparent centered colophon strip. Single row: nav links · social icons · ©. Removed ul/li wrappers and icons from nav links. Mobile stacks vertically.
@@ -84,7 +98,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v539
+- Current release: v540
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

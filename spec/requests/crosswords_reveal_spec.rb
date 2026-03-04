@@ -67,6 +67,38 @@ RSpec.describe 'POST /crosswords/:id/reveal', type: :request do
              params: { indices: [-1], solution_id: solution.id }
       }.not_to change { solution.reload.hints_used }
     end
+
+    it 'persists revealed_indices on the solution' do
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [first_letter_index], solution_id: solution.id }
+      expect(JSON.parse(solution.reload.revealed_indices)).to include(first_letter_index)
+    end
+
+    it 'merges revealed_indices without duplicates on repeated reveals' do
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [first_letter_index], solution_id: solution.id }
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [first_letter_index], solution_id: solution.id }
+      stored = JSON.parse(solution.reload.revealed_indices)
+      expect(stored.count(first_letter_index)).to eq(1)
+    end
+
+    it 'accumulates revealed_indices across separate reveals' do
+      indices = crossword.letters.chars.each_with_index
+                  .select { |c, _| c != '_' }.first(2).map(&:last)
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [indices[0]], solution_id: solution.id }
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [indices[1]], solution_id: solution.id }
+      stored = JSON.parse(solution.reload.revealed_indices)
+      expect(stored).to include(indices[0], indices[1])
+    end
+
+    it 'does not persist revealed_indices when no valid cells are revealed' do
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [-1], solution_id: solution.id }
+      expect(JSON.parse(solution.reload.revealed_indices)).to be_empty
+    end
   end
 
   describe 'as an anonymous user' do
@@ -94,6 +126,12 @@ RSpec.describe 'POST /crosswords/:id/reveal', type: :request do
         post "/crosswords/#{crossword.id}/reveal",
              params: { indices: [first_letter_index], solution_id: team_solution.id }
       }.to change { team_solution.reload.hints_used }.by(1)
+    end
+
+    it 'persists revealed_indices on the team solution' do
+      post "/crosswords/#{crossword.id}/reveal",
+           params: { indices: [first_letter_index], solution_id: team_solution.id }
+      expect(JSON.parse(team_solution.reload.revealed_indices)).to include(first_letter_index)
     end
   end
 end

@@ -60,8 +60,8 @@ window.solve_app = {
     $('#admin-reveal-puzzle').on('click', solve_app.reveal_puzzle);
     $('#admin-clear-puzzle').on('click', solve_app.clear_puzzle);
     $('#admin-flash-cascade').on('click', solve_app.flash_cascade);
-    $('#reveal-cell').on('click', solve_app.reveal_cell);
-    $('#reveal-word').on('click', solve_app.reveal_word);
+    $('#reveal-letter').on('click', solve_app.reveal_cell);
+    $('#hint-word').on('click', solve_app.hint_word);
     $('input, textarea').on('click', function() { cw.unhighlight_all(); });
     solve_app.check_all_finished();
     return true;
@@ -150,6 +150,9 @@ window.solve_app = {
 
       setTimeout(function() {
         var cell = $($('.cell')[cellIndex]);
+
+        // Revealed cells keep their black tab — never overwrite with check flags
+        if (cell.hasClass('revealed')) return;
 
         // 1. Apply correct/incorrect state (flag renders under the flash)
         if (v) {
@@ -403,8 +406,9 @@ window.solve_app = {
     });
   },
 
-  // Reveal the correct letters for all cells in the selected word.
-  reveal_word: function(e) {
+  // Hint: reveal one random empty cell from the selected word.
+  // Prefers unfilled cells; falls back to non-revealed cells with letters.
+  hint_word: function(e) {
     e.preventDefault();
     if (!cw.selected) {
       cw.flash('Select a cell first.', 'info');
@@ -412,12 +416,27 @@ window.solve_app = {
     }
 
     var word_cells = cw.selected.get_word_cells();
-    var indices = [];
-    for (var i = 0; i < word_cells.length; i++) {
-      indices.push(word_cells[i].data('index'));
+
+    // Prefer empty, non-revealed cells
+    var candidates = word_cells.filter(function(_, el) {
+      var $c = $(el);
+      return !$c.hasClass('revealed') && $c.is_empty_cell();
+    });
+    // Fallback: non-revealed cells (may have wrong letters)
+    if (candidates.length === 0) {
+      candidates = word_cells.filter(function(_, el) {
+        return !$(el).hasClass('revealed');
+      });
+    }
+    if (candidates.length === 0) {
+      cw.flash('Word already fully revealed.', 'info');
+      return;
     }
 
-    var data = { indices: indices };
+    var pick = candidates.eq(Math.floor(Math.random() * candidates.length));
+    var index = pick.data('index');
+
+    var data = { indices: [index] };
     if (solve_app.solution_id) data.solution_id = solve_app.solution_id;
 
     $.ajax({
@@ -429,8 +448,8 @@ window.solve_app = {
         solve_app.apply_reveal(resp.letters);
       },
       error: function(xhr) {
-        cw.flash('Reveal failed.', 'error');
-        console.warn('reveal_word failed:', xhr.status);
+        cw.flash('Hint failed.', 'error');
+        console.warn('hint_word failed:', xhr.status);
       }
     });
   },
@@ -444,7 +463,7 @@ window.solve_app = {
     indices.forEach(function(idx) {
       var $cell = $($('.cell')[idx]);
       $cell.set_letter(letters[idx], true);  // original=true → broadcasts to team
-      $cell.addClass('flagged correct').removeClass('incorrect');
+      $cell.addClass('flagged revealed').removeClass('incorrect correct');
     });
 
     // Flash cascade on revealed cells (reuse existing animation)

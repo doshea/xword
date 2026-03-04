@@ -19,6 +19,7 @@ class CrosswordsController < ApplicationController
                                .where(crossword_id: @crossword.id, solution_partnerings: { user_id: @current_user.id })
                                .count
       @has_multiple_solutions = solution_count > 1
+      @revealed_set = Set.new(JSON.parse(@solution.revealed_indices))
     end
     # Preload stats to avoid N+1 association .count calls in _puzzle_stats.html.haml.
     @word_count = @crossword.across_clues.count + @crossword.down_clues.count
@@ -201,13 +202,18 @@ class CrosswordsController < ApplicationController
       revealed[i] = letter
     end
 
-    # Track hints on the solution (logged-in users only)
-    if @current_user && params[:solution_id].present?
+    # Track hints and persist revealed indices (logged-in users only)
+    if @current_user && params[:solution_id].present? && revealed.any?
       solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
       solution ||= Solution.joins(:solution_partnerings)
                            .where(solution_partnerings: { user_id: @current_user.id })
                            .find_by(id: params[:solution_id], crossword_id: @crossword.id)
-      solution&.increment!(:hints_used, revealed.size)
+      if solution
+        solution.increment!(:hints_used, revealed.size)
+        existing = JSON.parse(solution.revealed_indices)
+        merged = (existing + revealed.keys).uniq
+        solution.update_column(:revealed_indices, merged.to_json)
+      end
     end
 
     render json: { letters: revealed }

@@ -301,6 +301,20 @@
 
 **Risk:** Very low. Pure visual change. No behavior, no JS, no data.
 
+### 2026-03-04: Edit page void/empty swap — root cause analysis
+
+**Symptom:** User reports random voids, "0" appearing in cells, clues not saving, auto-save broken.
+
+**Root cause:** `update_letters` line 29 type mismatch. JS sends integer `0` for voids via JSON, controller checks `l == "0"` (string). Ruby's `0 == "0"` is `false`. Also, empty cells arrive as `" "` (space), which `blank?` maps to nil (void marker).
+
+**Result:** On every save+reload: void cells → "0" letter; empty cells → voids. Clue numbering shifts because void positions change.
+
+**Test gap:** Controller spec sends string `"0"` (bypasses HTTP encoding), so the bug was never caught. Need a test that sends integer `0`.
+
+**Fix:** `l.to_s == "0" || l.to_s.strip.empty? ? nil : l.to_s` + JS hardening (`"0"` string instead of `0` integer) + data repair script.
+
+**Confidence:** High — verified `0.blank?` → false and `0 == "0"` → false in Rails runner.
+
 ## Open Questions
 
 - ~~Default scope removal plan needed (future session)~~ **DONE** — plan written, fixes 3 bugs.
@@ -355,6 +369,20 @@
 **Files:** 7 modified + 1 new migration + 1 new spec file. Low risk — purely additive.
 
 **Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Persistent Black Tabs + Hint Word — v2 reveal design
+
+**Enhancement:** Revealed cells need visual distinction from checked cells and must persist across reloads.
+
+**Key design decisions:**
+1. **Black tab** via `.revealed .flag` CSS rule using `--color-text` — visually distinct from green (correct) and red (incorrect). Rule placed after `.correct`/`.incorrect` for source-order precedence.
+2. **`revealed_indices` text column on solutions** — JSON array of cell indices. Merged (deduped) on each reveal. Parsed into a `Set` in controller `show` for O(1) lookup. Rendered server-side as `flagged revealed` classes on `<td>`.
+3. **Reveal Cell → Reveal Letter** — rename only, same behavior.
+4. **Reveal Word → Hint Word** — new behavior: picks one random empty (unfilled) cell from the current word. Prefers empty cells; falls back to non-revealed cells with letters. Client-side randomization; sends single index to existing `/reveal` endpoint.
+5. **Check guard** — `apply_mismatches()` skips cells with `.revealed` class so checking never overwrites the black tab.
+6. **Team limitation** — teammates see the letter in real-time (via ActionCable broadcast) but don't see the black tab until reload. Same pattern as check flags — not worth a separate broadcast.
+
+**Files:** 7 modified + 1 new migration. 854 examples, 0 failures.
 
 ### 2026-03-04: Homepage "Load More" Pagination — design
 
