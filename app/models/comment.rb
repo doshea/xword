@@ -17,7 +17,7 @@ class Comment < ApplicationRecord
 
   belongs_to :user, inverse_of: :comments, optional: true
   belongs_to :crossword, inverse_of: :comments, optional: true
-  belongs_to :base_comment, class_name: 'Comment', optional: true
+  belongs_to :base_comment, class_name: 'Comment', inverse_of: :replies, optional: true
   has_many :replies, class_name: 'Comment', foreign_key: 'base_comment_id', dependent: :destroy
 
   validates :content, presence: true, length: { maximum: 10_000 }

@@ -71,6 +71,32 @@ describe Solution do
     end
   end
 
+  describe '#accessible_by?' do
+    let(:solution) { create(:solution, user: user, crossword: crossword) }
+    let(:partner)  { create(:user) }
+    let(:outsider) { create(:user) }
+
+    before do
+      SolutionPartnering.create!(solution: solution, user: partner)
+    end
+
+    it 'returns true for the owner' do
+      expect(solution.accessible_by?(user)).to be true
+    end
+
+    it 'returns true for a team partner' do
+      expect(solution.accessible_by?(partner)).to be true
+    end
+
+    it 'returns false for an outsider' do
+      expect(solution.accessible_by?(outsider)).to be false
+    end
+
+    it 'returns false for nil' do
+      expect(solution.accessible_by?(nil)).to be false
+    end
+  end
+
   describe 'zero-letter crossword (all voids)' do
     let(:void_crossword) do
       cw = create(:crossword, :smaller)

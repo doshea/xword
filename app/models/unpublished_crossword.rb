@@ -26,24 +26,6 @@ class UnpublishedCrossword < ApplicationRecord
 
   before_create :populate_arrays
 
-  def self.convert_crosswords
-    Crossword.unpublished.each do |cw|
-      new_ucw = UnpublishedCrossword.new(title: cw.title, description: cw.description, rows: cw.rows, cols: cw.cols, created_at: cw.created_at, updated_at: cw.updated_at, user_id: cw.user_id)
-      #handle different attributes
-      new_ucw.letters = cw.letters.split('').map{|letter| letter == '_' ? nil : letter}
-      
-      #clues
-      across_clues = cw.cells.map{|c| c.across_clue.try(:content)}
-      down_clues = cw.cells.map{|c| c.down_clue.try(:content)}
-      new_ucw.across_clues = across_clues
-      new_ucw.down_clues = down_clues
-
-      if new_ucw.save
-        # cw.destroy
-      end
-    end
-  end
-
   #TODO make this work
   def letters_to_clue_numbers
     letter_voids = letters.map{|letter| letter.nil?}

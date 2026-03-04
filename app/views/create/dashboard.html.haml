@@ -7,8 +7,6 @@
       = icon('pencil')
       %span Your Puzzles
     %hr
-    :javascript
-      var puzzles_remaining = {};
     %section.content.unpublished.center
       -if @unpublished.try(:any?)
         %h4.text-left

@@ -25,7 +25,9 @@ class Clue < ApplicationRecord
   self.per_page = 50
 
   def crosswords_by_title
-    (across_crosswords + down_crosswords).uniq.sort_by(&:title)
+    Crossword.where(id: across_crosswords.select(:id))
+             .or(Crossword.where(id: down_crosswords.select(:id)))
+             .reorder(:title)
   end
 
   DEFAULT_CONTENT = 'ENTER CLUE'

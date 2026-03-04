@@ -71,12 +71,18 @@ class Solution < ApplicationRecord
     return { numerator: 0, denominator: 0, percent: 0.0 } if letter_count.zero?
 
     sum = 0
-    current_letters.split(//).each_with_index do |char, index|
-      sum += 1 if (cw_letters[index] == char) and (char != '_')
+    current_letters.each_char.with_index do |char, index|
+      sum += 1 if char != '_' && char == cw_letters[index]
     end
 
     percent = ((sum.to_f/letter_count)*100).round(2)
     {numerator: sum, denominator: letter_count, percent: percent}
+  end
+
+  # Returns true if the user owns this solution or is a team partner.
+  def accessible_by?(user)
+    return false unless user
+    user_id == user.id || solution_partnerings.exists?(user_id: user.id)
   end
 
   def fill_letters

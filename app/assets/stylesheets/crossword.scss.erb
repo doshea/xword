@@ -679,11 +679,13 @@ textarea:focus ~ .xw-comment__hint {
     min-height: 2.5rem;
     padding-top: var(--space-1);    // 4px — centers caret vertically in compact height
     padding-bottom: var(--space-1);
-    transition: height var(--duration-base) var(--ease-out);
+    // No transition on blur — instant collapse prevents layout shift that eats clicks
+    // on nearby buttons (reply-count toggle, overlay actions). See CLAUDE.md "Frontend Hazards".
     &:focus {
       height: 5rem;
       padding-top: var(--space-2);  // restore normal padding when expanded
       padding-bottom: var(--space-2);
+      transition: height var(--duration-base) var(--ease-out);
     }
   }
 }

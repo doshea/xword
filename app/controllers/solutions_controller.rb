@@ -151,20 +151,17 @@ class SolutionsController < ApplicationController
   # unauthenticated or unauthorized users — appropriate for AJAX endpoints.
   def ensure_solution_access
     return head(:forbidden) unless @current_user
-    return if @current_user == @solution.user
-    return if SolutionPartnering.exists?(solution_id: @solution.id, user_id: @current_user.id)
-    head :forbidden
+    head(:forbidden) unless @solution.accessible_by?(@current_user)
   end
 
   def ensure_team_member
-    return if @current_user == @solution.user
-    return if SolutionPartnering.exists?(solution_id: @solution.id, user_id: @current_user.id)
-    head :forbidden
+    head(:forbidden) unless @solution.accessible_by?(@current_user)
   end
 
   def ensure_owner_or_partner
     return redirect_to(unauthorized_path) unless @current_user
-    @solution_partnering = SolutionPartnering.find_by_user_id_and_solution_id(@current_user.id, @solution.id)
-    redirect_to(unauthorized_path) if !((@current_user == @solution.user) || (@solution_partnering))
+    return redirect_to(unauthorized_path) unless @solution.accessible_by?(@current_user)
+    # Set @solution_partnering for destroy action (determines delete vs leave)
+    @solution_partnering = @solution.solution_partnerings.find_by(user_id: @current_user.id)
   end
 end

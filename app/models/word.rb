@@ -28,11 +28,12 @@ class Word < ApplicationRecord
   has_many :down_crosswords, through: :down_cells, source: :crossword
 
   def crosswords
-    (across_crosswords + down_crosswords).uniq
+    Crossword.where(id: across_crosswords.select(:id))
+             .or(Crossword.where(id: down_crosswords.select(:id)))
   end
 
   def crosswords_by_title
-    crosswords.sort_by(&:title)
+    crosswords.reorder(:title)
   end
   self.per_page = 50
 

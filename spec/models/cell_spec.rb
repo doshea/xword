@@ -25,8 +25,6 @@ describe Cell do
     it {should belong_to(:across_clue).class_name('Clue').with_foreign_key(:across_clue_id).optional}
     it {should belong_to(:down_clue).class_name('Clue').with_foreign_key(:down_clue_id).optional}
     it {should belong_to(:crossword).optional}
-    it {should have_one(:cell_edit).dependent(:destroy)}
-
     context 'delegation' do
       it {should delegate_method(:across_word).to(:across_clue)}
       it {should delegate_method(:down_word).to(:down_clue)}

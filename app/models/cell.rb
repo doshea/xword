@@ -29,8 +29,6 @@ class Cell < ApplicationRecord
   belongs_to :down_clue, class_name: 'Clue', foreign_key: 'down_clue_id', inverse_of: :down_cells, optional: true
   belongs_to :crossword, inverse_of: :cells, optional: true
 
-  has_one :cell_edit, inverse_of: :cell, dependent: :destroy
-
   delegate :across_word, to: :across_clue, allow_nil: true
   delegate :down_word, to: :down_clue, allow_nil: true
   delegate :user, to: :crossword, allow_nil: true
