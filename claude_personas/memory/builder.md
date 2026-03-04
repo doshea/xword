@@ -19,7 +19,7 @@
 - Crossword factory pinned to 5×5. `:smaller` trait is a no-op alias.
 
 ### CSS/JS
-- `.puzzle-tabs .xw-tabs__nav` CSS is NOT dead — class used in 4 views.
+- `.xw-puzzle-grid .xw-tabs__nav` CSS is NOT dead — class used in 4 views. (Renamed from `.puzzle-tabs` in BEM sprint.)
 - jQuery `.position()` returns coords relative to nearest positioned ancestor — grep for `.position()` and `.offset()` when changing CSS `position` properties.
 - Admin tools: `@current_user&.is_admin` guard → `head :forbidden`. Wrapped in `- if is_admin?` in HAML.
 - Reveal Puzzle JS uses direct `.text()` not `set_letter()` to avoid N team broadcasts.

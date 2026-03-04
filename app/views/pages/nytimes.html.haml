@@ -1,6 +1,6 @@
 - title 'NYT Crosswords'
 
-= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs', row_top_title: "#{image_tag 'nyt_white.png', width: 20} New York Times Crosswords".html_safe} do
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: "#{image_tag 'nyt_white.png', width: 20} New York Times Crosswords".html_safe} do
 
   - if @total_count == 0
     %p.xw-empty-state No NYT puzzles have been imported yet.

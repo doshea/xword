@@ -3,7 +3,7 @@
 = content_for :head do
   = stylesheet_link_tag :search
 
-= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid'} do
   %h1
     - if @current_user
       Welcome back, #{@current_user.display_first_name}!

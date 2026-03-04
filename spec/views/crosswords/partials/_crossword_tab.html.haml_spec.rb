@@ -10,7 +10,7 @@ describe 'crosswords/partials/_crossword_tab' do
     end
 
     it 'renders without error' do
-      expect(rendered).to have_selector('.result-crossword')
+      expect(rendered).to have_selector('.xw-puzzle-card')
     end
 
     it 'displays the crossword title' do
@@ -44,7 +44,7 @@ describe 'crosswords/partials/_crossword_tab' do
     end
 
     it 'renders without error' do
-      expect(rendered).to have_selector('.result-crossword')
+      expect(rendered).to have_selector('.xw-puzzle-card')
     end
 
     it 'displays the unpublished crossword title' do
