@@ -279,6 +279,43 @@ RSpec.describe 'Crosswords', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # POST /crosswords/:id/admin_reveal_puzzle — Admin test tool
+  # -------------------------------------------------------------------------
+  describe 'POST /crosswords/:id/admin_reveal_puzzle' do
+    context 'when admin' do
+      let(:admin) { create(:user, :with_test_password, is_admin: true) }
+      before { log_in_as(admin) }
+
+      it 'returns the correct letters' do
+        post admin_reveal_puzzle_crossword_path(crossword),
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['letters']).to eq(crossword.letters)
+        expect(json['letters'].length).to eq(crossword.rows * crossword.cols)
+      end
+    end
+
+    context 'when non-admin' do
+      before { log_in_as(user) }
+
+      it 'returns forbidden' do
+        post admin_reveal_puzzle_crossword_path(crossword),
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when not logged in' do
+      it 'returns forbidden' do
+        post admin_reveal_puzzle_crossword_path(crossword),
+             headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # XSS protection — clue content must be escaped on the solve page
   # -------------------------------------------------------------------------
   describe 'XSS protection on solve page' do

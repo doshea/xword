@@ -57,6 +57,9 @@ window.solve_app = {
     $('#check-puzzle').on('click', solve_app.check_puzzle);
     $("#solve-controls").on('click', '.check-completion :not(span)', solve_app.check_completion);
     $('#admin-fake-win').on('click', solve_app.fake_win);
+    $('#admin-reveal-puzzle').on('click', solve_app.reveal_puzzle);
+    $('#admin-clear-puzzle').on('click', solve_app.clear_puzzle);
+    $('#admin-flash-cascade').on('click', solve_app.flash_cascade);
     $('input, textarea').on('click', function() { cw.unhighlight_all(); });
     solve_app.check_all_finished();
     return true;
@@ -297,6 +300,76 @@ window.solve_app = {
         }
       }
     });
+  },
+
+  // Admin-only: fill all cells with correct letters.
+  // Sets letter text directly (not via set_letter) to avoid 225 individual
+  // team broadcasts and per-cell check_finisheds calls. Batches the
+  // crossing-off into a single check_all_finished() call at the end.
+  reveal_puzzle: function(e) {
+    e.preventDefault();
+    $.ajax({
+      dataType: 'json',
+      type: 'POST',
+      url: "/crosswords/" + solve_app.crossword_id + "/admin_reveal_puzzle",
+      success: function(data) {
+        var letters = data.letters;
+        var $cells = $('.cell');
+        $cells.each(function(index) {
+          var $cell = $(this);
+          if (!$cell.hasClass('void')) {
+            $cell.children('.letter').first().text(letters[index]);
+          }
+        });
+        // Clear any check flags from previous checks
+        $cells.removeClass('flagged incorrect correct cell-flash');
+        // Cross off all clues (all words are now complete)
+        solve_app.check_all_finished();
+        // Mark as unsaved — auto-save will fire within 5s
+        solve_app.update_unsaved();
+        cw.flash('Puzzle revealed!', 'success');
+      },
+      error: function(xhr) {
+        if (xhr.status === 403) {
+          cw.flash('Admin access required.', 'error');
+        } else {
+          cw.flash('Reveal failed.', 'error');
+          console.warn('admin_reveal_puzzle failed:', xhr.status);
+        }
+      }
+    });
+  },
+
+  // Admin-only: clear all letters and reset visual state.
+  // Pure client-side — no server endpoint needed.
+  clear_puzzle: function(e) {
+    e.preventDefault();
+    // Clear all letters from non-void cells
+    $('.cell:not(.void)').each(function() {
+      $(this).children('.letter').first().empty();
+    });
+    // Clear check flags from all cells
+    $('.cell').removeClass('flagged incorrect correct cell-flash');
+    // Un-cross-off all clues
+    $('.crossed-off').removeClass('crossed-off');
+    // Mark as unsaved — auto-save will fire within 5s
+    solve_app.update_unsaved();
+    cw.flash('Puzzle cleared.', 'info');
+  },
+
+  // Admin-only: trigger golden flash cascade across all non-void cells.
+  // Pure client-side — reuses apply_mismatches with synthetic data.
+  // All values set to false (correct) so no flag classes are applied —
+  // only the golden flash animation sweeps the grid.
+  flash_cascade: function(e) {
+    e.preventDefault();
+    var mismatches = {};
+    $('.cell').each(function(index) {
+      if (!$(this).hasClass('void')) {
+        mismatches[index] = false;
+      }
+    });
+    solve_app.apply_mismatches({ mismatches: mismatches });
   },
 
   add_comment_or_reply: function(e) {

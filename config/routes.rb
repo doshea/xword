@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       post :check_cell
       post :check_completion
       post :admin_fake_win
+      post :admin_reveal_puzzle
     end
     collection do
       post :batch

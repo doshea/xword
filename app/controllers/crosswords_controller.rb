@@ -1,5 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :admin_fake_win]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :admin_fake_win, :admin_reveal_puzzle]
   before_action :ensure_logged_in, only: [:create_team, :favorite, :unfavorite]
 
   #GET /crosswords/:id or crossword_path
@@ -121,7 +121,7 @@ class CrosswordsController < ApplicationController
   #GET /crosswords/batch or batch_crosswords_path
   def batch
     ids = Array(params[:ids]).first(100)
-    @crosswords = Crossword.where(id: ids)
+    @crosswords = Crossword.where(id: ids).order(created_at: :desc)
     @crosswords_remaining = @crosswords[Crossword.per_page..-1]
     @crosswords = @crosswords[0...Crossword.per_page]
   end
@@ -184,6 +184,13 @@ class CrosswordsController < ApplicationController
         formats: [:html]
       )
     }
+  end
+
+  # POST /crosswords/:id/admin_reveal_puzzle — Admin-only: return correct letters
+  def admin_reveal_puzzle
+    return head :forbidden unless @current_user&.is_admin
+
+    render json: { letters: @crossword.letters }
   end
 
 end
