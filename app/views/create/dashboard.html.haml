@@ -1,15 +1,13 @@
 - title 'Create'
-= content_for :head do
-  = stylesheet_link_tag :search
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'puzzle-tabs'} do
   -if is_logged_in?
     %h3
       = icon('pencil')
       %span Your Puzzles
     %hr
-    %section.content.unpublished.center
+    %section
       -if @unpublished.try(:any?)
-        %h4.text-left
+        %h4
           Unpublished
           (
           %span#unpublished-count= @unpublished.count
@@ -20,14 +18,12 @@
               = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
       - else
         %p You're not working on any puzzles right now. Why not start a...
-        %br
-        %br
       = link_to new_unpublished_crossword_path, class: 'xw-btn xw-btn--success' do
-        = icon('pencil', class: 'larger')
+        = icon('pencil')
         New Puzzle
     - if @published.try(:any?)
       %hr
-      %section.content
+      %section
         %h4
           Published
           (
@@ -38,9 +34,8 @@
             %li
               = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
   - else
-    %h2.center Oops! You're not logged in
-    %p.center
+    %h2 Oops! You're not logged in
+    %p
       To create your own crosswords, you'll need to
       = link_to('login or make a new account', login_path) + '.'
       Don't worry, it's free!
-    %br

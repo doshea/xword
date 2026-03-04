@@ -1,16 +1,16 @@
 = form_tag '/login', id: 'login' do
-  = label_tag :username
-  = text_field_tag :username, nil, autofocus: true, autocomplete: 'username'
-  = label_tag :password
-  = password_field_tag :password, nil, autocomplete: 'current-password'
+  = hidden_field_tag :redirect, params[:redirect]
+  .xw-field
+    = label_tag :username, nil, class: 'xw-label'
+    = text_field_tag :username, nil, autofocus: true, autocomplete: 'username', class: 'xw-input'
+  .xw-field
+    = label_tag :password, nil, class: 'xw-label'
+    = password_field_tag :password, nil, autocomplete: 'current-password', class: 'xw-input'
   .xw-grid
     .xw-col-6
       = label_tag :remember_me, 'Remember me'
       = check_box_tag :remember_me, 1, params[:remember_me], checked: true
     .xw-col-6
       = button_tag 'Log in', class: 'xw-btn xw-btn--success'
-  %br
-.left
-  = link_to 'Forgot your password?', forgot_password_users_path
-  %br
-  %hr
+= link_to 'Forgot your password?', forgot_password_users_path
+%hr

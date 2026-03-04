@@ -1,9 +1,8 @@
 - title 'Admin | Clone User', true
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Clone User Tool', custom_columns: true} do
-  .xw-col-12.xw-lg-center-4
-    %br
-    / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; renders user_search.turbo_stream.erb)
-    = form_with(url: admin_user_search_path, html: { class: 'center', autocomplete: 'off' }) do |f|
-      = text_field_tag :query, nil, placeholder: 'ID, Name, Username or Email', class: 'center'
-  .xw-col-full
-    = render partial: 'admin/partials/user_chooser'
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Clone User'} do
+  / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; renders user_search.turbo_stream.erb)
+  = form_with(url: admin_user_search_path, autocomplete: 'off') do |f|
+    .xw-field
+      = label_tag :query, 'Search for a user', class: 'xw-label'
+      = text_field_tag :query, nil, placeholder: 'ID, Name, Username or Email', class: 'xw-input'
+  = render partial: 'admin/partials/user_chooser'

@@ -1,27 +1,29 @@
-%table#users
-  %thead
-    %tr
-      %th ID
-      %th First
-      %th Last
-      %th Username
-      %th Email
-      %th Admin
-      %th Created
-      %th Updated
-      %th
-  %tbody
-    - if @users && @users.any?
-      - @users.each do |user|
-        = content_tag(:tr, id: dom_id(user)) do
-          %td= user.id
-          %td= user.first_name
-          %td= user.last_name
-          %td= link_to user.username, user
-          %td= user.email
-          %td= user.is_admin
-          %td= user.created_at.strftime("%b %d, %Y")
-          %td= user.updated_at.strftime("%b %d, %Y")
-          %td= button_to('Clone', admin_clone_user_path(id: user.id), class: 'xw-btn xw-btn--danger xw-btn--sm')
-    - else
-      %td.center{colspan: 9} No Results
+.xw-admin-table-wrap
+  %table#users.xw-admin-table
+    %thead
+      %tr
+        %th ID
+        %th First
+        %th Last
+        %th Username
+        %th Email
+        %th Admin
+        %th Created
+        %th Updated
+        %th
+    %tbody
+      - if @users && @users.any?
+        - @users.each do |user|
+          = content_tag(:tr, id: dom_id(user)) do
+            %td= user.id
+            %td= user.first_name
+            %td= user.last_name
+            %td= link_to user.username, user
+            %td= user.email
+            %td= user.is_admin
+            %td= user.created_at.strftime("%b %d, %Y")
+            %td= user.updated_at.strftime("%b %d, %Y")
+            %td= button_to('Clone', admin_clone_user_path(id: user.id), class: 'xw-btn xw-btn--danger xw-btn--sm')
+      - else
+        %tr
+          %td.center{colspan: 9} No Results

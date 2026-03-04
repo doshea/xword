@@ -1,0 +1,8 @@
+- title 'Admin | Manual NYT', true
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Manual NYT Import'} do
+  / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; controller now redirects with flash)
+  = form_with(url: admin_create_manual_nyt_path, method: :post) do |f|
+    .xw-field
+      = label_tag :nyt_text, 'Paste NYT puzzle data', class: 'xw-label'
+      = text_area_tag :nyt_text, nil, class: 'xw-textarea'
+    = submit_tag 'Import', class: 'xw-btn xw-btn--success', data: {disable_with: 'Adding...'}

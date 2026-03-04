@@ -1,10 +1,14 @@
 = form_for @user do |f|
-  = f.label :username
-  = f.text_field :username, autocomplete: 'username'
-  = f.label :email
-  = f.email_field :email, autocomplete: 'email'
-  = f.label :password
-  = f.password_field :password, autocomplete: 'new-password'
-  = f.label :password_confirmation, 'Confirm password'
-  = f.password_field :password_confirmation, autocomplete: 'new-password'
+  .xw-field
+    = f.label :username, class: 'xw-label'
+    = f.text_field :username, autocomplete: 'username', class: 'xw-input'
+  .xw-field
+    = f.label :email, class: 'xw-label'
+    = f.email_field :email, autocomplete: 'email', class: 'xw-input'
+  .xw-field
+    = f.label :password, class: 'xw-label'
+    = f.password_field :password, autocomplete: 'new-password', class: 'xw-input'
+  .xw-field
+    = f.label :password_confirmation, 'Confirm password', class: 'xw-label'
+    = f.password_field :password_confirmation, autocomplete: 'new-password', class: 'xw-input'
   = f.submit "Sign up", :class => 'xw-btn xw-btn--success'

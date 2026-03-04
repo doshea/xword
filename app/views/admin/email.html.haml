@@ -1,7 +1,7 @@
 - title 'Admin | Email', true
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Email Testing Tool', custom_columns: true} do
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Email Testing'} do
   / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX submission)
-  = form_with(url: admin_test_emails_path, html: { class: 'xw-col-full xw-grid' }) do |f|
+  = form_with(url: admin_test_emails_path, html: { class: 'xw-grid' }) do |f|
     .xw-col-12.xw-lg-6
       %h5 User
       = label_tag :reset_password

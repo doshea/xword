@@ -58,6 +58,29 @@
   }
 }
 
+// Icon & percent columns: center-align headers and cells
+.xw-solutions-table {
+  // Team icon column (2nd)
+  thead th:nth-child(2),
+  tbody td:nth-child(2) {
+    text-align: center;
+  }
+
+  // Correct % and Complete % columns (3rd, 4th)
+  thead th:nth-child(3),
+  thead th:nth-child(4),
+  tbody td:nth-child(3),
+  tbody td:nth-child(4) {
+    text-align: right;
+  }
+
+  // Delete column (7th)
+  thead th:nth-child(7),
+  tbody td:nth-child(7) {
+    text-align: center;
+  }
+}
+
 // Delete column: don't navigate on click (JS excludes .trash-td)
 .trash-td {
   cursor: default;
