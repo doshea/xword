@@ -5,7 +5,7 @@
   = javascript_include_tag 'edit', 'data-turbo-track': 'reload'
   = javascript_include_tag 'jquery-ui-1.10.4.draggable.min'
 :javascript
-  edit_app.circles = '#{@unpublished_crossword.circles}'
+  edit_app.circles = #{@unpublished_crossword.circles.to_json};
 :css
   .clue-column .clues {
     height: #{@unpublished_crossword.rows * 2.175 - 22/16.0}em;

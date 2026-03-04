@@ -57,5 +57,15 @@ RSpec.describe 'Comments', type: :request do
 
       expect { base_comment.destroy }.to change(Comment, :count).by(-2)
     end
+
+    it 'rejects replies to replies (prevents deep nesting)' do
+      reply = Comment.create!(content: 'A reply', user: user, base_comment: base_comment)
+
+      post "/comments/#{reply.id}/reply",
+           params: { content: 'Nested too deep' },
+           headers: { 'Accept' => Mime[:turbo_stream].to_s }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
   end
 end

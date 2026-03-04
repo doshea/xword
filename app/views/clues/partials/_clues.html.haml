@@ -10,7 +10,7 @@
     - @clues.each do |clue|
       = content_tag(:tr, id: dom_id(clue)) do
         %td= link_to clue.id, clue
-        %td= link_to clue.content.html_safe, clue
+        %td= link_to clue.content, clue
         %td= clue.word.content if clue.word
         %td= clue.difficulty
         %td.xw-admin-actions

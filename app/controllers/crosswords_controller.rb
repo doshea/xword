@@ -76,12 +76,11 @@ class CrosswordsController < ApplicationController
   #POST /crosswords/:id/favorite or favorite_crossword_path
   def favorite
     if @crossword && @current_user
-      if @current_user.favorites.exists?(@crossword.id)
-        flash_stream('You have already favorited that crossword.')
+      fav = FavoritePuzzle.find_or_create_by(user_id: @current_user.id, crossword_id: @crossword.id)
+      if fav.persisted?
+        render :favorite_unfavorite
       else
-        if FavoritePuzzle.create(user_id: @current_user.id, crossword_id: @crossword.id)
-          render :favorite_unfavorite
-        end
+        flash_stream('You have already favorited that crossword.')
       end
     end
   end
@@ -110,9 +109,9 @@ class CrosswordsController < ApplicationController
       @solutions.sort_by!{|x| [x.team ? 1 : 0, -x.percent_complete[:numerator], Time.current - x.updated_at]}
 
       if @solutions.count < 1
-        redirect_to @crossword
+        return redirect_to @crossword
       elsif @solutions.count == 1
-        redirect_to @solutions.first
+        return redirect_to @solutions.first
       end
     else
       redirect_to @crossword
@@ -120,9 +119,9 @@ class CrosswordsController < ApplicationController
   end
 
   #GET /crosswords/batch or batch_crosswords_path
-  #TODO fix the batching links so they can't be too long. Right now the "Next 12" button can throw a long URI error
   def batch
-    @crosswords = Crossword.where(id: params[:ids])
+    ids = Array(params[:ids]).first(100)
+    @crosswords = Crossword.where(id: ids)
     @crosswords_remaining = @crosswords[Crossword.per_page..-1]
     @crosswords = @crosswords[0...Crossword.per_page]
   end

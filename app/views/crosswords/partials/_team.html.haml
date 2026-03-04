@@ -2,10 +2,10 @@
 - solver_id = (0..5).map{random_char}.join('')
 - display_name = @current_user ? (@current_user.first_name || @current_user.username) : 'anon_'+solver_id
 :javascript
-  var team_key = "#{@solution.key}";
+  var team_key = #{@solution.key.to_json};
   team_app = {};
-  team_app.display_name = "#{display_name}";
-  team_app.solver_id = "#{solver_id}";
+  team_app.display_name = #{display_name.to_json};
+  team_app.solver_id = #{solver_id.to_json};
 
 = javascript_include_tag 'crosswords/team_funcs', 'data-turbo-track': 'reload'
 

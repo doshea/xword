@@ -99,24 +99,20 @@ class PagesController < ApplicationController
 
   #GET /welcome or welcome_path
   def welcome
-    redirect_to(root_path) if @current_user.present?
+    return redirect_to(root_path) if @current_user.present?
     @user = User.new
   end
 
   #GET /stats or stats_path
   def stats
-    non_unq_signup_dates = User.pluck(:created_at).map{|time_with_zone| time_with_zone.to_date}.sort
-    unq_signup_dates = non_unq_signup_dates.uniq
-    @days_operational = (unq_signup_dates.first..Date.today)
+    date_counts = User.group("DATE(created_at)").order("DATE(created_at)").count
+    return redirect_to(root_path, flash: { info: "No data yet." }) if date_counts.empty?
 
-    date_counts = Hash.new(0)
-    non_unq_signup_dates.each {|date| date_counts[date] += 1}
+    @days_operational = (date_counts.keys.first..Date.today)
+    @signup_counts = @days_operational.map { |day| date_counts[day] || 0 }
 
-    @signup_counts = []
-    @days_operational.each {|day| @signup_counts << (date_counts[day] || 0)}
-
-    @running_signup_counts = @signup_counts.each_with_index.map { |x,i| @signup_counts[0..i].inject(:+) }
-
+    running = 0
+    @running_signup_counts = @signup_counts.map { |c| running += c }
   end
 
   #GET /nytimes or nytimes_path

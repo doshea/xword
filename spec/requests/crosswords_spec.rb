@@ -229,4 +229,27 @@ RSpec.describe 'Crosswords', type: :request do
       expect(team_sol.letters.gsub(/[_ ]/, '')).to eq ''
     end
   end
+
+  # -------------------------------------------------------------------------
+  # XSS protection — clue content must be escaped on the solve page
+  # -------------------------------------------------------------------------
+  describe 'XSS protection on solve page' do
+    it 'strips <script> tags from clue content' do
+      clue = crossword.cells.find(&:across_clue).across_clue
+      clue.update_column(:content, '<script>alert("xss")</script>')
+
+      get "/crosswords/#{crossword.id}"
+      # sanitize() strips disallowed tags entirely — only the inner text remains.
+      # The malicious script tag must not appear as executable markup in the clue area.
+      expect(response.body).not_to include('<script>alert')
+    end
+
+    it 'preserves <em> italic formatting in clues' do
+      clue = crossword.cells.find(&:across_clue).across_clue
+      clue.update_column(:content, 'A *fancy* word')
+
+      get "/crosswords/#{crossword.id}"
+      expect(response.body).to include('<em>fancy</em>')
+    end
+  end
 end

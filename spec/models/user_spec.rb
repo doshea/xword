@@ -74,6 +74,21 @@ describe User do
     it { should have_many(:team_solutions).through(:solution_partnerings).source(:solution) }
   end
 
+  describe '#rotate_auth_token!' do
+    let(:user) { create(:user) }
+
+    it 'changes the auth_token' do
+      old_token = user.auth_token
+      user.rotate_auth_token!
+      expect(user.auth_token).not_to eq old_token
+    end
+
+    it 'persists the new token to the database' do
+      user.rotate_auth_token!
+      expect(user.reload.auth_token).to eq user.auth_token
+    end
+  end
+
   describe '#friends' do
     let(:user)     { create(:user) }
     let(:friend_a) { create(:user) }

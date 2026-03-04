@@ -115,4 +115,55 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
+  # -------------------------------------------------------------------------
+  # Auth token rotation — password change invalidates old token
+  # -------------------------------------------------------------------------
+  describe 'auth token rotation on password change' do
+    it 'rotates auth_token after changing password' do
+      log_in_as(user)
+      old_token = user.reload.auth_token
+
+      post '/users/change_password', params: {
+        old_password: RequestAuthHelpers::TEST_PASSWORD,
+        new_password: 'newsecret99',
+        new_password_confirmation: 'newsecret99'
+      }
+
+      expect(user.reload.auth_token).not_to eq old_token
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # Auth token rotation — logout invalidates old token
+  # -------------------------------------------------------------------------
+  describe 'auth token rotation on logout' do
+    it 'rotates auth_token after logging out' do
+      log_in_as(user)
+      old_token = user.reload.auth_token
+
+      delete '/logout'
+
+      expect(user.reload.auth_token).not_to eq old_token
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # Password bypass prevention — profile update must not accept password
+  # -------------------------------------------------------------------------
+  describe 'PATCH /users/:id (password bypass prevention)' do
+    before { log_in_as(user) }
+
+    it 'does not allow password change via profile update' do
+      old_digest = user.reload.password_digest
+
+      patch "/users/#{user.id}", params: {
+        user: { first_name: 'Hacker', password: 'pwned123', password_confirmation: 'pwned123' }
+      }
+
+      user.reload
+      expect(user.first_name).to eq 'Hacker'
+      expect(user.password_digest).to eq old_digest
+    end
+  end
+
 end

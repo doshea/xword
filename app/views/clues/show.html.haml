@@ -1,6 +1,6 @@
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
-    %h1= @clue.content.html_safe
+    %h1= @clue.content
     %section
       %h2 Puzzles
       %p Featured #{pluralize(@count, 'time')} in #{pluralize(@crosswords.length, 'puzzle')}:

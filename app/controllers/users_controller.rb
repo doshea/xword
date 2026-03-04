@@ -94,7 +94,8 @@ class UsersController < ApplicationController
     user = User.find_by_password_reset_token(params[:password_reset_token])
     if user
       if user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
-        # Changing the password invalidates the old signed token automatically (password_salt changes)
+        # Rotate auth token so any stolen cookies from before the reset are invalidated.
+        user.rotate_auth_token!
         redirect_to account_users_path, flash: { success: 'Password updated successfully.' }
       else
         @errors = user.errors.full_messages.uniq
@@ -112,6 +113,8 @@ class UsersController < ApplicationController
   def change_password
     if @current_user.authenticate(params[:old_password])
       if @current_user.update(password: params[:new_password], password_confirmation: params[:new_password_confirmation])
+        @current_user.rotate_auth_token!
+        cookies.signed[:auth_token] = @current_user.auth_token
         redirect_to account_users_path, flash: { success: 'Password updated successfully.' }
       else
         @errors = @current_user.errors.full_messages.uniq
@@ -133,7 +136,7 @@ class UsersController < ApplicationController
     params.require(:user).permit(:username, :email, :password, :password_confirmation)
   end
   def update_user_params
-    params.require(:user).permit(:first_name, :last_name, :location, :image, :remote_image_url, :password, :password_confirmation)
+    params.require(:user).permit(:first_name, :last_name, :location, :image, :remote_image_url)
   end
 
 end

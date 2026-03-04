@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_03_053730) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_04_082830) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -86,7 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_053730) do
     t.datetime "updated_at"
     t.integer "user_id", null: false
     t.index ["crossword_id"], name: "index_favorite_puzzles_on_crossword_id"
-    t.index ["user_id"], name: "index_favorite_puzzles_on_user_id"
+    t.index ["user_id", "crossword_id"], name: "index_favorite_puzzles_on_user_and_crossword", unique: true
   end
 
   create_table "friend_requests", id: false, force: :cascade do |t|

@@ -22,6 +22,12 @@ class AccountPicUploader < CarrierWave::Uploader::Base
     %w(jpg jpeg gif png)
   end
 
+  # Restrict remote URL downloads to HTTP/HTTPS only.
+  # Blocks file://, ftp://, gopher:// etc. to prevent SSRF.
+  def download_allowlist
+    [/\Ahttps?:\/\//i]
+  end
+
   version :thumb do
     process :resize_to_fill => [27, 27]
   end

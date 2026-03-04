@@ -101,6 +101,11 @@ class User < ApplicationRecord
       self[column] = SecureRandom.urlsafe_base64
     end while User.exists?(column => self[column])
   end
+
+  def rotate_auth_token!
+    generate_token(:auth_token)
+    save!
+  end
   def display_name
     if self.first_name.present?
       self.last_name.present? ? "#{self.first_name} #{self.last_name}" : self.first_name
