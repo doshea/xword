@@ -195,6 +195,103 @@
 
 
 // ---------------------------------------------------------------------------
+// NOTIFICATION DROPDOWN — light-bg panel with scrollable notification list
+// ---------------------------------------------------------------------------
+
+.xw-notification-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  width: 22rem;
+  max-height: 28rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  overflow: hidden;
+  color: var(--color-text);
+
+  &.is-open { display: flex; flex-direction: column; }
+}
+
+.xw-notification-dropdown__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.xw-notification-dropdown__title {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.xw-notification-dropdown__list {
+  overflow-y: auto;
+  flex: 1;
+  padding: var(--space-1) 0;
+
+  // Compact rows inside dropdown (vs. full-page inbox cards)
+  .xw-notification {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-2) var(--space-3);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  .xw-notification--unread {
+    border-left: 3px solid var(--color-accent);
+  }
+
+  .xw-notification__avatar-img {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.xw-notification-dropdown__loading,
+.xw-notification-dropdown__empty {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+.xw-notification-dropdown__footer {
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.xw-notification-dropdown__see-all {
+  display: block;
+  text-align: center;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background-color: var(--color-surface-alt);
+    text-decoration: underline;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
 // SEARCH — expanding input + live results dropdown
 // ---------------------------------------------------------------------------
 
@@ -442,5 +539,48 @@
     border-radius: 0;
     background-color: rgba(255, 255, 255, 0.06);
     padding-left: var(--space-4);
+  }
+
+  // Notification dropdown goes full-width on mobile
+  .xw-notification-dropdown {
+    position: static;
+    width: 100%;
+    max-height: 20rem;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .xw-notification-dropdown__header {
+    border-bottom-color: var(--color-nav-border);
+  }
+
+  .xw-notification-dropdown__title {
+    color: var(--color-nav-text);
+  }
+
+  .xw-notification-dropdown__footer {
+    border-top-color: var(--color-nav-border);
+  }
+
+  .xw-notification-dropdown__see-all {
+    color: var(--color-nav-text);
+    &:hover { background-color: rgba(255, 255, 255, 0.10); }
+  }
+
+  .xw-notification-dropdown__list .xw-notification {
+    border-bottom-color: var(--color-nav-border);
+    background-color: transparent;
+    color: var(--color-nav-text);
+
+    .xw-notification__message,
+    .xw-notification__message a { color: var(--color-nav-text); }
+    .xw-notification__meta { color: rgba(255, 255, 255, 0.60); }
+  }
+
+  .xw-notification-dropdown__loading,
+  .xw-notification-dropdown__empty {
+    color: rgba(255, 255, 255, 0.50);
   }
 }

@@ -61,15 +61,20 @@
                     data: { xw_tooltip: 'Create' } do
             = icon('lightbulb')
 
-        / Notifications — #nav-mail preserved (CSS unread pulse animation)
+        / Notifications dropdown — #nav-mail preserved (CSS unread pulse animation)
         - if is_logged_in?
-          .xw-nav__item#nav-mail{ class: (@unread_notification_count > 0 ? 'unread' : nil) }
-            = link_to notifications_path, class: 'xw-nav__icon-btn',
-                      data: { xw_tooltip: 'Notifications' } do
+          .xw-nav__item#nav-mail{ class: (@unread_notification_count > 0 ? 'unread' : nil),
+                                   data: { controller: 'notification-dropdown' } }
+            %button.xw-nav__icon-btn{ type: 'button',
+                                       data: { action: 'notification-dropdown#toggle',
+                                               xw_tooltip: 'Notifications' } }
               = icon('bell')
               #notification-badge
                 - if @unread_notification_count > 0
                   %span.xw-badge= @unread_notification_count > 99 ? '99+' : @unread_notification_count
+            .xw-notification-dropdown{ data: { 'notification-dropdown-target': 'panel' } }
+              .xw-notification-dropdown__loading
+                %p Loading…
 
         / User menu or login button
         - if is_logged_in?

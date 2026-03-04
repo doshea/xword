@@ -8,6 +8,16 @@ class NotificationsController < ApplicationController
                                   .recent
   end
 
+  # GET /notifications/dropdown — HTML partial (no layout) for nav dropdown
+  def dropdown
+    @notifications = @current_user.notifications
+                                  .includes(:actor)
+                                  .recent
+    render partial: 'notifications/partials/dropdown_list',
+           locals: { notifications: @notifications },
+           layout: false
+  end
+
   # PATCH /notifications/:id/mark_read
   def mark_read
     @notification = @current_user.notifications.find_by(id: params[:id])
@@ -17,6 +27,7 @@ class NotificationsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
+      format.json { head :ok }
       format.html { redirect_to notifications_path }
     end
   end
@@ -27,6 +38,7 @@ class NotificationsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
+      format.json { head :ok }
       format.html { redirect_to notifications_path }
     end
   end

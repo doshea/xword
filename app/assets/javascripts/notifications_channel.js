@@ -13,6 +13,7 @@
       if (data.event === 'new_notification') {
         updateBadge(data.unread_count);
         prependToInbox(data.html);
+        refreshDropdown();
       }
     }
   });
@@ -21,10 +22,13 @@
     var badge = navMail.querySelector('.xw-badge');
     if (count > 0) {
       navMail.classList.add('unread');
+      var container = document.getElementById('notification-badge');
       if (!badge) {
         badge = document.createElement('span');
         badge.className = 'xw-badge';
-        navMail.querySelector('.xw-nav__icon-btn').appendChild(badge);
+        if (container) {
+          container.appendChild(badge);
+        }
       }
       badge.textContent = count > 99 ? '99+' : count;
     } else {
@@ -35,9 +39,21 @@
 
   function prependToInbox(html) {
     var list = document.getElementById('notifications-list');
-    if (!list) return;  // not on inbox page
+    if (!list) return;  // not on full inbox page
     var empty = document.getElementById('notifications-empty');
     if (empty) empty.remove();
     list.insertAdjacentHTML('afterbegin', html);
+  }
+
+  // Refresh the nav dropdown content if it's been loaded
+  function refreshDropdown() {
+    if (typeof window.StimulusApp !== 'undefined' &&
+        typeof window.StimulusApp.getControllerForElementAndIdentifier === 'function') {
+      var controller = window.StimulusApp
+        .getControllerForElementAndIdentifier(navMail, 'notification-dropdown');
+      if (controller) {
+        controller.refresh();
+      }
+    }
   }
 })();

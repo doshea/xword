@@ -1,0 +1,20 @@
+.xw-notification-dropdown__header
+  %span.xw-notification-dropdown__title Notifications
+  - if notifications.any? { |n| n.read_at.nil? }
+    %button.xw-btn.xw-btn--ghost.xw-btn--sm{ type: 'button',
+            data: { action: 'notification-dropdown#markAllRead' } }
+      = icon('check-check', size: 14)
+      Mark all read
+
+#dropdown-notifications-list.xw-notification-dropdown__list
+  - if notifications.any?
+    - notifications.each do |notification|
+      = render partial: 'notifications/partials/notification',
+               locals: { notification: notification }
+  - else
+    .xw-notification-dropdown__empty
+      %p No notifications yet.
+
+.xw-notification-dropdown__footer
+  = link_to 'See all notifications', notifications_path,
+            class: 'xw-notification-dropdown__see-all'

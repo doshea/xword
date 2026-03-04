@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       get :solution_choice
       post :check_cell
       post :check_completion
+      post :admin_fake_win
     end
     collection do
       post :batch
@@ -77,6 +78,7 @@ Rails.application.routes.draw do
       patch :mark_read
     end
     collection do
+      get :dropdown
       patch :mark_all_read
     end
   end
