@@ -1,4 +1,4 @@
-%table
+%table.xw-admin-table
   %thead
     %tr
       %th ID
@@ -6,10 +6,9 @@
       %th Creator
       %th Description
       %th Rows
-      %th Columns
+      %th Cols
       %th Letters
       %th Circled?
-      %th
       %th
   %tbody
     - @crosswords.each do |crossword|
@@ -21,13 +20,11 @@
         %td= crossword.rows
         %td= crossword.cols
         %td.xw-admin-cell--compact= crossword.letters
-        %td
+        %td.xw-admin-cell--icon
           - if crossword.circled?
             = icon('check')
-        %td
-          = link_to edit_admin_crossword_path(crossword) do
+        %td.xw-admin-actions
+          = link_to edit_admin_crossword_path(crossword) , class: 'xw-admin-action' do
             = icon('pencil')
-        %td
-          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
-          = link_to admin_crossword_path(crossword), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user&.username || '[deleted]'}?" } do
+          = link_to admin_crossword_path(crossword), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user&.username || '[deleted]'}?" } do
             = icon('trash-2')

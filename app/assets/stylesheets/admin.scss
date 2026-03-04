@@ -1,0 +1,315 @@
+// =============================================================================
+// Admin CRUD Pages
+// =============================================================================
+// Card-based data management UI matching the profile page's "paper on wood"
+// language. Replaces the old topper/stopper dark-bar pattern with:
+//
+//   - Warm surface-alt page background
+//   - Green accent header border (matches profile hero's top border)
+//   - White card containers for tables and forms
+//   - Proper typography hierarchy: display serif headings, UI sans for table
+//     headers and labels, body serif for data
+// =============================================================================
+
+@import 'design_tokens';
+
+
+// ---------------------------------------------------------------------------
+// Page Container — .xw-admin-page
+// ---------------------------------------------------------------------------
+// Replaces .row-topper / .row-stopper for admin. Rounded corners sit on the
+// wood background with paper shadow. Surface-alt bg makes white cards pop.
+
+#body > .xw-admin-page {
+  background-color: var(--color-surface-alt);
+  border-radius: var(--radius-lg);
+  margin-top: 2em;
+  box-shadow: var(--shadow-paper);
+  overflow: hidden;
+}
+
+
+// ---------------------------------------------------------------------------
+// Page Header
+// ---------------------------------------------------------------------------
+
+.xw-admin-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  background-color: var(--color-surface);
+  border-bottom: 3px solid var(--color-accent);
+}
+
+.xw-admin-page__title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.xw-admin-page__back {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: var(--weight-medium);
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-accent-hover);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// Page Body
+// ---------------------------------------------------------------------------
+
+.xw-admin-page__body {
+  padding: var(--space-6);
+}
+
+
+// ---------------------------------------------------------------------------
+// Pagination — centered above table
+// ---------------------------------------------------------------------------
+
+.xw-admin-page__body .xw-pagination {
+  justify-content: center;
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+}
+
+
+// ---------------------------------------------------------------------------
+// Data Table — .xw-admin-table
+// ---------------------------------------------------------------------------
+
+.xw-admin-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.xw-admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+
+  thead {
+    background-color: var(--color-surface-sunken);
+
+    th {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wider);
+      text-align: left;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 2px solid var(--color-border);
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+      vertical-align: middle;
+
+      a:not(.xw-admin-action) {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: var(--weight-medium);
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr {
+      transition: background-color var(--duration-fast) var(--ease-in-out);
+
+      &:hover {
+        background-color: var(--color-accent-light);
+      }
+    }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// Table Action Buttons
+// ---------------------------------------------------------------------------
+// Edit and delete icons merged into a single cell.
+
+.xw-admin-actions {
+  display: flex;
+  gap: var(--space-1);
+  justify-content: flex-end;
+}
+
+.xw-admin-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    background-color: var(--color-surface-sunken);
+    color: var(--color-text);
+  }
+
+  &--danger:hover {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// Boolean / Icon cells — centered check and flag icons
+// ---------------------------------------------------------------------------
+
+.xw-admin-table td.xw-admin-cell--icon {
+  text-align: center;
+  color: var(--color-accent);
+}
+
+.xw-admin-table td.xw-admin-cell--flag {
+  text-align: center;
+}
+
+
+// ---------------------------------------------------------------------------
+// Compact data cells — truncated long content
+// ---------------------------------------------------------------------------
+
+.xw-admin-cell--compact {
+  font-size: var(--text-xs);
+  max-width: 250px;
+  overflow-wrap: break-word;
+}
+
+
+// ---------------------------------------------------------------------------
+// Form Card — .xw-admin-form
+// ---------------------------------------------------------------------------
+// White card for edit pages. Contains the form grid.
+
+.xw-admin-form {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+}
+
+
+// ---------------------------------------------------------------------------
+// Admin form info section (solutions edit "Additional Info")
+// ---------------------------------------------------------------------------
+
+.xw-admin-info {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+
+  h4 {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  li {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+
+    a {
+      color: var(--color-accent);
+      font-weight: var(--weight-medium);
+      text-decoration: none;
+
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// Admin highlight (used on user edit for admin checkbox)
+// ---------------------------------------------------------------------------
+
+.xw-admin-highlight {
+  background-color: var(--color-success-bg);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+}
+
+
+// ---------------------------------------------------------------------------
+// Uppercase textarea for puzzle letter grids
+// ---------------------------------------------------------------------------
+
+.xw-textarea--uppercase {
+  text-transform: uppercase;
+}
+
+
+// ---------------------------------------------------------------------------
+// Responsive — stack gracefully on mobile
+// ---------------------------------------------------------------------------
+
+@media (max-width: $bp-sm - 1) {
+  .xw-admin-page__header {
+    padding: var(--space-4);
+  }
+
+  .xw-admin-page__body {
+    padding: var(--space-4);
+  }
+
+  .xw-admin-form {
+    padding: var(--space-4);
+  }
+
+  .xw-admin-page__title {
+    font-size: var(--text-xl);
+  }
+}

@@ -1,30 +1,28 @@
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@crossword.title}</i>".html_safe, custom_columns: true} do
-  %br
-  / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
-  = form_with model: @crossword, url: url_for(controller: 'admin/crosswords', action: :update, id: @crossword.id), html: { class: 'xw-col-full xw-grid' } do |f|
-    .xw-col-12.xw-lg-5
-      = f.label :title
-      = f.text_field :title
-    .xw-col-12.xw-lg-1
-      = f.label :rows
-      = f.number_field :rows
-    .xw-col-12.xw-lg-1
-      = f.label :cols, 'Columns'
-      = f.number_field :cols
-    .xw-col-12.xw-lg-2
-      = f.label :circled, 'Contains Circles'
-      = f.check_box :circled
-    .xw-col-12.xw-lg-3
-      = f.label :created_at
-      = date_field :crossword, :created_at
-    .xw-col-full
-      = f.label :description
-      = f.text_area :description
-    .xw-col-full
-      = f.label :letters
-      = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, class: 'xw-textarea--uppercase'
-    .xw-col-full
-      = f.button class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
-  .xw-col-full
-    / Replaced: button_to with remote: true → button_to without (Turbo intercepts form; controller redirects)
-    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch
+- title "Admin | Edit #{@crossword.title}", true
+= render layout: 'layouts/partials/admin_page', locals: {page_title: "Edit #{@crossword.title}", back_path: admin_crosswords_path} do
+  .xw-admin-form
+    = form_with model: @crossword, url: url_for(controller: 'admin/crosswords', action: :update, id: @crossword.id), html: { class: 'xw-grid' } do |f|
+      .xw-col-12.xw-lg-5
+        = f.label :title
+        = f.text_field :title
+      .xw-col-12.xw-lg-1
+        = f.label :rows
+        = f.number_field :rows
+      .xw-col-12.xw-lg-1
+        = f.label :cols, 'Columns'
+        = f.number_field :cols
+      .xw-col-12.xw-lg-2
+        = f.label :circled, 'Contains Circles'
+        = f.check_box :circled
+      .xw-col-12.xw-lg-3
+        = f.label :created_at
+        = date_field :crossword, :created_at
+      .xw-col-full
+        = f.label :description
+        = f.text_area :description
+      .xw-col-full
+        = f.label :letters
+        = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, class: 'xw-textarea--uppercase'
+      .xw-col-full
+        = f.button class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
+    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch, class: 'xw-btn xw-btn--secondary', style: 'margin-top: var(--space-3)'

@@ -1,0 +1,13 @@
+-# Admin page layout — card-based container matching the profile page's
+-# "paper on wood" design language. Replaces topper/stopper for CRUD pages.
+-#
+-# Locals:
+-#   page_title  — h1 text (required)
+-#   back_path   — optional "← Back" link URL (used on edit pages)
+.xw-container.xw-admin-page
+  .xw-admin-page__header
+    %h1.xw-admin-page__title= page_title
+    - if defined?(back_path) && back_path
+      = link_to '← Back', back_path, class: 'xw-admin-page__back'
+  .xw-admin-page__body
+    = yield

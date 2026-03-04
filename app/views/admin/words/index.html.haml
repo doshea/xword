@@ -1,4 +1,5 @@
 - title 'Admin | Words', true
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Words'} do
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Words'} do
   = will_paginate @words, class: 'xw-pagination'
-  = render partial: 'words/partials/words'
+  .xw-admin-table-wrap
+    = render partial: 'words/partials/words'

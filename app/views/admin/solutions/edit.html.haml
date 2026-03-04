@@ -1,35 +1,34 @@
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit Solution", custom_columns: true} do
-  %br
-  / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
-  = form_with model: @solution, url: url_for(controller: 'admin/solutions', method: :update), html: { class: 'xw-col-full xw-grid' } do |f|
-    .xw-col-12.xw-lg-8
-      = f.label :letters
-      = f.text_area :letters, maxlength: @solution.crossword ? @solution.crossword.rows * @solution.crossword.cols : 0, class: 'xw-textarea--uppercase'
-    .xw-col-12.xw-lg-2
-      = f.label :is_complete
-      = f.check_box :is_complete
-    .xw-col-12.xw-lg-2
-      = f.label :team
-      = f.check_box :team
-    - if @solution.team
+- title 'Admin | Edit Solution', true
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Edit Solution', back_path: admin_solutions_path} do
+  .xw-admin-form
+    = form_with model: @solution, url: url_for(controller: 'admin/solutions', method: :update), html: { class: 'xw-grid' } do |f|
+      .xw-col-12.xw-lg-8
+        = f.label :letters
+        = f.text_area :letters, maxlength: @solution.crossword ? @solution.crossword.rows * @solution.crossword.cols : 0, class: 'xw-textarea--uppercase'
+      .xw-col-12.xw-lg-2
+        = f.label :is_complete
+        = f.check_box :is_complete
+      .xw-col-12.xw-lg-2
+        = f.label :team
+        = f.check_box :team
+      - if @solution.team
+        .xw-col-full
+          = f.label :key
+          = f.text_field :key
       .xw-col-full
-        = f.label :key
-        = f.text_field :key
-    .xw-col-full
-      = f.submit class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
-  %hr
-  %section
-    %h4 Additional Info
-    %ul
-      %li
-        User:
-        - if @solution.user
-          = link_to @solution.user.username, @solution.user
-        - else
-          [deleted]
-      %li
-        Crossword:
-        - if @solution.crossword
-          = link_to @solution.crossword.title, @solution.crossword
-        - else
-          [removed]
+        = f.submit class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
+    .xw-admin-info
+      %h4 Additional Info
+      %ul
+        %li
+          User:
+          - if @solution.user
+            = link_to @solution.user.username, @solution.user
+          - else
+            [deleted]
+        %li
+          Crossword:
+          - if @solution.crossword
+            = link_to @solution.crossword.title, @solution.crossword
+          - else
+            [removed]

@@ -1,4 +1,4 @@
-%table
+%table.xw-admin-table
   %thead
     %tr
       %th ID
@@ -7,23 +7,20 @@
       %th Creator
       %th Crossword
       %th
-      %th
   %tbody
     - @comments.each do |comment|
       = content_tag(:tr, id: dom_id(comment)) do
         %td= comment.id
         %td= comment.content
-        %td
+        %td.xw-admin-cell--flag
           - if comment.flagged
             = icon('flag', class: 'xw-icon--danger')
         %td
           = comment.user ? link_to(comment.user.username, comment.user) : '[deleted]'
         %td
           = comment.crossword.present? ? link_to(comment.crossword.title, comment.crossword) : link_to(comment.base_comment.crossword.title, comment.base_comment.crossword)
-        %td
-          = link_to edit_admin_comment_path(comment) do
+        %td.xw-admin-actions
+          = link_to edit_admin_comment_path(comment), class: 'xw-admin-action' do
             = icon('pencil')
-        %td
-          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
-          = link_to admin_comment_path(comment), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this comment by #{comment.user&.username || '[deleted]'}?" } do
+          = link_to admin_comment_path(comment), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this comment by #{comment.user&.username || '[deleted]'}?" } do
             = icon('trash-2')

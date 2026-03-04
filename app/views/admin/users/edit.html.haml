@@ -1,26 +1,26 @@
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: "Edit <i>#{@user.username}</i>".html_safe, custom_columns: true} do
-  %br
-  / Replaced: form_for with remote: true → form_with (Turbo handles AJAX; controller now redirects after update)
-  = form_with model: @user, url: url_for(controller: 'admin/users', method: :update), html: { class: 'xw-col-full xw-grid' } do |f|
-    .xw-col-12.xw-lg-3
-      = f.label :username
-      = f.text_field :username
-      = f.label :first_name
-      = f.text_field :first_name
-    .xw-col-12.xw-lg-3
-      = f.label :email
-      = f.email_field :email
-      = f.label :last_name
-      = f.text_field :last_name
-    .xw-col-12.xw-lg-4
-      = f.label :image
-      = image_tag @user.image.creator_pic.url
-      = f.text_field :image
-    .xw-col-12.xw-lg-2{class: ('xw-admin-highlight' if @user.is_admin)}
-      = f.label :is_admin, 'Admin'
-      = f.check_box :is_admin
-    .xw-col-full
-      = f.label :location
-      = f.text_field :location
-    .xw-col-full
-      = f.submit class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
+- title "Admin | Edit #{@user.username}", true
+= render layout: 'layouts/partials/admin_page', locals: {page_title: "Edit #{@user.username}", back_path: admin_users_path} do
+  .xw-admin-form
+    = form_with model: @user, url: url_for(controller: 'admin/users', method: :update), html: { class: 'xw-grid' } do |f|
+      .xw-col-12.xw-lg-3
+        = f.label :username
+        = f.text_field :username
+        = f.label :first_name
+        = f.text_field :first_name
+      .xw-col-12.xw-lg-3
+        = f.label :email
+        = f.email_field :email
+        = f.label :last_name
+        = f.text_field :last_name
+      .xw-col-12.xw-lg-4
+        = f.label :image
+        = image_tag @user.image.creator_pic.url
+        = f.text_field :image
+      .xw-col-12.xw-lg-2{class: ('xw-admin-highlight' if @user.is_admin)}
+        = f.label :is_admin, 'Admin'
+        = f.check_box :is_admin
+      .xw-col-full
+        = f.label :location
+        = f.text_field :location
+      .xw-col-full
+        = f.submit class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}

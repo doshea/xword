@@ -1,4 +1,5 @@
 - title 'Admin | Clues', true
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Clues'} do
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Clues'} do
   = will_paginate @clues, class: 'xw-pagination'
-  = render partial: 'clues/partials/clues'
+  .xw-admin-table-wrap
+    = render partial: 'clues/partials/clues'

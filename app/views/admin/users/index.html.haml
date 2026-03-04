@@ -1,4 +1,5 @@
 - title 'Admin | Users', true
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Users'} do
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Users'} do
   = will_paginate @users, class: 'xw-pagination'
-  = render partial: 'users/partials/users'
+  .xw-admin-table-wrap
+    = render partial: 'users/partials/users'

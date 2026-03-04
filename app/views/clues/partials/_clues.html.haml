@@ -1,12 +1,10 @@
-%table
+%table.xw-admin-table
   %thead
     %tr
       %th ID
       %th Content
       %th Word
       %th Difficulty
-      -# %th Creator
-      %th
       %th
   %tbody
     - @clues.each do |clue|
@@ -15,11 +13,8 @@
         %td= link_to clue.content.html_safe, clue
         %td= clue.word.content if clue.word
         %td= clue.difficulty
-        -# # %td= link_to clue.user.username, clue.user
-        %td
-          = link_to edit_admin_clue_path(clue) do
+        %td.xw-admin-actions
+          = link_to edit_admin_clue_path(clue), class: 'xw-admin-action' do
             = icon('pencil')
-        %td
-          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
-          = link_to admin_clue_path(clue), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this clue?" } do
+          = link_to admin_clue_path(clue), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this clue?" } do
             = icon('trash-2')

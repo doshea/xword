@@ -1,42 +1,39 @@
 - title 'Admin | Solutions', true
-= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Solutions'} do
+= render layout: 'layouts/partials/admin_page', locals: {page_title: 'Solutions'} do
   = will_paginate @solutions, class: 'xw-pagination'
-  %table
-    %thead
-      %tr
-        %th ID
-        %th Crossword
-        %th Creator
-        %th Letters
-        %th Complete?
-        %th Team Solution?
-        %th Key
-
-        %th
-        %th
-    %tbody
-      - @solutions.each do |solution|
-        = content_tag(:tr, id: dom_id(solution)) do
-          %td= solution.id
-          %td= solution.crossword ? link_to(solution.crossword.title, solution.crossword) : 'NONE'
-          %td= solution.user ? link_to(solution.user.username, solution.user) : '[deleted]'
-          %td.xw-admin-cell--compact= solution.letters
-          %td
-            - if solution.is_complete
-              = icon('check')
-          %td
-            - if solution.team
-              = icon('check')
-          %td
-            - if solution.key
-              - if solution.crossword
-                = link_to solution.key, team_crossword_path(solution.crossword, solution.key)
-              - else
-                = solution.key
-          %td
-            = link_to edit_admin_solution_path(solution) do
-              = icon('pencil')
-          %td
-            / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
-            = link_to admin_solution_path(solution), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this solution by #{solution.user&.username || '[deleted]'}?" } do
-              = icon('trash-2')
+  .xw-admin-table-wrap
+    %table.xw-admin-table
+      %thead
+        %tr
+          %th ID
+          %th Crossword
+          %th Creator
+          %th Letters
+          %th Complete?
+          %th Team?
+          %th Key
+          %th
+      %tbody
+        - @solutions.each do |solution|
+          = content_tag(:tr, id: dom_id(solution)) do
+            %td= solution.id
+            %td= solution.crossword ? link_to(solution.crossword.title, solution.crossword) : 'NONE'
+            %td= solution.user ? link_to(solution.user.username, solution.user) : '[deleted]'
+            %td.xw-admin-cell--compact= solution.letters
+            %td.xw-admin-cell--icon
+              - if solution.is_complete
+                = icon('check')
+            %td.xw-admin-cell--icon
+              - if solution.team
+                = icon('check')
+            %td
+              - if solution.key
+                - if solution.crossword
+                  = link_to solution.key, team_crossword_path(solution.crossword, solution.key)
+                - else
+                  = solution.key
+            %td.xw-admin-actions
+              = link_to edit_admin_solution_path(solution), class: 'xw-admin-action' do
+                = icon('pencil')
+              = link_to admin_solution_path(solution), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete this solution by #{solution.user&.username || '[deleted]'}?" } do
+                = icon('trash-2')

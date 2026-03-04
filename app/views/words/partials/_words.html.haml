@@ -1,10 +1,9 @@
-%table
+%table.xw-admin-table
   %thead
     %tr
       %th ID
       %th Content
-      %th Example clue
-      %th
+      %th Example Clue
       %th
   %tbody
     - @words.each do |word|
@@ -12,10 +11,8 @@
         %td= link_to word.id, word
         %td= link_to word.content, word
         %td= word.clues.first.try(:content)
-        %td
-          = link_to edit_admin_word_path(word) do
+        %td.xw-admin-actions
+          = link_to edit_admin_word_path(word), class: 'xw-admin-action' do
             = icon('pencil')
-        %td
-          / Replaced: link_to with method: :delete, remote: true → turbo_method: :delete (redirect after destroy)
-          = link_to admin_word_path(word), data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete #{word.content}?" } do
+          = link_to admin_word_path(word), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete #{word.content}?" } do
             = icon('trash-2')
