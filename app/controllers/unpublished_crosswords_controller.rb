@@ -26,7 +26,7 @@ class UnpublishedCrosswordsController < ApplicationController
   end
 
   def update_letters
-    letters = params[:letters].map{|l| l unless l == "0" || l.blank?}
+    letters = params[:letters].map { |l| l.to_s == "0" || l.to_s.strip.empty? ? nil : l.to_s }
     @save_counter = params[:save_counter]
     puzzle_hash = {letters: letters, circles: params[:circles], across_clues: params[:across_clues], down_clues: params[:down_clues]}
     found_object.update(puzzle_hash)

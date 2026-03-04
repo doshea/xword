@@ -142,7 +142,7 @@ window.edit_app = {
     var $cells = $('.cell');
     $.each($cells, function(i, cell) {
       if ($(cell).is_void()) {
-        letters_array[i] = 0;
+        letters_array[i] = "0";
       } else {
         letters_array[i] = $(cell).get_letter();
       }

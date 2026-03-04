@@ -136,6 +136,26 @@ describe UnpublishedCrosswordsController do
       expect(saved_letters[3]).to be_nil
       expect(saved_letters[1]).to eq 'A'
     end
+
+    it 'converts integer 0 (from JS JSON) to nil — void cells stay void' do
+      mixed_letters = letters.dup
+      mixed_letters[0] = 0       # JS sends integer 0 for void cells via JSON
+      mixed_letters[1] = ' '     # JS sends space for empty non-void cells
+
+      patch :update_letters, params: {
+        id: ucw.id,
+        letters: mixed_letters,
+        circles: circles,
+        across_clues: Array.new(area),
+        down_clues: Array.new(area),
+        save_counter: '0.888'
+      }, format: :json
+
+      saved_letters = ucw.reload.letters
+      expect(saved_letters[0]).to be_nil   # integer 0 → void (nil)
+      expect(saved_letters[1]).to be_nil   # space → empty (nil)
+      expect(saved_letters[2]).to eq 'A'   # normal letter preserved
+    end
   end
 
   # -----------------------------------------------------------------------

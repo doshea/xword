@@ -4,6 +4,19 @@ This file is read by all personas (Planner, Builder, Deployer). Use it for cross
 
 ## Current Focus
 
+### ✅ Edit Page: Void/Empty Cell Swap on Save (MUST-FIX)
+**Status:** Builder complete (2026-03-04). 848 examples, 0 failures.
+
+**What shipped:**
+- Controller fix: `l.to_s == "0" || l.to_s.strip.empty? ? nil : l.to_s` — handles integer + string `0`
+- JS hardening: `letters_array[i] = "0"` (string, was integer `0`)
+- Regression test: sends integer `0` + space `" "` matching real JS client
+- Data repair rake task: `bundle exec rails repair:void_cells`
+
+**Builder → Deployer:** No migration. Run `bundle exec rails repair:void_cells` in production after deploy to fix any corrupted UCWs.
+
+---
+
 ### ✅ Homepage "Load More" Pagination
 **Status:** Builder complete (2026-03-04). Committed: `5dc0897`
 
@@ -42,17 +55,8 @@ Summary of changes:
 
 ---
 
-### 🔧 Send friend request: claude → doshea (production)
-**Status:** Planner → Builder (quick task)
-
-Run in Heroku console (`heroku run rails console -a crosswordcafe`):
-```ruby
-claude = User.find_by!(username: 'claude')
-doshea = User.find_by!(username: 'doshea')
-FriendRequest.create!(sender: claude, recipient: doshea)
-NotificationService.notify(user: doshea, actor: claude, type: 'friend_request')
-```
-**Purpose:** Test notification bell visual change (pulse + badge) in production. Confirm the user sees it.
+### ✅ Send friend request: claude → doshea (production)
+**Status:** Done (2026-03-04). Notification bell tested in production.
 
 ### ✅ Fix Clue UTF-8 Double-Encoding (strip_tags + ASCII-8BIT)
 **Status:** Builder complete (2026-03-04). Committed: `1c6aff5`

@@ -176,6 +176,17 @@
   (`$row-width: 62.5em`) into `_design_tokens.scss`. Removed `@import 'dimensions'` from `crossword.scss.erb`.
 - **Skipped H3** (delete `.puzzle-tabs .xw-tabs__nav`): Plan said dead CSS but class is used in 4 views.
 
+### Fix Edit Page Void/Empty Cell Swap on Save (2026-03-04)
+- **Root cause:** JS sends void cells as integer `0` via `JSON.stringify()`. Ruby `0 == "0"` is false
+  (no type coercion), `0.blank?` is false. Integer 0 passes through → saved as `"0"` string → not nil
+  on reload → loses void status. Simultaneously, empty non-void cells sent as `" "` → `.blank?` true
+  → mapped to nil → shows as void on reload.
+- **Controller fix:** `l.to_s == "0" || l.to_s.strip.empty? ? nil : l.to_s` — handles both integer
+  and string `0`, and normalizes all values to strings.
+- **JS hardening:** `letters_array[i] = 0` → `letters_array[i] = "0"` (string). Belt-and-suspenders.
+- **Regression test:** Sends integer `0` and space `" "` matching real JS client behavior.
+- **Data repair:** `lib/tasks/repair_void_cells.rake` — converts `"0"` entries to nil in production UCWs.
+
 ### Homepage "Load More" Pagination (2026-03-04)
 - **Problem:** Homepage showed "100 of 300 puzzles" with no way to see the rest.
 - **Solution:** Turbo Stream `POST /home/load_more` with `scope` + `page` params. `button_to` form
