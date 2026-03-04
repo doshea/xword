@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_logged_in
-    redirect_to(account_required_path) if @current_user.nil?
+    redirect_to(account_required_path(redirect: request.fullpath)) if @current_user.nil?
   end
   def ensure_admin
     redirect_to(unauthorized_path) if (@current_user.nil? || !@current_user.is_admin)
@@ -42,6 +42,15 @@ class ApplicationController < ActionController::Base
   end
   def found_object
     instance_variable_get("@#{associated_class_string.underscore}")
+  end
+
+  # Prevent open-redirect attacks: only allow relative paths (starting with /, no protocol).
+  def safe_redirect_path(path)
+    if path.present? && path.start_with?('/') && !path.start_with?('//') && !path.include?('://')
+      path
+    else
+      root_path
+    end
   end
 
   def ensure_owner_or_admin

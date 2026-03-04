@@ -11,6 +11,8 @@ window.solve_app = {
   save_counter: null,
 
   ready: function() {
+    // Clear any stale beforeunload handler from a previous anonymous session
+    window.onbeforeunload = null;
     if (!solve_app.anonymous && solve_app.solution_id) {
       // Clear any previous timers to prevent phantom saves after Turbo navigation
       if (solve_app.save_timer) clearInterval(solve_app.save_timer);
@@ -110,6 +112,9 @@ window.solve_app = {
       solve_app.save_counter = Math.random().toString();
       $('#save-status').text('Unsaved changes');
       $('#save-clock').empty();
+    } else {
+      // Warn anonymous users they'll lose work if they navigate away
+      window.onbeforeunload = function() { return true; };
     }
   },
 

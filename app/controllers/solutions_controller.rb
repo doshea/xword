@@ -17,6 +17,8 @@ class SolutionsController < ApplicationController
     if @solution.team
       if @current_user && ((@current_user == @solution.user) || SolutionPartnering.where(solution_id: @solution.id, user_id: @current_user.id).any?)
         redirect_to team_crossword_path(@solution.crossword.id, @solution.key)
+      elsif @current_user.nil?
+        redirect_to account_required_path(redirect: request.fullpath)
       else
         head :forbidden
       end

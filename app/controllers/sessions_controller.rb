@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
       else
         cookies.signed[:auth_token] = user.auth_token
       end
-      redirect_to root_path
+      redirect_to safe_redirect_path(params[:redirect])
     else
       redirect_to login_path, flash: { error: "Username/password combination did not match our records" }
     end

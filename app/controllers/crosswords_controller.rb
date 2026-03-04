@@ -13,7 +13,16 @@ class CrosswordsController < ApplicationController
       @solution.fill_letters
       # Single EXISTS query instead of loading all favorites into memory twice in the view.
       @is_favorited = @current_user.favorites.exists?(@crossword.id)
+      # Detect if user has multiple solutions (own + team partnerships) for "Switch solution" link
+      solution_count = Solution.where(user_id: @current_user.id, crossword_id: @crossword.id).count +
+                       Solution.joins(:solution_partnerings)
+                               .where(crossword_id: @crossword.id, solution_partnerings: { user_id: @current_user.id })
+                               .count
+      @has_multiple_solutions = solution_count > 1
     end
+    # Preload stats to avoid N+1 association .count calls in _puzzle_stats.html.haml.
+    @word_count = @crossword.across_clues.count + @crossword.down_clues.count
+    @solver_count = @crossword.solutions.count
     # Preload comment authors and replies (+ reply authors) to avoid N+1 in _comment.html.haml.
     @comments = @crossword.comments.includes(:user, replies: :user)
     @cells = @crossword.cells.asc_indices
@@ -50,6 +59,8 @@ class CrosswordsController < ApplicationController
     @solution = Solution.find_by_crossword_id_and_key(params[:id], params[:key])
     if @crossword && @solution
       @team = true
+      @word_count = @crossword.across_clues.count + @crossword.down_clues.count
+      @solver_count = @crossword.solutions.count
       @cells = @crossword.cells.asc_indices
       @comments = @crossword.comments.includes(:user, replies: :user)
       if @current_user

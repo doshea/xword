@@ -4,9 +4,9 @@
     %dt Grid Size
     %dd= "#{@crossword.rows}×#{@crossword.cols}"
     %dt Words
-    %dd= @crossword.across_clues.count + @crossword.down_clues.count
+    %dd= @word_count
     %dt Solvers
-    %dd= @crossword.solutions.count
+    %dd= @solver_count
 
     %hr.xw-stats-list__divider
 
@@ -14,5 +14,6 @@
     %dd.xw-stats-list__placeholder --:--
     %dt.xw-stats-list__placeholder Avg Time
     %dd.xw-stats-list__placeholder --:--
-    %dt.xw-stats-list__placeholder Your Time
-    %dd.xw-stats-list__placeholder --:--
+    - if @current_user
+      %dt.xw-stats-list__placeholder Your Time
+      %dd.xw-stats-list__placeholder --:--

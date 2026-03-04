@@ -5,5 +5,5 @@
       Ya gotta log in first!
     %p You need an account to access that page. Log in if you have one, or sign up — it's free.
     .xw-btn-group
-      = link_to 'Log in', login_path, class: 'xw-btn'
-      = link_to 'Sign up', new_user_path, class: 'xw-btn xw-btn--secondary'
+      = link_to 'Log in', login_path(redirect: @redirect), class: 'xw-btn'
+      = link_to 'Sign up', new_user_path(redirect: @redirect), class: 'xw-btn xw-btn--secondary'

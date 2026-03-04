@@ -85,7 +85,7 @@ describe CrosswordsController do
     context 'anonymous' do
       it 'redirects to login' do
         post :create_team, params: { id: crossword.id }
-        expect(response).to redirect_to(account_required_path)
+        expect(response.location).to start_with("http://test.host#{account_required_path}")
       end
     end
   end

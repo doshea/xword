@@ -17,8 +17,8 @@ describe 'crosswords/partials/_crossword_tab' do
       expect(rendered).to have_text(crossword.title)
     end
 
-    it 'links to the solution choice page' do
-      expect(rendered).to have_link(href: solution_choice_crossword_path(crossword))
+    it 'links directly to the puzzle' do
+      expect(rendered).to have_link(href: crossword_path(crossword))
     end
 
     it 'does not use legacy shadow or thin-border classes on images' do

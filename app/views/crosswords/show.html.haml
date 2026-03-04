@@ -12,6 +12,11 @@
   solve_app.crossword_id = #{@crossword.try(:id).to_json}
   solve_app.anonymous = #{@current_user.nil?.to_json}
 
+- unless @current_user
+  .xw-alert.xw-alert--info{data: {controller: 'alert'}}
+    Sign up for free to save your progress!
+    = link_to 'Sign up', new_user_path, class: 'xw-btn xw-btn--sm'
+    %button.xw-alert__dismiss{data: {action: 'click->alert#dismiss'}, aria: {label: 'Dismiss'}} &times;
 - if @crossword.user && (@current_user == @crossword.user)
   .xw-alert.xw-alert--info{data: {controller: 'alert'}}
     .center You are the creator of this puzzle
@@ -36,7 +41,7 @@
 %header.xw-container.xw-grid#credit-area
   .xw-col-full
     %h1
-      = @crossword.title.html_safe
+      = @crossword.title
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
     #puzzle-controls.no-select
       - if @current_user
@@ -55,11 +60,14 @@
         %button.xw-btn.xw-btn--sm.xw-btn--secondary{type: 'button', onclick: "document.getElementById('team-explanation').showModal()", data: {'xw-tooltip': 'Team Solve'}, aria: {label: 'Team Solve'}}
           = icon('users')
           %span#teammates
-      - else
+      - elsif @current_user
         / Replaced: link_to with method: 'post' → turbo_method (Turbo handles POST for non-GET links)
         = link_to create_team_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--secondary', id: 'solve-share', data: { turbo_method: :post, 'xw-tooltip': 'Team Solve' }, aria: { label: 'Solve with a team' } do
           = icon('users')
           Team
+      - if @has_multiple_solutions
+        = link_to solution_choice_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Switch solution' }, aria: { label: 'Switch solution' } do
+          = icon('repeat')
 
 
 %section.xw-container.xw-grid#solve-area{aria: {label: 'Puzzle grid'}}

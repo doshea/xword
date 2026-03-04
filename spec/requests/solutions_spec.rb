@@ -220,7 +220,7 @@ RSpec.describe 'Solutions', type: :request do
       patch "/solutions/#{team_solution.id}/team_update", params: {
         row: '1', col: '1', letter: 'A', solver_id: 'x'
       }
-      expect(response).to redirect_to(account_required_path)
+      expect(response.location).to start_with("http://www.example.com#{account_required_path}")
     end
   end
 

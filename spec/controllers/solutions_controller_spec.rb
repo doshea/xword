@@ -88,7 +88,7 @@ describe SolutionsController do
     context 'when not logged in' do
       it 'redirects to login' do
         patch :team_update, params: { id: team_solution.id, row: '0', col: '1', letter: 'A', solver_id: 'abc' }
-        expect(response).to redirect_to(account_required_path)
+        expect(response.location).to start_with("http://test.host#{account_required_path}")
       end
     end
   end

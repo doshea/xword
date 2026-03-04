@@ -31,7 +31,7 @@ describe CellsController do
 
     it 'redirects update to account_required' do
       patch :update, params: { id: cell.id, cell: { letter: 'Z' } }
-      expect(response).to redirect_to(account_required_path)
+      expect(response.location).to start_with("http://test.host#{account_required_path}")
     end
   end
 end

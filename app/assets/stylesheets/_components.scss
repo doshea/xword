@@ -832,3 +832,86 @@
     margin-top: var(--space-6);
   }
 }
+
+
+// ---------------------------------------------------------------------------
+// PUZZLE CARD LIST — .puzzle-tabs / .result-crossword
+// ---------------------------------------------------------------------------
+// Shared horizontal card layout used by _crossword_tab.html.haml partial
+// across home, NYT, user-made, create dashboard, word/clue show pages.
+
+.puzzle-tabs {
+  ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin-bottom: var(--space-4);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.result-crossword {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-base) var(--ease-in-out),
+              box-shadow var(--duration-base) var(--ease-out);
+
+  &:hover {
+    background-color: var(--color-surface-alt);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .xw-grid {
+    padding: var(--space-2) 0;
+    align-items: center;
+  }
+
+  .minipic img {
+    max-width: none;
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+  }
+
+  .metadata {
+    padding-left: var(--space-4);
+
+    p {
+      margin: 0;
+    }
+
+    .title {
+      font-family: var(--font-body);
+      font-weight: var(--weight-semibold);
+      font-size: var(--text-sm);
+      line-height: var(--leading-tight);
+      color: var(--color-text);
+    }
+
+    .byline {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .dimensions {
+      font-family: var(--font-ui);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+  }
+}
+
+.nyt-watermark {
+  position: absolute;
+  right: var(--space-4);
+  bottom: var(--space-2);
+  height: 1.5em;
+}

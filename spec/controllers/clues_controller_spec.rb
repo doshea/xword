@@ -36,6 +36,8 @@ describe CluesController do
 
   describe 'PATCH #update when not logged in' do
     before { patch :update, params: { id: clue.id, clue: { content: 'Nope' } } }
-    it { should redirect_to(account_required_path) }
+    it 'redirects to account_required with redirect param' do
+      expect(response.location).to start_with("http://test.host#{account_required_path}")
+    end
   end
 end

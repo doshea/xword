@@ -212,7 +212,7 @@ describe UnpublishedCrosswordsController do
     context 'anonymous' do
       it 'redirects to account_required' do
         post :create, params: { unpublished_crossword: { title: 'Test', rows: 5, cols: 5 } }
-        expect(response).to redirect_to(account_required_path)
+        expect(response.location).to start_with("http://test.host#{account_required_path}")
       end
     end
   end

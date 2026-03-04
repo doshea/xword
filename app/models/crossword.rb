@@ -85,10 +85,11 @@ class Crossword < ApplicationRecord
   # Without indices: checks every cell; position is 0-based offset into letters.
   def cell_mismatches(letters_param, indices: nil)
     if indices
-      letters_param.each_with_index.to_h do |v, i|
+      letters_param.each_with_index.filter_map do |v, i|
         pos = indices[i]
+        next if pos.nil? || pos < 0 || pos >= letters.length
         [pos, v != letters[pos]]
-      end
+      end.to_h
     else
       letters_param.split('').each_with_index.to_h do |v, i|
         [i, (v != ' ') && (v != '_') && (v != letters[i])]

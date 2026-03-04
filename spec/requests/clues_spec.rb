@@ -32,7 +32,7 @@ RSpec.describe 'Clues', type: :request do
     context 'as an anonymous user' do
       it 'redirects to account_required' do
         patch "/clues/#{clue.id}", params: { clue: { content: 'Nope' } }
-        expect(response).to redirect_to(account_required_path)
+        expect(response.location).to start_with("http://www.example.com#{account_required_path}")
       end
     end
 

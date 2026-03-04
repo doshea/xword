@@ -1,12 +1,12 @@
-/ If the crossword is published, links to it solution choice page. If unpublished, links to its edit page.
+/ If unpublished, links to its edit page. Otherwise, links directly to the puzzle.
 - unpublished = (defined?(unpublished) && unpublished == true)
-= link_to (unpublished ? edit_unpublished_crossword_path(cw) : solution_choice_crossword_path(cw)) do
+= link_to (unpublished ? edit_unpublished_crossword_path(cw) : crossword_path(cw)) do
   .result-crossword
     .xw-grid
       .xw-col-12.xw-lg-4.minipic
         = image_tag cw.try(:preview_url) || asset_path('example_puzzle.jpg'), class: "xw-thumbnail cols-#{cw.cols} rows-#{cw.rows}#{' unpublished' if unpublished}"
       .xw-col-12.xw-lg-8.metadata
-        %p.title= cw.title.html_safe
+        %p.title= cw.title
         - unless unpublished or cw.user.nil? or (cw.user.username == 'nytimes')
           %p.byline= "by #{cw.user.display_name}"
         %p.dimensions= "#{cw.rows} x #{cw.cols}"
