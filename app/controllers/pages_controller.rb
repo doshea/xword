@@ -38,11 +38,9 @@ class PagesController < ApplicationController
   #GET /search or search_path
   def search
     @query = params[:query]
-    @users = User.starts_with(@query)
-    @users_sliced = @users.each_slice(6)
-    @crosswords = Crossword.starts_with(@query).includes(:user)
-    @crosswords_sliced = @crosswords.each_slice(4)
-    @words = Word.starts_with(@query)
+    @users = User.starts_with(@query).load
+    @crosswords = Crossword.starts_with(@query).includes(:user).load
+    @words = Word.starts_with(@query).includes(:clues).load
   end
 
   #GET /live_search or live_search_path
@@ -74,6 +72,20 @@ class PagesController < ApplicationController
         render json: result
       end
       f.js # Legacy: live_search.js.erb
+    end
+  end
+
+  #GET /random or random_puzzle_path
+  def random_puzzle
+    crossword = if @current_user
+                  Crossword.unowned(@current_user).order("RANDOM()").first
+                else
+                  Crossword.order("RANDOM()").first
+                end
+    if crossword
+      redirect_to crossword
+    else
+      redirect_to root_path, flash: { info: "No puzzles found." }
     end
   end
 

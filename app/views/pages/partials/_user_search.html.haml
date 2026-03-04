@@ -1,7 +1,0 @@
-%h2.search-result-count= "#{pluralize(@users.count, 'user')}  found"
-- @users_sliced.each do |slice|
-  .xw-grid
-    -slice.each do |user|
-      = link_to user, class: 'xw-col-12 xw-md-2 result-user' do
-        = image_tag user.image.search.url
-        %p.name= user.display_name

@@ -143,9 +143,29 @@ RSpec.describe 'Pages', type: :request do
   end
 
   describe 'GET /search' do
-    it 'renders the search page' do
+    it 'renders the search page with a query' do
       get '/search', params: { query: 'test' }
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'renders the landing state with a blank query' do
+      get '/search'
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('Site Search')
+    end
+
+    it 'shows empty state tips when no results match' do
+      get '/search', params: { query: 'zzzznotfound' }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('No results found')
+      expect(response.body).to include('xw-search-tips')
+    end
+
+    it 'renders word results as links to word detail pages' do
+      word = Word.create!(content: 'OREO')
+      get '/search', params: { query: 'OREO' }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(word_path(word))
     end
   end
 

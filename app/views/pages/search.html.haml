@@ -10,23 +10,28 @@
         %h2.xw-search-hero__heading
           Results for
           %em= "\u201C#{@query}\u201D"
-        - total = @crosswords.length + @users.count + @words.count
+        - total = @crosswords.size + @users.size + @words.size
         - if total > 0
-          .xw-search-hero__stats
+          .xw-search-hero__stats{role: 'status', 'aria-live': 'polite'}
             - if @crosswords.any?
               %span.xw-search-stat
-                %strong= @crosswords.length
-                = 'crossword'.pluralize(@crosswords.length)
+                %strong= @crosswords.size
+                = 'crossword'.pluralize(@crosswords.size)
             - if @users.any?
               %span.xw-search-stat
-                %strong= @users.count
-                = 'user'.pluralize(@users.count)
+                %strong= @users.size
+                = 'user'.pluralize(@users.size)
             - if @words.any?
               %span.xw-search-stat
-                %strong= @words.count
-                = 'word'.pluralize(@words.count)
+                %strong= @words.size
+                = 'word'.pluralize(@words.size)
         - else
-          %p.xw-search-hero__empty No results found. Try a different search term.
+          .xw-search-hero__empty
+            %p No results found. Try a different search term.
+            %ul.xw-search-tips
+              %li Puzzle titles (e.g. "Monday")
+              %li Usernames (e.g. "nytimes")
+              %li Crossword words (e.g. "OREO")
       - else
         %h2.xw-search-hero__heading Site Search
         %p.xw-search-hero__subtitle Find puzzles, solvers, and clue words.
@@ -36,26 +41,26 @@
           = search_field_tag :query, @query, id: 'search2', class: 'xw-search-hero__input', placeholder: 'A puzzle title, username, clue or word\u2026', autofocus: @query.blank?
           = submit_tag 'Search', class: 'xw-btn xw-btn--success xw-search-hero__submit', data: { loading_target: 'button' }
 
-  -# Crossword results
+  -# Crossword results — vertical card grid matching profile
   - if @crosswords.any?
     .xw-col-full
       %section.xw-search-card
         %h3.xw-search-card__heading
           = icon('clipboard-list', class: 'xw-search-card__icon')
           Crosswords
-          %span.xw-search-card__count= @crosswords.length
+          %span.xw-search-card__count= @crosswords.size
         .xw-search-puzzles
           - @crosswords.each do |cw|
-            = link_to solution_choice_crossword_path(cw), class: 'xw-search-puzzle' do
-              .xw-search-puzzle__thumb-wrap
-                = image_tag cw.try(:preview_url) || asset_path('example_puzzle.jpg'), class: 'xw-search-puzzle__thumb', alt: cw.title
-                - if cw.user&.username == 'nytimes'
-                  %span.xw-search-puzzle__badge NYT
-              .xw-search-puzzle__info
-                %span.xw-search-puzzle__title= cw.title.html_safe
-                - unless cw.user.nil? || cw.user.username == 'nytimes'
-                  %span.xw-search-puzzle__byline= "by #{cw.user.display_name}"
-                %span.xw-search-puzzle__dims= "#{cw.rows} \u00D7 #{cw.cols}"
+            = link_to crossword_path(cw), class: 'xw-search-puzzle' do
+              - if cw.preview.url
+                = image_tag cw.preview.url, class: 'xw-search-puzzle__thumb', alt: cw.title
+              - else
+                .xw-search-puzzle__thumb.xw-search-puzzle__thumb--empty
+              - if cw.user&.username == 'nytimes'
+                %span.xw-search-puzzle__badge NYT
+              %span.xw-search-puzzle__title= cw.title
+              - unless cw.user.nil? || cw.user.username == 'nytimes'
+                %span.xw-search-puzzle__byline= "by #{cw.user.display_name}"
 
   -# User results
   - if @users.any?
@@ -64,7 +69,7 @@
         %h3.xw-search-card__heading
           = icon('user', class: 'xw-search-card__icon')
           Users
-          %span.xw-search-card__count= @users.count
+          %span.xw-search-card__count= @users.size
         .xw-search-users
           - @users.each do |user|
             = link_to user, class: 'xw-search-user' do
@@ -72,23 +77,23 @@
                 = image_tag user.image.search.url, alt: user.display_name
               %span.xw-search-user__name= user.display_name
 
-  -# Word results
+  -# Word results — clickable links to word detail pages
   - if @words.any?
     .xw-col-full
       %section.xw-search-card
         %h3.xw-search-card__heading
           = icon('pencil', class: 'xw-search-card__icon')
           Words
-          %span.xw-search-card__count= @words.count
+          %span.xw-search-card__count= @words.size
         .xw-search-words
           - @words.each do |word|
-            .xw-search-word
+            = link_to word_path(word), class: 'xw-search-word' do
               %span.xw-search-word__content= word.content
               .xw-search-word__meta
                 %span.xw-search-word__stat
-                  %strong= word.clues.count
-                  = 'clue'.pluralize(word.clues.count)
+                  %strong= word.clues.size
+                  = 'clue'.pluralize(word.clues.size)
                 %span.xw-search-word__dot &middot;
                 %span.xw-search-word__stat
-                  %strong= word.crosswords.count
-                  = 'puzzle'.pluralize(word.crosswords.count)
+                  %strong= word.crosswords.size
+                  = 'puzzle'.pluralize(word.crosswords.size)
