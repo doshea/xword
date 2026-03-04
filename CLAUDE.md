@@ -46,44 +46,23 @@ include team solving (ActionCable), NYT importing, user accounts, comments, and 
   `.order(created_at: :desc)` or similar. Controllers for home, profile, NYT, and user-made
   pages already include this. Search relies on pg_search relevance ranking (no explicit order).
 - **`Phrase`** — reusable clue text (e.g., "Norse god of wisdom"). A `Clue` is an instance
-  of a `Phrase` tied to a `Word` in a specific puzzle. FK exists but is unpopulated. Planned
-  for clue suggestions during puzzle creation.
-- **`CellEdit`** — tracks individual cell edits; unused in current UI. Candidate for removal.
+  of a `Phrase` tied to a `Word` in a specific puzzle. 53K phrases populated, all eligible
+  clues linked. Phrases created at publish time via `CrosswordPublisher`.
 - Raw SQL bulk inserts in `Crossword#populate_cells` (atomic `INSERT ... RETURNING id`).
 
 ## Architecture Direction
 
-The front-end modernization is complete. The next phase is **backend architecture cleanup**:
+Front-end modernization and backend architecture cleanup are both complete. The codebase
+is in a healthy, maintainable state. Ongoing principles:
 
-### Principles
-
-1. **Extract service objects for multi-step operations.** Controllers should call a service,
-   not orchestrate a pipeline. Priority targets:
-   - `UnpublishedCrosswordsController#publish` (~40 lines of crossword construction)
-   - `Newyorkable` concern (100+ lines of ETL disguised as a model concern)
-   - Team broadcast logic in `SolutionsController`
-
-2. **Push authorization into models.** `SolutionsController` has 3 custom before_actions
-   reimplementing access control. A `Solution#accessible_by?(user)` method would be testable,
-   reusable, and keep controllers thin.
-
-3. **Guard against nil at system boundaries.** Several model methods assume associations exist
-   without checking (e.g., `get_mirror_cell` return value, `Newyorkable` assuming the nytimes
-   user exists). Add guards where data crosses trust boundaries; trust internal code paths.
-
-4. **Delete dead code.** Don't keep unused models, concerns, or factories "just in case."
-   If it's not called, it's not documentation — it's confusion.
-
-### Known Runtime Risks
-
-These are bugs or crash paths that exist in production code today:
-
-1. **`Solution#percent_complete`** — division by zero if `nonvoid_letter_count` is 0
-2. **`Crossword#randomize_letters_and_voids`** — calls `.is_void!` on nil `get_mirror_cell` return
-3. **`Newyorkable#add_nyt_puzzle`** — NPE if `User.find_by_username('nytimes')` returns nil
-4. **`Newyorkable` HTTP calls** — no timeout on HTTParty requests; can hang a Puma thread
-5. **`UsersController#update`** — bare `User.find(params[:id])` without RecordNotFound rescue
-6. **`CommentsController#add_comment`** — bare `Crossword.find(params[:id])` without rescue
+- **Service objects** for multi-step operations: `CrosswordPublisher` (publish pipeline),
+  `NytPuzzleImporter` / `NytPuzzleFetcher` / `NytGithubRecorder` (NYT import). Team broadcast
+  logic in `SolutionsController` assessed as already clean — not worth extracting.
+- **Authorization in models**: `Solution#accessible_by?(user)` replaces 3 controller before_actions.
+- **Nil guards at system boundaries**: mirror cell, nytimes user, bare `.find()` calls all guarded.
+- **Dead code deleted**: `CellEdit` model, `Newyorkable` concern, unused factories, dead rake tasks.
+- **All 6 known runtime risks resolved**: division-by-zero guards, nil mirror cell guard,
+  HTTParty 10s timeouts, safe `find_by`/`where` replacing bare `.find()` calls.
 
 ## Frontend Hazards
 
@@ -133,7 +112,7 @@ height based on row count.
 
 ## Testing
 
-Run tests: `bundle exec rspec` — ~693 examples, 0 failures
+Run tests: `bundle exec rspec` — ~893 examples, 0 failures
 
 ### Writing Tests
 
