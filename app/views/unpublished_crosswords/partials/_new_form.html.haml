@@ -1,18 +1,15 @@
-= form_for @ucw do |f|
-  %fieldset.borderless
-    .xw-grid
-      .xw-col-12.xw-lg-8
-        =f.label :title
-        -# # =text_field_tag 'crossword[title]', nil, placeholder: 'Untitled', required: true
-        =f.text_field :title, placeholder: 'Untitled', required: true
-      .xw-col-12.xw-lg-2
-        =f.label :rows
-        =f.number_field :rows, min: 4, max: 30
-      .xw-col-12.xw-lg-2
-        =f.label :cols
-        =f.number_field :cols, min: 4, max: 30
-    .xw-grid
-      .xw-col-full
-        =f.label :description
-        =f.text_area :description
-        =f.submit 'Create Crossword', class: 'xw-btn xw-btn--success'
+= form_for @ucw, html: { class: 'xw-newcw-form' } do |f|
+  .xw-newcw-form__row
+    .xw-field.xw-newcw-form__title
+      = f.label :title, class: 'xw-label'
+      = f.text_field :title, placeholder: 'Untitled', required: true, class: 'xw-input'
+    .xw-field.xw-newcw-form__dim
+      = f.label :rows, class: 'xw-label'
+      = f.number_field :rows, min: 4, max: 30, class: 'xw-input'
+    .xw-field.xw-newcw-form__dim
+      = f.label :cols, class: 'xw-label'
+      = f.number_field :cols, min: 4, max: 30, class: 'xw-input'
+  .xw-field
+    = f.label :description, class: 'xw-label'
+    = f.text_area :description, class: 'xw-textarea', rows: 4
+  = f.submit 'Create Crossword', class: 'xw-btn xw-btn--success xw-newcw-form__submit'

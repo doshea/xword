@@ -22,7 +22,7 @@ window.new_cw = {
 
   ready: function() {
     $('form').on('submit', new_cw.generate_puzzle_overlay);
-    $('#crossword_rows, #crossword_cols').on('change', new_cw.regenerate_preview);
+    $('#unpublished_crossword_rows, #unpublished_crossword_cols').on('change', new_cw.regenerate_preview);
     $('#preview-crossword').on('mousedown', '.preview-cell', function() {
       $(this).toggleClass('void');
     });
@@ -30,7 +30,7 @@ window.new_cw = {
   },
 
   generate_puzzle_overlay: function() {
-    $('#body .row:not(.row-bookend)').first().children().animate(
+    $('.spin-target').children().animate(
       { 'opacity': 0 },
       'slow',
       function() {
@@ -50,8 +50,8 @@ window.new_cw = {
   },
 
   hide_extra_cells: function() {
-    var rows = $('#crossword_rows').val();
-    var cols = $('#crossword_cols').val();
+    var rows = $('#unpublished_crossword_rows').val();
+    var cols = $('#unpublished_crossword_cols').val();
     var extra_cells = $('.preview-cell').filter(function() {
       return ($(this).data('col') > cols) || ($(this).data('row') > rows);
     });

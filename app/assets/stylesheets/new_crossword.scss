@@ -1,27 +1,105 @@
-// Phase 3 removed .row — the xw-grid wrapper in new.html.haml provides the
-// containing block for any absolutely-positioned children.
-.xw-grid {
+// =============================================================================
+// New Crossword Page — puzzle creation form + live preview
+// =============================================================================
+
+@import 'design_tokens';
+
+// -----------------------------------------------------------------------------
+// Page-level: warm container bg, top padding for breathing room
+// -----------------------------------------------------------------------------
+
+#body > .xw-container.xw-grid {
+  background-color: var(--color-surface-alt);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
+}
+
+// -----------------------------------------------------------------------------
+// Spinner overlay — scoped to direct children of .spin-target
+// The JS dynamically creates h2/h6 via .prependTo / .appendTo
+// -----------------------------------------------------------------------------
+
+.spin-target {
   position: relative;
 
-  h2 {
+  > h2 {
     width: 100%;
     text-align: center;
     position: absolute;
     top: 1em;
   }
-  h6 {
+
+  > h6 {
     width: 100%;
     text-align: center;
     position: absolute;
     bottom: 2em;
   }
 }
+
+// -----------------------------------------------------------------------------
+// Cards — clean white surfaces on warm bg
+// -----------------------------------------------------------------------------
+
+.xw-newcw-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+}
+
+.xw-newcw-card__heading {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  margin: 0 0 var(--space-4) 0;
+}
+
+// -----------------------------------------------------------------------------
+// Form layout
+// -----------------------------------------------------------------------------
+
+.xw-newcw-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.xw-newcw-form__title {
+  flex: 1;
+  min-width: 200px;
+}
+
+.xw-newcw-form__dim {
+  width: 5rem;
+  flex-shrink: 0;
+}
+
+.xw-newcw-form__submit {
+  margin-top: var(--space-2);
+}
+
+// -----------------------------------------------------------------------------
+// Preview grid — paper feel
+// -----------------------------------------------------------------------------
+
 #preview-crossword {
-  .preview-row{
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  display: inline-block;
+
+  .preview-row {
     background: var(--color-cell-bg);
     width: 300px;
     height: 9px;
   }
+
   .preview-cell {
     margin: 1px -2px -2px 1px;
     float: left;
@@ -29,8 +107,28 @@
     height: 10px;
     border: 1px solid var(--color-cell-border);
     cursor: pointer;
-    &.void{
+    transition: background-color var(--duration-fast) var(--ease-in-out);
+
+    &.void {
       background: var(--color-cell-void);
     }
+
+    &:hover {
+      background: var(--color-surface-sunken);
+    }
+
+    &.void:hover {
+      background: var(--color-cell-void);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Responsive
+// -----------------------------------------------------------------------------
+
+@media (max-width: $bp-sm - 1) {
+  .xw-newcw-form__dim {
+    width: calc(50% - var(--space-2));
   }
 }
