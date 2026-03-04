@@ -4,8 +4,8 @@ This file is read by all personas (Planner, Builder, Deployer). Use it for cross
 
 ## Current Focus
 
-### 🔧 Homepage "Load More" Pagination
-**Status:** Planner complete → Builder ready
+### ✅ Homepage "Load More" Pagination
+**Status:** Builder complete (2026-03-04). Committed: `5dc0897`
 
 **Problem:** Homepage shows "100 out of 300 puzzles" with no way to see the rest. All 3 tabs (unstarted, in-progress, solved) capped at 100. Anonymous users have the same issue.
 

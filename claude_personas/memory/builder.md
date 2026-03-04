@@ -176,6 +176,19 @@
   (`$row-width: 62.5em`) into `_design_tokens.scss`. Removed `@import 'dimensions'` from `crossword.scss.erb`.
 - **Skipped H3** (delete `.puzzle-tabs .xw-tabs__nav`): Plan said dead CSS but class is used in 4 views.
 
+### Homepage "Load More" Pagination (2026-03-04)
+- **Problem:** Homepage showed "100 of 300 puzzles" with no way to see the rest.
+- **Solution:** Turbo Stream `POST /home/load_more` with `scope` + `page` params. `button_to` form
+  auto-intercepted by Turbo. Server returns Turbo Streams: append `<li>` cards + replace/remove button.
+- **Controller:** `PagesController#load_more` — offset pagination. Anonymous users only get `unstarted`.
+  Invalid scope → 400. Page clamped to minimum 1.
+- **Dead code deleted:** `CrosswordsController#batch`, `batch` route, `batch.turbo_stream.erb`,
+  `_load_next_button.html.haml` (broken URI-too-long approach, button never rendered).
+- **Bug fix:** `_in_progress.html.haml` empty-state linked to `#panel2` (itself) → `#panel1` (New Puzzles).
+- **Spec gotcha:** Turbo Stream endpoints need `headers: { 'Accept' => Mime[:turbo_stream].to_s }`
+  in request specs, otherwise Rails returns 406 Not Acceptable.
+- **6 new specs**, 847 total, 0 failures.
+
 ## Workflow Rules
 - **Always commit before declaring done.** Implement → test → commit → update memory.
   Deployer can't deploy uncommitted work. Don't leave it for them to discover.

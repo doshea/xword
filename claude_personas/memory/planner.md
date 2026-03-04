@@ -355,3 +355,19 @@
 **Files:** 7 modified + 1 new migration + 1 new spec file. Low risk — purely additive.
 
 **Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Homepage "Load More" Pagination — design
+
+**Problem:** Homepage shows "100 of 300 puzzles" with no way to see more. Dead `batch` endpoint was an earlier broken attempt (URI too long from passing all IDs in query string).
+
+**Approach:** Turbo Stream load-more button. `POST /home/load_more` with `scope` + `page` params. Server returns Turbo Streams: `append` cards to `<ul>`, `replace`/`remove` button.
+
+**Key decisions:**
+1. Offset pagination (not cursor) — ordering is stable (`created_at desc`), no concurrent inserts during browsing.
+2. All 3 tabs get unique `list_id` attributes (`unstarted-list`, `in-progress-list`, `solved-list`) as Turbo Stream targets.
+3. Anonymous users get same UX but only `unstarted` scope (other scopes need a user).
+4. Dead code deleted: `batch` route + controller + view + broken button partial.
+
+**Bug found:** `_in_progress.html.haml` empty-state links `#panel2` (itself) instead of `#panel1` (New Puzzles). Fixed in plan.
+
+**Full plan:** `claude_personas/memory/plan.md`
