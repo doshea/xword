@@ -35,6 +35,11 @@
           %span.win-clock__ms-dot .
           #milliseconds.win-clock__segment
     = render partial: 'solutions/partials/win_modal_js', locals: {day_s: day_s, hour_s: hour_s, minute_s: minute_s, second_s: second_s, millisecond_s: millisecond_s, more_than_a_day: more_than_a_day, more_than_an_hour: more_than_an_hour}
+    - if @solution.hints_used.positive?
+      %p.win-modal__hints
+        = icon('lightbulb', size: 14)
+        = pluralize(@solution.hints_used, 'hint')
+        used
     - unless @has_commented
       %hr
       = form_with(url: add_comment_path(@solution.crossword), id: 'complete-form') do |f|

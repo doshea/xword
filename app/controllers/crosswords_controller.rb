@@ -1,5 +1,5 @@
 class CrosswordsController < ApplicationController
-  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :admin_fake_win, :admin_reveal_puzzle]
+  before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :admin_fake_win, :admin_reveal_puzzle, :reveal]
   before_action :ensure_logged_in, only: [:create_team, :favorite, :unfavorite]
 
   #GET /crosswords/:id or crossword_path
@@ -191,6 +191,34 @@ class CrosswordsController < ApplicationController
     return head :forbidden unless @current_user&.is_admin
 
     render json: { letters: @crossword.letters }
+  end
+
+  # POST /crosswords/:id/reveal
+  # Returns correct letters for the requested cell indices.
+  # Tracks hints on the user's solution if logged in.
+  def reveal
+    indices = Array(params[:indices]).map(&:to_i)
+    return head :bad_request if indices.empty?
+
+    # Build { index => correct_letter } for requested positions only
+    revealed = {}
+    indices.each do |i|
+      next if i < 0 || i >= @crossword.letters.length
+      letter = @crossword.letters[i]
+      next if letter == '_' # void cell — nothing to reveal
+      revealed[i] = letter
+    end
+
+    # Track hints on the solution (logged-in users only)
+    if @current_user && params[:solution_id].present?
+      solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
+      solution ||= Solution.joins(:solution_partnerings)
+                           .where(solution_partnerings: { user_id: @current_user.id })
+                           .find_by(id: params[:solution_id], crossword_id: @crossword.id)
+      solution&.increment!(:hints_used, revealed.size)
+    end
+
+    render json: { letters: revealed }
   end
 
 end

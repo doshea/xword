@@ -63,6 +63,13 @@ describe Solution do
     end
   end
 
+  describe '#hints_used' do
+    it 'defaults to 0' do
+      solution = create(:solution, user: user, crossword: crossword)
+      expect(solution.hints_used).to eq(0)
+    end
+  end
+
   describe '#fill_letters' do
     it 'reinitializes letters when length does not match the crossword' do
       solution = create(:solution, user: user, crossword: crossword, letters: '')

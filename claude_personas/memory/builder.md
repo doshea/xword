@@ -138,6 +138,44 @@
   - CLAUDE.md updated: domain notes + removed tech debt item
 - **Key rule going forward:** Any new Crossword query that needs ordering must add explicit `.order()`. No implicit ordering exists.
 
+### Fix Clue UTF-8 Double-Encoding (2026-03-04)
+- **Root cause:** `Clue#strip_tags` passed content to Loofah without encoding guard. ASCII-8BIT
+  strings (from HTTParty) interpreted as Latin-1 → double-encoded UTF-8 (e.g. "Québéc" → "QuÃ©bÃ©c").
+- **Fix 1:** Encoding guard in `strip_tags` before_save: force ASCII-8BIT → UTF-8, fallback
+  to ISO-8859-1 transcode if invalid.
+- **Fix 2:** Data migration (`fix_double_encoded_clues`): finds clues containing `Ã`, reverses
+  with `encode('ISO-8859-1').force_encoding('UTF-8')`, rescues UndefinedConversionError.
+- **Fix 3:** Belt-and-suspenders `ensure_utf8` on NytPuzzleFetcher response bodies at source.
+- **4 new specs** in `clue_spec.rb`: UTF-8 preserved, ASCII-8BIT preserved, HTML stripped w/ Unicode, ISO-8859-1 transcoding.
+
+### Reveal Hints — Cell + Word (2026-03-04)
+- **Migration:** `add_hints_used_to_solutions` — integer column, default 0, null false.
+- **Controller:** `CrosswordsController#reveal` — returns `{ letters: { index: letter } }` for
+  requested indices only. Never exposes full answer key. Increments `solution.hints_used` atomically
+  via `increment!`. Solution lookup follows `check_completion` pattern (owner + team partner).
+- **UI:** 2 items added to Check dropdown after Completion divider: "Reveal Cell", "Reveal Word".
+- **JS:** `reveal_cell()`, `reveal_word()`, `apply_reveal()` in solve_funcs.js. Uses `set_letter(letter, true)`
+  for team broadcasting. Flash animation on revealed cells. `check_all_finished()` + `update_unsaved()` at end.
+- **Win modal:** Shows "💡 N hints used" when hints_used > 0 (lightbulb icon). `.win-modal__hints` CSS class.
+- **Specs:** 10 new (9 reveal + 1 hints_used default). Anonymous reveal works (no auth required).
+  Team partner hint tracking works. Void/out-of-range indices handled. 842 total examples, 0 failures.
+
+### Welcome Page Rebuild (2026-03-04)
+- **6 files changed:** 2 rewritten, 2 new, 2 deleted.
+- **Stimulus `chalkboard_controller.js`** replaces jQuery `welcome.js.erb`. CSS `translateX(-50%)`
+  transition on `.xw-chalkboard__slider` replaces `$('.slider').animate({'marginLeft': ...})`.
+- **Full BEM structure** (`.xw-chalkboard__*`), all design tokens, no hardcoded colors.
+- **Accessibility:** sr-only labels on all inputs, ARIA regions, autocomplete attributes, skip-to-content.
+- **Mobile:** No chalkboard image below 640px → dark `--color-nav-bg` container, show/hide panels
+  instead of sliding. `prefers-reduced-motion` disables transition.
+- **"Just browsing?" bypass** below chalkboard → root_path.
+- **Content moved** from `_chalkboard.html.haml` (layout partial) to `welcome.html.haml` (view).
+  Fixes antipattern of layout depending on controller's `@user`.
+- **Google Fonts preconnect** added to `logged_out_home.html.haml` (was missing → system fallback fonts).
+- **Housekeeping:** Deleted empty `layouts.scss.erb` + removed from manifest. Folded `_dimensions.scss`
+  (`$row-width: 62.5em`) into `_design_tokens.scss`. Removed `@import 'dimensions'` from `crossword.scss.erb`.
+- **Skipped H3** (delete `.puzzle-tabs .xw-tabs__nav`): Plan said dead CSS but class is used in 4 views.
+
 ## Workflow Rules
 - **Always commit before declaring done.** Implement → test → commit → update memory.
   Deployer can't deploy uncommitted work. Don't leave it for them to discover.

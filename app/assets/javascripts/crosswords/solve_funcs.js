@@ -60,6 +60,8 @@ window.solve_app = {
     $('#admin-reveal-puzzle').on('click', solve_app.reveal_puzzle);
     $('#admin-clear-puzzle').on('click', solve_app.clear_puzzle);
     $('#admin-flash-cascade').on('click', solve_app.flash_cascade);
+    $('#reveal-cell').on('click', solve_app.reveal_cell);
+    $('#reveal-word').on('click', solve_app.reveal_word);
     $('input, textarea').on('click', function() { cw.unhighlight_all(); });
     solve_app.check_all_finished();
     return true;
@@ -370,6 +372,97 @@ window.solve_app = {
       }
     });
     solve_app.apply_mismatches({ mismatches: mismatches });
+  },
+
+  // Reveal the correct letter for the selected cell.
+  // Server returns only the requested letter — never the full answer key.
+  reveal_cell: function(e) {
+    e.preventDefault();
+    if (!cw.selected) {
+      cw.flash('Select a cell first.', 'info');
+      return;
+    }
+    if (cw.selected.hasClass('void')) return;
+
+    var index = cw.selected.data('index');
+    var data = { indices: [index] };
+    if (solve_app.solution_id) data.solution_id = solve_app.solution_id;
+
+    $.ajax({
+      dataType: 'json',
+      type: 'POST',
+      url: "/crosswords/" + solve_app.crossword_id + "/reveal",
+      data: data,
+      success: function(resp) {
+        solve_app.apply_reveal(resp.letters);
+      },
+      error: function(xhr) {
+        cw.flash('Reveal failed.', 'error');
+        console.warn('reveal_cell failed:', xhr.status);
+      }
+    });
+  },
+
+  // Reveal the correct letters for all cells in the selected word.
+  reveal_word: function(e) {
+    e.preventDefault();
+    if (!cw.selected) {
+      cw.flash('Select a cell first.', 'info');
+      return;
+    }
+
+    var word_cells = cw.selected.get_word_cells();
+    var indices = [];
+    for (var i = 0; i < word_cells.length; i++) {
+      indices.push(word_cells[i].data('index'));
+    }
+
+    var data = { indices: indices };
+    if (solve_app.solution_id) data.solution_id = solve_app.solution_id;
+
+    $.ajax({
+      dataType: 'json',
+      type: 'POST',
+      url: "/crosswords/" + solve_app.crossword_id + "/reveal",
+      data: data,
+      success: function(resp) {
+        solve_app.apply_reveal(resp.letters);
+      },
+      error: function(xhr) {
+        cw.flash('Reveal failed.', 'error');
+        console.warn('reveal_word failed:', xhr.status);
+      }
+    });
+  },
+
+  // Apply revealed letters to cells. Sets each cell via set_letter (broadcasts
+  // to team) and marks as correct. Triggers auto-save via update_unsaved.
+  apply_reveal: function(letters) {
+    var indices = Object.keys(letters).map(Number);
+    if (indices.length === 0) return;
+
+    indices.forEach(function(idx) {
+      var $cell = $($('.cell')[idx]);
+      $cell.set_letter(letters[idx], true);  // original=true → broadcasts to team
+      $cell.addClass('flagged correct').removeClass('incorrect');
+    });
+
+    // Flash cascade on revealed cells (reuse existing animation)
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion) {
+      indices.forEach(function(idx) {
+        var $cell = $($('.cell')[idx]);
+        $cell.removeClass('cell-flash');
+        $cell[0].offsetWidth; // force reflow
+        $cell.addClass('cell-flash');
+      });
+      setTimeout(function() {
+        $('.cell-flash').removeClass('cell-flash');
+      }, 400);
+    }
+
+    solve_app.check_all_finished(); // cross off completed words
+    solve_app.update_unsaved();     // trigger auto-save
   },
 
   add_comment_or_reply: function(e) {

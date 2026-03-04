@@ -4,6 +4,96 @@ This file is read by all personas (Planner, Builder, Deployer). Use it for cross
 
 ## Current Focus
 
+### ✅ Reveal Hints (Letter + Word)
+**Status:** Builder complete (2026-03-04). 842 examples, 0 failures. Needs deploy + visual verification.
+
+**What shipped:**
+- Migration: `add_hints_used_to_solutions` — integer column, default 0
+- `POST /crosswords/:id/reveal` — returns correct letters for requested indices only (never full answer key). Increments `solution.hints_used` atomically.
+- Check dropdown: "Reveal Cell" + "Reveal Word" items after Completion divider
+- JS: `reveal_cell()`, `reveal_word()`, `apply_reveal()` — team broadcast via `set_letter(letter, true)`, golden flash on revealed cells, auto-save
+- Win modal: Shows "💡 N hints used" when hints > 0
+- 10 new specs (single cell, word, void skip, bad request, out-of-range, anonymous, team partner)
+
+**Builder → Deployer:** Migration adds `hints_used` column to solutions table. Standard `rails db:migrate`. No data backfill needed.
+
+---
+
+### 🔧 Send friend request: claude → doshea (production)
+**Status:** Planner → Builder (quick task)
+
+Run in Heroku console (`heroku run rails console -a crosswordcafe`):
+```ruby
+claude = User.find_by!(username: 'claude')
+doshea = User.find_by!(username: 'doshea')
+FriendRequest.create!(sender: claude, recipient: doshea)
+NotificationService.notify(user: doshea, actor: claude, type: 'friend_request')
+```
+**Purpose:** Test notification bell visual change (pulse + badge) in production. Confirm the user sees it.
+
+### ✅ Fix Clue UTF-8 Double-Encoding (strip_tags + ASCII-8BIT)
+**Status:** Builder complete (2026-03-04). Committed: `1c6aff5`
+
+**Root cause:** `Clue#strip_tags` callback passes content to Loofah without encoding guard. When input string has `ASCII-8BIT` encoding (common from HTTParty responses), Loofah interprets bytes as Latin-1 and re-encodes to UTF-8. Result: "Québéc" → "QuÃ©bÃ©c".
+
+**Confirmed via reproduction:** `strip_tags("Québéc".force_encoding('ASCII-8BIT'))` → "QuÃ©bÃ©c"
+
+**3 changes, any order:**
+
+#### 1. `app/models/clue.rb` — encoding guard in `strip_tags` (must-fix)
+```ruby
+def strip_tags
+  if self.content&.encoding == Encoding::ASCII_8BIT
+    self.content = self.content.dup.force_encoding('UTF-8')
+    unless self.content.valid_encoding?
+      self.content = self.content.encode('UTF-8', 'ISO-8859-1')
+    end
+  end
+  self.content = ActionController::Base.helpers.strip_tags(self.content)
+end
+```
+
+#### 2. Data migration for existing production clues (must-fix)
+Find clues containing `Ã` (double-encoding signature), reverse with `encode('ISO-8859-1').force_encoding('UTF-8')`, use `update_column` to skip callbacks. Rescue `Encoding::UndefinedConversionError`.
+
+#### 3. `app/services/nyt_puzzle_fetcher.rb` — ensure_utf8 on response (should-fix)
+`force_encoding('UTF-8')` on ASCII-8BIT responses at the source. Belt-and-suspenders.
+
+#### Specs: `spec/models/clue_spec.rb`
+- UTF-8 chars preserved through save
+- ASCII-8BIT input preserved through save
+- HTML stripped while preserving Unicode
+
+**No cell changes needed** — A-Z only by design, auto-escaped by HAML.
+
+---
+
+### ✅ Sleeker Footer — Colophon Strip Redesign
+**Status:** Builder verified complete (2026-03-04). CSS + HAML already aligned — no changes needed.
+
+**What:** Replace chunky dark footer bar with transparent colophon strip — single centered row of text links · social icons · copyright sitting on wood texture.
+
+**Planner → Builder: 2 files, exact code in plan**
+
+#### File 1: `app/views/layouts/partials/_footer.html.haml` — Replace entire file
+
+Replace with flat structure: `.xw-footer__row` containing `nav.xw-footer__links` (4 plain `<a>` tags, no icons), middot separator, `.xw-footer__social` (2 icons at size 14), middot separator, `.xw-footer__copyright` inline span.
+
+#### File 2: `app/assets/stylesheets/_components.scss` lines 666–765 — Replace footer CSS block
+
+Replace from `// FOOTER` comment through mobile media query closing brace. New CSS: no background-color, centered flex row, `.xw-footer__links`/`.xw-footer__social`/`.xw-footer__dot`/`.xw-footer__copyright` selectors. Mobile: stacks vertically, hides middots.
+
+**Removed:** `background-color`, nav icons, ul/li wrappers, `.xw-footer__inner`, `.xw-footer__nav-link`, `.xw-footer__social-link`, circular icon targets, copyright border-top.
+
+**All design tokens verified to exist.** `--color-footer-bg` becomes unused but harmless.
+
+**Verification:** `bundle exec rspec` (no footer specs, confirm no regressions), visual check on desktop + mobile, both layouts.
+
+---
+
+### ✅ Solve Timer + Next Puzzle on Win
+**Status:** Builder complete.
+
 ### ✅ Fix 8 Test Failures (4 always-failing, 4 intermittent) + 1 Flaky
 **Status:** Builder complete (2026-03-04). 814 examples, 0 failures.
 
@@ -819,14 +909,42 @@ box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 
 ---
 
+### ✅ Welcome Page Rebuild (HIGH PRIORITY — Design)
+**Status:** Builder complete (2026-03-04). Committed: `9ff2f66`
+
+**What:** Full rebuild of `/welcome` landing page. Keep chalkboard-on-café visual concept, rewrite implementation with design tokens, BEM, accessibility, Stimulus.
+
+**Why:** The welcome page is the biggest design gap — the first thing new visitors see. ~15 hardcoded colors, no labels/ARIA, dead `data-abide` Foundation attribute, jQuery animation, no responsive handling, dev comment in code.
+
+**Planner → Builder:** Full plan in `claude_personas/memory/plan.md`. 6 files (2 rewrite, 2 new, 2 delete):
+1. `welcome.html.haml` — rewrite (was empty; chalkboard content moves here from partial)
+2. `logged_out_home.html.haml` — simplify (remove partial render, add Google Fonts + skip link)
+3. `welcome.scss.erb` — full rewrite (all tokens, BEM, responsive mobile)
+4. `chalkboard_controller.js` — new Stimulus controller (2 actions: showLogin, showSignup)
+5. `_chalkboard.html.haml` — delete (content moved to view)
+6. `welcome.js.erb` — delete (replaced by Stimulus)
+
+**Key design decisions:**
+- Desktop: chalkboard image background, CSS `translateX` slide between signup/login panels
+- Mobile (<640px): dark container (no chalkboard image), show/hide panels, saves 76KB
+- "Browse puzzles" escape link below chalkboard
+- Focus management after panel slide (350ms delay matches transition)
+- `prefers-reduced-motion` respected
+
+**Also bundles 3 housekeeping items:** delete empty `layouts.scss.erb`, fold `_dimensions.scss` into tokens, delete dead `.puzzle-tabs .xw-tabs__nav` CSS block.
+
+**No migration. No model changes. No controller logic changes.** Existing 2 request specs still pass.
+
+---
+
 ### 📋 Puzzle Card BEM Rename (Low Priority)
-**Status:** Plan ready (2026-03-04). Planner → Builder. Mechanical rename, no visual change.
+**Status:** Plan deferred. Mechanical rename, no visual change.
 
 **What:** Rename legacy class names in `_crossword_tab` partial from `.result-crossword`, `.minipic`, `.metadata`, etc. to `.xw-puzzle-card` BEM pattern. Also `.puzzle-tabs` → `.xw-puzzle-grid`. Delete 1 dead CSS block.
 
 **Files:** 12 (1 partial, 1 SCSS, 1 spec, ~9 views). ~2 hours mechanical work.
 
-**Full plan in `claude_personas/memory/plan.md`.** Zero visual or behavioral change. Do when convenient.
+Zero visual or behavioral change. Do when convenient.
 
 ---
 

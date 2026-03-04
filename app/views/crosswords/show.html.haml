@@ -93,6 +93,11 @@
           %hr
           %li.check-completion
             %a{:href => "#"} Completion
+          %hr
+          %li
+            %a#reveal-cell{:href => "#"} Reveal Cell
+          %li
+            %a#reveal-word{:href => "#"} Reveal Word
       - if is_admin?
         .xw-dropdown{data: {controller: 'dropdown'}}
           %button.xw-btn.xw-btn--sm.xw-btn--ghost{data: {action: 'click->dropdown#toggle'}}
