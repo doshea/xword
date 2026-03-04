@@ -139,6 +139,25 @@ table#crossword {
   border-color: transparent var(--color-success) transparent transparent;
 }
 
+// Cell check flash — brief "server scanned" effect.
+// Applied with JS stagger for L→R, T→B cascade.
+// z-index 1100: above .flag (1000) and .letter (1001) so flash
+// genuinely covers the cell, then fades to reveal the error state.
+.cell-flash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1100;
+  background: var(--color-cell-flash);
+  pointer-events: none;
+  animation: cell-check-flash var(--duration-slow) var(--ease-out) forwards;
+}
+
+@keyframes cell-check-flash {
+  0%   { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
 .xw-puzzle-layout {
   display: flex;
   align-items: flex-start;
@@ -925,6 +944,7 @@ textarea:focus ~ .xw-comment__hint {
 @media (prefers-reduced-motion: reduce) {
   .xw-animate-in,
   .xw-animate-out { animation: none; }
+  .cell-flash::before { animation: none; display: none; }
 }
 
 // --- Puzzle Stats sidebar ---

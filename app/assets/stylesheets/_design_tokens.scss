@@ -115,6 +115,7 @@ $max-puzzle-width:  72rem;   // 1152px — solve page wrapper
   --color-cell-word:     #faf2c8;  // lighter golden for word highlight
   --color-cell-correct:  #c8f0d8;  // light green tint for checked-correct cells
   --color-cell-incorrect: #f8d0d0; // light red tint for checked-incorrect cells
+  --color-cell-flash:     #f5d87a; // golden scan — matches selected, distinct from correct/incorrect
 
   // ---------------------------------------------------------------------------
   // COLOR — Footer

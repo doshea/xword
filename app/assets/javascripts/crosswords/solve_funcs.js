@@ -119,20 +119,57 @@ window.solve_app = {
   },
 
   // Shared handler for check_cell/check_word/check_puzzle JSON responses.
-  // Marks cells as correct/incorrect based on the mismatches hash from the server.
+  // Marks cells as correct/incorrect with a staggered golden flash cascade
+  // that sweeps L→R, T→B (reading order), then fades to reveal error flags.
   apply_mismatches: function(data) {
     var mismatches = data.mismatches;
-    Object.keys(mismatches).forEach(function(i) {
-      var v = mismatches[i];
-      var temp = $($('.cell')[i]);
-      if (v) {
-        temp.addClass('flagged incorrect').removeClass('correct');
-      } else {
-        if (temp.hasClass('incorrect')) {
-          temp.addClass('flagged correct').removeClass('incorrect');
+    var keys = Object.keys(mismatches).map(Number);
+
+    // Sort by index — already reading order (HAML iterates rows then cols)
+    keys.sort(function(a, b) { return a - b; });
+
+    var count = keys.length;
+
+    // Adaptive stagger: deliberate for words, rapid sweep for full puzzles
+    var stagger;
+    if (count <= 1)       stagger = 0;
+    else if (count <= 20) stagger = 30;
+    else                  stagger = Math.max(4, Math.round(1200 / (count - 1)));
+
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    keys.forEach(function(cellIndex, i) {
+      var v = mismatches[cellIndex];
+      var delay = reducedMotion ? 0 : stagger * i;
+
+      setTimeout(function() {
+        var cell = $($('.cell')[cellIndex]);
+
+        // 1. Apply correct/incorrect state (flag renders under the flash)
+        if (v) {
+          cell.addClass('flagged incorrect').removeClass('correct');
+        } else {
+          if (cell.hasClass('incorrect')) {
+            cell.addClass('flagged correct').removeClass('incorrect');
+          }
         }
-      }
+
+        // 2. Trigger golden flash overlay — fades to reveal flag state
+        if (!reducedMotion) {
+          cell.removeClass('cell-flash');
+          cell[0].offsetWidth;  // Force reflow to restart animation on re-check
+          cell.addClass('cell-flash');
+        }
+      }, delay);
     });
+
+    // Cleanup flash classes after all animations complete
+    if (!reducedMotion && count > 0) {
+      var cleanup = (stagger * (count - 1)) + 400;
+      setTimeout(function() {
+        $('.cell-flash').removeClass('cell-flash');
+      }, cleanup);
+    }
   },
 
   check_cell: function(e) {

@@ -22,6 +22,13 @@
 - `next_empty_cell_in_word()` recursed to `is_word_end()` when no empty cells → landed on last cell
 - Fix: check `in_directional_finished_word()` first; if true, use `next_cell()` instead
 
+### Cell check flash effect (2026-03-04)
+- Golden flash cascade on check_cell/check_word/check_puzzle
+- `--color-cell-flash: #f5d87a` token, `.cell-flash::before` pseudo-element at z-index 1100
+- Adaptive stagger: 0ms (single), 30ms/cell (word), scaled to ~1.2s sweep (full puzzle)
+- `prefers-reduced-motion` respected in both CSS (animation: none) and JS (skip stagger + flash)
+- Reflow trick (`cell[0].offsetWidth`) restarts animation on re-check of same cells
+
 ## Patterns
 - Service objects follow class-method pattern: `ServiceName.action(args)` with
   `private_class_method` for helpers. Transaction wraps the pipeline. See `NytPuzzleImporter`

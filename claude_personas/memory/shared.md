@@ -4,15 +4,45 @@ This file is read by all personas (Planner, Builder, Deployer). Use it for cross
 
 ## Current Focus
 
-### ✅ Complete: Publish Service Extraction + Dead Code Cleanup
-**Status:** Builder finished (2026-03-04)
+### 🔨 Notification System + Friend Requests + Puzzle Invites
+**Status:** Detailed implementation plan finalized (v2). Ready for Builder.
 
-### ✅ Builder complete (2026-03-04): Fix two solve-mode bugs
+**Plan file:** `claude_personas/memory/plan.md` — full code snippets, exact file paths, test stubs.
 
-Two user-reported bugs fixed. **Needs manual visual verification** across breakpoints.
-- **Bug 1 (row height jump):** `.letter` absolutely positioned + flex-centered (was in flow, line-height pushed td height)
-- **Bug 2 (focus jumps to end):** `in_directional_finished_word()` check — advance one cell when word is full
-- 772 specs pass (2 pre-existing flaky: `live_search`, `time_difference_hash`)
+**4 phases, each independently deployable:**
+1. **Notification Backbone** — migration, model, service, channel, inbox page, nav badge, CSS (14 tasks)
+2. **Friend Request Flow** — controller, profile buttons, Turbo Streams (4 tasks)
+3. **Comment Notifications** — hook into CommentsController (2 tasks)
+4. **Puzzle Invites** — friend picker on team page, API endpoint, Stimulus controller (5 tasks)
+
+**Critical details for Builder:**
+- `FriendRequest` + `Friendship` tables have NO `id` column (`id: false`). All lookups by `(sender_id, recipient_id)`.
+- `notifications.user_id` and `actor_id` must be `t.integer` (NOT `t.references`) — `users.id` is `integer`, not `bigint`.
+- `actioncable.js` is a gem asset — `javascript_include_tag 'actioncable'` works. Add conditionally in `application.html.haml` for logged-in users.
+- `cable.js` + `channels/chatrooms.js` are dead code — safe to delete in Phase 1.
+- `NotificationService.notify` follows `CrosswordPublisher`/`NytPuzzleImporter` pattern (class methods, no instance state).
+- ActionCable broadcast renders partial via `ApplicationController.render` (outside request context).
+- Badge uses `#nav-mail` (existing ID) + new `.xw-badge` child element. Existing `.unread` pulse animation stays.
+- **Verify `bell.svg` exists** in `app/assets/images/icons/` before using `icon('bell')`. Also check `clock.svg`, `user-plus.svg`, `check-check.svg`.
+- **Notification partial references Phase 2 route helpers** (`accept_friend_requests_path`). Either add those routes in Phase 1 or wrap in `defined?()` guard. Recommended: add routes early (orphaned routes just 404 until controller exists).
+- **SCSS import needed:** New `_notifications.scss` must be imported in the main stylesheet. Find the import list and add it.
+- CommentsController restructure: current `add_comment` uses guard-clause return on save failure. The notification call goes inside an `if @new_comment.save` block — Builder must restructure from guard-clause to if/else.
+
+**Planner → Builder:** Full task breakdown with complete code snippets in plan.md. Start with Phase 1. Run `bundle exec rspec` after each phase. Each code block is implementation-ready — adapt to actual codebase state, don't copy blindly.
+
+---
+
+### ✅ Deployed v529 (2026-03-04): Bug fixes + CrosswordPublisher refactor + dead code
+**Status:** Deployed to Heroku (v527–v529). Verified healthy. Mobile/tablet visual check passed.
+
+**What shipped:**
+- Bug fix: row height jump (CSS `.letter` absolute positioning)
+- Bug fix: focus skip in filled words (JS `in_directional_finished_word()` guard)
+- CrosswordPublisher refactored into 5 private helpers
+- Dead code deleted: `Crossword#publish!`, empty `charts.html.haml`
+- Persona consolidation (7 → 3 roles)
+
+**⚠️ Deployer → Builder/User: CSS `.letter` positioning change needs manual visual verification across phone/tablet/desktop breakpoints.** Check letter centering, cell-num visibility, circles, flags, and no row height jump when typing.
 
 ---
 
@@ -112,6 +142,149 @@ if (!cw.selected.is_word_end()) {
 2. `app/assets/javascripts/crosswords/crossword_funcs.js` — lines 188–189 (focus logic)
 
 **No new files. No test changes** (JS interactions not covered by rspec). Run `bundle exec rspec` to confirm no regressions.
+
+### ✅ Cell Check Flash Effect
+**Status:** Builder complete (2026-03-04). Needs visual verification in browser.
+
+**What:** When cells are checked (check cell / check word / check puzzle), a brief golden flash sweeps across the checked cells in reading order (L→R, T→B), then rapidly fades to reveal error flags underneath. Creates a satisfying "server touched this cell" moment.
+
+**Files to touch (3):**
+1. `app/assets/stylesheets/_design_tokens.scss` — add `--color-cell-flash: #f5d87a` token (after `--color-cell-incorrect`)
+2. `app/assets/stylesheets/crossword.scss.erb` — add `.cell-flash::before` rules + `@keyframes` (~after line 140), add to `prefers-reduced-motion` block (~line 927)
+3. `app/assets/javascripts/crosswords/solve_funcs.js` — replace `apply_mismatches` function (~lines 123–136)
+
+**No backend changes. No new files. No test changes.** `bundle exec rspec` should pass unchanged.
+
+---
+
+#### 1. Design Token (`_design_tokens.scss`)
+
+Add after `--color-cell-incorrect`:
+```scss
+--color-cell-flash:     #f5d87a;  // golden scan — matches selected, distinct from correct/incorrect
+```
+
+#### 2. CSS (`crossword.scss.erb`)
+
+Add after `.correct .flag { ... }` block (~line 140):
+```scss
+// Cell check flash — brief "server scanned" effect.
+// Applied with JS stagger for L→R, T→B cascade.
+// z-index 1100: above .flag (1000) and .letter (1001) so flash
+// genuinely covers the cell, then fades to reveal the error state.
+.cell-flash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1100;
+  background: var(--color-cell-flash);
+  pointer-events: none;
+  animation: cell-check-flash var(--duration-slow) var(--ease-out) forwards;
+}
+
+@keyframes cell-check-flash {
+  0%   { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+```
+
+Add to existing `@media (prefers-reduced-motion: reduce)` block (~line 927):
+```scss
+.cell-flash::before { animation: none; display: none; }
+```
+
+#### 3. JavaScript (`solve_funcs.js`)
+
+Replace `apply_mismatches` (lines 123–136) with:
+```javascript
+// Shared handler for check_cell/check_word/check_puzzle JSON responses.
+// Marks cells as correct/incorrect with a staggered golden flash cascade
+// that sweeps L→R, T→B (reading order), then fades to reveal error flags.
+apply_mismatches: function(data) {
+  var mismatches = data.mismatches;
+  var keys = Object.keys(mismatches).map(Number);
+
+  // Sort by index — already reading order (HAML iterates rows then cols)
+  keys.sort(function(a, b) { return a - b; });
+
+  var count = keys.length;
+
+  // Adaptive stagger: deliberate for words, rapid sweep for full puzzles
+  var stagger;
+  if (count <= 1)       stagger = 0;
+  else if (count <= 20) stagger = 30;
+  else                  stagger = Math.max(4, Math.round(1200 / (count - 1)));
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  keys.forEach(function(cellIndex, i) {
+    var v = mismatches[cellIndex];
+    var delay = reducedMotion ? 0 : stagger * i;
+
+    setTimeout(function() {
+      var cell = $($('.cell')[cellIndex]);
+
+      // 1. Apply correct/incorrect state (flag renders under the flash)
+      if (v) {
+        cell.addClass('flagged incorrect').removeClass('correct');
+      } else {
+        if (cell.hasClass('incorrect')) {
+          cell.addClass('flagged correct').removeClass('incorrect');
+        }
+      }
+
+      // 2. Trigger golden flash overlay — fades to reveal flag state
+      if (!reducedMotion) {
+        cell.removeClass('cell-flash');
+        cell[0].offsetWidth;  // Force reflow to restart animation on re-check
+        cell.addClass('cell-flash');
+      }
+    }, delay);
+  });
+
+  // Cleanup flash classes after all animations complete
+  if (!reducedMotion && count > 0) {
+    var cleanup = (stagger * (count - 1)) + 400;
+    setTimeout(function() {
+      $('.cell-flash').removeClass('cell-flash');
+    }, cleanup);
+  }
+},
+```
+
+#### Cascade Timing
+
+| Check type | Cell count | Stagger | Sweep duration | Total w/ fade |
+|---|---|---|---|---|
+| Single cell | 1 | 0ms | instant | 300ms |
+| Word | 3–15 | 30ms/cell | 90–420ms | 390–720ms |
+| Full puzzle (15×15) | 225 | ~5ms/cell | ~1.2s | ~1.5s |
+
+#### Key Design Decisions
+
+- **`::before` pseudo-element**: Avoids touching HAML template. `.cell` already has `position: relative` (line 76) and no pseudo-elements in use.
+- **z-index 1100**: Above `.flag` (1000) and `.letter` (1001). Flash genuinely covers the cell, then fades to reveal the flag state underneath.
+- **Error state applied simultaneously with flash**: Flag class is painted but obscured by 60%-opacity golden overlay. As overlay fades over 300ms, flag reveals naturally. No second timed callback needed.
+- **Reflow trick** (`cell[0].offsetWidth`): Forces CSS animation restart when re-checking the same cells.
+- **Empty cells in full-puzzle check**: Flash appears on ALL checked cells uniformly (the wave sweeps continuously). Only cells with actual errors get flag classes.
+- **`prefers-reduced-motion`**: Respected in both JS (skip stagger + flash) and CSS (animation: none). Follows existing patterns in global.js and crossword.scss.erb.
+
+#### Watch For
+
+- **Table `overflow: hidden`** on `.cell` (line 78): `::before` with `inset: 0` is clipped to cell bounds — correct behavior, verify no bleed.
+- **Selected cells**: Flash is same golden as selection highlight — flash may be invisible on the currently selected cell. Acceptable: user already knows that cell is active, and the flag still reveals normally.
+- **Legacy `check_cell.js.erb`**: Won't get flash effect (only the JSON path does). Low risk — fallback is rarely hit.
+
+#### Verification
+
+1. Check single cell → brief golden flash, flag appears as flash fades
+2. Check word → cascade sweeps across the word cells in order
+3. Check puzzle → wave sweeps entire grid L→R, T→B over ~1.5s
+4. Re-check same cells → flash triggers again (reflow trick works)
+5. No visual artifacts on void cells, selected cells, or circled cells
+6. Test with browser `prefers-reduced-motion` → instant flag application, no flash
+
+---
 
 ### Next candidate: `Crossword` default scope removal
 **Status:** Not started — needs Planner design (34 call sites, high blast radius)

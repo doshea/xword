@@ -44,7 +44,55 @@
 - Risk: Very low. Only changes behavior when word is fully filled — initial solve flow untouched.
 - Key insight: `in_directional_finished_word()` (cell_funcs.js:318) already exists and is direction-aware. No new helper needed.
 
+### 2026-03-04: Notification System plan v2 — detailed implementation plan
+
+**Plan source:** User provided 4-phase plan. I reviewed against codebase and produced full implementation-ready plan.
+
+**Key findings from codebase review:**
+1. FriendRequest/Friendship tables confirmed `id: false` — `(sender_id, recipient_id)` lookups. No polymorphic `notifiable` for friend notifications.
+2. `actioncable.js` is a gem asset — `javascript_include_tag 'actioncable'` works.
+3. `cable.js` + `channels/chatrooms.js` confirmed dead code. Safe to delete.
+4. `notifications` migration must use `t.integer` (not `t.references`) — `users.id` is integer, not bigint.
+5. `ApplicationController.render` needed for ActionCable partial rendering.
+6. Badge CSS: `.xw-badge` absolute inside `.xw-nav__item#nav-mail` (already `position: relative`).
+7. Stimulus pattern: `class extends Stimulus.Controller`, `.targets`, `window.StimulusApp.register(...)`.
+8. API users namespace already exists — `friends` endpoint adds naturally.
+9. FriendRequest model spec uses `should` syntax — new specs use `expect()` only.
+10. CommentsController `add_comment` guard-clause needs restructuring to if/else for notification.
+11. Nav uses `is_logged_in?` helper, not `@current_user` directly.
+12. Notification partial references Phase 2 route helpers — add routes early.
+
+**Design decisions:**
+- mark_all_read: simple redirect for v1 (no Turbo Stream per-row replacement)
+- ActionCable: conditional load in layout, own consumer in notifications_channel.js
+- Icon: `bell` instead of `mail`, but `#nav-mail` ID preserved for CSS compatibility
+- Add Phase 2 routes in Phase 1 to avoid NoMethodError in notification partial
+
+**Full plan:** `claude_personas/memory/plan.md` — ~600 lines with code snippets for every file.
+
+### 2026-03-04: Cell check flash effect designed
+
+**Feature:** Golden flash cascade on cell check (check cell / word / puzzle). Flash sweeps L→R, T→B then fades to reveal error flags.
+
+**Approach:**
+- CSS `::before` pseudo-element on `.cell-flash` class — z-index 1100 (above flag at 1000, letter at 1001)
+- `@keyframes cell-check-flash`: opacity 0.6 → 0 over `--duration-slow` (300ms)
+- JS stagger: adaptive per-cell delay (30ms for words, ~5ms for full puzzle, 0 for single cell)
+- Reflow trick (`cell[0].offsetWidth`) to restart animation on re-check
+- `prefers-reduced-motion` respected in both CSS and JS (follows existing patterns)
+
+**Key decisions:**
+- New `--color-cell-flash` token (#f5d87a) — same value as `--color-cell-selected` but separate token for independent tuning
+- Error classes applied simultaneously with flash (not delayed) — flash overlay at 60% opacity covers the flag, fades to reveal it
+- Empty cells in full-puzzle check DO get the flash (continuous wave) but no flag classes
+- Legacy `check_cell.js.erb` NOT updated — rarely hit, low priority
+
+**Risk:** Low. Pure additive CSS + JS changes. No DOM, controller, or model changes. No test impact.
+
+**Files:** `_design_tokens.scss` (1 token), `crossword.scss.erb` (flash rules + reduced-motion), `solve_funcs.js` (replace `apply_mismatches`)
+
 ## Open Questions
 
-- Default scope removal plan needed (next session). Key risk: queries that use `.first`/`.last` without explicit order.
+- Default scope removal plan needed (future session). Key risk: queries that use `.first`/`.last` without explicit order.
 - 4 unused Publishable scopes (`standard`, `nonstandard`, `solo`, `teamed`) — prune when convenient, not urgent.
+- FriendRequest model spec (line 6-8) uses `should` syntax — should be migrated to `expect()` when touching that file.
