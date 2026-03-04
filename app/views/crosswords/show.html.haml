@@ -65,9 +65,6 @@
         = link_to create_team_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--secondary', id: 'solve-share', data: { turbo_method: :post, 'xw-tooltip': 'Team Solve' }, aria: { label: 'Solve with a team' } do
           = icon('users')
           Team
-      - if @has_multiple_solutions
-        = link_to solution_choice_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Switch solution' }, aria: { label: 'Switch solution' } do
-          = icon('refresh-cw')
 
 
 %section.xw-container.xw-grid#solve-area{aria: {label: 'Puzzle grid'}}
@@ -98,6 +95,10 @@
             %a#reveal-letter{:href => "#"} Reveal Letter
           %li
             %a#hint-word{:href => "#"} Hint Word
+      - if @has_multiple_solutions
+        = link_to solution_choice_crossword_path(@crossword), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Switch solution' }, aria: { label: 'Switch solution' } do
+          = icon('refresh-cw')
+          Switch
       - if is_admin?
         .xw-dropdown{data: {controller: 'dropdown'}}
           %button.xw-btn.xw-btn--sm.xw-btn--ghost{data: {action: 'click->dropdown#toggle'}}

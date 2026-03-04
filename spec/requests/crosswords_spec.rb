@@ -245,6 +245,16 @@ RSpec.describe 'Crosswords', type: :request do
       expect(team_sol.letters.length).to eq crossword.letters.length
       expect(team_sol.letters.gsub(/[_ ]/, '')).to eq ''
     end
+
+    it 'redirects to existing team solution instead of creating a new one' do
+      existing = create(:solution, :team, user: user, crossword: crossword, letters: blank_letters)
+
+      expect {
+        post "/crosswords/#{crossword.id}/team"
+      }.not_to change(Solution, :count)
+
+      expect(response).to redirect_to(team_crossword_path(crossword, existing.key))
+    end
   end
 
   # -------------------------------------------------------------------------

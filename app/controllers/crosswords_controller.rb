@@ -33,6 +33,9 @@ class CrosswordsController < ApplicationController
   def create_team
     @crossword = Crossword.find_by(id: params[:id])
     if @crossword && @current_user
+      existing_team = @current_user.solutions.find_by(crossword_id: @crossword.id, team: true)
+      return redirect_to team_crossword_path(@crossword, existing_team.key) if existing_team
+
       preexisting_letters = @current_user.solutions
                               .where(team: false, crossword_id: @crossword.id)
                               .first.try(:letters)
