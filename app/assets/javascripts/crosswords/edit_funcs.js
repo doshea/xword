@@ -136,7 +136,11 @@ window.edit_app = {
     var id = $('#crossword').data('id');
     var counter = edit_app.save_counter;
     var $btn = $('#edit-save');
-    $btn.addClass('xw-btn--busy');
+    var $icon = $btn.find('svg');
+    var iconHtml = $btn.html();
+    // Swap floppy icon for a visible spinner during save
+    $icon.replaceWith('<span class="xw-spinner"></span>');
+    $btn.css('pointer-events', 'none');
     $.ajax({
       dataType: 'json',
       contentType: 'application/json',
@@ -158,11 +162,9 @@ window.edit_app = {
         cw.flash('Error saving puzzle.', 'error');
       },
       complete: function() {
-        $btn.removeClass('xw-btn--busy');
-        $btn.removeClass('xw-btn--saved');
-        // Force reflow so the animation restarts if retriggered quickly
-        void $btn[0].offsetWidth;
-        $btn.addClass('xw-btn--saved');
+        // Restore the floppy icon and re-enable clicks
+        $btn.html(iconHtml);
+        $btn.css('pointer-events', '');
       }
     });
   },
