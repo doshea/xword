@@ -135,6 +135,8 @@ window.edit_app = {
 
     var id = $('#crossword').data('id');
     var counter = edit_app.save_counter;
+    var $btn = $('#edit-save');
+    $btn.addClass('xw-btn--busy');
     $.ajax({
       dataType: 'json',
       contentType: 'application/json',
@@ -154,6 +156,13 @@ window.edit_app = {
       },
       error: function() {
         cw.flash('Error saving puzzle.', 'error');
+      },
+      complete: function() {
+        $btn.removeClass('xw-btn--busy');
+        $btn.removeClass('xw-btn--saved');
+        // Force reflow so the animation restarts if retriggered quickly
+        void $btn[0].offsetWidth;
+        $btn.addClass('xw-btn--saved');
       }
     });
   },
