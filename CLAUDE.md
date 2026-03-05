@@ -112,7 +112,7 @@ height based on row count.
 
 ## Testing
 
-Run tests: `bundle exec rspec` — ~893 examples, 0 failures
+Run tests: `bundle exec rspec` — ~904 examples, 0 failures
 
 ### Writing Tests
 

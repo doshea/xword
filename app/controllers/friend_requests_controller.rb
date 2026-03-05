@@ -29,28 +29,14 @@ class FriendRequestsController < ApplicationController
 
   # POST /friend_requests/accept
   def accept
-    freq = FriendRequest.find_by(sender_id: params[:sender_id], recipient_id: @current_user.id)
-    return head :not_found unless freq
+    sender = User.find_by(id: params[:sender_id])
+    return head :not_found unless sender
 
-    ActiveRecord::Base.transaction do
-      Friendship.create!(user_id: freq.sender_id, friend_id: freq.recipient_id)
-      # FriendRequest has id: false — destroy! would fail. Use delete_all.
-      FriendRequest.where(sender_id: freq.sender_id, recipient_id: freq.recipient_id).delete_all
+    begin
+      FriendshipService.accept(sender: sender, recipient: @current_user)
+    rescue ActiveRecord::RecordNotFound
+      return head :not_found
     end
-
-    # Notify the original sender that their request was accepted
-    sender = User.find_by(id: freq.sender_id)
-    if sender
-      NotificationService.notify(
-        user: sender, actor: @current_user,
-        type: 'friend_accepted'
-      )
-    end
-
-    # Mark the friend_request notification as read
-    Notification.where(user_id: @current_user.id, actor_id: params[:sender_id],
-                       notification_type: 'friend_request')
-                .unread.update_all(read_at: Time.current)
 
     respond_to do |format|
       format.html { redirect_to(safe_redirect_path(params[:redirect_to]) || notifications_path) }
@@ -59,13 +45,10 @@ class FriendRequestsController < ApplicationController
 
   # DELETE /friend_requests/reject
   def reject
-    # FriendRequest has id: false — use composite key lookup + delete_all.
-    FriendRequest.where(sender_id: params[:sender_id], recipient_id: @current_user.id).delete_all
+    sender = User.find_by(id: params[:sender_id])
+    return head :not_found unless sender
 
-    # Mark the friend_request notification as read
-    Notification.where(user_id: @current_user.id, actor_id: params[:sender_id],
-                       notification_type: 'friend_request')
-                .unread.update_all(read_at: Time.current)
+    FriendshipService.reject(sender: sender, recipient: @current_user)
 
     respond_to do |format|
       format.html { redirect_to notifications_path }

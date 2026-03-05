@@ -1,6 +1,12 @@
+- title 'Unauthorized'
+
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
-    %h1.center Nope.
-    %p Sorry, you're not authorized on that page. Get 'em next time, tiger!
-    %p
+    %h1
+      = icon('shield')
+      Not Authorized
+    %p Sorry, you don't have access to that page. If you think this is a mistake, try logging in again.
+    .xw-btn-group
       = link_to 'Back to puzzles', root_path, class: 'xw-btn'
+      - unless @current_user
+        = link_to 'Log in', login_path, class: 'xw-btn xw-btn--secondary'

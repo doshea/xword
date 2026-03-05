@@ -1,3 +1,5 @@
+- title 'Error'
+
 = render layout: 'layouts/partials/topper_stopper', locals: {custom_columns: true} do
   .xw-col-12.xw-md-center-4
     = image_tag 'error.png', class: 'xw-error-image', alt: 'Error illustration'
@@ -8,5 +10,8 @@
           = flash[:error]
         - else
           Something went wrong.
-      %p.center
+      %p.center We hit a snag. The puzzle gremlins are on it.
+      .xw-btn-group
+        - if params[:prev].present?
+          = link_to 'Try again', params[:prev], class: 'xw-btn xw-btn--secondary'
         = link_to 'Back to puzzles', root_path, class: 'xw-btn'

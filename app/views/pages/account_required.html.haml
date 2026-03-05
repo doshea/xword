@@ -1,9 +1,11 @@
+- title 'Account Required'
+
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
-    %h1
+    %h1.center
       = icon('triangle-alert')
-      Ya gotta log in first!
-    %p You need an account to access that page. Log in if you have one, or sign up — it's free.
-    .xw-btn-group
+      Account Required
+    %p.center You need an account to access that page. Log in if you have one, or sign up — it's free.
+    .xw-btn-group.center
       = link_to 'Log in', login_path(redirect: @redirect), class: 'xw-btn'
       = link_to 'Sign up', new_user_path(redirect: @redirect), class: 'xw-btn xw-btn--secondary'

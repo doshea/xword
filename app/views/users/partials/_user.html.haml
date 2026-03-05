@@ -14,16 +14,16 @@
                    locals: { user: @user, status: @friend_status }
     .xw-profile-hero__stats
       .xw-profile-stat
-        %span.xw-profile-stat__number= @user.solutions.complete.count
+        %span.xw-profile-stat__number= @solved_count
         %span.xw-profile-stat__label Solved
       .xw-profile-stat
         %span.xw-profile-stat__number= @crossword_count
         %span.xw-profile-stat__label Created
       .xw-profile-stat
-        %span.xw-profile-stat__number= @user.unpublished_crosswords.count
+        %span.xw-profile-stat__number= @in_progress_count
         %span.xw-profile-stat__label In Progress
       .xw-profile-stat
-        %span.xw-profile-stat__number= @user.clues.count
+        %span.xw-profile-stat__number= @clues_count
         %span.xw-profile-stat__label Clues Written
 
 -# Puzzles card — full width, above comments

@@ -10,6 +10,9 @@ class UsersController < ApplicationController
     end
     @crosswords = @user.crosswords.order(created_at: :desc).paginate(page: params[:puzzles_page], per_page: 10)
     @crossword_count = @user.crosswords.count
+    @solved_count = @user.solutions.complete.count
+    @in_progress_count = @user.unpublished_crosswords.count
+    @clues_count = @user.clues.count
     @comments   = @user.comments.order_recent
                        .includes(:crossword, base_comment: [:crossword, { base_comment: :crossword }])
                        .paginate(page: params[:comments_page], per_page: 10)
