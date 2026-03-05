@@ -21,7 +21,8 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 
 - **Phase 1:** ✅ Done. 16 reviews + changelog, all deployed (v548–v574).
 - **Phase 2:** ✅ Done. 7 reviewed, 6 built, deployed v576–v578. Stats perf = no build needed.
-- **Phase 3:** 🔄 Active. 6/8 deployed (D1: 924e958, D2: a1c069e). 2 remaining: P3-E (spinners, reviewed), P3-H (nav, reviewed with corrections). Both queued for Builder.
+- **Phase 3:** ✅ Done. All 8 items built and deployed (v579, v580).
+- **Phase 4:** 📋 Specced. 5 items: solve mini-manual, edit mini-manual, clue suggestions, unfriend, remotipart removal. All product specs written. Queued for Builder.
 
 ### P3-E Loading State Spinners review (2026-03-05)
 - Upgraded from "Direct" to "Review" — 3 non-obvious findings:
@@ -166,5 +167,14 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 - Reply forms also get Send button for consistency
 - 320px viewport risk: 6 toolbar buttons may crowd. Builder should test.
 
+### Phase 4 product specs (2026-03-05)
+- 5 specs written for new Phase 4: solve manual, edit manual, clue suggestions, unfriend, remotipart
+- **Mini-manuals**: Two separate modals (not one). Solve replaces existing `#controls-modal` (4 lines → 7 sections). Edit is net-new (`info` icon button, no existing help). Shared `<kbd>` keycap CSS and `.xw-manual` table styles in `global.scss.erb`. Team section conditional on `@team`.
+- **Clue suggestions**: Inline popover, not modal. Lightbulb icon per clue textarea, only when word fully filled. Query: `Phrase.joins(:clues).where(clues: { word_id: }).group.order(usage_count DESC).limit(10)`. Client-side cache per word. New route `GET /api/clue_suggestions`.
+- **Unfriend**: Dropdown pattern on "Friends" button (not direct button — too hostile). `FriendshipService.unfriend` deletes Friendship only. SolutionPartnering preserved. No notification on unfriend. Action in `FriendRequestsController#unfriend` (not new controller).
+- **Remotipart**: Optimistic strategy — just remove the gem. Turbo handles multipart natively. Only 1 form affected (profile pic upload). Active Storage fallback if Turbo doesn't work. CarrierWave stack stays either way.
+- Cataloged ~50 interactions across solve/edit/team pages to populate manual content. Full catalog in explore agent output.
+
 ## Open Questions
-- No unfriend mechanism exists anywhere in the app — flagged as separate feature ticket
+- Published column restoration — schema change needed, guards currently disabled. Not specced.
+- Turbo Stream `replace` pattern bug (password errors) — documented but not queued. 2-line fix per file.

@@ -163,20 +163,86 @@ Planner reviews: button placement in toolbar, send button visibility breakpoint.
 
 ---
 
+---
+
+## Phase 4 — Features & Tech Debt Cleanup
+
+New features and the last jQuery gem dependency. Phases 1-3 were polish/hardening;
+Phase 4 adds real functionality.
+
+**Principles:**
+- Mini-manuals first (highest user-facing impact, no backend risk)
+- Clue suggestions next (leverages existing 53K phrase infrastructure)
+- Unfriend before remotipart (user-facing feature before internal cleanup)
+- Remotipart last (may be a 5-minute gem removal — test first)
+
+### Status
+
+| # | Item | Type | Status | Plan | Deploy |
+|---|------|------|--------|------|--------|
+| P4-A | Solve Page Mini-Manual | Feature | 📋 Specced | `solve-mini-manual.md` | Deploy 5 |
+| P4-B | Edit Page Mini-Manual | Feature | 📋 Specced | `edit-mini-manual.md` | Deploy 5 |
+| P4-C | Clue Suggestions from Phrase DB | Feature | 📋 Specced | `clue-suggestions.md` | Deploy 6 |
+| P4-D | Unfriend | Feature | 📋 Specced | `unfriend.md` | Deploy 7 |
+| P4-E | Remotipart Removal | Tech Debt | 📋 Specced | `remotipart-replacement.md` | Deploy 8 |
+
+### Deploy Sequence
+
+**Deploy 5** — P4-A + P4-B: Mini-manuals (solve + edit). Shared CSS, no backend.
+**Deploy 6** — P4-C: Clue suggestions. New API endpoint + JS popover.
+**Deploy 7** — P4-D: Unfriend. Service + controller + Turbo Stream UI.
+**Deploy 8** — P4-E: Remotipart removal. Gem delete, test, done (optimistic).
+
+### P4-A: Solve Page Mini-Manual ★★★★★
+Scope: `show.html.haml` (replace `#controls-modal` content), `crossword.scss.erb`, ~30 min.
+
+Replace the existing 4-line keyboard legend with a full "How to Solve" dialog covering:
+navigation (6 shortcuts), entering letters, checking work (4 modes), getting help (reveal/hint),
+saving (manual + auto), comments, and team solving (conditional). Uses `<kbd>` keycap styling.
+
+### P4-B: Edit Page Mini-Manual ★★★★★
+Scope: `edit.html.haml`, `edit_funcs.js`, shared CSS, ~30 min.
+
+New feature — edit page has no existing help modal. Add `info` icon button to toolbar,
+opening "How to Edit" dialog covering: navigation, grid filling (void toggle, mirror, circle
+mode), writing clues, finding words (pattern search + notepad), saving/publishing, and
+Advanced Controls reference.
+
+### P4-C: Clue Suggestions ★★★★
+Scope: `api_controller.rb`, `edit_funcs.js`, `_clue_column.html.haml`, `crossword.scss.erb`, ~2 hrs.
+
+Inline popover on edit page. Lightbulb icon appears next to clue textarea when word is fully
+filled. Click opens dropdown showing top 10 previously-used phrases for that word (from 53K
+phrase DB), ordered by usage count. Click suggestion → fills textarea. Client-side cache per word.
+New JSON endpoint at `GET /api/clue_suggestions?word=OREO`.
+
+### P4-D: Unfriend ★★★
+Scope: `friendship_service.rb`, `friend_requests_controller.rb`, `_friend_status.html.haml`, routes, ~45 min.
+
+Dropdown on "Friends" button → "Unfriend" with confirmation. Deletes Friendship record only.
+Shared solutions and notifications preserved (SolutionPartnering is independent). Turbo Stream
+replaces status to `:none`. Re-friending allowed immediately.
+
+### P4-E: Remotipart Removal ★★★
+Scope: `Gemfile`, possibly `application.js`, ~30 min (mostly testing).
+
+Remove `remotipart` gem. Turbo handles `multipart/form-data` natively. Only one form affected
+(profile picture upload). Test thoroughly — if Turbo doesn't handle it, fall back to Active
+Storage direct upload (detailed in plan). Removes last jQuery gem dependency.
+
+---
+
 ## Deferred to Backlog
 
-Moved from Phase 3 — not high enough ROI for this phase:
+Moved from Phase 3 — not high enough ROI:
 
-- **Admin Form Styling** (was P3-3) — 6 admin views used by ~1 person. Zero user impact. Revisit if admin usage grows.
-- **Inline Form Validation** (was P3-7) — CSS classes exist but no form uses them. Current server-side validation + flash errors works. This is a feature (better UX), not a fix. Revisit if user drop-off is observed on signup/login.
-- **Review Checklist** (was P3-8) — Good idea but the planner/builder workflow already serves this function at current team size. Create when a second builder is onboarded.
+- **Admin Form Styling** (was P3-3) — 6 admin views used by ~1 person. Zero user impact.
+- **Inline Form Validation** (was P3-7) — CSS classes exist but unused. Feature, not fix.
+- **Review Checklist** (was P3-8) — Planner/builder workflow suffices at current team size.
 
 ## Backlog (needs feature work or user decision)
 
-- Clue Suggestions from Phrase DB — infrastructure ready, not planned
-- `remotipart` replacement — needs Turbo file upload strategy
 - Published column restoration — schema change needed
-- Unfriend mechanism — no unfriend feature exists
 - Admin Form Styling — low priority, single-user audience
 - Inline Form Validation — feature, not fix; defer until user drop-off observed
 - Review Checklist Template — create when team grows

@@ -2,6 +2,26 @@
 
 ## Deploy History
 
+### v581 — 2026-03-05
+**Commit:** `db957a1`
+**Changes:** Phase 4 — mini-manuals, clue suggestions, unfriend, remotipart removal:
+- P4-A+B: "How to Solve" + "How to Edit" mini-manuals replace sparse controls modal. Shared `.xw-manual` CSS + `<kbd>` keycap styles. Edit page info icon button.
+- P4-C: `GET /api/clue_suggestions?word=OREO` (auth-gated). Lightbulb icon per clue textarea on edit page. JS popover with client-side cache, click-to-fill. 6 new request specs.
+- P4-D: Unfriend — `FriendshipService.unfriend` + dropdown on Friends button + turbo_confirm. Friend status partial wrapped in `div#friend-status-N`. 8 new specs.
+- P4-E: Removed `remotipart` gem (45→44 deps). Turbo handles multipart natively.
+**Migration:** None
+**Rollback:** `git revert db957a1` (pure code, no migration). If profile upload breaks, `gem 'remotipart'` back in Gemfile.
+**Post-deploy:** Release v581. Puma up ~3s, 2 workers. `/api/clue_suggestions?word=OREO` returns 401 (auth-gated — correct). Homepage 302. No errors. **Action item:** manually test profile pic upload (remotipart removal).
+
+### v580 — 2026-03-05
+**Commit:** `ccd7556`
+**Changes:** Loading spinners, solve page navigation, mobile send button:
+- P3-E: LoadingController handles `<button>` vs `<input>` (spinner innerHTML vs value swap). Home load-more `disable_with` includes spinner HTML. NYT lazy tab placeholder gets `<span class="xw-spinner">`. New `.xw-loading-placeholder` CSS.
+- P3-H: Arrow-left home button in solve toolbar. Mobile comment/reply Send button (hidden on hover-capable via `@media (hover: hover)`). `_submit_comment()` extracted in solve_funcs.js. Feather `send.svg` icon added.
+**Migration:** None
+**Rollback:** `git revert ccd7556` (pure JS/CSS/HAML/SVG, instant)
+**Post-deploy:** Release v580. Release phase exit 0 (no-op migration). Puma up ~3s, 2 workers. Pages 200. No errors.
+
 ### v579 — 2026-03-05
 **Commit:** `924e958`
 **Changes:** Composite indexes, random puzzle offset fix, stale TODO cleanup:
@@ -399,7 +419,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v579
+- Current release: v581
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic
