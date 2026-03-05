@@ -21,7 +21,7 @@
       %label.xw-edit-header__label{for: 'title'} Title:
       .xw-edit-header__title
         = text_field_tag 'title', @unpublished_crossword.title, autocomplete: 'off'
-        %i#title-status
+        %span#title-status
       #puzzle-controls
         %span#save-status.smaller No changes yet
         %span#save-clock.smaller

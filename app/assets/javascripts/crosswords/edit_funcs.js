@@ -54,7 +54,7 @@ window.edit_app = {
 
   update_title: function(e) {
     var title_status = $('#title-status');
-    title_status.css('opacity', 1);
+    title_status.html('<span class="xw-spinner"></span>').css('opacity', 1);
 
     var id = $('#crossword').data('id');
 
@@ -104,11 +104,17 @@ window.edit_app = {
 
   number_clues: function() {
     $('.clue').each(function() {
-      var clue_num = $(this).children('.clue-num');
-      var cell_index = $(this).data('index');
+      var $clue = $(this);
+      var clue_num = $clue.children('.clue-num');
+      // Guard: create span if missing (e.g. dynamically added clues)
+      if (!clue_num.length) {
+        $clue.prepend('<span class="clue-num"></span>');
+        clue_num = $clue.children('.clue-num');
+      }
+      var cell_index = $clue.data('index');
       var cell_num = parseInt($(".cell[data-index=" + cell_index + "]").first().attr('data-cell'));
-      // Hidden clues (void cells) have no data-cell → parseInt returns NaN
-      if (!isNaN(cell_num)) clue_num.text(cell_num + ".");
+      // Update number text, or clear it if cell lost its number (became void / mid-word)
+      clue_num.text(isNaN(cell_num) ? '' : cell_num + ".");
     });
   },
 

@@ -14,6 +14,7 @@
   border: none;
   border-top: 1px solid var(--color-nav-border);
   cursor: pointer;
+  text-decoration: none; // prevent link-style underline leak
 }
 #ideas-button {
   border-top-right-radius: 0.5em;
@@ -171,23 +172,17 @@
   margin: 0;
 }
 #title-status {
-  background-image: url("<%= asset_path 'spinner_small.gif' %>");
   position: absolute;
   top: 0;
   right: 1em;
   height: 100%;
-  padding: 0 0.5em 0;
+  padding: 0 0.5em;
   color: var(--color-text);
   opacity: 0;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  display: block;
+  display: flex;
+  align-items: center;
   &.xw-status-err {
     color: var(--color-danger);
-  }
-  &.xw-status-err, &.xw-status-ok {
-    background-image: none;
-    padding: 0 0.2em 0;
   }
 }
 
@@ -200,6 +195,7 @@
   border-bottom-right-radius: var(--radius-lg);
   border-top: 2px solid var(--color-border-strong);
   padding-bottom: var(--space-2);
+  margin-bottom: 2.5em; // clearance so fixed tool-panel tab buttons don't overlap footer
 
   h2 {
     font-family: var(--font-ui);

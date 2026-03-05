@@ -8,14 +8,12 @@
 
 ## Pending Deploy
 
-**P2-5: NYT Page Lazy Tab Loading** — Ready to commit. Lazy-loads day-of-week tabs: only Monday tab renders on initial load, other 6 tabs fetch via `GET /nytimes/day/:wday` on click. Controller refactored to use `@wday_counts` (1 GROUP BY query) + `nytimes_puzzles_for_wday` helper. New `_nyt_day_content` partial. TabsController enhanced with generic `data-lazy-src` fetch (opt-in, no impact on other tab instances). 6 new request specs (19 total NYT specs). No migration. 5 files changed + 1 new partial.
-
-**P2-4: API Cleanup** — Planner reviewed ✅ 1 should-fix. Deleted `Api::UsersController`, `Api::CrosswordsController`, `nyt_source` route. Moved `friends` action to `ApiController`. Deleted `format_for_api` from Crossword + Comment models. Updated `_team.html.haml` route helper. Rewrote API specs (4 examples). No migration. 8 files changed.
-- **should-fix**: `ApiController#friends` `.select` doesn't include `:deleted_at` but `display_name` calls `deleted?` → `deleted_at.present?`. Will raise `MissingAttributeError` if a deleted user has a friendship. Fix: add `:deleted_at` to select list (pre-existing bug, easy fix during relocation).
-
-**P2-6: JS Event Listener Cleanup** — Planner reviewed ✅ Clean. Moved `document.onkeydown`/`onkeypress` from parse-time global assignment into `turbo:load` handler with cleanup on non-crossword pages. Fixes keyboard scrolling suppression site-wide after visiting solve/edit. 1 file changed. No migration, no spec changes.
-
-**P2-1: DB Constraints Migration** — Planner reviewed ✅ Clean. Migration with pre-flight dupe checks, ctid dedup, 6 unique indexes, cell_edits drop, partial solution index. RecordNotUnique rescues in CrosswordsController + Crossword model. All follow established patterns.
+**Carry-Forward Bug Fixes** — 5 low-priority polish fixes. No migration. 5 files changed + 1 GIF deleted.
+- Void toggle: `number_clues()` now creates missing span, clears stale numbers
+- Pattern Search tab: `text-decoration: none` on `.bottom-button`
+- Tool panel/footer overlap: `margin-bottom: 2.5em` on `#advanced`
+- GIF spinner → CSS `.xw-spinner` (deleted `spinner_small.gif`, updated JS + CSS + HAML)
+- Solve toolbar mobile: `gap: var(--space-3)` at `< 640px`
 
 ## Builder In Progress
 
@@ -25,17 +23,13 @@
 
 Pick in order. **Read the plan file for full details** — don't rely on summaries here.
 
-~~**P2-1: Database Constraints Migration**~~ ✅ Built. Pending commit.
-
-~~**P2-2: Form Accessibility Audit**~~ ✅ Built. Pending commit.
-
-~~**P2-5: NYT Page Lazy Tab Loading**~~ ✅ Built. Pending commit.
-
-~~**P2-4: API Cleanup**~~ ✅ Built. Pending commit.
-
-~~**P2-3: Service Object Test Coverage**~~ ✅ Built. Pending commit.
-
-~~**P2-6: JS Event Listener Cleanup**~~ ✅ Built. Pending commit.
+All Phase 2 items built and committed:
+- ~~P2-1~~ ✅ `516c906` — DB constraints, RecordNotUnique rescues
+- ~~P2-2~~ ✅ `01e8ea0` — Form accessibility audit
+- ~~P2-3~~ ✅ `a3f5f1b` — Service object test coverage (72 examples)
+- ~~P2-4~~ ✅ `516c906` — API cleanup (deleted 2 controllers, moved friends)
+- ~~P2-5~~ ✅ `3508192` — NYT lazy tab loading
+- ~~P2-6~~ ✅ `516c906` — JS keyboard listener fix
 
 ## Planner Work Queue
 
@@ -44,15 +38,11 @@ Full queue: `claude_personas/plans/planner-meta-plan.md`
 | Phase | Status | Items |
 |-------|--------|-------|
 | 1 | ✅ Done | 16 reviews + changelog, deployed v548–v574 |
-| 2 | ✅ Done | 7/7 reviewed: DB constraints ✅, service specs ✅, API security ✅, NYT pagination ✅, JS cleanup ✅, a11y ✅ (built), stats perf ✅ (no build needed) |
+| 2 | ✅ Done | 7/7 reviewed, 6/6 built & committed. Stats perf = no build needed. |
 
 ## Low-Priority Carry-Forward
 
-- Void toggle clue numbers as plain text (not `<span class="clue-num">`)
-- "Pattern Search" tab underlined (link style leak)
-- Tool panel tabs overlap footer
-- Title-status spinner GIF vs CSS `.xw-spinner`
-- Solve toolbar icons cramped on mobile
+(cleared — all 5 items built, pending deploy)
 
 ## Backlog
 
@@ -73,3 +63,4 @@ v572: Login/signup polish (Turbo Stream fix, a11y, redirects, dead CSS/specs)
 v573: Changelog polish (CSS loading fix, prefix stripping, noise filtering, a11y)
 v574: Review items 5–12 (passwords, NYT, team solving, test health, backend audit + unique index migration)
 v576: Form a11y audit, 72 service/model specs, tab controller fix (aria-controls)
+v577: NYT lazy tabs, DB constraints migration (7 indexes), API security (deleted PII leak), JS keyboard fix
