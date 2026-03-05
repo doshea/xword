@@ -4,12 +4,11 @@
   = stylesheet_link_tag :search
 
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid'} do
-  %h1
+  %h1.xw-home__heading
     - if @current_user
       Welcome back, #{@current_user.display_first_name}!
     - else
       Welcome to the Café!
-  %hr.xw-hr--flush
   .xw-tabs{data: {controller: 'tabs'}}
     .xw-tabs__nav
       = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do

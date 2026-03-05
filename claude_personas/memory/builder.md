@@ -44,14 +44,19 @@
 
 ## Known Flakes
 - JS feature specs (login_spec, home_tabs_spec, admin_spec, edit_spec) can fail in full suite runs due to order-dependent Capybara/DB state leakage. Pass when run in isolation.
+- Solutions request specs (team puzzle tests) — PG deadlocks from concurrent 2-user simulations. Intermittent in full suite. Pass in isolation.
 
 ## Gotchas Encountered
+- **UCW letters data contract**: `nil` = void cell, `""` = non-void empty cell, `"A"` = letter. JS sends `"0"` for voids, `" "` for empties. Controller must map correctly (see `update_letters`). MIN_DIMENSION is 4 — test UCWs need at least 4×4.
 - **Concurrent agents** can revert shared files. Always re-read before editing if another agent is active.
 - `rand(n)` can return 0 for integer n — use `rand(1..n-1)` when 0 is invalid.
 - Sass nesting `#id` inside `.class` compiles to descendant selector, not compound. Use `&#id` for same-element.
 - `Clue#strip_tags`: ASCII-8BIT strings get double-encoded by Loofah. Encoding guard added.
 
 ## Recently Completed
+- **Home Page Pixel-Perfect Review (10 items)**: Mostly already fixed by prior work. New: `.tab-label` inline-flex for icon+text tabs, `.xw-home__heading` token-based margins replacing inline style, `.xw-hr--flush` border reset, min-height on sparse tab panels. CSS-only, no migration.
+- **Account Settings Rebuild (10 phases)**: Single scrollable page replaces 4-tab layout. 3 sections: Profile (email/username editing), Notifications (5 JSONB checkboxes, opt-out model), Account (password change + delete). Anonymize pattern for account deletion — PII stripped, record kept, all FKs valid. 10 views audited for `deleted?` guards. 92 specs green. Migration: 2 columns on users.
+- **Edit page save bugs (CRITICAL)**: Fixed 2 data-destroying bugs. Bug 1: `update_letters` mapped empty cells (`" "`) to `nil` (void marker) — now correctly maps to `""`. Bug 2: `save_puzzle()` missing `e.preventDefault()` caused Turbo to intercept `<a href="#">` click and reload page. Also: save button right-aligned, 4 regression specs added, 2 controller specs updated, data repair diagnostic rake task added.
 - **Loading feedback system (4 layers)**: Global Turbo nav dimming (`.xw-loading` class on `turbo:click`), `disable_with` on 16 form buttons, solve toolbar `.xw-btn--busy` spinner + `.xw-btn--saved` green pulse, edit pattern search wired to `loading_controller.js`. No migrations.
 - **Visual design review (12 fixes)**: Hamburger labels, CTA button text, search placeholder, forgot-password color, empty states, contact page, account tabs, puzzle preview, auth error pages, banner padding, sticky footer, profile stats font.
 - **Profile N+1 fix**: 3 precomputed counts in `UsersController#show` → ivars in `_user.html.haml`
@@ -64,4 +69,6 @@
 - Migration `fix_double_encoded_clues` — reverses Ã-signature double-encoding.
 - Migration `add_hints_used_to_solutions` — integer column, default 0.
 - Migration `add_revealed_indices_to_solutions` — text column (JSON array), default '[]'.
-- Run `bundle exec rails repair:void_cells` after deploy to fix corrupted UCWs.
+- Migration `add_account_settings_columns_to_users` — `notification_preferences` JSONB + `deleted_at` datetime.
+- Run `bundle exec rails repair:void_cells` after deploy to fix "0" string corruption in UCWs.
+- Run `bundle exec rails repair:diagnose_void_corruption` after deploy to flag UCWs with >60% voids for manual review.

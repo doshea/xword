@@ -14,7 +14,23 @@ When a Builder picks up a plan:
 
 Items built but not yet deployed to production.
 
-_(Nothing pending — all clear.)_
+### Edit Page Save Bugs — CRITICAL (Built 2026-03-04)
+- **Bug 1 fixed:** `update_letters` now correctly distinguishes voids (`nil`), empty cells (`""`), and letters
+- **Bug 2 fixed:** `save_puzzle()` now calls `e.preventDefault()` to stop Turbo page destroy
+- **Save button right-aligned** via `margin-left: auto` on `#puzzle-controls`
+- **4 regression specs added** in `spec/requests/unpublished_crosswords_spec.rb`
+- **2 controller specs updated** to expect corrected behavior
+- **Data repair task added:** `bundle exec rails repair:diagnose_void_corruption` flags UCWs with >60% voids
+- **Also run:** `bundle exec rails repair:void_cells` to fix "0" string corruption
+- **Builder → Deployer:** No migration needed. Run both repair rake tasks after deploy.
+
+### Account Settings Rebuild (Built 2026-03-05)
+- **Single scrollable page** replaces 4-tab layout (2 were placeholders)
+- **3 sections:** Profile (+ email/username editing), Notifications (5 JSONB toggles), Account (password + delete)
+- **Account deletion:** Anonymize pattern — PII stripped, record kept, all FKs valid. "[Deleted Account]" display.
+- **10 views updated** with `deleted?` guards (comments, replies, bylines, admin tables, search, profile)
+- **92 specs green** (model: 6 new method tests, request: email/username/prefs/delete/deleted-user, service: mute check)
+- **Builder → Deployer:** Migration adds 2 columns (`notification_preferences` JSONB, `deleted_at` datetime). Run `rails db:migrate`. No data repair needed.
 
 ## Active / In Progress
 
@@ -25,44 +41,48 @@ _(Nothing pending — all clear.)_
 - Visual design review (12 items: empty states, sticky footer, nav labels, error pages, etc.) — v554
 - Loading feedback system (4 layers: nav dimming, disable_with, solve toolbar, pattern search) — v555
 
-### Planner → Builder: Home Page Pixel-Perfect Review (2026-03-04)
+### ✅ Home Page Pixel-Perfect Review — COMPLETE (2026-03-05)
+All 10 items addressed (most were already fixed by prior work):
+- **Must-fix 1-2:** Duplicate puzzle card CSS consolidated; HR border fixed in both global reset + `.xw-hr--flush`
+- **Should-fix 3-6:** Flexbox card layout with explicit thumb sizing; H1 on tokens (`.xw-home__heading`); mobile scroll-fade tabs; thumb overflow fixed
+- **Suggestions 7-10:** Tab icons inline (`.tab-label` flexbox); Lora italic byline; card hover lift restored; min-height on sparse tab panels
+- **Files:** `_components.scss`, `home.html.haml`
+- **No migration.** CSS-only changes.
 
-**Scope:** Desktop (1280×900), tablet (768×1024), mobile (375×812). All 3 tabs with 15 crosswords.
-**Screenshots:** `screenshots/hp-01-*` through `hp-05-*`.
+### Planner → Builder: Edit Page Frontend Review (2026-03-05)
+Picked up by Builder at 2026-03-05 00:30
 
-**Must-fix (2):**
+**Scope:** Playwright + code review. See planner memory for full findings (13 items).
 
-1. **Duplicate conflicting puzzle card CSS** — Two `.xw-puzzle-card` rule sets in `_components.scss`:
-   - Lines 219-264: nested selectors (high specificity) — title=`--font-display`, byline=`--font-ui` 11px, border-radius=`--radius-lg` (via @extend .xw-card)
-   - Lines 861-919: standalone selectors — title=`--font-body`, byline=`--font-body` italic, border-radius=`--radius-md`
-   - Nested set wins. Standalone set is dead code that will confuse future editors.
-   - **Fix:** Delete lines 861-919 OR merge desired styles into lines 219-264. Decide on title font: Playfair Display (editorial, less legible at 16px) or Lora (body, designed for small sizes). Decide on byline: DM Sans plain or Lora italic.
-   - Recommendation: Lora semibold for title (matches body font, reads better at small size), Lora italic for byline (editorial warmth), keep DM Sans for dims.
+**Must-fix (3):**
 
-2. **HR uses browser-default 3D inset border** — `hr.xw-hr--flush` renders with `border: 1px inset` (grooved 3D effect). Creates double-line artifact with adjacent tabs border-bottom.
-   - **Fix:** Add to global reset or `.xw-hr--flush`: `border: none; border-top: 1px solid var(--color-border);`
-   - OR: remove the `<hr>` entirely from `home.html.haml` — the `.xw-tabs__nav` border-bottom already provides visual separation.
+1. **`scroll_to_selected` JS crash after void toggle** — TypeError on every cell/clue click after any void is toggled. Root cause: `number_cells()` sets `data-cell` on cells, making `corresponding_clue()` use `data-cell-num` lookup path. Edit page clues have `data-index`, not `data-cell-num` → empty jQuery set → `.position()` returns undefined.
+   - **Files:** `crossword_funcs.js` (scroll_to_selected guard), `cell_funcs.js` (corresponding_clue edit-mode check)
+   - **Fix:** (a) Guard: `if ($sel_clue.length === 0) return;` in `scroll_to_selected`. (b) Make `corresponding_clue()` / `corresponding_across_clue()` / `corresponding_down_clue()` check `cw.editing` and always use the `data-index` path when editing.
 
-**Should-fix (4):**
+2. **Tool panels (Notepad/Pattern Search) cover entire viewport** — `.slide-up-container` is `position: fixed; height: 90%`. Opens to `top: 95px`. Hostile to editing workflow — you can't see the puzzle while using tools.
+   - **Files:** `edit.scss.erb` (`.slide-up-container` rules), `edit.html.haml` (panel HTML structure)
+   - **Recommendation:** Redesign as integrated sidebar panels (desktop: 250px alongside puzzle) or partial bottom sheets (mobile: max 40vh). This is a design task — Planner should design the layout before Builder implements.
 
-3. **12-column grid inside 243px card** — Each `.xw-puzzle-card` uses `.xw-grid` (12-col CSS Grid with 16px gaps) internally. Columns compute to 5.4px each. Layout works by accident via `.xw-lg-4` / `.xw-lg-8`. Fragile — any gap/width change breaks it.
-   - **Fix:** Replace inner `.xw-grid` + column classes with simple flexbox in `_crossword_tab.html.haml`. E.g., `.xw-puzzle-card__inner { display: flex; align-items: center; }`.
+3. **Row height jump when letter is typed** — visible row height change when first letter appears in a row. Previously diagnosed in planner memory (2026-03-04). Verify if fix was applied; if not, apply the absolute-positioning fix.
+   - **Files:** `crossword.scss.erb` (`.letter` rules)
 
-4. **H1 uses browser-default margins (21.44px)** — Not on design token scale. Combined with `search.scss.erb` padding-top (24px), creates 45px effective top spacing vs 32px bottom padding. Top-heavy.
-   - **Fix:** `h1 { margin: var(--space-6) 0 var(--space-4) 0; }` scoped to home page, or add `margin-top: 0` to the h1 inside the container.
+**Should-fix (5):**
 
-5. **"Solved Puzzles (2)" truncated on mobile** — Tab label cut off at "Solved P..." at 375px. Scrollable tabs work but no visual scroll affordance (scrollbar hidden).
-   - **Fix options:** (a) Abbreviate label to "Solved (2)" at mobile, (b) add fade/shadow on right edge of `.xw-tabs__nav` to indicate scrollable content, (c) reduce tab padding on mobile.
+4. Dead "Edit Settings" modal — remove gear button + modal, or repurpose.
+5. Phone tool panel buttons overlap content when closed.
+6. Phone switch labels clipped.
+7. `number_clues()` produces "NaN." for hidden clues.
+8. Event handler leaks on Turbo navigation (`ready()` .on() without .off()).
 
-6. **Thumbnail overflow** — 75×75px image sits in a grid cell that computes to 69.7px wide. Image overflows container on both sides. `.xw-card`'s `overflow: hidden` clips it visually, but the layout is structurally wrong.
-   - **Fix:** Addressed by item 3 (replacing inner grid with flexbox). Give thumb container explicit `width: 75px; flex-shrink: 0;`.
+**Dead code to clean up (3):**
 
-**Suggestions (4):**
+- `spin_title()` in edit_funcs.js (references nonexistent Spinner library)
+- `jquery-ui-1.10.4.draggable.min` include in edit.html.haml (never used)
+- `#tools` CSS block in edit.scss.erb (no matching HTML)
 
-7. Tab icons stacked above text → tall tab bar (~56px). Inline layout (icon left, text right) would be more compact. Low priority.
-8. Byline and dims both 11px DM Sans muted — visually identical weight. Italic byline (from line 901 intent) would improve differentiation.
-9. Card hover effect subtle (bg-color only). `.xw-card` base has `translateY(-1px)` + `shadow-md` on hover but `.xw-puzzle-card` at line 867 overrides to weaker `shadow-sm`. Remove the override to get the lift effect.
-10. Sparse tab content (e.g., Solved with 2 cards) leaves large wood-grain gap before footer. Consider min-height on tab panel.
+### ✅ Account Settings Rebuild — COMPLETE (2026-03-05)
+All 10 phases built and tested. Moved to Pending Deploy above.
 
 ### Remaining visual items (not addressed):
 - Solve page toolbar icons cramped on mobile (minor)

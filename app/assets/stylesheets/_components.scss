@@ -216,50 +216,93 @@
   }
 }
 
-// Puzzle card — used by _crossword_tab.html.haml (Phase 3c)
+// Puzzle card — used by _crossword_tab.html.haml
+// Rendered across home, NYT, user-made, create dashboard, word/clue show pages.
+// Mobile/tablet: vertical (thumb above text). Desktop (≥ $bp-lg): horizontal (thumb left, text right).
 .xw-puzzle-card {
   @extend .xw-card;
   display: block;
   text-decoration: none;
   color: var(--color-text);
 
+  .xw-puzzle-card__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2);
+  }
+
   .xw-puzzle-card__thumb {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-3);
-    background-color: var(--color-surface-alt);
+    padding: var(--space-2);
+    width: 100%;
 
     img {
       display: block;
-      max-height: 6rem;
-      width: auto;
+      width: 75px;
+      height: 75px;
+      max-width: none;
+      object-fit: cover;
     }
   }
 
   .xw-puzzle-card__meta {
-    padding: var(--space-3) var(--space-4) var(--space-4);
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    text-align: center;
+    width: 100%;
 
-    .xw-puzzle-card__title {
-      font-family: var(--font-display);
-      font-size: var(--text-base);
-      font-weight: var(--weight-bold);
-      line-height: var(--leading-tight);
-      margin-bottom: var(--space-1);
-    }
+    p { margin: 0; }
+  }
 
-    .xw-puzzle-card__byline {
-      font-family: var(--font-ui);
-      font-size: var(--text-xs);
-      color: var(--color-text-muted);
-    }
+  .xw-puzzle-card__title {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+  }
 
-    .xw-puzzle-card__dims {
-      font-family: var(--font-ui);
-      font-size: var(--text-xs);
-      color: var(--color-text-muted);
-      margin-top: var(--space-1);
-    }
+  .xw-puzzle-card__byline {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .xw-puzzle-card__dims {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+  }
+
+  .xw-puzzle-card__nyt {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-2);
+    height: 1.5em;
+  }
+}
+
+// Desktop: horizontal card layout (thumb left, text right)
+@media (min-width: $bp-lg) {
+  .xw-puzzle-card .xw-puzzle-card__inner {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .xw-puzzle-card .xw-puzzle-card__thumb {
+    width: 75px;
+    flex-shrink: 0;
+    padding: var(--space-2);
+  }
+
+  .xw-puzzle-card .xw-puzzle-card__meta {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
   }
 }
 
@@ -348,7 +391,11 @@
 // HORIZONTAL RULE VARIANTS
 // ---------------------------------------------------------------------------
 
-.xw-hr--flush { margin-bottom: 0; }
+.xw-hr--flush {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin-bottom: 0;
+}
 
 
 // ---------------------------------------------------------------------------
@@ -424,15 +471,22 @@
   }
 }
 
-// Mobile: scrollable tabs to prevent overflow on narrow screens
+// Mobile: scrollable tabs with tighter padding and scroll-fade affordance
 @media (max-width: #{$bp-sm - 1}) {
   .xw-tabs .xw-tabs__nav {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     &::-webkit-scrollbar { display: none; }
+    // Fade hint on right edge signals scrollable content
+    mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent);
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent);
   }
-  .xw-tab { white-space: nowrap; }
+  .xw-tab {
+    white-space: nowrap;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
 }
 
 // Tablet/phone: vertical tabs → horizontal scrollable bar
@@ -473,6 +527,15 @@
 .xw-tab-panel {
   display: none;
   &.xw-tab-panel--active { display: block; }
+}
+
+// Inline icon + text within tabs — prevents SVG block display from stacking icon above label
+.tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  svg { width: 1em; height: 1em; }
 }
 
 
@@ -837,6 +900,21 @@
 
 
 // ---------------------------------------------------------------------------
+// HOME PAGE
+// ---------------------------------------------------------------------------
+
+.xw-home__heading {
+  font-family: var(--font-display);
+  margin: 0 0 var(--space-4) 0;
+}
+
+// Prevent large wood-grain gap when tab content is sparse (e.g. 2 solved puzzles)
+.xw-puzzle-grid .xw-tab-panel--active {
+  min-height: 20rem;
+}
+
+
+// ---------------------------------------------------------------------------
 // PUZZLE CARD — .xw-puzzle-grid / .xw-puzzle-card
 // ---------------------------------------------------------------------------
 // Shared horizontal card layout used by _crossword_tab.html.haml partial
@@ -858,65 +936,7 @@
   }
 }
 
-.xw-puzzle-card {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  transition: background-color var(--duration-base) var(--ease-in-out),
-              box-shadow var(--duration-base) var(--ease-out);
-
-  &:hover {
-    background-color: var(--color-surface-alt);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .xw-grid {
-    padding: var(--space-2) 0;
-    align-items: center;
-  }
-}
-
-.xw-puzzle-card__thumb img {
-  max-width: none;
-  width: 75px;
-  height: 75px;
-  object-fit: cover;
-}
-
-.xw-puzzle-card__meta {
-  padding-left: var(--space-4);
-
-  p {
-    margin: 0;
-  }
-}
-
-.xw-puzzle-card__title {
-  font-family: var(--font-body);
-  font-weight: var(--weight-semibold);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
-  color: var(--color-text);
-}
-
-.xw-puzzle-card__byline {
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-}
-
-.xw-puzzle-card__dims {
-  font-family: var(--font-ui);
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-}
-
-.xw-puzzle-card__nyt {
-  position: absolute;
-  right: var(--space-4);
-  bottom: var(--space-2);
-  height: 1.5em;
-}
+// (Standalone puzzle card rules removed — consolidated into nested .xw-puzzle-card block above)
 
 
 // ---------------------------------------------------------------------------
@@ -1125,10 +1145,4 @@
   }
 }
 
-.xw-puzzle-grid {
-  .xw-tabs__nav {
-    a {
-      padding: 0.5em 1.5em 0.3em;
-    }
-  }
-}
+// (Dead .xw-puzzle-grid .xw-tabs__nav override removed — used em padding instead of tokens)
