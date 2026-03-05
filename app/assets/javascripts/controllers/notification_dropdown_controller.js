@@ -23,6 +23,8 @@ class NotificationDropdownController extends Stimulus.Controller {
   toggle(event) {
     event.stopPropagation();
     var isOpen = this.panelTarget.classList.toggle('is-open');
+    var btn = this.element.querySelector('[aria-expanded]');
+    if (btn) btn.setAttribute('aria-expanded', String(isOpen));
     if (isOpen && !this.loaded) {
       this.fetchNotifications();
     }
@@ -30,6 +32,8 @@ class NotificationDropdownController extends Stimulus.Controller {
 
   close() {
     this.panelTarget.classList.remove('is-open');
+    var btn = this.element.querySelector('[aria-expanded]');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
   }
 
   fetchNotifications() {

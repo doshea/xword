@@ -5,12 +5,13 @@
       %h1.xw-notifications__title
         = icon('bell')
         Notifications
-      - if @notifications.any? { |n| n.read_at.nil? }
-        = button_to mark_all_read_notifications_path, method: :patch,
-                    class: 'xw-btn xw-btn--ghost xw-btn--sm',
-                    data: { disable_with: 'Marking read\u2026' } do
-          = icon('check-check', size: 16)
-          Mark all read
+      #notifications-mark-all
+        - if @notifications.any? { |n| n.read_at.nil? }
+          = button_to mark_all_read_notifications_path, method: :patch,
+                      class: 'xw-btn xw-btn--ghost xw-btn--sm',
+                      data: { disable_with: 'Marking read\u2026' } do
+            = icon('check-check', size: 16)
+            Mark all read
 
     #notifications-list.xw-notifications__list
       - if @notifications.any?
@@ -19,4 +20,7 @@
                    locals: { notification: notification }
       - else
         #notifications-empty.xw-notifications__empty
+          = icon('bell', size: 32, class: 'xw-notifications__empty-icon')
           %p No notifications yet.
+          %p.xw-notifications__empty-hint
+            You'll see activity here when friends interact with you.

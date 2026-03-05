@@ -42,6 +42,8 @@ class User < ApplicationRecord
   has_many :friend_twos, class_name: 'User', through: :friendship_twos
 
   has_many :notifications, inverse_of: :user, dependent: :destroy
+  has_many :triggered_notifications, class_name: 'Notification',
+           foreign_key: :actor_id, inverse_of: :actor, dependent: :destroy
 
   has_many :sent_friend_requests, class_name: 'FriendRequest', foreign_key: :sender_id, dependent: :delete_all
   has_many :received_friend_requests, class_name: 'FriendRequest', foreign_key: :recipient_id, dependent: :delete_all
@@ -171,6 +173,7 @@ class User < ApplicationRecord
     # Delete personal data (not community content)
     Friendship.where(user_id: id).or(Friendship.where(friend_id: id)).delete_all
     notifications.delete_all
+    triggered_notifications.delete_all
     sent_friend_requests.delete_all
     received_friend_requests.delete_all
     favorite_puzzles.destroy_all

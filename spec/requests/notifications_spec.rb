@@ -26,6 +26,42 @@ RSpec.describe 'Notifications', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('No notifications yet.')
     end
+
+    it 'shows "Mark all read" button only when unread notifications exist' do
+      log_in_as(user)
+      create(:notification, :read, user: user, actor: actor, notification_type: 'friend_request')
+
+      get '/notifications'
+      expect(response.body).not_to include('Mark all read')
+    end
+
+    it 'shows empty state with hint text when no notifications' do
+      log_in_as(user)
+
+      get '/notifications'
+      expect(response.body).to include('No notifications yet.')
+      expect(response.body).to include('friends interact with you')
+    end
+
+    it 'renders notification with mark-read data attributes' do
+      log_in_as(user)
+      notification = create(:notification, user: user, actor: actor,
+                            notification_type: 'friend_request')
+
+      get '/notifications'
+      expect(response.body).to include("data-notification-mark-url=\"#{mark_read_notification_path(notification)}\"")
+    end
+
+    it 'skips rendering notifications with deleted actors' do
+      log_in_as(user)
+      deleted_actor = create(:user)
+      create(:notification, user: user, actor: deleted_actor, notification_type: 'friend_accepted')
+      deleted_actor.destroy
+
+      get '/notifications'
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include('accepted your friend request')
+    end
   end
 
   describe 'PATCH /notifications/:id/mark_read' do
@@ -82,6 +118,16 @@ RSpec.describe 'Notifications', type: :request do
             headers: { 'Accept' => 'application/json' }
       expect(response).to have_http_status(:ok)
     end
+
+    it 'removes mark-all-read button via Turbo Stream' do
+      log_in_as(user)
+      create(:notification, user: user, actor: actor, notification_type: 'friend_request')
+
+      patch mark_all_read_notifications_path,
+            headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('notifications-mark-all')
+    end
   end
 
   describe 'PATCH /notifications/:id/mark_read (JSON)' do
@@ -93,6 +139,29 @@ RSpec.describe 'Notifications', type: :request do
       patch mark_read_notification_path(notification),
             headers: { 'Accept' => 'application/json' }
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'notification message formatting' do
+    before { log_in_as(user) }
+
+    it 'includes punctuation on comment_on_puzzle with crossword metadata' do
+      crossword = create(:crossword)
+      create(:notification, user: user, actor: actor,
+             notification_type: 'comment_on_puzzle',
+             metadata: { 'crossword_id' => crossword.id, 'crossword_title' => crossword.title })
+
+      get '/notifications'
+      # Period should follow the crossword link
+      expect(response.body).to include("#{crossword.title}</a>.")
+    end
+
+    it 'includes punctuation on comment_reply without crossword metadata' do
+      create(:notification, user: user, actor: actor,
+             notification_type: 'comment_reply', metadata: {})
+
+      get '/notifications'
+      expect(response.body).to include('replied to your comment.')
     end
   end
 

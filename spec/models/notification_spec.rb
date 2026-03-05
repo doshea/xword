@@ -45,6 +45,16 @@ RSpec.describe Notification, type: :model do
     end
   end
 
+  describe 'actor deletion cascades' do
+    it 'destroys notifications when the actor is destroyed' do
+      actor = create(:user)
+      recipient = create(:user)
+      create(:notification, user: recipient, actor: actor, notification_type: 'friend_request')
+
+      expect { actor.destroy }.to change(Notification, :count).by(-1)
+    end
+  end
+
   describe 'scopes' do
     let(:user) { create(:user) }
     let(:actor) { create(:user) }

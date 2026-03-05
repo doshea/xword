@@ -68,6 +68,8 @@
           .xw-nav__item#nav-mail{ class: (@unread_notification_count > 0 ? 'unread' : nil),
                                    data: { controller: 'notification-dropdown' } }
             %button.xw-nav__icon-btn{ type: 'button',
+                                       aria: { expanded: 'false', haspopup: 'true',
+                                               controls: 'notification-dropdown-panel' },
                                        data: { action: 'notification-dropdown#toggle',
                                                xw_tooltip: 'Notifications' } }
               = icon('bell')
@@ -75,7 +77,8 @@
               #notification-badge
                 - if @unread_notification_count > 0
                   %span.xw-badge= @unread_notification_count > 99 ? '99+' : @unread_notification_count
-            .xw-notification-dropdown{ data: { 'notification-dropdown-target': 'panel' } }
+            .xw-notification-dropdown{ id: 'notification-dropdown-panel',
+                                       data: { 'notification-dropdown-target': 'panel' } }
               .xw-notification-dropdown__loading
                 %p Loading…
 

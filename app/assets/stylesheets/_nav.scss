@@ -581,6 +581,10 @@
     background-color: transparent;
     color: var(--color-nav-text);
 
+    &.xw-notification--unread {
+      background-color: rgba(255, 255, 255, 0.10);
+    }
+
     .xw-notification__message,
     .xw-notification__message a { color: var(--color-nav-text); }
     .xw-notification__meta { color: rgba(255, 255, 255, 0.60); }
