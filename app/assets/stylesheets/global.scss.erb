@@ -175,6 +175,20 @@ body {
 }
 @keyframes xw-spin { to { transform: rotate(360deg); } }
 
+// Lazy-load placeholder — centered spinner + text for deferred tab content
+.xw-loading-placeholder {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-secondary);
+
+  .xw-spinner {
+    display: block;
+    margin: 0 auto var(--space-3);
+    width: 1.5em;
+    height: 1.5em;
+  }
+}
+
 // Clicked-element loading state — applied during Turbo Drive page navigations
 .xw-loading {
   opacity: 0.5;

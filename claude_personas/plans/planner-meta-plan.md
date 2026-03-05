@@ -61,21 +61,21 @@ will become bottlenecks at scale (performance). Items ordered by ROI, not catego
 
 | # | Item | Type | Status | Plan | Deploy |
 |---|------|------|--------|------|--------|
-| P3-A | Solve Confidence (save feedback + error visibility) | Review | ✅ Reviewed | `solve-confidence.md` | — |
-| P3-B | Cell Navigation Composite Index | Direct | ⬚ Unreviewed | — | — |
-| P3-C | Design Token Completion | Review | ✅ Reviewed | `design-token-completion.md` | — |
-| P3-D | Dead Code Cleanup | Direct | ⬚ Unreviewed | — | — |
-| P3-E | Loading State Spinners | Direct | ⬚ Unreviewed | — | — |
-| P3-F | Random Puzzle Offset Fix | Direct | ⬚ Unreviewed | — | — |
-| P3-G | Crossword User+Date Composite Index | Direct | ⬚ Unreviewed | — | — |
-| P3-H | Solve Page Navigation (back button + mobile send) | Review | ⬚ Unreviewed | — | — |
+| P3-A | Solve Confidence (save feedback + error visibility) | Review | ✅ Done | `solve-confidence.md` | Deploy 2 (a1c069e) |
+| P3-B | Cell Navigation Composite Index | Direct | ✅ Done | — | Deploy 1 (924e958) |
+| P3-C | Design Token Completion | Review | ✅ Done | `design-token-completion.md` | Deploy 2 (a1c069e) |
+| P3-D | Dead Code Cleanup | Direct | ✅ Done (partial) | — | Deploy 1 (924e958) |
+| P3-E | Loading State Spinners | Review | ✅ Reviewed | `loading-state-spinners.md` | — |
+| P3-F | Random Puzzle Offset Fix | Direct | ✅ Done | — | Deploy 1 (924e958) |
+| P3-G | Crossword User+Date Composite Index | Direct | ✅ Done | — | Deploy 1 (924e958) |
+| P3-H | Solve Page Navigation (back button + mobile send) | Review | ✅ Reviewed (corrections added) | `solve-page-navigation.md` | — |
 
 ### Deploy Sequence
 
-**Deploy 1** — Quick wins (P3-D + P3-B + P3-G + P3-F): one migration, one commit.
-**Deploy 2** — P3-A (solve confidence): headline item, full review cycle.
-**Deploy 3** — P3-C + P3-E: visual consistency pass.
-**Deploy 4** — P3-H: navigation polish.
+**Deploy 1** ✅ — Quick wins (P3-D + P3-B + P3-G + P3-F): `924e958`
+**Deploy 2** ✅ — P3-A + P3-C (solve confidence + design tokens): `a1c069e`
+**Deploy 3** — P3-E: loading spinners. Plan: `loading-state-spinners.md`. Includes LoadingController fix for `<button>` elements.
+**Deploy 4** — P3-H: navigation polish. Plan: `solve-page-navigation.md`. Needs `send.svg` icon (not in repo).
 
 ---
 

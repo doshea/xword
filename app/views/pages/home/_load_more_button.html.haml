@@ -1,4 +1,4 @@
 - next_batch = [remaining, Crossword.per_page].min
 %div{id: "load-more-#{scope}"}
-  = button_to "Load next #{next_batch} puzzles", home_load_more_path, params: {scope: scope, page: page}, class: 'xw-btn xw-btn--secondary xw-btn--full', data: {disable_with: 'Loading...'}
+  = button_to "Load next #{next_batch} puzzles", home_load_more_path, params: {scope: scope, page: page}, class: 'xw-btn xw-btn--secondary xw-btn--full', data: {disable_with: '<span class="xw-spinner"></span> Loading...'}
   %p.xw-load-more__count #{remaining} more #{remaining == 1 ? 'puzzle' : 'puzzles'} available

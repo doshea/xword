@@ -2,6 +2,16 @@
 
 ## Deploy History
 
+### v579 — 2026-03-05
+**Commit:** `924e958`
+**Changes:** Composite indexes, random puzzle offset fix, stale TODO cleanup:
+- 2 composite indexes: `cells(crossword_id, row, col)`, `crosswords(user_id, created_at DESC)`
+- `ORDER BY RANDOM()` → `offset(rand(count))` in 3 locations (pages_controller, crosswords_controller, user.rb)
+- Stale TODO removed from home.html.haml
+**Migration:** `20260305120001_add_composite_indexes_to_cells_and_crosswords` — 2 concurrent indexes (2.23s total)
+**Rollback:** `heroku run rake db:migrate:down VERSION=20260305120001` + `git revert 924e958`
+**Post-deploy:** Release v579. Migration completed in release phase (2.23s). Puma up ~3s, 2 workers booted. Homepage 302 (redirect to www), /random 302 (redirect to puzzle). Redis SSL warning on changelog (pre-existing, cosmetic). No app errors.
+
 ### v578 — 2026-03-05
 **Commits:** `b0b3b62`, `09c9a9f`
 **Changes:** Low-priority polish + gitignore housekeeping:
@@ -389,7 +399,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v578
+- Current release: v579
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

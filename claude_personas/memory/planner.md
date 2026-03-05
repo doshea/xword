@@ -21,7 +21,19 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 
 - **Phase 1:** ✅ Done. 16 reviews + changelog, all deployed (v548–v574).
 - **Phase 2:** ✅ Done. 7 reviewed, 6 built, deployed v576–v578. Stats perf = no build needed.
-- **Phase 3:** 🔄 Active. 8 items (rewritten from scratch). Solve confidence + perf indexes + visual polish. Deploy 1 ready for Builder (P3-D, P3-B, P3-G, P3-F). See meta-plan for full details.
+- **Phase 3:** 🔄 Active. 6/8 deployed (D1: 924e958, D2: a1c069e). 2 remaining: P3-E (spinners, reviewed), P3-H (nav, reviewed with corrections). Both queued for Builder.
+
+### P3-E Loading State Spinners review (2026-03-05)
+- Upgraded from "Direct" to "Review" — 3 non-obvious findings:
+  1. `.xw-loading-placeholder` class has ZERO CSS rules — Builder must add styles
+  2. `LoadingController.submit()` uses `.value` which works for `<input type="submit">` but not `<button>` — need tagName-aware logic (also prevents P3-H latent bug)
+  3. Home load-more `disable_with` renders HTML via innerHTML — should work, but Builder should verify no escaping
+- Plan written: `claude_personas/plans/loading-state-spinners.md`
+
+### P3-H Solve Page Navigation review corrections (2026-03-05)
+- **Must-fix**: `send.svg` does NOT exist in icons/ (41 icons available). Plan specifies `icon('send', size: 14)`. Builder must download from Feather icons (https://feathericons.com) or use `arrow-right.svg` (exists).
+- **Confirmed**: `arrow-left.svg` exists ✓
+- **Note**: If P3-E fixes LoadingController for `<button>`, P3-H Send button gets spinner-on-disable for free
 
 ### Turbo Stream `replace` pattern bug (2026-03-04)
 - `password_errors.turbo_stream.erb` and `wrong_password.turbo_stream.erb` use `turbo_stream.replace "password-errors"` but the replacement content lacks the `id="password-errors"` wrapper. First submission works; subsequent ones silently fail (no target). Affects both reset_password and account change-password. Both login/signup and forgot/reset reviews flagged this independently.
@@ -143,6 +155,16 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 - Skipped: mask-image `black` (CSS mask keyword), nav box-shadow (unique shadow), 3 mobile-only notification text opacity values (one-off overrides), footer border (between two overlay tokens)
 - **WCAG concern**: `--color-text-inverse` (#f5f0e8) on `--color-danger` (#b84040) = 3.3:1 — passes only for large text. Buttons use `--text-sm` (13px) + `--weight-medium` (500). Builder must verify contrast or use pure `#fff` as `--color-text-on-accent` fallback.
 - Opacity normalization: 3 instances of 0.10 → 0.12, 2 instances of 0.02-0.03 → 0.06. All sub-perceptual.
+
+### P3-H Solve Page Navigation review (2026-03-05)
+- Home button: `root_url` link, first in `#puzzle-controls`, `.xw-btn--ghost` + arrow-left icon
+- Rejected `history.back()` — fails for deep links/bookmarks/new tabs
+- Mobile send button: visible on touch (no hover), hidden on hover devices via `@media (hover: hover)`
+- Must-fix: jQuery `add_comment_or_reply` only handles Enter keypress. Clicking Send button submits via Turbo but doesn't clear textarea or close reply form. Fix: extract `_submit_comment` shared function, add click handler for `.xw-comment__send`
+- Loading controller becomes functional — Send button provides the missing `loading_target: 'button'`
+- CSS sibling selector `textarea:focus ~ .xw-comment__hint` preserved — Send button placed after hint
+- Reply forms also get Send button for consistency
+- 320px viewport risk: 6 toolbar buttons may crowd. Builder should test.
 
 ## Open Questions
 - No unfriend mechanism exists anywhere in the app — flagged as separate feature ticket

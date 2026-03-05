@@ -75,6 +75,12 @@ window.solve_app = {
       $('#comments').on('keydown', '.reply-content', function(e) {
         if (e.key === 'Escape') solve_app.toggle_reply_form.call(this, e);
       });
+      // Send button click — submits comment/reply via shared handler
+      $('#comments').on('click', '.xw-comment__send', function(e) {
+        e.preventDefault();
+        var $textarea = $(this).closest('form').find('textarea');
+        solve_app._submit_comment($textarea);
+      });
       $('#solve-save').on('click', solve_app.save_solution);
       $('#add-comment').on('keypress', solve_app.add_comment_or_reply);
     }
@@ -596,30 +602,33 @@ window.solve_app = {
     solve_app.update_unsaved();     // trigger auto-save
   },
 
-  add_comment_or_reply: function(e) {
-    if (!e.metaKey) {
-      var key = e.which;
-      if (key === cw.ENTER) {
-        e.preventDefault();
-        if ($(this).val() !== '') {
-          var form = $(this).closest('form');
-          form[0].requestSubmit();
-          $(this).val('');
-          // Close the reply form and expand replies so the new reply is visible
-          if ($(this).hasClass('reply-content')) {
-            var comment = $(this).closest('.xw-comment');
-            comment.removeClass('xw-comment--replying');
-            form.hide('fast');
-            form[0].reset();
-            var replies = comment.find('.replies');
-            var countBtn = comment.find('.xw-comment__reply-count');
-            if (replies.is(':hidden')) {
-              replies.slideDown('fast');
-              countBtn.addClass('xw-comment__reply-count--expanded');
-            }
-          }
-        }
+  // Shared comment/reply submit: submits form, clears textarea, closes reply form.
+  // Called from both Enter keypress and Send button click handlers.
+  _submit_comment: function($textarea) {
+    if ($textarea.val() === '') return false;
+    var form = $textarea.closest('form');
+    form[0].requestSubmit();
+    $textarea.val('');
+    // Reply-specific cleanup: close form and expand replies so the new reply is visible
+    if ($textarea.hasClass('reply-content')) {
+      var comment = $textarea.closest('.xw-comment');
+      comment.removeClass('xw-comment--replying');
+      form.hide('fast');
+      form[0].reset();
+      var replies = comment.find('.replies');
+      var countBtn = comment.find('.xw-comment__reply-count');
+      if (replies.is(':hidden')) {
+        replies.slideDown('fast');
+        countBtn.addClass('xw-comment__reply-count--expanded');
       }
+    }
+    return true;
+  },
+
+  add_comment_or_reply: function(e) {
+    if (!e.metaKey && e.which === cw.ENTER) {
+      e.preventDefault();
+      solve_app._submit_comment($(this));
     }
   },
 

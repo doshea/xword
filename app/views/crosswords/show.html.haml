@@ -46,6 +46,8 @@
       = @crossword.title
       %span#creator-credit= "by #{@crossword.user&.display_name || '[Deleted Account]'}"
     #puzzle-controls.no-select
+      = link_to root_url, class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Home' }, aria: { label: 'Back to home' } do
+        = icon('arrow-left')
       - if @current_user
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
@@ -147,6 +149,9 @@
         = form_with(url: add_comment_path(@crossword), id: 'comment-form', data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
           = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea xw-textarea--compact', rows: 1, autocomplete: 'off', placeholder: 'Add a comment...', aria: {label: 'Add a comment'})
           %span.xw-comment__hint Enter to send
+          %button.xw-btn.xw-btn--sm.xw-comment__send{type: 'submit', data: {loading_target: 'button'}}
+            = icon('send', size: 14)
+            Send
       - else
         %p.xw-meta-area__auth-prompt
           = link_to 'Sign up', new_user_path

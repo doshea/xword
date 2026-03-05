@@ -14,16 +14,28 @@ class LoadingController extends Stimulus.Controller {
 
   submit() {
     if (!this.hasButtonTarget) return;
-    this._originalText = this.buttonTarget.value || this.buttonTarget.textContent;
-    this.buttonTarget.disabled = true;
-    this.buttonTarget.value = 'Loading\u2026';
+    var btn = this.buttonTarget;
+    this._originalHTML = btn.innerHTML;
+    this._originalValue = btn.value;
+    btn.disabled = true;
+    // For <input type="submit"> (has value), swap value text
+    if (btn.tagName === 'INPUT') {
+      btn.value = 'Loading\u2026';
+    }
+    // For <button>, inject spinner into innerHTML
+    else {
+      btn.innerHTML = '<span class="xw-spinner"></span> Loading\u2026';
+    }
   }
 
   _restore() {
     if (!this.hasButtonTarget) return;
-    this.buttonTarget.disabled = false;
-    if (this._originalText) {
-      this.buttonTarget.value = this._originalText;
+    var btn = this.buttonTarget;
+    btn.disabled = false;
+    if (btn.tagName === 'INPUT' && this._originalValue) {
+      btn.value = this._originalValue;
+    } else if (this._originalHTML) {
+      btn.innerHTML = this._originalHTML;
     }
   }
 }

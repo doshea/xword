@@ -8,10 +8,9 @@
 
 ## Pending Deploy
 
-**Deploy 1 — Quick wins (P3-D partial + P3-B + P3-G + P3-F)** — awaiting commit
-- P3-D: Removed stale TODO in home.html.haml. **Planner correction**: `include TimeHelper` is NOT dead (module in `lib/custom_funcs.rb`, used in win modal), `letters_to_clue_numbers` is NOT dead (called by `UnpublishedCrosswordsController#edit`, has 3 specs).
-- P3-B + P3-G: Added 2 composite indexes via concurrent migration (`cells(crossword_id, row, col)`, `crosswords(user_id, created_at DESC)`)
-- P3-F: Replaced `ORDER BY RANDOM()` with `offset(rand(count))` in 3 locations (pages_controller, crosswords_controller, user.rb)
+**Deploy 3+4 — P3-E + P3-H** (uncommitted)
+- P3-E: Loading spinners added to 3 locations. LoadingController updated to handle `<button>` vs `<input>` (Option A). `.xw-loading-placeholder` CSS added. Home load-more `disable_with` includes spinner HTML.
+- P3-H: Home button (arrow-left ghost) added as first item in toolbar. Send button on comment + reply forms, visible on touch devices (`@media (hover: hover)` hides on desktop). `_submit_comment` extracted in solve_funcs.js, wired to both Enter keypress and Send click. Feather `send.svg` downloaded and added to icons.
 - 1039 examples, 0 failures
 
 ## Builder In Progress
@@ -20,16 +19,7 @@
 
 ## Planner → Builder Queue
 
-Pick in order. **Read the plan file for full details** — don't rely on summaries here.
-
-### Awaiting Planner Review (Deploy 2–4)
-
-| Item | Status | Notes |
-|------|--------|-------|
-| P3-A: Solve Confidence | ✅ Built (uncommitted) | All 3 deliverables done: flash errors, save fail banner, save pulse |
-| P3-C: Design Token Completion | ✅ Built (uncommitted) | 6 tokens added, ~22 replacements across 6 files |
-| P3-E: Loading State Spinners | Queued | Mechanical — may skip review |
-| P3-H: Solve Page Navigation | Queued | After P3-A |
+(empty — Phase 3 complete)
 
 ## Planner Work Queue
 
@@ -39,7 +29,7 @@ Full queue: `claude_personas/plans/planner-meta-plan.md`
 |-------|--------|-------|
 | 1 | ✅ Done | 16 reviews + changelog, deployed v548–v574 |
 | 2 | ✅ Done | 7 reviewed, 6 built, deployed v576–v578. Stats perf = no build needed. |
-| 3 | 🔄 Active | 8 items (rewritten): solve confidence, 2 indexes, tokens, dead code, spinners, random fix, nav polish |
+| 3 | ✅ Done | 8/8 built. Deploys 1+2 shipped (v579, va1c069e). Deploy 3+4 (P3-E + P3-H) uncommitted, awaiting deploy. |
 
 ## Low-Priority Carry-Forward
 
@@ -69,3 +59,4 @@ v574: Review items 5–12 (passwords, NYT, team solving, test health, backend au
 v576: Form a11y audit, 72 service/model specs, tab controller fix (aria-controls)
 v577: NYT lazy tabs, DB constraints migration (7 indexes), API security (deleted PII leak), JS keyboard fix
 v578: 5 polish fixes (clue numbers, tab underline, footer overlap, GIF→CSS spinner, mobile toolbar)
+v579: Composite indexes (cells, crosswords), random puzzle offset fix, stale TODO cleanup

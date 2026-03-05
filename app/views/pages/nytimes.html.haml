@@ -37,6 +37,7 @@
                   = render partial: 'pages/nyt_day_content', locals: {puzzles: @default_puzzles}
                 - else
                   .xw-loading-placeholder
+                    %span.xw-spinner
                     %p Loading\u2026
 
       /- Panel 2: Calendar

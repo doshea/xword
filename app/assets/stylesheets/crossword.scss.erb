@@ -739,6 +739,21 @@ textarea:focus ~ .xw-comment__hint {
   opacity: 0.7;
 }
 
+// --- Mobile comment Send button ---
+// Visible by default (touch devices); hidden on hover-capable devices where Enter works.
+.xw-comment__send {
+  margin-top: var(--space-1);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+@media (hover: hover) {
+  .xw-comment__send {
+    display: none;
+  }
+}
+
 // --- Comment divider (invisible; keeps DOM node for Turbo Stream removal) ---
 
 .xw-comment__divider {

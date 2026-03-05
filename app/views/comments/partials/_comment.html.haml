@@ -28,6 +28,9 @@
           %button.reply-form__close{type: 'button', aria: {label: 'Close reply'}}
             = icon('x')
           %span.xw-comment__hint Enter to send
+          %button.xw-btn.xw-btn--sm.xw-comment__send{type: 'submit'}
+            = icon('send', size: 14)
+            Send
     / id added so reply.turbo_stream.erb can update the reply count display
     %button.xw-comment__reply-count{type: 'button', id: "reply-count-#{comment.id}"}<
       - if (reply_count = comment.replies.size) > 0
