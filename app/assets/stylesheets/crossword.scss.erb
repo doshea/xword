@@ -49,13 +49,6 @@
       color: var(--color-text-muted);
     }
   }
-  .solve-timer {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    letter-spacing: 0.03em;
-    min-width: 3.5em; // prevent layout jitter as digits change
-  }
 }
 #meta-area {
   border-bottom-left-radius: var(--radius-lg);
@@ -1007,6 +1000,11 @@ textarea:focus ~ .xw-comment__hint {
   &__placeholder {
     color: var(--color-text-muted);
     font-style: italic;
+  }
+
+  .solve-timer {
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
   }
 }
 

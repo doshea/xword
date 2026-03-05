@@ -10,10 +10,10 @@
 
     %hr.xw-stats-list__divider
 
+    - if @solution
+      %dt Your Time
+      %dd#solve-timer.solve-timer --:--
     %dt.xw-stats-list__placeholder Best Time
     %dd.xw-stats-list__placeholder --:--
     %dt.xw-stats-list__placeholder Avg Time
     %dd.xw-stats-list__placeholder --:--
-    - if @current_user
-      %dt.xw-stats-list__placeholder Your Time
-      %dd.xw-stats-list__placeholder --:--

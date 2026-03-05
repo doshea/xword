@@ -46,7 +46,6 @@
       = @crossword.title
       %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
     #puzzle-controls.no-select
-      %span#solve-timer.solve-timer
       - if @current_user
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
