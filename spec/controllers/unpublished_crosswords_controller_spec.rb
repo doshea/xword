@@ -117,7 +117,7 @@ describe UnpublishedCrosswordsController do
       end
     end
 
-    it 'converts "0" values to nil in letters' do
+    it 'converts "0" values to nil (void) and empty strings to "" (non-void empty)' do
       mixed_letters = letters.dup
       mixed_letters[0] = '0'
       mixed_letters[3] = ''
@@ -132,12 +132,12 @@ describe UnpublishedCrosswordsController do
       }, format: :json
 
       saved_letters = ucw.reload.letters
-      expect(saved_letters[0]).to be_nil
-      expect(saved_letters[3]).to be_nil
-      expect(saved_letters[1]).to eq 'A'
+      expect(saved_letters[0]).to be_nil   # "0" → void (nil)
+      expect(saved_letters[3]).to eq ''    # "" → non-void empty (not nil)
+      expect(saved_letters[1]).to eq 'A'   # letter preserved
     end
 
-    it 'converts integer 0 (from JS JSON) to nil — void cells stay void' do
+    it 'converts integer 0 to nil (void) and space to "" (non-void empty)' do
       mixed_letters = letters.dup
       mixed_letters[0] = 0       # JS sends integer 0 for void cells via JSON
       mixed_letters[1] = ' '     # JS sends space for empty non-void cells
@@ -153,7 +153,7 @@ describe UnpublishedCrosswordsController do
 
       saved_letters = ucw.reload.letters
       expect(saved_letters[0]).to be_nil   # integer 0 → void (nil)
-      expect(saved_letters[1]).to be_nil   # space → empty (nil)
+      expect(saved_letters[1]).to eq ''    # space → non-void empty (not nil)
       expect(saved_letters[2]).to eq 'A'   # normal letter preserved
     end
   end

@@ -138,6 +138,7 @@ window.edit_app = {
   },
 
   save_puzzle: function(e) {
+    if (e) e.preventDefault();
     var letters_array = [];
     var $cells = $('.cell');
     $.each($cells, function(i, cell) {

@@ -26,4 +26,24 @@ namespace :repair do
     end
     puts "Done. Fixed #{fixed} unpublished crossword(s)."
   end
+
+  desc 'Flag unpublished crosswords with >60% void cells (likely corrupted by empty→void bug)'
+  task diagnose_void_corruption: :environment do
+    flagged = 0
+    UnpublishedCrossword.find_each do |ucw|
+      next unless ucw.letters.is_a?(Array) && ucw.letters.any?
+
+      total = ucw.letters.size
+      voids = ucw.letters.count(&:nil?)
+      pct   = (voids.to_f / total * 100).round(1)
+
+      if pct > 60
+        flagged += 1
+        puts "UCW ##{ucw.id} \"#{ucw.title}\" — #{voids}/#{total} voids (#{pct}%) — owner: #{ucw.user&.username || 'none'}"
+      end
+    end
+    puts "\nDone. #{flagged} puzzle(s) flagged for manual review."
+    puts "These puzzles may have had empty cells corrupted to voids by the save bug."
+    puts "Cannot auto-fix — can't distinguish intentional voids from corruption."
+  end
 end

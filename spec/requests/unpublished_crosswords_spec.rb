@@ -25,6 +25,89 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
   end
 
   # -----------------------------------------------------------------------
+  # PATCH /unpublished_crosswords/:id/update_letters
+  # -----------------------------------------------------------------------
+  describe 'PATCH /unpublished_crosswords/:id/update_letters' do
+    before { log_in_as(owner) }
+
+    let(:ucw) { create(:unpublished_crossword, rows: 4, cols: 4, user: owner) }
+
+    it 'preserves empty cells as empty strings, not voids' do
+      # JS sends " " (space) for unfilled non-void cells
+      letters = [" ", "A", " ", " "] * 4
+
+      patch "/unpublished_crosswords/#{ucw.id}/update_letters",
+        params: { letters: letters, circles: ucw.circles,
+                  across_clues: ucw.across_clues, down_clues: ucw.down_clues,
+                  save_counter: "1" }.to_json,
+        headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
+
+      expect(response).to have_http_status(:ok)
+
+      ucw.reload
+      # Empty cells should be "" not nil (nil = void)
+      expect(ucw.letters[0]).to eq ''
+      expect(ucw.letters[2]).to eq ''
+      # Letters should be preserved
+      expect(ucw.letters[1]).to eq 'A'
+      # No cells should have become voids
+      expect(ucw.letters.count(&:nil?)).to eq 0
+    end
+
+    it 'stores void markers (sent as "0") as nil' do
+      letters = %w[A 0 B 0 C D E F G H I J K L M N]
+
+      patch "/unpublished_crosswords/#{ucw.id}/update_letters",
+        params: { letters: letters, circles: ucw.circles,
+                  across_clues: ucw.across_clues, down_clues: ucw.down_clues,
+                  save_counter: "1" }.to_json,
+        headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
+
+      expect(response).to have_http_status(:ok)
+
+      ucw.reload
+      expect(ucw.letters[1]).to be_nil  # void
+      expect(ucw.letters[3]).to be_nil  # void
+      expect(ucw.letters[0]).to eq 'A'  # letter preserved
+      expect(ucw.letters[2]).to eq 'B'  # letter preserved
+    end
+
+    it 'handles a mix of letters, voids, and empty cells correctly' do
+      # Simulate a realistic save: some filled, some void, most empty (16 cells for 4×4)
+      letters = ["A", " ", "0", " ", "B", " ", "0", " ", "C", " ", " ", " ", " ", " ", " ", " "]
+
+      patch "/unpublished_crosswords/#{ucw.id}/update_letters",
+        params: { letters: letters, circles: ucw.circles,
+                  across_clues: ucw.across_clues, down_clues: ucw.down_clues,
+                  save_counter: "1" }.to_json,
+        headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
+
+      expect(response).to have_http_status(:ok)
+
+      ucw.reload
+      expect(ucw.letters[0]).to eq 'A'   # letter
+      expect(ucw.letters[1]).to eq ''    # empty (was " ")
+      expect(ucw.letters[2]).to be_nil   # void (was "0")
+      expect(ucw.letters[3]).to eq ''    # empty (was " ")
+      expect(ucw.letters[4]).to eq 'B'   # letter
+      expect(ucw.letters[8]).to eq 'C'   # letter
+    end
+
+    it 'returns the save_counter in the response' do
+      letters = [" "] * 16
+
+      patch "/unpublished_crosswords/#{ucw.id}/update_letters",
+        params: { letters: letters, circles: ucw.circles,
+                  across_clues: ucw.across_clues, down_clues: ucw.down_clues,
+                  save_counter: "abc123" }.to_json,
+        headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['save_counter']).to eq 'abc123'
+    end
+  end
+
+  # -----------------------------------------------------------------------
   # PATCH /unpublished_crosswords/:id/publish
   # -----------------------------------------------------------------------
   describe 'PATCH /unpublished_crosswords/:id/publish' do
