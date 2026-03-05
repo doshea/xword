@@ -13,7 +13,7 @@ class NytPuzzleImporter
     pz_title = pz['title'] || pz[:title]
     return nil if Crossword.where(title: pz_title).any?
 
-    letters  = normalize_grid(pz)
+    letters, rebus_map = normalize_grid(pz)
     pz_date  = NytPuzzleFetcher.parse_puzzle_date(pz)
     title    = fix_title(pz_title)
 
@@ -21,7 +21,7 @@ class NytPuzzleImporter
     raise "NYT import requires a user with username 'nytimes'" unless nytimes
 
     Crossword.transaction do
-      crossword = create_crossword(pz, title: title, letters: letters, date: pz_date)
+      crossword = create_crossword(pz, title: title, letters: letters, date: pz_date, rebus_map: rebus_map)
       nytimes.crosswords << crossword
       assign_clues(crossword, pz['clues'] || pz[:clues])
 
@@ -31,12 +31,19 @@ class NytPuzzleImporter
     end
   end
 
-  # Replace multi-character rebus entries with hyphens, join into a letter string.
+  # Extract multi-character rebus entries into rebus_map, keep first char in grid.
   # Periods become underscores (void cells).
+  # Returns [letters_string, rebus_map].
   def self.normalize_grid(pz)
     grid = pz['grid'] || pz[:grid]
-    grid.each_with_index { |el, i| grid[i] = '-' if el.length > 1 }
-    grid.join('').gsub('.', '_')
+    rebus_map = {}
+    grid.each_with_index do |el, i|
+      if el.length > 1
+        rebus_map[i.to_s] = el
+        grid[i] = el[0]
+      end
+    end
+    [grid.join('').gsub('.', '_'), rebus_map]
   end
   private_class_method :normalize_grid
 
@@ -51,7 +58,7 @@ class NytPuzzleImporter
   private_class_method :fix_title
 
   # Build and save the Crossword record, set grid contents and circles.
-  def self.create_crossword(pz, title:, letters:, date:)
+  def self.create_crossword(pz, title:, letters:, date:, rebus_map: {})
     pz_size = pz['size'] || pz[:size]
 
     crossword = Crossword.create!(
@@ -62,7 +69,7 @@ class NytPuzzleImporter
       created_at: date
     )
 
-    crossword.set_contents(letters)
+    crossword.set_contents(letters, new_rebus_map: rebus_map.presence)
     crossword.number_cells
 
     pz_circles = pz['circles'] || pz[:circles]

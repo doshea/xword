@@ -53,6 +53,15 @@ class Crossword < ApplicationRecord
     letters.delete(' _').length
   end
 
+  def rebus?
+    rebus_map.present?
+  end
+
+  # Full answer at 0-based cell index. Multi-char for rebus, single char otherwise.
+  def answer_at(i)
+    rebus_map[i.to_s] || letters[i]
+  end
+
   def is_void_at?(row, col)
     if letters.empty?
       false
@@ -74,24 +83,39 @@ class Crossword < ApplicationRecord
     cells.down_start_cells
   end
 
-  def get_mismatches(solution_letters)
+  def get_mismatches(solution_letters, rebus_answers: {})
     raise ArgumentError, "Expected #{letters.length} chars, got #{solution_letters.length}" unless solution_letters.length == letters.length
-    letters.chars.each_with_index.filter_map { |letter, i| i if letter != solution_letters[i] }
+    if rebus? && rebus_answers.any?
+      (0...letters.length).filter_map do |i|
+        expected = answer_at(i)
+        actual = expected.length > 1 ? (rebus_answers[i.to_s] || solution_letters[i]) : solution_letters[i]
+        i if actual != expected
+      end
+    else
+      letters.chars.each_with_index.filter_map { |letter, i| i if letter != solution_letters[i] }
+    end
   end
 
   # Returns { position => incorrect? } for check_cell.js.erb.
   # With indices: spot-checks the given positions (array of ints).
   # Without indices: checks every cell; position is 0-based offset into letters.
-  def cell_mismatches(letters_param, indices: nil)
+  def cell_mismatches(letters_param, indices: nil, rebus_answers: {})
     if indices
       letters_param.each_with_index.filter_map do |v, i|
         pos = indices[i]
         next if pos.nil? || pos < 0 || pos >= letters.length
-        [pos, v != letters[pos]]
+        [pos, v != answer_at(pos)]
       end.to_h
     else
       letters_param.split('').each_with_index.to_h do |v, i|
-        [i, (v != ' ') && (v != '_') && (v != letters[i])]
+        if rebus_answers.key?(i.to_s)
+          [i, rebus_answers[i.to_s] != answer_at(i)]
+        elsif rebus_map.key?(i.to_s) && v != ' ' && v != '_'
+          # User typed something but didn't provide full rebus answer — incorrect
+          [i, true]
+        else
+          [i, (v != ' ') && (v != '_') && (v != letters[i])]
+        end
       end
     end
   end
@@ -166,9 +190,10 @@ class Crossword < ApplicationRecord
     self
   end
 
-  def set_contents(letters_string)
+  def set_contents(letters_string, new_rebus_map: nil)
     if letters_string.length == area
       self.letters = letters_string
+      self.rebus_map = new_rebus_map if new_rebus_map
       if save
         update_cells_from_letters
       else
@@ -402,6 +427,7 @@ class Crossword < ApplicationRecord
       cells.each_with_index do |cell, i|
         changed = false
         letter = letters[i]
+        full_answer = answer_at(i)
 
         if [' ', '_'].include? letter
           if !cell.is_void?
@@ -409,8 +435,8 @@ class Crossword < ApplicationRecord
             changed = true
           end
         else
-          if cell.letter != letter
-            cell.letter = letter
+          if cell.letter != full_answer
+            cell.letter = full_answer
             cell.is_not_void!
             changed = true
           end

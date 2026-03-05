@@ -8,7 +8,11 @@
           - unless letter == '_'
             %td.cell{:'data-row' => r, :'data-col' => c, :'data-index' => i, class: ('flagged revealed' if @revealed_set&.include?(i))}
               .flag
-              .letter= @solution.letters[i] if @solution
+              - if @solution
+                - sol_content = @solution.rebus_map&.dig(i.to_s) || @solution.letters[i]
+                .letter{class: ("rebus-#{[sol_content.to_s.length, 4].min}" if sol_content.to_s.length > 1)}= sol_content
+              - else
+                .letter
               - cell = @cells[i]
               - if cell.circled
                 .circle

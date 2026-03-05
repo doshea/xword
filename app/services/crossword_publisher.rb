@@ -46,8 +46,19 @@ class CrosswordPublisher
   private_class_method :create_crossword
 
   def self.apply_letters(crossword, ucw)
-    letters_string = ucw.letters.map { |l| l.nil? ? '_' : l }.join
-    crossword.set_contents(letters_string)
+    rebus_map = {}
+    letters_string = ucw.letters.each_with_index.map do |l, i|
+      if l.nil?
+        '_'
+      elsif l.length > 1
+        rebus_map[i.to_s] = l
+        l[0]
+      else
+        l
+      end
+    end.join
+
+    crossword.set_contents(letters_string, new_rebus_map: rebus_map.presence)
     crossword.number_cells
   end
   private_class_method :apply_letters

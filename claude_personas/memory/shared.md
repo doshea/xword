@@ -14,18 +14,19 @@
 
 (none)
 
+## Pending Deploy
+
+### Rebus Cell Support — Infrastructure
+**Picked up by Builder at 2025-03-05 23:16**
+**Status**: ✅ All 12 tasks complete. 1081 examples, 0 failures.
+**Summary**: Added `rebus_map` JSONB to crosswords+solutions, wired through entire stack.
+**Files changed**: 1 migration, 2 models, 2 services, 2 controllers, 4 JS files, 2 SCSS files, 2 views, 5 spec files, 2 factories, 1 CSRF spec fix
+**Migration**: `add_rebus_map_to_crosswords_and_solutions` — adds JSONB column (default {}, not null) to both tables. Zero-downtime safe (additive only).
+**Note**: Also fixed pre-existing CSRF spec flake (eager-evaluated `let!` for solution to avoid unique constraint violation).
+
 ## Planner → Builder Queue
 
-### Fix persona terminal text color (shell_functions.sh)
-Dark backgrounds make text unreadable — foreground color was never set explicitly.
-
-**File:** `claude_personas/shell_functions.sh`
-
-**Changes:**
-1. Line 8 — add `fg` param: `local name="$1" bg="$2" fg="$3" file="$4"` and `shift 4`
-2. Line 25 — add foreground escape before background: `printf '\e]10;%s\a' "$fg"`
-3. Line 30 (reset block) — add foreground reset: `printf '\e]10;#e0e0e0\a'` before background reset
-4. All 3 callers — insert `"#e0e0e0"` as 3rd arg (after bg color, before filename)
+(none)
 
 ## Planner Work Queue
 
@@ -40,7 +41,7 @@ Full queue: `claude_personas/plans/planner-meta-plan.md`
 
 ## Low-Priority Carry-Forward
 
-(cleared — all items deployed through v578)
+(cleared — all items deployed through v582)
 
 ## Backlog
 
@@ -66,4 +67,6 @@ v577: NYT lazy tabs, DB constraints migration (7 indexes), API security (deleted
 v578: 5 polish fixes (clue numbers, tab underline, footer overlap, GIF→CSS spinner, mobile toolbar)
 v579: Composite indexes (cells, crosswords), random puzzle offset fix, stale TODO cleanup
 v580: Loading spinners (home/NYT/LoadingController), solve home button, mobile comment Send button
+v581: Phase 4 — mini-manuals, clue suggestions, unfriend, remotipart removal
+v582: Solve mini-manual polish (7→4 sections, arrow key diagram), persona terminal text color fix
 v581: Phase 4 — mini-manuals, clue suggestions, unfriend, remotipart removal

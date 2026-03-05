@@ -132,6 +132,19 @@ table#crossword {
     }
   }
 }
+
+// Rebus cells — shrink font to fit multi-character content
+.cell {
+  &.rebus-2 .letter { font-size: var(--font-size-rebus-2); }
+  &.rebus-3 .letter { font-size: var(--font-size-rebus-3); }
+  &.rebus-4 .letter { font-size: var(--font-size-rebus-4); }
+}
+
+// Rebus mode indicator — highlight selected cell border when composing multi-char entry
+table#crossword.rebus-active .cell.selected {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
 .flagged .flag  {
   display: block !important;
 }

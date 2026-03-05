@@ -229,6 +229,85 @@ describe Crossword do
         end
       end
 
+      context 'rebus support' do
+        let(:cw) { create(:predefined_five_by_five, :rebus) }
+        # letters = 'AMIGOVOLOWANIONIDOSELONER', rebus_map = { '0' => 'AM' }
+        # answer_at(0) returns 'AM', answer_at(1) returns 'M'
+
+        describe '#rebus?' do
+          it 'returns true for a crossword with rebus entries' do
+            expect(cw.rebus?).to be true
+          end
+
+          it 'returns false for a crossword without rebus entries' do
+            normal = create(:predefined_five_by_five)
+            expect(normal.rebus?).to be false
+          end
+        end
+
+        describe '#answer_at' do
+          it 'returns multi-char content for rebus positions' do
+            expect(cw.answer_at(0)).to eq 'AM'
+          end
+
+          it 'returns single char for normal positions' do
+            expect(cw.answer_at(1)).to eq 'M'
+          end
+        end
+
+        describe '#cell_mismatches with rebus' do
+          context 'spot-check mode (with indices)' do
+            it 'marks correct when full rebus content matches' do
+              result = cw.cell_mismatches(['AM'], indices: [0])
+              expect(result[0]).to be false
+            end
+
+            it 'marks incorrect when only first char provided' do
+              result = cw.cell_mismatches(['A'], indices: [0])
+              expect(result[0]).to be true
+            end
+
+            it 'marks incorrect when wrong content provided' do
+              result = cw.cell_mismatches(['ZZ'], indices: [0])
+              expect(result[0]).to be true
+            end
+          end
+
+          context 'full-puzzle mode (without indices)' do
+            it 'uses rebus_answers for rebus positions' do
+              result = cw.cell_mismatches(cw.letters, rebus_answers: { '0' => 'AM' })
+              expect(result[0]).to be false
+            end
+
+            it 'flags incorrect when rebus_answers has wrong content' do
+              result = cw.cell_mismatches(cw.letters, rebus_answers: { '0' => 'XY' })
+              expect(result[0]).to be true
+            end
+
+            it 'flags as incorrect when rebus cell has content but no rebus_answer' do
+              result = cw.cell_mismatches(cw.letters)
+              expect(result[0]).to be true
+            end
+
+            it 'does not flag empty rebus cells' do
+              partial = ' ' * cw.letters.length
+              result = cw.cell_mismatches(partial)
+              expect(result[0]).to be false
+            end
+          end
+        end
+
+        describe '#get_mismatches with rebus' do
+          it 'returns empty when rebus answers match' do
+            expect(cw.get_mismatches(cw.letters, rebus_answers: { '0' => 'AM' })).not_to include(0)
+          end
+
+          it 'includes rebus position when answers do not match' do
+            expect(cw.get_mismatches(cw.letters, rebus_answers: { '0' => 'XY' })).to include(0)
+          end
+        end
+      end
+
       it '#is_void_at?' do
         row = subject.random_row
         col = subject.random_col

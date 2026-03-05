@@ -25,6 +25,17 @@ window.edit_app = {
     $('#description').on('change', edit_app.update_description);
 
     $('.switch-form input').on('click', edit_app.flip_switch);
+
+    // Wire multiletter_mode checkbox to rebus toggle
+    $('#unpublished_crossword_multiletter_mode').on('change', function() {
+      cw.rebus_mode = $(this).is(':checked');
+      $('#crossword').toggleClass('rebus-active', cw.rebus_mode);
+    });
+    if ($('#unpublished_crossword_multiletter_mode').is(':checked')) {
+      cw.rebus_mode = true;
+      $('#crossword').addClass('rebus-active');
+    }
+
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', function() { cw.unhighlight_all(); });
 
     $('#ideas').on('keypress', 'input[name=word]', edit_app.add_potential_word);
@@ -310,6 +321,14 @@ window.edit_app = {
   };
 
   $.fn.delete_letter = function(letter) {
+    if (cw.rebus_mode) {
+      var content = this.get_letter().trim();
+      if (content.length > 1) {
+        this.set_letter(content.slice(0, -1), true);
+        edit_app.update_unsaved();
+        return;
+      }
+    }
     if (this.is_empty_cell()) {
       if (!this.is_word_start()) {
         if (!this.previous_cell().is_empty_cell()) {

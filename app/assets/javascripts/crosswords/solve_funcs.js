@@ -134,13 +134,13 @@ window.solve_app = {
       $btn.find('svg').replaceWith('<span class="xw-spinner"></span>');
       $btn.css('pointer-events', 'none');
     }
-    var letters = cw.get_puzzle_letters();
+    var puzzleData = cw.get_puzzle_data();
     var counter = solve_app.save_counter;
     $.ajax({
       dataType: 'json',
       type: 'PUT',
       url: "/solutions/" + solve_app.solution_id,
-      data: { letters: letters, save_counter: counter },
+      data: { letters: puzzleData.letters, rebus_map: puzzleData.rebus_map, save_counter: counter },
       success: function(data) {
         if (solve_app.save_counter == data.save_counter) {
           try {
@@ -336,7 +336,7 @@ window.solve_app = {
       dataType: 'json',
       type: 'POST',
       url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
-      data: { letters: cw.get_puzzle_letters() },
+      data: (function() { var pd = cw.get_puzzle_data(); return { letters: pd.letters, rebus_answers: pd.rebus_map }; })(),
       success: solve_app.apply_mismatches,
       error: function(xhr) {
         cw.flash('Check failed \u2014 please try again.', 'error');
@@ -349,8 +349,8 @@ window.solve_app = {
   check_completion: function(e) {
     e.preventDefault();
     solve_app.save_solution();
-    var letters = cw.get_puzzle_letters();
-    var data = { letters: letters };
+    var puzzleData = cw.get_puzzle_data();
+    var data = { letters: puzzleData.letters, rebus_answers: puzzleData.rebus_map };
     if (!solve_app.anonymous) {
       data['solution_id'] = solve_app.solution_id;
     }
@@ -429,11 +429,14 @@ window.solve_app = {
       url: "/crosswords/" + solve_app.crossword_id + "/admin_reveal_puzzle",
       success: function(data) {
         var letters = data.letters;
+        var rebusMap = data.rebus_map || {};
         var $cells = $('.cell');
         $cells.each(function(index) {
           var $cell = $(this);
           if (!$cell.hasClass('void')) {
-            $cell.children('.letter').first().text(letters[index]);
+            var content = rebusMap[index.toString()] || letters[index];
+            $cell.children('.letter').first().text(content);
+            cw.applyRebusClasses($cell, content);
           }
         });
         // Clear any check flags from previous checks

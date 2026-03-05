@@ -356,4 +356,100 @@ RSpec.describe 'Check functions', type: :request do
       expect(response.body).to include('incorrect letters')
     end
   end
+
+  # ---------------------------------------------------------------------------
+  # Rebus puzzle checks
+  # ---------------------------------------------------------------------------
+  describe 'rebus puzzle checks' do
+    let_it_be(:rebus_cw) { create(:predefined_five_by_five, :rebus) }
+    # rebus_map = { '0' => 'AM' }, letters[0] = 'A'
+
+    before { log_in_as(user) }
+
+    describe 'POST /crosswords/:id/check_cell with rebus' do
+      it 'marks correct when full rebus content matches via indices' do
+        post "/crosswords/#{rebus_cw.id}/check_cell",
+             params: { letters: ['AM'], indices: ['0'] },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['mismatches']['0']).to be false
+      end
+
+      it 'marks incorrect when only first char provided via indices' do
+        post "/crosswords/#{rebus_cw.id}/check_cell",
+             params: { letters: ['A'], indices: ['0'] },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['mismatches']['0']).to be true
+      end
+
+      it 'handles full puzzle check with rebus_answers' do
+        post "/crosswords/#{rebus_cw.id}/check_cell",
+             params: { letters: rebus_cw.letters, rebus_answers: { '0' => 'AM' } },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['mismatches']['0']).to be false
+      end
+    end
+
+    describe 'POST /crosswords/:id/check_completion with rebus' do
+      let!(:solution) { create(:solution, user: user, crossword: rebus_cw, letters: rebus_cw.letters.gsub(/[^_]/, ' ')) }
+
+      it 'returns correct when letters and rebus_answers match' do
+        post "/crosswords/#{rebus_cw.id}/check_completion",
+             params: { letters: rebus_cw.letters, rebus_answers: { '0' => 'AM' }, solution_id: solution.id },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['correct']).to be true
+      end
+
+      it 'returns incorrect when rebus_answers do not match' do
+        post "/crosswords/#{rebus_cw.id}/check_completion",
+             params: { letters: rebus_cw.letters, rebus_answers: { '0' => 'XY' }, solution_id: solution.id },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['correct']).to be false
+      end
+
+      it 'returns incorrect when rebus_answers are missing' do
+        post "/crosswords/#{rebus_cw.id}/check_completion",
+             params: { letters: rebus_cw.letters, solution_id: solution.id },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['correct']).to be false
+      end
+    end
+
+    describe 'POST /crosswords/:id/reveal with rebus' do
+      let!(:solution) { create(:solution, user: user, crossword: rebus_cw, letters: rebus_cw.letters.gsub(/[^_]/, ' ')) }
+
+      it 'returns full rebus content for rebus cells' do
+        post "/crosswords/#{rebus_cw.id}/reveal",
+             params: { indices: [0], solution_id: solution.id }
+
+        json = JSON.parse(response.body)
+        expect(json['letters']['0']).to eq 'AM'
+      end
+    end
+
+    describe 'POST /crosswords/:id/admin_reveal_puzzle with rebus' do
+      let(:admin) { create(:user, :with_test_password, is_admin: true) }
+
+      before { log_in_as(admin) }
+
+      it 'includes rebus_map in response' do
+        post "/crosswords/#{rebus_cw.id}/admin_reveal_puzzle",
+             headers: json_headers
+
+        json = JSON.parse(response.body)
+        expect(json['rebus_map']).to eq({ '0' => 'AM' })
+      end
+    end
+  end
 end

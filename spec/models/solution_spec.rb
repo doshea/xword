@@ -144,4 +144,59 @@ describe Solution do
       expect(orphaned.fill_letters).to be_nil
     end
   end
+
+  context 'rebus support' do
+    let(:rebus_cw) { create(:predefined_five_by_five, :rebus) }
+
+    describe '#check_completion with rebus' do
+      it 'marks complete when letters and rebus entries match' do
+        solution = create(:solution, user: user, crossword: rebus_cw,
+                          letters: rebus_cw.letters,
+                          rebus_map: { '0' => 'AM' })
+        expect(solution.is_complete).to be true
+        expect(solution.solved_at).to be_present
+      end
+
+      it 'does not mark complete when rebus entries do not match' do
+        solution = create(:solution, user: user, crossword: rebus_cw,
+                          letters: rebus_cw.letters,
+                          rebus_map: { '0' => 'XY' })
+        expect(solution.is_complete).to be false
+      end
+
+      it 'does not mark complete when rebus entries are missing' do
+        solution = create(:solution, user: user, crossword: rebus_cw,
+                          letters: rebus_cw.letters,
+                          rebus_map: {})
+        expect(solution.is_complete).to be false
+      end
+    end
+
+    describe '#percent_correct with rebus' do
+      it 'scores matching rebus cells as correct' do
+        solution = create(:solution, user: user, crossword: rebus_cw,
+                          letters: rebus_cw.letters,
+                          rebus_map: { '0' => 'AM' })
+        result = solution.percent_correct
+        expect(result[:percent]).to eq 100.0
+      end
+
+      it 'scores non-matching rebus cells as incorrect' do
+        solution = create(:solution, user: user, crossword: rebus_cw,
+                          letters: rebus_cw.letters,
+                          rebus_map: { '0' => 'XY' })
+        result = solution.percent_correct
+        expect(result[:percent]).to be < 100.0
+      end
+    end
+
+    describe '#fill_letters with rebus' do
+      it 'resets rebus_map when reinitializing letters' do
+        solution = create(:solution, user: user, crossword: rebus_cw,
+                          letters: '', rebus_map: { '0' => 'AM' })
+        solution.fill_letters
+        expect(solution.reload.rebus_map).to eq({})
+      end
+    end
+  end
 end

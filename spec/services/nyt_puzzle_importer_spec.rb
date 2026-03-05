@@ -52,11 +52,12 @@ RSpec.describe NytPuzzleImporter do
       expect { NytPuzzleImporter.import(puzzle_hash) }.to raise_error(RuntimeError, /nytimes/)
     end
 
-    it 'handles rebus entries by replacing with hyphens' do
+    it 'preserves rebus entries in rebus_map' do
       puzzle_hash['grid'][0] = 'AB'
       NytPuzzleImporter.import(puzzle_hash)
       crossword = Crossword.order(:created_at).last
-      expect(crossword.letters[0]).to eq '-'
+      expect(crossword.letters[0]).to eq 'A'
+      expect(crossword.rebus_map).to eq({ '0' => 'AB' })
     end
 
     it 'applies circles when present' do

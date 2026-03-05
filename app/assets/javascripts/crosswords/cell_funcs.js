@@ -238,6 +238,7 @@
   // original=true means this is a local keystroke (broadcast to team); false means received from a teammate.
   $.fn.set_letter = function(letter, original) {
     this.children(".letter").first().text(letter);
+    cw.applyRebusClasses(this, letter);
     if (typeof team_app !== 'undefined') {
       if (original) {
         team_app.send_team_cell(this, letter);

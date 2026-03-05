@@ -51,5 +51,12 @@ RSpec.describe CrosswordPublisher do
         CrosswordPublisher.publish(ucw) rescue nil
       }.not_to change(Crossword, :count)
     end
+
+    it 'extracts multi-char letters into rebus_map' do
+      ucw.update!(letters: ['AM'] + %w[M I G O V O L O W A N I O N I D O S E L O N E R])
+      crossword = CrosswordPublisher.publish(ucw)
+      expect(crossword.letters[0]).to eq 'A'
+      expect(crossword.rebus_map).to eq({ '0' => 'AM' })
+    end
   end
 end

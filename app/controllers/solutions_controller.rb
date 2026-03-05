@@ -30,6 +30,7 @@ class SolutionsController < ApplicationController
   #PATCH/PUT /solutions/:id or solution_path
   def update
     @solution.letters = params[:letters]
+    @solution.rebus_map = params[:rebus_map]&.to_unsafe_h || {} if params.key?(:rebus_map)
     @save_counter = params[:save_counter]
     @solution.save
     respond_to do |f|
@@ -45,7 +46,8 @@ class SolutionsController < ApplicationController
       head :not_found
       return
     end
-    @mismatches = @solution.crossword.get_mismatches(params[:letters])
+    rebus_answers = params[:rebus_answers]&.to_unsafe_h || {}
+    @mismatches = @solution.crossword.get_mismatches(params[:letters], rebus_answers: rebus_answers)
     if @mismatches.empty?
       @solution.update(is_complete: true)
     end

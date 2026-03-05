@@ -57,6 +57,15 @@ FactoryBot.define do
         crossword.set_clue(false, 4, "A water fowl; a pinch to the rear; tailor's iron")
         crossword.set_clue(false, 5, 'A possesser')
       end
+
+      # Rebus variant: cell 0 has answer "AM" (multi-char), stored as first-char
+      # placeholder "A" in letters[0] and full content in rebus_map["0"].
+      trait :rebus do
+        after(:create) do |cw|
+          cw.update!(rebus_map: { '0' => 'AM' })
+          cw.cells.order(:index).first.update!(letter: 'AM')
+        end
+      end
     end
 
   end

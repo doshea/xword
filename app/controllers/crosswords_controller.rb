@@ -138,7 +138,8 @@ class CrosswordsController < ApplicationController
   #POST /crosswords/:id/check_cell or check_cell_crossword_path
   def check_cell
     indices = params[:indices]&.map(&:to_i)
-    @mismatches = @crossword.cell_mismatches(params[:letters], indices: indices)
+    rebus_answers = params[:rebus_answers]&.to_unsafe_h || {}
+    @mismatches = @crossword.cell_mismatches(params[:letters], indices: indices, rebus_answers: rebus_answers)
     respond_to do |f|
       f.json { render json: { mismatches: @mismatches } }
       f.js   # Legacy: check_cell.js.erb
@@ -147,7 +148,14 @@ class CrosswordsController < ApplicationController
 
   #POST /crosswords/:id/check_completion or check_completion_crossword_path
   def check_completion
-    @correctness = (@crossword.letters == params[:letters])
+    letters_match = (@crossword.letters == params[:letters])
+    rebus_match = if @crossword.rebus?
+                    ra = params[:rebus_answers]&.to_unsafe_h || {}
+                    @crossword.rebus_map.all? { |idx, answer| ra[idx] == answer }
+                  else
+                    true
+                  end
+    @correctness = letters_match && rebus_match
     if @current_user && params[:solution_id].present?
       @solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
       # Team partners don't own the solution — find via partnership
@@ -205,7 +213,9 @@ class CrosswordsController < ApplicationController
 
   # POST /crosswords/:id/admin_reveal_puzzle — Admin-only: return correct letters
   def admin_reveal_puzzle
-    render json: { letters: @crossword.letters }
+    result = { letters: @crossword.letters }
+    result[:rebus_map] = @crossword.rebus_map if @crossword.rebus?
+    render json: result
   end
 
   # POST /crosswords/:id/reveal
@@ -215,11 +225,11 @@ class CrosswordsController < ApplicationController
     indices = Array(params[:indices]).map(&:to_i)
     return head :bad_request if indices.empty?
 
-    # Build { index => correct_letter } for requested positions only
+    # Build { index => correct_answer } for requested positions only
     revealed = {}
     indices.each do |i|
       next if i < 0 || i >= @crossword.letters.length
-      letter = @crossword.letters[i]
+      letter = @crossword.answer_at(i)
       next if letter == '_' # void cell — nothing to reveal
       revealed[i] = letter
     end

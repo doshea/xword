@@ -3,6 +3,7 @@ window.cw = {
   select_across: true,
   counter: 1,
   editing: false,
+  rebus_mode: false,
 
   UP: 38,
   RIGHT: 39,
@@ -16,6 +17,7 @@ window.cw = {
   TAB: 9,
   ESCAPE: 27,
   BACKSPACE: 8, // Alias for clarity; identical to DELETE above
+  INSERT: 45,
   HYPHEN: 189,
 
   // Removes highlighting from the selected cell, word, and clue.
@@ -70,14 +72,53 @@ window.cw = {
     cw.scroll_to_selected();
   },
 
-  // Returns all letters of the puzzle in order, voids replaced by underscores
+  // Returns all letters of the puzzle in order, voids replaced by underscores.
+  // Rebus cells contribute only their first character to the flat string.
   get_puzzle_letters: function() {
     var letters = '';
     var $cells = $(".cell");
     $.each($cells, function(index, cell) {
-      letters += ($(cell).hasClass("void") ? "_" : $(cell).get_letter());
+      var $cell = $(cell);
+      if ($cell.hasClass("void")) {
+        letters += "_";
+      } else {
+        var content = $cell.get_letter();
+        letters += content[0];  // first char only (rebus cells store multi-char)
+      }
     });
     return letters;
+  },
+
+  // Returns { letters, rebus_map } — letters is flat string (first char per cell),
+  // rebus_map is { "index": "full_content" } for multi-char cells.
+  get_puzzle_data: function() {
+    var letters = '';
+    var rebus_map = {};
+    var $cells = $(".cell");
+    $.each($cells, function(index, cell) {
+      var $cell = $(cell);
+      if ($cell.hasClass("void")) {
+        letters += "_";
+      } else {
+        var content = $cell.get_letter();
+        if (content.length > 1) {
+          rebus_map[index.toString()] = content;
+          letters += content[0];
+        } else {
+          letters += content;
+        }
+      }
+    });
+    return { letters: letters, rebus_map: rebus_map };
+  },
+
+  // Apply rebus font-size classes based on content length.
+  // Shared by set_letter (cell_funcs.js) and reveal_puzzle (solve_funcs.js).
+  applyRebusClasses: function($cell, content) {
+    $cell.removeClass('rebus-2 rebus-3 rebus-4');
+    if (content.length === 2) $cell.addClass('rebus-2');
+    else if (content.length === 3) $cell.addClass('rebus-3');
+    else if (content.length >= 4) $cell.addClass('rebus-4');
   },
 
   // Intelligently sets the numbers of each cell in the crossword
@@ -157,13 +198,30 @@ window.cw = {
           break;
         case cw.ESCAPE:
           e.preventDefault();
-          cw.unhighlight_all();
+          if (cw.rebus_mode) {
+            cw.rebus_mode = false;
+            $('#crossword').removeClass('rebus-active');
+          } else {
+            cw.unhighlight_all();
+          }
           break;
         case cw.ENTER:
           e.preventDefault();
-          cw.selected.next_empty_cell().highlight();
+          if (cw.rebus_mode) {
+            cw.rebus_mode = false;
+            $('#crossword').removeClass('rebus-active');
+            if (!cw.selected.is_word_end()) {
+              cw.selected.next_cell().highlight();
+            }
+          } else {
+            cw.selected.next_empty_cell().highlight();
+          }
           break;
         case cw.SHIFT:
+          break;
+        case cw.INSERT:
+          cw.rebus_mode = !cw.rebus_mode;
+          $('#crossword').toggleClass('rebus-active', cw.rebus_mode);
           break;
         case cw.DELETE:
           break;
@@ -175,22 +233,36 @@ window.cw = {
           if (cw.selected) {
             var letter = String.fromCharCode(key);
             if (key === cw.HYPHEN) letter = '-';
-            if (letter !== cw.selected.get_letter()) {
+            if (cw.rebus_mode) {
+              // Rebus mode: append character to current cell, don't advance
+              var current = cw.selected.get_letter().trim();
+              var newContent = (current === '' || current === ' ') ? letter : current + letter;
               if (cw.editing) {
-                cw.selected.set_letter(letter, true);
+                cw.selected.set_letter(newContent, true);
                 edit_app.update_unsaved();
               } else {
-                var check_for_finish = cw.selected.is_empty_cell();
-                cw.selected.set_letter(letter, true);
-                if (check_for_finish) cw.selected.check_finisheds();
+                cw.selected.set_letter(newContent, true);
                 solve_app.update_unsaved();
               }
-            }
-            if (!cw.selected.is_word_end()) {
-              if (cw.selected.in_directional_finished_word()) {
-                cw.selected.next_cell().highlight();
-              } else {
-                cw.selected.next_empty_cell_in_word().highlight();
+            } else {
+              // Normal mode: replace and advance (existing behavior)
+              if (letter !== cw.selected.get_letter()) {
+                if (cw.editing) {
+                  cw.selected.set_letter(letter, true);
+                  edit_app.update_unsaved();
+                } else {
+                  var check_for_finish = cw.selected.is_empty_cell();
+                  cw.selected.set_letter(letter, true);
+                  if (check_for_finish) cw.selected.check_finisheds();
+                  solve_app.update_unsaved();
+                }
+              }
+              if (!cw.selected.is_word_end()) {
+                if (cw.selected.in_directional_finished_word()) {
+                  cw.selected.next_cell().highlight();
+                } else {
+                  cw.selected.next_empty_cell_in_word().highlight();
+                }
               }
             }
           }
@@ -250,9 +322,24 @@ window.cw = {
     var target = evt.target || evt.srcElement;
     if (evt.keyCode === cw.BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
       if (!cw.selected) return false;
-      var check_for_unfinish = !cw.selected.is_empty_cell();
-      cw.selected.delete_letter(true);
-      if (check_for_unfinish) cw.selected.uncheck_unfinisheds();
+      if (cw.rebus_mode) {
+        // In rebus mode: remove last character, or delete entirely if only 1 char
+        var content = cw.selected.get_letter().trim();
+        if (content.length > 1) {
+          var newContent = content.slice(0, -1);
+          cw.selected.set_letter(newContent, true);
+          if (cw.editing) edit_app.update_unsaved();
+          else solve_app.update_unsaved();
+        } else {
+          var check_for_unfinish = !cw.selected.is_empty_cell();
+          cw.selected.delete_letter(true);
+          if (check_for_unfinish) cw.selected.uncheck_unfinisheds();
+        }
+      } else {
+        var check_for_unfinish = !cw.selected.is_empty_cell();
+        cw.selected.delete_letter(true);
+        if (check_for_unfinish) cw.selected.uncheck_unfinisheds();
+      }
       return false;
     }
     if (cw.PAGE_NAV_KEYS.includes(evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {

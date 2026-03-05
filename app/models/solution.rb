@@ -33,7 +33,7 @@ class Solution < ApplicationRecord
 
   def check_completion
     return true unless crossword
-    if letters == crossword.letters && !is_complete?
+    if letters == crossword.letters && rebus_entries_match? && !is_complete?
       self.is_complete = true
       self.solved_at   = Time.current  # use Time.current for time-zone awareness
     end
@@ -41,6 +41,11 @@ class Solution < ApplicationRecord
   end
 
   private
+
+  def rebus_entries_match?
+    return true unless crossword.rebus?
+    crossword.rebus_map.all? { |idx, answer| rebus_map[idx] == answer }
+  end
 
   # Assigns a cryptographically random URL-safe key for team solutions.
   # 12 alphanumeric chars = 62^12 ≈ 3×10^21 combinations; collision is
@@ -71,7 +76,12 @@ class Solution < ApplicationRecord
 
     sum = 0
     current_letters.each_char.with_index do |char, index|
-      sum += 1 if char != '_' && char == cw_letters[index]
+      next if char == '_'
+      if crossword.rebus? && crossword.rebus_map.key?(index.to_s)
+        sum += 1 if rebus_map[index.to_s] == crossword.rebus_map[index.to_s]
+      else
+        sum += 1 if char == cw_letters[index]
+      end
     end
 
     percent = ((sum.to_f/letter_count)*100).round(2)
@@ -89,6 +99,7 @@ class Solution < ApplicationRecord
     if letters.length != crossword.letters.length
       Rails.logger.warn("[Solution#fill_letters] id=#{id} length mismatch — re-initializing letters")
       self.letters = crossword.letters.gsub(/[^_]/, " ")
+      self.rebus_map = {}
       save
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_05_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_05_231627) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_120001) do
     t.text "description"
     t.text "letters", default: "", null: false
     t.text "preview"
+    t.jsonb "rebus_map", default: {}, null: false
     t.integer "rows", default: 15, null: false
     t.string "title", limit: 255, default: "Untitled", null: false
     t.datetime "updated_at"
@@ -141,6 +142,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_120001) do
     t.boolean "is_complete", default: false, null: false
     t.string "key", limit: 255
     t.text "letters", default: "", null: false
+    t.jsonb "rebus_map", default: {}, null: false
     t.text "revealed_indices", default: "[]", null: false
     t.datetime "solved_at"
     t.boolean "team", default: false, null: false

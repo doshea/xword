@@ -31,5 +31,9 @@ FactoryBot.define do
     trait :team do
       team { true }
     end
+
+    trait :with_rebus do
+      after(:build) { |s| s.rebus_map = s.crossword.rebus_map.dup if s.crossword&.rebus? }
+    end
   end
 end

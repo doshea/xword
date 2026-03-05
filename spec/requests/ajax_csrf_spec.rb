@@ -3,7 +3,8 @@ RSpec.describe 'AJAX endpoints with CSRF protection', type: :request do
   let_it_be(:crossword) { create(:predefined_five_by_five) }
   let(:correct_letters) { crossword.letters }
   let(:blank_letters)   { correct_letters.gsub(/[^_]/, ' ') }
-  let(:solution)  { create(:solution, user: user, crossword: crossword, letters: blank_letters) }
+  # Eager create: must exist before csrf_token visits show page (which does find_or_create_by)
+  let!(:solution) { create(:solution, user: user, crossword: crossword, letters: blank_letters) }
 
   let(:json_headers) do
     { 'Accept' => 'application/json', 'X-Requested-With' => 'XMLHttpRequest' }
