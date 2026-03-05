@@ -72,6 +72,17 @@ class PagesController < ApplicationController
   def faq
   end
 
+  #GET /changelog or changelog_path
+  def changelog
+    page = [params[:page].to_i, 1].max
+    @result = GithubChangelogService.fetch(page: page)
+    if @result
+      @commits_by_date = @result[:commits].group_by { |c| c[:date] }
+      @page = @result[:page]
+      @total_pages = @result[:total_pages]
+    end
+  end
+
   #GET /search or search_path
   def search
     @query = params[:query]

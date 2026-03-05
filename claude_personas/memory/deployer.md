@@ -2,6 +2,68 @@
 
 ## Deploy History
 
+### v567 — 2026-03-05
+**Commit:** `d846825`
+**Changes:** Stats page rebuild — 6-section community dashboard:
+- At a Glance: 4 hero cards (puzzles, solves, members, clues)
+- Growth: 3 Chart.js line charts (total users, daily signups, puzzles published)
+- Puzzle Variety: CSS bar chart of grid size distribution
+- Solving: completion rate, avg solvers/puzzle, hint-free rate
+- Popular Puzzles: top 5 by solver count (with creator + grid size badges)
+- Top Constructors: top 5 by puzzle count
+- Progressive disclosure: sections hidden when data < threshold
+- All queries: simple COUNT/GROUP BY, `.includes(:user)` on popular puzzles
+**Migration:** None
+**Rollback:** `git revert d846825` (3 files, pure view/controller/CSS)
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~3s. No errors.
+
+### v566 — 2026-03-05
+**Commits:** `132be74`, `a2d8ff1`
+**Changes:** Edit autosave icon fixes + info pages polish:
+- Edit save button: `xw-btn--secondary` → `xw-btn--ghost`, tooltip, "Quicksave" → "Save", trailing space removed, toolbar `width: 100%` for right-align
+- Solve save: matching trailing space fix in `update_clock()`
+- Stats page: `<hr>` → `.xw-section-divider` (proper spacing token)
+- Contact page: restructured from 3 `h2` sections to flowing prose with inline links
+- FAQ + Contact: added "Browse Puzzles" CTA button at bottom
+- Global: row-topper h1 hardcoded `1.4375rem` → `var(--text-2xl)`
+- View spec updated: "Quicksave" → "Save" aria-label
+**Migration:** None
+**Rollback:** `git revert a2d8ff1 132be74` (pure CSS/JS/HAML, instant)
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~3s. R12 on old dyno shutdown (cosmetic — new dyno already serving). No app errors.
+
+### v565 — 2026-03-05
+**Commit:** `cb6ae20`
+**Changes:** Fix edit page void toggle crash — null guard on `next_cell.highlight()`:
+- `cell_to_right()` / `cell_below()` return `false` when no non-void cell remains in direction
+- Added `if (next_cell)` guard (1 line, `edit_funcs.js`)
+**Migration:** None
+**Rollback:** `git revert cb6ae20` (single-line JS fix, instant)
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~3s. Pages 200. No errors.
+
+### v564 — 2026-03-05
+**Commits:** `8791c6c`, `928b0b1`, `34d49db`, `2a32c0c`
+**Changes:** Pixel-perfect polish — home, solve, and edit pages:
+- Homepage: per_page 36→30, BEM `.xw-load-more__count` class
+- Solve: Courier Prime cells (`--font-mono`), tokenized font-sizes/spacing, mask-image byline truncation (replaces gradient pseudo-element), meta-to-footer gap, z-index renumbered (999/1000/1001/1100 → 0/1/2/3)
+- Edit: orphaned `<hr>` removed, toggle checkbox a11y (visually-hidden + `:focus-visible` outline), z-index tokenized (`--z-panel: 600`)
+- Save buttons: edit + solve swap icon for `.xw-spinner` during AJAX (replaces previous busy/ghost approach)
+- Dropdown font: `--font-ui` + `--text-sm` on notification dropdown items
+**Migration:** None
+**Rollback:** `git revert 2a32c0c 34d49db 928b0b1 8791c6c` (CSS + JS + trivial per_page)
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~4s. First request 200. New CSS fingerprints picked up. No errors.
+
+### v560 — 2026-03-05
+**Commit:** `a3bed4d`
+**Changes:** Edit page frontend review — JS crash fix, tool panel resize, dead code cleanup:
+- corresponding_across/down_clue() short-circuit on cw.editing (fixes TypeError after void toggle)
+- scroll_to_selected() guard for empty clue set
+- Tool panels: 90% viewport → 45vh (puzzle visible above), phone: 60%
+- Dead code removed: spin_title(), settings modal + gear button, jquery-ui-1.10.4.draggable.min.js, #tools CSS, .ui-draggable CSS
+- Phone switch labels: tighter gap + smaller font
+**Migration:** None
+**Rollback:** `git revert a3bed4d` (pure JS/CSS/HAML, instant)
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~4s. No errors.
+
 ### v557 — 2026-03-05
 **Commit:** `908c4f5`
 **Changes:** 3-item deploy — edit save bugs (critical), account settings rebuild, home page polish:
@@ -216,7 +278,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v557
+- Current release: v567
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

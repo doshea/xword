@@ -1,0 +1,44 @@
+- title 'Changelog'
+= render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Changelog'} do
+  .xw-changelog
+    %p.xw-changelog__intro
+      A running history of everything that's changed on the site — bug fixes,
+      new features, and polish. Each entry links to the commit on
+      = succeed '.' do
+        %a{href: 'https://github.com/doshea/xword', target: '_blank', rel: 'noopener'} GitHub
+
+    - if @result
+      .xw-changelog__timeline
+        - @commits_by_date.each do |date, commits|
+          .xw-changelog__group
+            %h2.xw-changelog__date= date.strftime('%B %-d, %Y')
+            %ul.xw-changelog__entries
+              - commits.each do |commit|
+                %li.xw-changelog__entry
+                  %span{class: "xw-changelog__badge xw-changelog__badge--#{commit[:category]}"}
+                    = commit[:category].to_s.capitalize
+                  %span.xw-changelog__message= commit[:message]
+                  %a.xw-changelog__sha{href: commit[:url], target: '_blank', rel: 'noopener', title: "View commit #{commit[:sha]} on GitHub"}
+                    = commit[:sha]
+
+      - if @total_pages > 1
+        .xw-changelog__pagination
+          - if @page > 1
+            = link_to 'Newer', changelog_path(page: @page - 1), class: 'xw-changelog__page-link'
+          - else
+            %span.xw-changelog__page-link.xw-changelog__page-link--disabled Newer
+
+          %span.xw-changelog__page-info
+            Page #{@page} of #{@total_pages}
+
+          - if @page < @total_pages
+            = link_to 'Older', changelog_path(page: @page + 1), class: 'xw-changelog__page-link'
+          - else
+            %span.xw-changelog__page-link.xw-changelog__page-link--disabled Older
+    - else
+      .xw-changelog__fallback
+        %p Couldn't load the changelog right now.
+        %p
+          You can always browse the full history on
+          = succeed '.' do
+            %a{href: 'https://github.com/doshea/xword/commits', target: '_blank', rel: 'noopener'} GitHub

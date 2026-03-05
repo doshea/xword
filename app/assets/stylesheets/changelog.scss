@@ -1,0 +1,305 @@
+// =============================================================================
+// Changelog — .xw-changelog
+// =============================================================================
+// Editorial timeline of git commits, grouped by date.
+// Uses design tokens exclusively — no hardcoded values.
+// =============================================================================
+
+.xw-changelog {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-bottom: var(--space-6);
+}
+
+
+// ---------------------------------------------------------------------------
+// INTRO — short paragraph above the timeline
+// ---------------------------------------------------------------------------
+
+.xw-changelog__intro {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent-muted);
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: var(--color-accent-hover);
+      text-decoration-color: var(--color-accent-hover);
+    }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// TIMELINE — the main content area
+// ---------------------------------------------------------------------------
+
+.xw-changelog__timeline {
+  border-left: 2px solid var(--color-border);
+  margin-left: var(--space-2);
+  padding-left: var(--space-6);
+}
+
+
+// ---------------------------------------------------------------------------
+// DATE GROUP — one day's worth of commits
+// ---------------------------------------------------------------------------
+
+.xw-changelog__group {
+  position: relative;
+  margin-bottom: var(--space-8);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // Timeline dot on the date heading
+  &::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-6) - 7px); // centers on 2px border
+    top: 0.55em;
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-accent);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// DATE HEADING
+// ---------------------------------------------------------------------------
+
+.xw-changelog__date {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  letter-spacing: var(--tracking-wide);
+  margin: 0 0 var(--space-4);
+  line-height: var(--leading-tight);
+}
+
+
+// ---------------------------------------------------------------------------
+// ENTRIES — list within a date group
+// ---------------------------------------------------------------------------
+
+.xw-changelog__entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.xw-changelog__entry {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+
+  .xw-changelog__group:last-child &:last-child,
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// CATEGORY BADGE — colored pill
+// ---------------------------------------------------------------------------
+
+.xw-changelog__badge {
+  flex-shrink: 0;
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-sm);
+  min-width: 4.5em;
+  text-align: center;
+
+  // Category colors using semantic tokens
+  &--feature {
+    background-color: var(--color-success-bg);
+    color: var(--color-success-text);
+  }
+
+  &--fix {
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning-text);
+  }
+
+  &--improve {
+    background-color: var(--color-info-bg);
+    color: var(--color-info-text);
+  }
+
+  &--polish {
+    background-color: var(--color-surface-alt);
+    color: var(--color-text-muted);
+  }
+
+  &--update {
+    background-color: var(--color-surface-alt);
+    color: var(--color-text-muted);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// MESSAGE — commit title
+// ---------------------------------------------------------------------------
+
+.xw-changelog__message {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  // Truncate very long messages on small screens
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+
+// ---------------------------------------------------------------------------
+// SHA — monospace link to GitHub commit
+// ---------------------------------------------------------------------------
+
+.xw-changelog__sha {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: var(--transition-colors);
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// PAGINATION — prev/next with page indicator
+// ---------------------------------------------------------------------------
+
+.xw-changelog__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.xw-changelog__page-link {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: var(--transition-colors);
+
+  &:hover {
+    background-color: var(--color-accent-light);
+    border-color: var(--color-accent);
+    color: var(--color-accent-hover);
+  }
+
+  &--disabled {
+    color: var(--color-text-muted);
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      background-color: transparent;
+      border-color: var(--color-border);
+      color: var(--color-text-muted);
+    }
+  }
+}
+
+.xw-changelog__page-info {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+
+// ---------------------------------------------------------------------------
+// FALLBACK — shown when GitHub API fails
+// ---------------------------------------------------------------------------
+
+.xw-changelog__fallback {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+
+  p {
+    margin-bottom: var(--space-2);
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: var(--color-accent-hover);
+    }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// RESPONSIVE — stack entry elements on small screens
+// ---------------------------------------------------------------------------
+
+@media (max-width: 640px) {
+  .xw-changelog__timeline {
+    margin-left: 0;
+    padding-left: var(--space-5);
+  }
+
+  .xw-changelog__group::before {
+    left: calc(-1 * var(--space-5) - 7px);
+  }
+
+  .xw-changelog__entry {
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+  }
+
+  .xw-changelog__badge {
+    order: 1;
+  }
+
+  .xw-changelog__sha {
+    order: 2;
+  }
+
+  .xw-changelog__message {
+    order: 3;
+    flex-basis: 100%;
+  }
+}

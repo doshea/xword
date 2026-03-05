@@ -105,6 +105,7 @@ Rails.application.routes.draw do
   get '/faq' => 'pages#faq'
   get '/contact' => 'pages#contact'
   get '/stats' => 'pages#stats'
+  get '/changelog' => 'pages#changelog'
   get '/random' => 'pages#random_puzzle', as: 'random_puzzle'
   get '/nytimes' => 'pages#nytimes'
   get '/user_made' => 'pages#user_made'
