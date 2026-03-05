@@ -344,6 +344,52 @@
 - First run downloads Chromium (~150MB) — pre-install with `npx playwright install chromium`
 - Dev server must be running for localhost screenshots
 
+### 2026-03-04: Pixel-Perfect Home Page Review
+
+**Method:** Playwright screenshots at 3 breakpoints (desktop 1280×900, tablet 768×1024, mobile 375×812). Evaluated JS to measure computed styles, bounding rects, spacing. 15 test crosswords across 3 solution states.
+
+**Screenshots:** `screenshots/hp-01-desktop-new-puzzles.png` through `hp-05-tablet-new-puzzles.png`
+
+**Overall grade: B+.** The page works well across breakpoints and the "paper on wood" aesthetic is effective. However, the puzzle card component has structural CSS debt (duplicate rules, wrong internal grid) and several spacing values use browser defaults instead of design tokens.
+
+**Critical CSS finding — duplicate `.xw-puzzle-card` definitions:**
+
+Two competing rule blocks in `_components.scss`:
+
+| Property | Lines 219-264 (nested, wins) | Lines 861-919 (standalone, dead) |
+|----------|------|------|
+| Title font | `--font-display` (Playfair Display) | `--font-body` (Lora) |
+| Title size | `--text-base` (16px) | `--text-sm` (13px) |
+| Title weight | `--weight-bold` (700) | `--weight-semibold` (600) |
+| Byline font | `--font-ui` (DM Sans) | `--font-body` (Lora) italic |
+| Byline color | `--color-text-muted` | `--color-text-secondary` |
+| Card radius | `--radius-lg` (12px) via @extend | `--radius-md` (8px) override wins |
+| Hover shadow | `--shadow-md` + translateY (from .xw-card) | `--shadow-sm` only (weaker, overrides .xw-card hover) |
+
+**Recommendation:** Delete lines 861-919. Merge desired properties into lines 219-264. Specifically:
+- Title: use Lora `--font-body` at `--text-sm` (13px) with `--weight-semibold` — better small-size readability
+- Byline: use Lora `--font-body` italic — editorial warmth, differentiates from dims
+- Keep `.xw-card` hover behavior (lift + medium shadow) by not overriding it
+- Keep `--radius-lg` from `.xw-card` (the `--radius-md` override at line 863 is a mistake)
+
+**Structural issue — 12-column grid inside cards:**
+- `.xw-grid` inside `.xw-puzzle-card` creates 12 columns at 5.4px each in a 243px card
+- 75px thumbnail in a 69.7px grid cell → overflow (clipped by card's `overflow: hidden`)
+- Replace with flexbox: `.xw-puzzle-card__inner { display: flex; align-items: center; padding: var(--space-2); }`
+- Thumb: `width: 75px; flex-shrink: 0;`
+- Meta: `flex: 1; min-width: 0;`
+
+**Spacing audit:**
+- H1 margin: 21.44px (browser default, not on token scale) → should be `var(--space-5)` or `var(--space-6)`
+- HR border: `1px inset` (3D groove) → should be `border: none; border-top: 1px solid var(--color-border)`
+- Container top: 24px (from search.scss.erb) + 21.44px (h1 margin) = 45.4px → top-heavy
+
+**Mobile finding:**
+- "Solved Puzzles (2)" tab truncated at 375px — no scroll affordance
+- Cards stack cleanly with centered thumbnails — good
+
+**Handoff:** Written to shared.md with severity ratings and fix recommendations.
+
 ## Open Questions
 
 - ~~Default scope removal plan needed (future session)~~ **DONE** — plan written, fixes 3 bugs.
