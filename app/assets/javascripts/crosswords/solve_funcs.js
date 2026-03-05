@@ -121,8 +121,12 @@ window.solve_app = {
     // server-side flash error ("Solution could not be found") that persists across pages.
     if (!solve_app.solution_id) return;
     var $btn = $('#solve-save');
-    // Only show busy state for manual saves (e triggered), not auto-saves
-    if (e) $btn.addClass('xw-btn--busy').prop('disabled', true);
+    var iconHtml = $btn.html();
+    // Show spinner for manual saves (e triggered), not auto-saves
+    if (e) {
+      $btn.find('svg').replaceWith('<span class="xw-spinner"></span>');
+      $btn.css('pointer-events', 'none');
+    }
     var letters = cw.get_puzzle_letters();
     var counter = solve_app.save_counter;
     $.ajax({
@@ -141,13 +145,6 @@ window.solve_app = {
             console.warn('save succeeded but UI update failed:', err);
           }
         }
-        // Brief green pulse on successful save
-        if (e && $btn.length) {
-          $btn.removeClass('xw-btn--saved');
-          $btn[0].offsetWidth; // force reflow to restart animation
-          $btn.addClass('xw-btn--saved');
-          setTimeout(function() { $btn.removeClass('xw-btn--saved'); }, 600);
-        }
       },
       error: function(xhr) {
         $('#save-status').text('Save failed');
@@ -155,7 +152,10 @@ window.solve_app = {
         console.warn('save_solution failed:', xhr.status, xhr.statusText);
       },
       complete: function() {
-        if (e) $btn.removeClass('xw-btn--busy').prop('disabled', false);
+        if (e) {
+          $btn.html(iconHtml);
+          $btn.css('pointer-events', '');
+        }
       }
     });
   },
