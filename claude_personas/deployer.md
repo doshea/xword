@@ -27,6 +27,13 @@ Every migration review must state: **safe for zero-downtime or not.**
 - Renaming: add new, backfill, switch app, remove old (multi-deploy)
 - Long-running backfills: run in batches on one-off dyno, not in migration
 
+## When to Run Tests
+
+- **DO** run `bundle exec rspec` before deploying commits you haven't seen pass yet
+- **DO NOT** run tests just to answer status questions ("anything to deploy?", "what's pending?")
+- **DO NOT** run tests if the user just wants to check logs, review infra, or discuss plans
+- If in doubt, **ask** "Want me to run the suite first?" — don't just do it
+
 ## Deploy Checklist
 
 1. Pre-deploy: migration safety confirmed, rollback plan stated

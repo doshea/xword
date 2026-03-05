@@ -26,7 +26,9 @@
 - jQuery `.position()` returns coords relative to nearest positioned ancestor — grep for `.position()` and `.offset()` when changing CSS `position` properties.
 - Admin tools: `@current_user&.is_admin` guard → `head :forbidden`. Wrapped in `- if is_admin?` in HAML.
 - Reveal Puzzle JS uses direct `.text()` not `set_letter()` to avoid N team broadcasts.
-- **Stats page**: Chart.js v4 loaded via CDN (`javascript_include_tag` in `content_for :head`), only on stats page. Stimulus `stats` controller renders charts. `pointRadius: 0` with `pointHitRadius: 8` for 1000+ data points. CDN guard: `typeof Chart === 'undefined'` fallback to `window.load` event.
+- **Stats page**: Chart.js v4 vendored locally (`chart.umd.min.js`, loaded via `javascript_include_tag` in `content_for :head`), only on stats page. Stimulus `stats` controller renders charts. `pointRadius: 0` with `pointHitRadius: 8` for 1000+ data points.
+- **Solve timer**: Client-side `setInterval(1s)` in `solve_funcs.js`. Uses `solve_app.started_at` (epoch ms from `solution.created_at`). Freezes on win or if `is_complete` is true on load. Format: `MM:SS` / `H:MM:SS` / `Dd H:MM:SS`.
+- **Next puzzle on win**: `@next_puzzle` set in `check_completion` controller action. Uses subquery `Crossword.where(id: Crossword.new_to_user(...))` to avoid PG `DISTINCT + ORDER BY RANDOM()` conflict.
 
 ## Known Flakes
 - JS feature specs (login_spec, home_tabs_spec, admin_spec, edit_spec) can fail in full suite runs due to order-dependent Capybara/DB state leakage. Pass when run in isolation.
@@ -36,6 +38,13 @@
 - `rand(n)` can return 0 for integer n — use `rand(1..n-1)` when 0 is invalid.
 - Sass nesting `#id` inside `.class` compiles to descendant selector, not compound. Use `&#id` for same-element.
 - `Clue#strip_tags`: ASCII-8BIT strings get double-encoded by Loofah. Encoding guard added.
+
+## Recently Completed
+- **Profile N+1 fix**: 3 precomputed counts in `UsersController#show` → ivars in `_user.html.haml`
+- **FriendshipService**: Extracted from `FriendRequestsController`. `.accept` and `.reject` class methods. 8 specs.
+- **Error page modernization**: `error.html.haml`, `unauthorized.html.haml`, `account_required.html.haml` — added icons, titles, improved copy.
+- **Sessions request specs**: 11 specs covering login/logout/redirect security.
+- **NYT Calendar**: Smart init, year nav, puzzle count badge, month index precomputation.
 
 ## Deploy Notes (for Deployer)
 - Migration `fix_double_encoded_clues` — reverses Ã-signature double-encoding.

@@ -2,6 +2,29 @@
 
 ## Deploy History
 
+### v550 — 2026-03-04
+**Commits:** `c710d75`, `6d2bce7`
+**Changes:**
+- Solve timer: client-side MM:SS/H:MM:SS count-up from solution.created_at, freezes on win
+- Next puzzle link in win modal (new_to_user scope for logged-in, random for anon)
+- Profile N+1 fix: 3 precomputed counts in UsersController#show
+- FriendshipService extraction from FriendRequestsController (8 specs)
+- Error/unauthorized/account_required page modernization (icons, titles, copy)
+**Migration:** None
+**Rollback:** `git revert 6d2bce7 c710d75`
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~3s, state → up. No errors.
+
+### v549 — 2026-03-04
+**Commits:** `7f225ce`, `24fd3c9`, `dd9e2ab`, `354eb35`
+**Changes:**
+- Vendor Chart.js v4 locally (CDN dependency removed)
+- CLAUDE.md cleanup: removed stale architecture/risk sections, updated test count
+- New request specs: login, logout, redirect security
+- Persona memory file updates
+**Migration:** None
+**Rollback:** `git revert 354eb35 dd9e2ab 24fd3c9 7f225ce`
+**Post-deploy:** Clean. Puma up ~3s. No errors.
+
 ### v548 — 2026-03-04
 **Commits:** `e721c27`, `1c657c6`, `9487159`
 **Changes:**
@@ -143,7 +166,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v548
+- Current release: v550
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic
