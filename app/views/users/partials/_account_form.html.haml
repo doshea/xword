@@ -81,7 +81,7 @@
     %h2.xw-account-section__heading Change Password
     #password-errors.xw-alert.xw-alert--error.hidden
       %p
-      %a.slide-close{href: "#"} &times;
+      %button.slide-close{type: 'button', aria: {label: 'Dismiss error'}} ×
     = form_with(url: change_password_users_path, method: :post) do |f|
       .xw-field
         %label.xw-label{for: 'old_password'} Current Password

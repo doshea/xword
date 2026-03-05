@@ -22,7 +22,7 @@
           .xw-tabs__nav{role: 'tablist'}
             - day_order.each_with_index do |(wday, label), i|
               - count = (@puzzles_by_wday[wday] || []).size
-              = link_to "#day-panel-#{wday}", role: 'tab', 'aria-selected': (i == 0).to_s, 'aria-controls': "day-panel-#{wday}", class: "xw-tab #{'xw-tab--active' if i == 0}", data: {tabs_target: 'tab', action: 'click->tabs#show'} do
+              %button{type: 'button', role: 'tab', 'aria-selected': (i == 0).to_s, 'aria-controls': "day-panel-#{wday}", class: "xw-tab #{'xw-tab--active' if i == 0}", data: {tabs_target: 'tab', action: 'click->tabs#show'}}
                 %span.tab-label
                   %span #{label} (#{count})
 

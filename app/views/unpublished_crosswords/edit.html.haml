@@ -25,7 +25,7 @@
       #puzzle-controls
         %span#save-status.smaller No changes yet
         %span#save-clock.smaller
-        %a#edit-save.xw-btn.xw-btn--sm.xw-btn--ghost{href: '#', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
+        %button#edit-save.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
           = icon('save')
 
 %section.xw-container.xw-grid#solve-area{aria: {label: 'Edit puzzle grid'}}
@@ -54,7 +54,7 @@
 -# NON-INLINE ELEMENTS
 
 %section#idea-container.slide-up-container
-  = link_to('#ideas', class: 'bottom-button', id: 'ideas-button', data: { turbo: false }) do
+  %button.bottom-button#ideas-button{type: 'button'}
     = icon('lightbulb')
     %span.small Notepad
   #ideas
@@ -62,7 +62,7 @@
       / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
       / id="ideas-input" added so add_potential_word.turbo_stream.erb can clear the field after add
       = form_with(url: add_potential_word_unpublished_crossword_path(@unpublished_crossword), method: :patch) do |f|
-        = text_field_tag :word, nil, id: 'ideas-input', autocomplete: 'off', placeholder: "Type a word you're considering"
+        = text_field_tag :word, nil, id: 'ideas-input', autocomplete: 'off', placeholder: "Type a word you're considering", aria: {label: 'Add word to notepad'}
     / id="ideas-error" added so add_potential_word.turbo_stream.erb can show duplicate-word error
     %p#ideas-error.hidden
     / id="potential-words-list" added so add_potential_word.turbo_stream.erb can replace the full sorted list
@@ -71,7 +71,7 @@
         = render partial: 'unpublished_crosswords/partials/potential_word', locals: {word: word}
 
 %section#pattern-container.slide-up-container
-  = link_to('#pattern_search', class: 'bottom-button', id: 'pattern-search-button', data: { turbo: false }) do
+  %button.bottom-button#pattern-search-button{type: 'button'}
     = icon('search')
     %span.small
       Pattern Search
@@ -79,6 +79,6 @@
     .xw-grid
       / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
       = form_with(url: match_words_path, method: :post, data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
-        = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
+        = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH", aria: {label: 'Pattern search'}
         = submit_tag 'Search', class: 'hidden', data: { loading_target: 'button' }
       #word-match-results

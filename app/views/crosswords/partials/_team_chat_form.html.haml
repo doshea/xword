@@ -5,7 +5,7 @@
   = form_with(url: send_team_chat_solution_path(solution), data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
     = hidden_field_tag 'display_name', chat_display_name, id: nil
     = hidden_field_tag 'avatar', @current_user.image.thumb, id: nil
-    = text_field_tag 'chat', nil, id: nil, autocomplete: :off
+    = text_field_tag 'chat', nil, id: nil, autocomplete: :off, aria: {label: 'Team chat message'}
 - else
   %p.xw-text-muted.team-chat__anon-prompt
     = link_to 'Sign in', login_path

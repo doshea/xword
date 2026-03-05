@@ -8,7 +8,7 @@
 
 ## Pending Deploy
 
-(none)
+**P2-2: Form Accessibility Audit** — Ready to commit. 17 a11y fixes: 7 aria-labels on inputs, 8 anchor→button conversions (+ CSS resets), 2 tab link→button conversions. Deleted dead reply edit pencil. Updated 1 spec. No migration. 14 files changed.
 
 ## Builder In Progress
 
@@ -18,28 +18,23 @@
 
 Pick in order. **Read the plan file for full details** — don't rely on summaries here.
 
-| # | Item | Scope | Plan |
-|---|------|-------|------|
-| ~~3~~ | ~~Changelog UX Polish~~ | ~~2 must-fix, 2 should-fix, 2 suggestions~~ | ~~Done~~ |
-| ~~4~~ | ~~Login / Signup~~ | ~~1 must-fix, 3 should-fix, 4 suggestions~~ | ~~Done~~ |
-| ~~5~~ | ~~Forgot/Reset Password~~ | ~~1 must-fix, 4 should-fix~~ | ~~Done~~ |
-| ~~6~~ | ~~NYT Page / Calendar~~ | ~~2 should-fix, 1 suggestion, 3 nitpick~~ | ~~Done~~ |
-| ~~7~~ | ~~Account Settings~~ | ~~3 should-fix, 2 suggestions (bundled with #5)~~ | ~~Done~~ |
-| ~~8~~ | ~~User-Made Puzzles~~ | ~~1 should-fix, 2 suggestions~~ | ~~Done~~ |
-| ~~9~~ | ~~Admin Panel~~ | ~~2 should-fix, 3 suggestions~~ | ~~Done (all findings pre-implemented)~~ |
-| ~~10~~ | ~~Team Solving UX~~ | ~~4 should-fix, 2 suggestions~~ | ~~Done (most pre-implemented; added SolutionPartnering unique index)~~ |
-| ~~11~~ | ~~Test Suite Health~~ | ~~1 must-fix, 1 should-fix, 2 suggestions~~ | ~~Done (flaky fix + 107 should→expect)~~ |
-| ~~12~~ | ~~Backend Logic Audit~~ | ~~4 should-fix, 4 suggestions~~ | ~~Done~~ |
+~~**P2-1: Database Constraints Migration**~~ ✅ Built. Pending commit.
+
+**P2-2: Form Accessibility Audit** → `claude_personas/plans/form-accessibility-audit.md` — Picked up by Builder at 2026-03-05 14:30
+17 issues: 7 must-fix (unlabeled inputs), 8 should-fix (a→button), 2 suggestion (tab links).
+3 batches, ~1hr total. No migrations, no JS changes, no new specs needed.
+`<main>` landmark concern was false alarm — all pages inherit from application layout.
+
+~~**P2-3: Service Object Test Coverage**~~ ✅ Built. Ready to commit. 4 new spec files (72 examples): NytPuzzleFetcher (11), NytGithubRecorder (7), GithubChangelogService (35), UnpublishedCrossword (19). `letters_to_clue_numbers` verified working correctly — TODO comment is stale. No migration, no source changes.
 
 ## Planner Work Queue
 
-Full queue with context: `claude_personas/plans/planner-meta-plan.md`
+Full queue: `claude_personas/plans/planner-meta-plan.md`
 
-| Tier | Status | Remaining |
-|------|--------|-----------|
-| 1 | ✅ Done | — |
-| 2 | ✅ Done | — |
-| 3 | ✅ Done | — |
+| Phase | Status | Items |
+|-------|--------|-------|
+| 1 | ✅ Done | 16 reviews + changelog, deployed v548–v574 |
+| 2 | 🔄 In progress | 2/7 reviewed: DB constraints ✅, service specs ✅ — a11y, API security, NYT pagination, JS cleanup, stats perf remaining |
 
 ## Low-Priority Carry-Forward
 
@@ -66,3 +61,4 @@ v570: Word/clue detail, notifications polish, new puzzle form
 v571: Search page fixes (blank guard, limits, N+1)
 v572: Login/signup polish (Turbo Stream fix, a11y, redirects, dead CSS/specs)
 v573: Changelog polish (CSS loading fix, prefix stripping, noise filtering, a11y)
+v574: Review items 5–12 (passwords, NYT, team solving, test health, backend audit + unique index migration)

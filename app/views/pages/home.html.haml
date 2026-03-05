@@ -11,16 +11,16 @@
       Welcome to the Café!
   .xw-tabs{data: {controller: 'tabs'}}
     .xw-tabs__nav{role: 'tablist'}
-      = link_to '#panel1', role: 'tab', 'aria-selected': 'true', 'aria-controls': 'panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
+      %button.xw-tab.xw-tab--active{type: 'button', role: 'tab', 'aria-selected': 'true', 'aria-controls': 'panel1', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
         %span.tab-label
           = icon('clipboard')
           %span #{'New' if @current_user} Puzzles (#{@unstarted_count})
       - if @current_user
-        = link_to '#panel2', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel2', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
+        %button.xw-tab{type: 'button', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel2', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
           %span.tab-label
             = icon('clipboard-pen')
             %span In Progress (#{@in_progress_count})
-        = link_to '#panel3', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel3', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
+        %button.xw-tab{type: 'button', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel3', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
           %span.tab-label
             = icon('clipboard-list')
             %span Solved Puzzles (#{@solved_count})

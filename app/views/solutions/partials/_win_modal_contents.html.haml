@@ -46,7 +46,7 @@
         %h5.win-modal__prompt
           = icon('message-square')
           How was the crossword?
-        = text_area_tag 'content', nil, class: 'xw-textarea', autocomplete: 'off', placeholder: Comment.random_wine_comment
+        = text_area_tag 'content', nil, class: 'xw-textarea', autocomplete: 'off', placeholder: Comment.random_wine_comment, aria: {label: 'Comment on the crossword'}
         :javascript
           $('#complete-form').on('keypress', 'textarea', function(e){
             if(!e.metaKey){

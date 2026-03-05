@@ -50,10 +50,10 @@
         %span#save-status.smaller No changes yet
       %span#save-clock.smaller
       - if @current_user
-        %a#solve-save.xw-btn.xw-btn--sm.xw-btn--ghost{href: '#', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
+        %button#solve-save.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
           = icon('save')
         = render partial: 'crosswords/partials/favorites_toggle', locals: { crossword: @crossword, current_user: @current_user }
-        = link_to '#', id: 'controls-button', class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { 'xw-tooltip': 'Controls' }, aria: { label: 'Puzzle controls' } do
+        %button#controls-button.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'Controls'}, aria: {label: 'Puzzle controls'}}
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
         = link_to(delete_solution_path(@solution), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?', 'xw-tooltip': 'Delete Solution' }, aria: { label: 'Delete solution' }) do
@@ -145,7 +145,7 @@
       - if @current_user
         / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX; id kept for add_comment.turbo_stream.erb target)
         = form_with(url: add_comment_path(@crossword), id: 'comment-form', data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
-          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea xw-textarea--compact', rows: 1, autocomplete: 'off', placeholder: 'Add a comment...')
+          = text_area_tag('content', nil, id: 'add-comment', class: 'xw-textarea xw-textarea--compact', rows: 1, autocomplete: 'off', placeholder: 'Add a comment...', aria: {label: 'Add a comment'})
           %span.xw-comment__hint Enter to send
       - else
         %p.xw-meta-area__auth-prompt

@@ -109,9 +109,9 @@ feature 'Accessibility' do
         expect(page).to have_selector('h1', text: 'Welcome back')
       end
 
-      it 'uses span.tab-label for tab labels, not heading elements inside links' do
-        expect(page).to have_selector('a > .tab-label')
-        expect(page).not_to have_selector('.tabs a h5')
+      it 'uses span.tab-label for tab labels, not heading elements inside buttons' do
+        expect(page).to have_selector('button > .tab-label')
+        expect(page).not_to have_selector('.tabs button h5')
       end
     end
 

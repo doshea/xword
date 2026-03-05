@@ -14,7 +14,7 @@
       = comment.content
     .xw-comment__actions
       - if @current_user
-        %a.reply-button.reply
+        %button.reply-button.reply{type: 'button'}
           = icon('message-square')
           %span Reply
         - if @current_user.is_admin? || @current_user == comment.user
@@ -24,7 +24,7 @@
     - if @current_user
       = form_with(url: reply_to_comment_path(comment), class: 'reply-form') do |f|
         .reply-form__field
-          = text_area_tag('content', nil, id: nil, class: 'reply-content xw-textarea xw-textarea--compact', autocomplete: 'off')
+          = text_area_tag('content', nil, id: nil, class: 'reply-content xw-textarea xw-textarea--compact', autocomplete: 'off', aria: {label: 'Write a reply'})
           %button.reply-form__close{type: 'button', aria: {label: 'Close reply'}}
             = icon('x')
           %span.xw-comment__hint Enter to send
