@@ -922,6 +922,30 @@
 
 
 // ---------------------------------------------------------------------------
+// CREATE DASHBOARD — .xw-create
+// ---------------------------------------------------------------------------
+
+.xw-create__section-heading {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.xw-create__count {
+  font-weight: var(--weight-normal);
+  color: var(--color-text-muted);
+  margin-left: var(--space-1);
+}
+
+.xw-create__new-btn {
+  margin-top: var(--space-4);
+}
+
+
 // PUZZLE CARD — .xw-puzzle-grid / .xw-puzzle-card
 // ---------------------------------------------------------------------------
 // Shared horizontal card layout used by _crossword_tab.html.haml partial

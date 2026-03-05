@@ -1,41 +1,34 @@
 - title 'Create'
-= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid'} do
-  -if is_logged_in?
-    %h3
-      = icon('pencil')
-      %span Your Puzzles
-    %hr
-    %section
-      -if @unpublished.try(:any?)
-        %h4
-          Unpublished
-          (
-          %span#unpublished-count= @unpublished.count
-          )
-        %ul
-          - @unpublished.each do |cw|
-            %li
-              = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
-      - else
-        %p You're not working on any puzzles right now. Why not start a...
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: 'Your Puzzles'} do
+
+  -# --- Unpublished puzzles ---
+  %section
+    %h2.xw-create__section-heading
+      Unpublished
+      %span.xw-create__count= @unpublished.count
+    - if @unpublished.any?
+      %ul
+        - @unpublished.each do |cw|
+          %li
+            = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
+    - else
+      .xw-empty-state
+        = icon('clipboard-pen', size: 36, class: 'xw-empty-state__icon')
+        %p.xw-empty-state__heading No puzzles in progress
+        %p Start creating! Your unpublished puzzles will appear here.
+    .xw-create__new-btn
       = link_to new_unpublished_crossword_path, class: 'xw-btn xw-btn--success' do
         = icon('pencil')
         New Puzzle
-    - if @published.try(:any?)
-      %hr
-      %section
-        %h4
-          Published
-          (
-          %span#published-count= @published.count
-          )
-        %ul
-          - @published.each do |cw|
-            %li
-              = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}
-  - else
-    %h2 Oops! You're not logged in
-    %p
-      To create your own crosswords, you'll need to
-      = link_to('login or make a new account', login_path) + '.'
-      Don't worry, it's free!
+
+  -# --- Published puzzles ---
+  - if @published.any?
+    %hr
+    %section
+      %h2.xw-create__section-heading
+        Published
+        %span.xw-create__count= @published.count
+      %ul
+        - @published.each do |cw|
+          %li
+            = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw}

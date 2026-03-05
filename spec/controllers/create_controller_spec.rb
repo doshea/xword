@@ -25,9 +25,10 @@ describe CreateController do
     end
 
     context 'as an anonymous user' do
-      it 'renders the dashboard without error' do
+      it 'redirects to account required page' do
         get :dashboard
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:redirect)
+        expect(response.location).to start_with("http://test.host#{account_required_path}")
       end
     end
   end
