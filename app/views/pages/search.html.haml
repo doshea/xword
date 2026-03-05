@@ -10,7 +10,7 @@
         %h2.xw-search-hero__heading
           Results for
           %em= "\u201C#{@query}\u201D"
-        - total = @crosswords.size + @users.size + @words.size
+        - total = (@crosswords&.size || 0) + (@users&.size || 0) + (@words&.size || 0)
         - if total > 0
           .xw-search-hero__stats{role: 'status', 'aria-live': 'polite'}
             - if @crosswords.any?
@@ -42,7 +42,7 @@
           = submit_tag 'Search', class: 'xw-btn xw-btn--success xw-search-hero__submit', data: { loading_target: 'button' }
 
   -# Crossword results — vertical card grid matching profile
-  - if @crosswords.any?
+  - if @crosswords&.any?
     .xw-col-full
       %section.xw-search-card
         %h3.xw-search-card__heading
@@ -63,7 +63,7 @@
                 %span.xw-search-puzzle__byline= "by #{cw.user.display_name}"
 
   -# User results
-  - if @users.any?
+  - if @users&.any?
     .xw-col-full
       %section.xw-search-card
         %h3.xw-search-card__heading
@@ -78,7 +78,7 @@
               %span.xw-search-user__name= user.display_name
 
   -# Word results — clickable links to word detail pages
-  - if @words.any?
+  - if @words&.any?
     .xw-col-full
       %section.xw-search-card
         %h3.xw-search-card__heading
@@ -93,7 +93,3 @@
                 %span.xw-search-word__stat
                   %strong= word.clues.size
                   = 'clue'.pluralize(word.clues.size)
-                %span.xw-search-word__dot &middot;
-                %span.xw-search-word__stat
-                  %strong= word.crosswords.size
-                  = 'puzzle'.pluralize(word.crosswords.size)

@@ -19,9 +19,9 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 
 **Source of truth:** `claude_personas/plans/planner-meta-plan.md`
 
-- **Tier 1:** ✅ Done. Most deployed (v569). Word/clue pending deploy, notifications in Builder, new puzzle form + search awaiting Builder.
-- **Tier 2:** ✅ Done. All 5 reviewed. Builder queue: new puzzle form, search, changelog, login/signup, forgot/reset, NYT/calendar, account settings.
-- **Tier 3:** 0/5 (admin, user-made, team solving, test suite, backend audit)
+- **Tier 1:** ✅ Done. All deployed (v570).
+- **Tier 2:** ✅ Done. All 5 reviewed, queued for Builder.
+- **Tier 3:** 4/5. Admin + user-made + team solving + test suite reviewed. Remaining: backend audit.
 
 ### Turbo Stream `replace` pattern bug (2026-03-04)
 - `password_errors.turbo_stream.erb` and `wrong_password.turbo_stream.erb` use `turbo_stream.replace "password-errors"` but the replacement content lacks the `id="password-errors"` wrapper. First submission works; subsequent ones silently fail (no target). Affects both reset_password and account change-password. Both login/signup and forgot/reset reviews flagged this independently.
@@ -29,5 +29,5 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 ## Open Questions
 
 - 4 unused Publishable scopes (`standard`, `nonstandard`, `solo`, `teamed`) — prune when convenient
-- FriendRequest model spec uses `should` syntax — migrate to `expect()` when touching that file
+- ~~FriendRequest model spec uses `should` syntax~~ — captured in test-suite-health.md (147 total `should` occurrences across 20 files)
 - No unfriend mechanism exists anywhere in the app — flagged as separate feature ticket

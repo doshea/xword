@@ -86,9 +86,10 @@ class PagesController < ApplicationController
   #GET /search or search_path
   def search
     @query = params[:query]
-    @users = User.starts_with(@query).load
-    @crosswords = Crossword.starts_with(@query).includes(:user).load
-    @words = Word.starts_with(@query).includes(:clues).load
+    return if @query.blank?
+    @users = User.starts_with(@query).limit(50).load
+    @crosswords = Crossword.starts_with(@query).includes(:user).limit(50).load
+    @words = Word.starts_with(@query).includes(:clues).limit(50).load
   end
 
   #GET /live_search or live_search_path

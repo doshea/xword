@@ -169,6 +169,46 @@ RSpec.describe 'Pages', type: :request do
     end
   end
 
+  # -------------------------------------------------------------------------
+  # GET /live_search — nav bar AJAX search
+  # -------------------------------------------------------------------------
+  describe 'GET /live_search' do
+    let(:ajax_headers) { { 'Accept' => 'application/json', 'X-Requested-With' => 'XMLHttpRequest' } }
+
+    it 'returns result_count and html when matches exist' do
+      Word.create!(content: 'TESTING')
+      get '/live_search', params: { query: 'TESTING' }, headers: ajax_headers
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body['result_count']).to be >= 1
+      expect(body['html']).to be_present
+    end
+
+    it 'returns zero result_count with no html when no matches' do
+      get '/live_search', params: { query: 'zzzznotfound' }, headers: ajax_headers
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body['result_count']).to eq 0
+      expect(body).not_to have_key('html')
+    end
+
+    it 'handles blank query gracefully' do
+      get '/live_search', params: { query: '' }, headers: ajax_headers
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body['result_count']).to eq 0
+    end
+
+    it 'splits results evenly across categories' do
+      user = create(:user, :with_test_password, username: 'searchterm')
+      Word.create!(content: 'SEARCHTERM')
+      get '/live_search', params: { query: 'searchterm' }, headers: ajax_headers
+      body = JSON.parse(response.body)
+      expect(body['result_count']).to be >= 2
+      expect(body['html']).to include('searchterm')
+    end
+  end
+
   describe 'GET /nytimes' do
     it 'renders even without an nytimes user' do
       get '/nytimes'

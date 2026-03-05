@@ -24,10 +24,10 @@
 | 9 | Login / Signup | ✅ Reviewed | `login-signup-review.md` |
 | 10 | Forgot / Reset Password | 📋 Awaiting Builder | `forgot-reset-password-review.md` |
 | 11 | Account Settings | ✅ Reviewed | `account-settings-review.md` |
-| 12 | Admin Panel | ⬜ Unreviewed | — |
-| 13 | User-Made Puzzles Page | ⬜ Unreviewed | — |
-| 14 | Team Solving UX | ⬜ Unreviewed | — |
-| 15 | Test Suite Health | ⬜ Unreviewed | — |
+| 12 | Admin Panel | ✅ Reviewed | `admin-panel-review.md` |
+| 13 | User-Made Puzzles Page | ✅ Reviewed | `user-made-page-review.md` |
+| 14 | Team Solving UX | ✅ Reviewed | `team-solving-review.md` |
+| 15 | Test Suite Health | ✅ Reviewed | `test-suite-health.md` |
 | 16 | Backend Logic Audit | ⬜ Unreviewed | — |
 | — | Changelog (new feature) | 📋 Awaiting Builder | `changelog-page.md` |
 
@@ -51,22 +51,17 @@ notification dropdown, error pages, loading feedback, stats, info pages, edit au
 **Files:** `users/account.html.haml`, `users/partials/_account_form.html.haml`, `account.scss.erb`, `account.js`
 **Check:** Rebuilt v557 — quick verification. Remotipart upload, password change flow, delete account
 
-### 12. Admin Panel
-**Files:** `admin/*.html.haml`, `admin.scss` (315 lines, tokenized), layout partials
-**Check:** Nav, tables, edit forms, email tester, cloning tank, manual NYT import. Low priority (owner-only).
+### ~~12. Admin Panel~~ — ✅ Reviewed
+2 should-fix (bare `.find()` in clone_user, dead email address field), 3 suggestions (admin titles, clues UNION SQL, solution key visibility), 3 nitpick (wine_comment extension, missing title, empty method body)
 
-### 13. User-Made Puzzles (`/user_made`)
-**Files:** `pages/user_made.html.haml` (13 lines)
-**Check:** Visual parity with NYT page, ordering, pagination (none currently)
+### ~~13. User-Made Puzzles~~ — ✅ Reviewed
+1 should-fix (missing page title), 2 suggestions (puzzle count in heading, thin test coverage), 1 nitpick (no pagination — known pattern, not actionable now)
 
-### 14. Team Solving UX
-**Files:** `crosswords/partials/_team.html.haml`, `team_funcs.js.erb` (328 lines), `solutions_controller.rb`
-**Check:** Create/join flow, real-time conflicts, chat, disconnect recovery, leave-team behavior
+### ~~14. Team Solving UX~~ — ✅ Reviewed
+4 should-fix (unreliable unload leave, no unique SolutionPartnering index, dead Foundation tooltip, invite section unstyled), 2 suggestion (anon silent errors, non-standard solver_id attr), 2 nitpick (hardcoded chat color, fragile re-init)
 
-### 15. Test Suite Health
-**Files:** All `spec/` files
-**Check:** Controller→request spec migration list, `live_search` flaky test root cause,
-`should`→`expect()` in FriendRequest, feature spec coverage gaps
+### ~~15. Test Suite Health~~ — ✅ Reviewed
+1 must-fix (flaky live_search — `let_it_be` + pg_search), 1 should-fix (147 `should` → `is_expected.to`), 2 suggestions (controller spec consolidation, feature spec gaps)
 
 ### 16. Backend Logic Audit
 **Files:** All controllers + models

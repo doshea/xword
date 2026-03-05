@@ -49,4 +49,5 @@
 - `Clue#strip_tags`: ASCII-8BIT → double-encoded by Loofah. Encoding guard exists.
 
 ## Recently Completed
+- **Search Page fixes (plan #2)**: Blank query guard (`return if @query.blank?`), `.limit(50)` on all 3 search queries, removed N+1 `word.crosswords.size` from word cards (clue count is sufficient and already eager-loaded). View nil-safe guards (`@words&.any?`). Migrated `should respond_with` → `expect()` in controller specs. Added 4 live_search request specs. 983 examples, 0 failures.
 - **New Puzzle Form polish (plan items 1–4, 6)**: Changed create failure from `redirect_to` → `render :new, status: :unprocessable_entity` (preserves form state). Added `disable_with: 'Creating…'` on submit. Removed void toggle click handler + cursor:pointer from preview grid (was cosmetic — data never sent). Added `aria-hidden` to preview. Deleted vendor `spin.min.js`, replaced with CSS `.xw-spinner` overlay (`.xw-newcw-overlay`). Moved JS include into `content_for :head`. Added inline `.xw-alert--error` error display. 5 new request specs. 979 examples, 0 failures. No migration.

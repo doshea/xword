@@ -3,13 +3,18 @@ describe PagesController do
     context 'GET #home' do
       before { get :home }
 
-      it { should respond_with(:success) }
+      it 'responds successfully' do
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
   context 'logged_in' do
     before { get :home }
-    it { should respond_with(:success) }
+
+    it 'responds successfully' do
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   # ---------------------------------------------------------------------------
@@ -67,7 +72,10 @@ describe PagesController do
   describe 'GET #search' do
     before { get :search, params: { query: 'test' } }
 
-    it { should respond_with(200) }
+    it 'responds successfully' do
+      expect(response).to have_http_status(:ok)
+    end
+
     it 'assigns @query' do
       expect(assigns(:query)).to eq 'test'
     end
@@ -79,14 +87,20 @@ describe PagesController do
   describe 'GET #nytimes' do
     context 'when nytimes user does not exist' do
       before { get :nytimes }
-      it { should respond_with(200) }
+
+      it 'responds successfully' do
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
   describe 'GET #user_made' do
     context 'when nytimes user does not exist' do
       before { get :user_made }
-      it { should respond_with(200) }
+
+      it 'responds successfully' do
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 end

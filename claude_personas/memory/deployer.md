@@ -2,6 +2,16 @@
 
 ## Deploy History
 
+### v570 — 2026-03-05
+**Commits:** `674e579`, `179edb7`, `39a8da0`, `1c5a234`
+**Changes:** 3-feature deploy — word/clue detail pages, notifications polish, new puzzle form:
+- Word/clue detail: `.includes(:user)` N+1 fix on crosswords_by_title (Word, Clue, Phrase), page titles, SQL `.order(:difficulty)` replacing Ruby sort, word length subtitle, difficulty dots (●●○○○), empty state guard, spec syntax modernization (should → expect)
+- Notifications: click-to-mark-read Stimulus controller, mark-all-read Turbo Stream fix, bell ARIA, deleted actor guard, mobile dropdown unread bg, empty state icon, 8 new specs
+- New puzzle form: validation re-render (was redirect), disable_with on submit, void toggle removed from preview, spin.min.js deleted + CSS spinner overlay, error display, aria-hidden on preview, 5 new request specs
+**Migration:** None
+**Rollback:** `git revert 1c5a234 39a8da0 179edb7 674e579`
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~4s. No errors.
+
 ### v569 — 2026-03-05
 **Commits:** `0a4e44e`, `150b44c`, `e141d1c`, `5abe26c`
 **Changes:** 4-feature deploy — solution choice, create dashboard, profile, changelog:
@@ -289,7 +299,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v569
+- Current release: v570
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic
