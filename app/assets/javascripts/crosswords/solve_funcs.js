@@ -6,13 +6,60 @@ window.solve_app = {
   solution_id: null,
   save_timer: null,
   clock_updater: null,
+  solve_timer_interval: null,
+  started_at: null,
+  is_complete: false,
   last_save: null,
   unsaved_changes: false,
   save_counter: null,
 
+  // --- Solve timer ---
+
+  start_solve_timer: function() {
+    if (solve_app.solve_timer_interval) clearInterval(solve_app.solve_timer_interval);
+    solve_app.update_solve_timer();
+    if (!solve_app.is_complete) {
+      solve_app.solve_timer_interval = setInterval(solve_app.update_solve_timer, 1000);
+    }
+  },
+
+  stop_solve_timer: function() {
+    if (solve_app.solve_timer_interval) {
+      clearInterval(solve_app.solve_timer_interval);
+      solve_app.solve_timer_interval = null;
+    }
+  },
+
+  update_solve_timer: function() {
+    var el = document.getElementById('solve-timer');
+    if (!el || !solve_app.started_at) return;
+    var elapsed = Math.floor((Date.now() - solve_app.started_at) / 1000);
+    if (elapsed < 0) elapsed = 0;
+    el.textContent = solve_app.format_elapsed(elapsed);
+  },
+
+  format_elapsed: function(total_seconds) {
+    var days    = Math.floor(total_seconds / 86400);
+    var hours   = Math.floor((total_seconds % 86400) / 3600);
+    var minutes = Math.floor((total_seconds % 3600) / 60);
+    var seconds = total_seconds % 60;
+
+    var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+
+    if (days > 0) {
+      return days + 'd ' + pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+    } else if (hours > 0) {
+      return hours + ':' + pad(minutes) + ':' + pad(seconds);
+    } else {
+      return pad(minutes) + ':' + pad(seconds);
+    }
+  },
+
   ready: function() {
     // Clear any stale beforeunload handler from a previous anonymous session
     window.onbeforeunload = null;
+    // Start solve timer (works for both anonymous and logged-in)
+    solve_app.start_solve_timer();
     if (!solve_app.anonymous && solve_app.solution_id) {
       // Clear any previous timers to prevent phantom saves after Turbo navigation
       if (solve_app.save_timer) clearInterval(solve_app.save_timer);
@@ -259,6 +306,8 @@ window.solve_app = {
       data: data,
       success: function(data) {
         if (data.correct) {
+          solve_app.is_complete = true;
+          solve_app.stop_solve_timer();
           var win_modal = $('#win-modal');
           if (!win_modal.attr('filled')) {
             win_modal.prepend(data.win_modal_html);

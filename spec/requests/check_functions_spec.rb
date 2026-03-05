@@ -279,6 +279,54 @@ RSpec.describe 'Check functions', type: :request do
   end
 
   # ---------------------------------------------------------------------------
+  # POST /crosswords/:id/check_completion — next puzzle suggestion
+  # ---------------------------------------------------------------------------
+  describe 'POST /crosswords/:id/check_completion (next puzzle)' do
+    let!(:solution) { create(:solution, user: user, crossword: crossword, letters: blank_letters) }
+    let!(:other_crossword) { create(:crossword) }
+
+    context 'when logged in and correct' do
+      before { log_in_as(user) }
+
+      it 'includes a next puzzle link in the win modal HTML' do
+        post "/crosswords/#{crossword.id}/check_completion",
+             params: { letters: correct_letters, solution_id: solution.id },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['correct']).to be true
+        expect(body['win_modal_html']).to include('Next puzzle')
+      end
+    end
+
+    context 'when anonymous and correct' do
+      it 'includes a next puzzle link in the win modal HTML' do
+        post "/crosswords/#{crossword.id}/check_completion",
+             params: { letters: correct_letters },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['correct']).to be true
+        expect(body['win_modal_html']).to include('Next puzzle')
+      end
+    end
+
+    context 'when incorrect' do
+      before { log_in_as(user) }
+
+      it 'does not include next puzzle data' do
+        post "/crosswords/#{crossword.id}/check_completion",
+             params: { letters: 'Z' * correct_letters.length, solution_id: solution.id },
+             headers: json_headers
+
+        body = JSON.parse(response.body)
+        expect(body['correct']).to be false
+        expect(body).not_to have_key('win_modal_html')
+      end
+    end
+  end
+
+  # ---------------------------------------------------------------------------
   # POST /crosswords/:id/check_completion — legacy JS fallback
   # ---------------------------------------------------------------------------
   describe 'POST /crosswords/:id/check_completion (JS legacy fallback)' do

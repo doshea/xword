@@ -49,6 +49,13 @@
       color: var(--color-text-muted);
     }
   }
+  .solve-timer {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    letter-spacing: 0.03em;
+    min-width: 3.5em; // prevent layout jitter as digits change
+  }
 }
 #meta-area {
   border-bottom-left-radius: var(--radius-lg);
@@ -1151,5 +1158,19 @@ textarea:focus ~ .xw-comment__hint {
   .win-modal__thanks {
     text-align: center;
     display: none;
+  }
+  .win-modal__next {
+    margin-top: var(--space-3);
+  }
+  .win-modal__next-label {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+  .win-modal__next-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
   }
 }

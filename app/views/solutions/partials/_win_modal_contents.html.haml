@@ -66,3 +66,10 @@
               }
             }
           })
+  - if @next_puzzle
+    %hr
+    .win-modal__next
+      %p.win-modal__next-label Next puzzle:
+      = link_to crossword_path(@next_puzzle), class: 'xw-btn xw-btn--success win-modal__next-btn' do
+        = @next_puzzle.title
+        = icon('arrow-right')

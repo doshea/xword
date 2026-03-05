@@ -145,6 +145,16 @@ class CrosswordsController < ApplicationController
     if @correctness && @current_user && @solution
       @has_commented = @current_user.comments.where(crossword_id: @solution.crossword_id).exists?
     end
+    # Find a next puzzle to suggest on win
+    if @correctness
+      @next_puzzle = if @current_user
+                       # Subquery avoids PG DISTINCT + ORDER BY RANDOM() conflict
+                       Crossword.where(id: Crossword.new_to_user(@current_user))
+                                .order("RANDOM()").first
+                     else
+                       Crossword.where.not(id: @crossword.id).order("RANDOM()").first
+                     end
+    end
     respond_to do |f|
       f.json do
         result = { correct: @correctness }
