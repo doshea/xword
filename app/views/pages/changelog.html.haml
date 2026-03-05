@@ -1,4 +1,6 @@
 - title 'Changelog'
+= content_for :head do
+  = stylesheet_link_tag 'changelog'
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Changelog'} do
   .xw-changelog
     %p.xw-changelog__intro
@@ -26,7 +28,7 @@
           - if @page > 1
             = link_to 'Newer', changelog_path(page: @page - 1), class: 'xw-changelog__page-link'
           - else
-            %span.xw-changelog__page-link.xw-changelog__page-link--disabled Newer
+            %button.xw-changelog__page-link.xw-changelog__page-link--disabled{disabled: true, type: 'button'} Newer
 
           %span.xw-changelog__page-info
             Page #{@page} of #{@total_pages}
@@ -34,7 +36,7 @@
           - if @page < @total_pages
             = link_to 'Older', changelog_path(page: @page + 1), class: 'xw-changelog__page-link'
           - else
-            %span.xw-changelog__page-link.xw-changelog__page-link--disabled Older
+            %button.xw-changelog__page-link.xw-changelog__page-link--disabled{disabled: true, type: 'button'} Older
     - else
       .xw-changelog__fallback
         %p Couldn't load the changelog right now.

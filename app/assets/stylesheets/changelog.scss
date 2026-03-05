@@ -294,12 +294,12 @@
     order: 1;
   }
 
-  .xw-changelog__sha {
+  .xw-changelog__message {
     order: 2;
+    flex-basis: 100%;
   }
 
-  .xw-changelog__message {
+  .xw-changelog__sha {
     order: 3;
-    flex-basis: 100%;
   }
 }

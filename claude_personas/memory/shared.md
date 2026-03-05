@@ -8,9 +8,7 @@
 
 ## Pending Deploy
 
-| Item | Commit | Notes |
-|------|--------|-------|
-| Login / Signup (#4) | (uncommitted) | Turbo Stream ID fix, a11y labels, signup redirect, logged-in guards, title fixes, dead CSS, spec cleanup |
+(none)
 
 ## Builder In Progress
 
@@ -22,7 +20,7 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 
 | # | Item | Scope | Plan |
 |---|------|-------|------|
-| 3 | Changelog | New feature (service + page + specs) | `plans/changelog-page.md` |
+| ~~3~~ | ~~Changelog UX Polish~~ | ~~2 must-fix, 2 should-fix, 2 suggestions~~ | ~~Done~~ |
 | ~~4~~ | ~~Login / Signup~~ | ~~1 must-fix, 3 should-fix, 4 suggestions~~ | ~~Done~~ |
 | 5 | Forgot/Reset Password | 1 must-fix, 4 should-fix | `plans/forgot-reset-password-review.md` |
 | 6 | NYT Page / Calendar | 2 should-fix, 1 suggestion, 3 nitpick | `plans/nyt-calendar-review.md` |
@@ -66,3 +64,4 @@ v560–v567: Edit frontend, pixel-perfect, void toggle fix, autosave icons, info
 v569: Solution choice, create dashboard, profile, changelog
 v570: Word/clue detail, notifications polish, new puzzle form
 v571: Search page fixes (blank guard, limits, N+1)
+v572: Login/signup polish (Turbo Stream fix, a11y, redirects, dead CSS/specs)

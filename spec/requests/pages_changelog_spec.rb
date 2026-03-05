@@ -24,6 +24,22 @@ RSpec.describe 'Changelog', type: :request do
           "author" => { "name" => "Dylan", "date" => "2026-03-03T18:00:00Z" }
         },
         "html_url" => "https://github.com/doshea/xword/commit/132be74"
+      },
+      {
+        "sha" => "bbbb111abcdef1234567890",
+        "commit" => {
+          "message" => "Update builder/planner memory and add review plans",
+          "author" => { "name" => "Dylan", "date" => "2026-03-03T17:00:00Z" }
+        },
+        "html_url" => "https://github.com/doshea/xword/commit/bbbb111"
+      },
+      {
+        "sha" => "cccc222abcdef1234567890",
+        "commit" => {
+          "message" => "Add request specs for login flow",
+          "author" => { "name" => "Dylan", "date" => "2026-03-03T16:00:00Z" }
+        },
+        "html_url" => "https://github.com/doshea/xword/commit/cccc222"
       }
     ]
   end
@@ -52,10 +68,14 @@ RSpec.describe 'Changelog', type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it 'displays commit messages' do
+    it 'displays commit messages with category prefix stripped' do
       get '/changelog'
-      expect(response.body).to include('Add solve timer and next-puzzle suggestion on win')
-      expect(response.body).to include('Fix edit page save button')
+      # "Add solve timer..." → prefix "Add" stripped, badge shows "Feature"
+      expect(response.body).to include('Solve timer and next-puzzle suggestion on win')
+      expect(response.body).not_to include('Add solve timer')
+      # "Fix edit page..." → prefix "Fix" stripped, badge shows "Fix"
+      expect(response.body).to include('Edit page save button')
+      expect(response.body).not_to include('Fix edit page')
     end
 
     it 'shows only the first line of multi-line commit messages' do
@@ -88,9 +108,30 @@ RSpec.describe 'Changelog', type: :request do
       expect(response.body).to include('Older')
     end
 
-    it 'disables the Newer link on page 1' do
+    it 'uses disabled buttons for page boundaries' do
       get '/changelog'
+      expect(response.body).to include('<button')
+      expect(response.body).to include('disabled')
       expect(response.body).to include('page-link--disabled')
+    end
+
+    it 'filters out internal/noise commits' do
+      get '/changelog'
+      expect(response.body).not_to include('builder/planner memory')
+      expect(response.body).not_to include('review plans')
+    end
+
+    it 'categorizes spec-only commits as update, not feature' do
+      get '/changelog'
+      # "Add request specs for login flow" should be :update, not :feature
+      expect(response.body).not_to include('xw-changelog__badge--feature">Feature</span>')
+      # The feature badge should NOT appear for spec commits
+      # Only "Add solve timer..." is a true feature
+    end
+
+    it 'includes the changelog stylesheet' do
+      get '/changelog'
+      expect(response.body).to include('changelog')
     end
   end
 
@@ -150,6 +191,29 @@ RSpec.describe 'Changelog', type: :request do
       get '/changelog'
       get '/changelog'
       expect(HTTParty).to have_received(:get).once
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # GithubChangelogService unit behavior (exercised through requests)
+  # -------------------------------------------------------------------------
+  describe 'noise filtering' do
+    it 'skips persona memory commits' do
+      expect(GithubChangelogService.skip_commit?("Update builder/planner memory and add review plans")).to be true
+    end
+
+    it 'skips CLAUDE.md commits' do
+      expect(GithubChangelogService.skip_commit?("Update CLAUDE.md: remove stale sections")).to be true
+    end
+
+    it 'skips merge commits' do
+      expect(GithubChangelogService.skip_commit?("Merge branch 'feature' into master")).to be true
+      expect(GithubChangelogService.skip_commit?("Merge pull request #42 from doshea/feature")).to be true
+    end
+
+    it 'does not skip real commits' do
+      expect(GithubChangelogService.skip_commit?("Fix edit page save button")).to be false
+      expect(GithubChangelogService.skip_commit?("Add solve timer feature")).to be false
     end
   end
 end

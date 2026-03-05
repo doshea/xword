@@ -7,6 +7,21 @@ class GithubChangelogService
   CACHE_TTL = 1.hour
   TIMEOUT = 10
 
+  # Commits matching these patterns are internal housekeeping, not user-facing changes.
+  SKIP_PATTERNS = [
+    /persona memory/i,
+    /planner memory/i,
+    /builder memory/i,
+    /deployer memory/i,
+    /shared\.md/i,
+    /CLAUDE\.md/i,
+    /memory files/i,
+    /\AUpdate memory/i,
+    /\AMerge branch/i,
+    /\AMerge pull request/i,
+    /review plans/i
+  ].freeze
+
   # Returns { commits: [...], page:, per_page:, total_pages: } or nil on failure.
   # Each commit: { sha:, message:, date:, url:, category: }
   def self.fetch(page: 1)
@@ -16,6 +31,11 @@ class GithubChangelogService
   rescue StandardError => e
     Rails.logger.error("GithubChangelogService: #{e.class} — #{e.message}")
     nil
+  end
+
+  # Visible for testing.
+  def self.skip_commit?(message)
+    SKIP_PATTERNS.any? { |pattern| message.match?(pattern) }
   end
 
   class << self
@@ -36,13 +56,17 @@ class GithubChangelogService
       response = HTTParty.get(url, options)
       return nil unless response.success?
 
-      commits = response.parsed_response.map do |c|
+      commits = response.parsed_response.filter_map do |c|
+        raw_message = c["commit"]["message"].lines.first.strip
+        next if skip_commit?(raw_message)
+
+        category = categorize(raw_message)
         {
           sha: c["sha"][0..6],
-          message: c["commit"]["message"].lines.first.strip,
+          message: strip_category_prefix(raw_message, category),
           date: Time.parse(c["commit"]["author"]["date"]).to_date,
           url: c["html_url"],
-          category: categorize(c["commit"]["message"])
+          category: category
         }
       end
 
@@ -52,6 +76,9 @@ class GithubChangelogService
     end
 
     def categorize(message)
+      # Test/spec commits are housekeeping, not features — catch before "Add" pattern.
+      return :update if message.match?(/\b(?:spec|test|rspec)\b/i) && !message.match?(/\bfix\b/i)
+
       case message
       when /\AFix/i           then :fix
       when /\AAdd/i           then :feature
@@ -59,6 +86,24 @@ class GithubChangelogService
       when /\APolish|Pixel|Visual|Clean/i          then :polish
       else :update
       end
+    end
+
+    # Removes the leading keyword that the badge already shows, so entries don't stutter
+    # ("Fix Fix edit page..." → "Edit page..."). The :update category is the else-fallback
+    # whose verbs ("Show", "Move", "Reduce") ARE the useful description — don't strip those.
+    def strip_category_prefix(message, category)
+      keyword_map = {
+        fix:     /\AFix\b\s*/i,
+        feature: /\AAdd\b\s*/i,
+        improve: /\A(?:Rebuild|Modernize|Refactor|Extract)\b\s*/i,
+        polish:  /\A(?:Polish|Pixel-perfect\s+polish:?\s*|Visual|Clean)\b\s*/i
+      }
+      pattern = keyword_map[category]
+      return message unless pattern
+
+      cleaned = message.sub(pattern, "")
+      # Capitalize first letter after stripping
+      cleaned.sub(/\A\w/) { |c| c.upcase }
     end
 
     # GitHub Link header: <url?page=37>; rel="last"
