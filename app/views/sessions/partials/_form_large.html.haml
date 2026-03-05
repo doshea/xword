@@ -11,6 +11,6 @@
       = label_tag :remember_me, 'Remember me'
       = check_box_tag :remember_me, 1, true
     .xw-col-6
-      = button_tag 'Log in', class: 'xw-btn xw-btn--success'
+      = button_tag 'Log in', class: 'xw-btn xw-btn--success', data: { disable_with: 'Logging in\u2026' }
 = link_to 'Forgot your password?', forgot_password_users_path
 %hr

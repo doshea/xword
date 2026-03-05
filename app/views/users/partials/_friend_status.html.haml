@@ -10,9 +10,12 @@
 - when :pending_received
   .xw-profile-hero__friend-actions
     = button_to 'Accept', accept_friend_requests_path(sender_id: user.id),
-                method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm'
+                method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm',
+                data: { disable_with: 'Accepting\u2026' }
     = button_to 'Decline', reject_friend_requests_path(sender_id: user.id),
-                method: :delete, class: 'xw-btn xw-btn--ghost xw-btn--sm'
+                method: :delete, class: 'xw-btn xw-btn--ghost xw-btn--sm',
+                data: { disable_with: 'Declining\u2026' }
 - when :none
   = button_to 'Add Friend', friend_requests_path(recipient_id: user.id),
-              method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm'
+              method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm',
+              data: { disable_with: 'Sending\u2026' }

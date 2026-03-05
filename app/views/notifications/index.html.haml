@@ -7,7 +7,8 @@
         Notifications
       - if @notifications.any? { |n| n.read_at.nil? }
         = button_to mark_all_read_notifications_path, method: :patch,
-                    class: 'xw-btn xw-btn--ghost xw-btn--sm' do
+                    class: 'xw-btn xw-btn--ghost xw-btn--sm',
+                    data: { disable_with: 'Marking read\u2026' } do
           = icon('check-check', size: 16)
           Mark all read
 

@@ -168,6 +168,37 @@ body {
 }
 @keyframes xw-spin { to { transform: rotate(360deg); } }
 
+// Clicked-element loading state — applied during Turbo Drive page navigations
+.xw-loading {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+// Puzzle cards get a centered spinner overlay when their parent <a> is loading
+a.xw-loading > .xw-puzzle-card {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: xw-spin 0.6s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xw-loading { transition: none; }
+  a.xw-loading > .xw-puzzle-card::after { animation: none; }
+}
+
 // Cross-browser scrollbar styling
 // Standard properties (Firefox, Chrome 121+)
 * {

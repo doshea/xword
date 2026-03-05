@@ -25,4 +25,4 @@
         = f.text_area :letters, maxlength: @crossword.rows * @crossword.cols, class: 'xw-textarea--uppercase'
       .xw-col-full
         = f.button class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
-    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch, class: 'xw-btn xw-btn--secondary', style: 'margin-top: var(--space-3)'
+    = button_to 'Generate Preview', generate_preview_admin_crossword_path, method: :patch, class: 'xw-btn xw-btn--secondary', style: 'margin-top: var(--space-3)', data: { disable_with: 'Generating\u2026' }

@@ -59,7 +59,7 @@
               = f.label :location, 'Location', class: 'xw-label'
               = f.text_field :location, placeholder: 'Lost in thought', class: 'xw-input'
             .xw-account-section__actions
-              = f.submit 'Update Account', class: 'xw-btn'
+              = f.submit 'Update Account', class: 'xw-btn', data: { disable_with: 'Updating\u2026' }
 
       -# ── Puzzles ──
       #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}

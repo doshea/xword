@@ -34,6 +34,13 @@
 - **Stats page**: Chart.js v4 vendored locally (`chart.umd.min.js`, loaded via `javascript_include_tag` in `content_for :head`), only on stats page. Stimulus `stats` controller renders charts. `pointRadius: 0` with `pointHitRadius: 8` for 1000+ data points.
 - **Solve timer**: Client-side `setInterval(1s)` in `solve_funcs.js`. Uses `solve_app.started_at` (epoch ms from `solution.created_at`). Freezes on win or if `is_complete` is true on load. Format: `MM:SS` / `H:MM:SS` / `Dd H:MM:SS`.
 - **Next puzzle on win**: `@next_puzzle` set in `check_completion` controller action. Uses subquery `Crossword.where(id: Crossword.new_to_user(...))` to avoid PG `DISTINCT + ORDER BY RANDOM()` conflict.
+- **Loading feedback patterns**:
+  - Global: `turbo:click` → `.xw-loading` on clicked element. Clean up on `turbo:before-render`/`turbo:load`.
+  - Forms: `data: { disable_with: 'Text…' }` — Rails/Turbo convention. Works with `button_to`, `submit_tag`, `f.submit`.
+  - AJAX toolbar: `.xw-btn--busy` class + `prop('disabled', true)` before `$.ajax`, restore in `complete` callback.
+  - Save auto-save vs manual: Only show busy state when `e` (event) param is truthy (manual click), not when called by auto-save timer.
+  - `_check_trigger()` helper returns the "Check ▾" dropdown trigger button — shared by 6 functions.
+  - `solution_choice.js`: programmatic `Turbo.visit` doesn't fire `turbo:click`, so add `.xw-loading` manually.
 
 ## Known Flakes
 - JS feature specs (login_spec, home_tabs_spec, admin_spec, edit_spec) can fail in full suite runs due to order-dependent Capybara/DB state leakage. Pass when run in isolation.
@@ -45,6 +52,7 @@
 - `Clue#strip_tags`: ASCII-8BIT strings get double-encoded by Loofah. Encoding guard added.
 
 ## Recently Completed
+- **Loading feedback system (4 layers)**: Global Turbo nav dimming (`.xw-loading` class on `turbo:click`), `disable_with` on 16 form buttons, solve toolbar `.xw-btn--busy` spinner + `.xw-btn--saved` green pulse, edit pattern search wired to `loading_controller.js`. No migrations.
 - **Visual design review (12 fixes)**: Hamburger labels, CTA button text, search placeholder, forgot-password color, empty states, contact page, account tabs, puzzle preview, auth error pages, banner padding, sticky footer, profile stats font.
 - **Profile N+1 fix**: 3 precomputed counts in `UsersController#show` → ivars in `_user.html.haml`
 - **FriendshipService**: Extracted from `FriendRequestsController`. `.accept` and `.reject` class methods. 8 specs.

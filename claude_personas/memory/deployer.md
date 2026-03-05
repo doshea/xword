@@ -2,8 +2,8 @@
 
 ## Deploy History
 
-### v553 — 2026-03-05
-**Commit:** TBD
+### v554 — 2026-03-05
+**Commit:** `dd1c98d`
 **Changes:** Visual design review — 12 items across 17 files (CSS + HAML only):
 - Empty states: new `.xw-empty-state` component (home ×3, NYT ×2, user-made)
 - Sticky footer: flexbox body + `flex: 1 0 auto` on `#body`
@@ -18,7 +18,7 @@
 - Banner padding, search placeholder quote fix
 **Migration:** None
 **Rollback:** `git revert <commit>` (pure frontend, instant)
-**Post-deploy:** TBD
+**Post-deploy:** Clean. Release v554. Assets recompiled (6 CSS files, new fingerprints). All pages 200. No errors.
 
 ### v552 — 2026-03-05
 **Commit:** `ee2ce36`
@@ -191,7 +191,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v552
+- Current release: v554
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

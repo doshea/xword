@@ -52,7 +52,7 @@
       %li
         = switch_tag @unpublished_crossword, :multiletter_mode, 'Multi-Letter'
   .xw-col-12.xw-lg-6.xw-flex.xw-items-end.xw-justify-end
-    = button_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), method: :patch, class: 'xw-btn', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.' })
+    = button_to('Publish Puzzle', publish_unpublished_crossword_path(@unpublished_crossword), method: :patch, class: 'xw-btn', data: { turbo_confirm: 'Are you sure you want to publish this puzzle?\nPublished puzzles cannot be edited or deleted.', disable_with: 'Publishing\u2026' })
 -# NON-INLINE ELEMENTS
 
 %section#idea-container.slide-up-container
@@ -80,8 +80,9 @@
   #pattern-search
     .xw-grid
       / Replaced: form_tag with remote: true → form_with (Turbo handles AJAX)
-      = form_with(url: match_words_path, method: :post) do |f|
+      = form_with(url: match_words_path, method: :post, data: { controller: 'loading', action: 'submit->loading#submit' }) do |f|
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
+        = submit_tag 'Search', class: 'hidden', data: { loading_target: 'button' }
       #word-match-results
 
 = link_to('#edit-settings', class: 'side-button', id: 'settings-button', data: { turbo: false }) do

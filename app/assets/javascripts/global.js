@@ -112,6 +112,25 @@ if (window.Turbo && Turbo.config && Turbo.config.drive) {
   });
 })();
 
+// Clicked-element loading feedback for Turbo Drive navigations.
+// Dims the clicked element and adds a spinner overlay on puzzle cards.
+(function() {
+  document.addEventListener('turbo:click', function(event) {
+    var el = event.target.closest('.xw-puzzle-card, .xw-btn, a');
+    if (!el) return;
+    el.classList.add('xw-loading');
+  });
+
+  // Clean up on page render or failed navigation
+  ['turbo:before-render', 'turbo:load'].forEach(function(evt) {
+    document.addEventListener(evt, function() {
+      document.querySelectorAll('.xw-loading').forEach(function(el) {
+        el.classList.remove('xw-loading');
+      });
+    });
+  });
+})();
+
 // Use turbo:load instead of $(document).ready() — DOMContentLoaded only fires once,
 // but turbo:load fires on every Turbo Drive visit. Since all handlers above delegate
 // from <body> (which persists across visits), we only need to bind once.

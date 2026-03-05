@@ -31,7 +31,7 @@
           = f.password_field :password_confirmation, placeholder: 'confirm password',
                              autocomplete: 'new-password', class: 'xw-chalkboard__input',
                              required: true, maxlength: User::MAX_PASSWORD_LENGTH
-        = f.submit 'Sign up!', class: 'xw-chalkboard__btn'
+        = f.submit 'Sign up!', class: 'xw-chalkboard__btn', data: { disable_with: 'Creating account\u2026' }
 
       %span.xw-chalkboard__or or
 
@@ -59,7 +59,7 @@
         .xw-chalkboard__remember
           = check_box_tag :remember_me, 1, true, class: 'xw-chalkboard__checkbox'
           = label_tag :remember_me, 'remember me', class: 'xw-chalkboard__remember-label'
-        = submit_tag 'Log in', class: 'xw-chalkboard__btn'
+        = submit_tag 'Log in', class: 'xw-chalkboard__btn', data: { disable_with: 'Logging in\u2026' }
 
       %span.xw-chalkboard__or or
 

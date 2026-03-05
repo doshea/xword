@@ -2,8 +2,12 @@ function solution_choice_ready() {
   // Click anywhere on a solution row (except delete) to navigate to that solution
   $("tbody").on("click", "tr td:not(.trash-td)", function(e) {
     e.preventDefault();
-    var link = $(this).parent().data("link");
-    if (link) Turbo.visit(link);
+    var $row = $(this).parent();
+    var link = $row.data("link");
+    if (link) {
+      $row.addClass('xw-loading');
+      Turbo.visit(link);
+    }
   });
 }
 

@@ -120,6 +120,9 @@ window.solve_app = {
     // Without this, the auto-save timer would send PUT /solutions/null, which triggers a
     // server-side flash error ("Solution could not be found") that persists across pages.
     if (!solve_app.solution_id) return;
+    var $btn = $('#solve-save');
+    // Only show busy state for manual saves (e triggered), not auto-saves
+    if (e) $btn.addClass('xw-btn--busy').prop('disabled', true);
     var letters = cw.get_puzzle_letters();
     var counter = solve_app.save_counter;
     $.ajax({
@@ -138,11 +141,21 @@ window.solve_app = {
             console.warn('save succeeded but UI update failed:', err);
           }
         }
+        // Brief green pulse on successful save
+        if (e && $btn.length) {
+          $btn.removeClass('xw-btn--saved');
+          $btn[0].offsetWidth; // force reflow to restart animation
+          $btn.addClass('xw-btn--saved');
+          setTimeout(function() { $btn.removeClass('xw-btn--saved'); }, 600);
+        }
       },
       error: function(xhr) {
         $('#save-status').text('Save failed');
         $('#save-clock').empty();
         console.warn('save_solution failed:', xhr.status, xhr.statusText);
+      },
+      complete: function() {
+        if (e) $btn.removeClass('xw-btn--busy').prop('disabled', false);
       }
     });
   },
@@ -169,6 +182,12 @@ window.solve_app = {
       // Warn anonymous users they'll lose work if they navigate away
       window.onbeforeunload = function() { return true; };
     }
+  },
+
+  // Returns the "Check ▾" dropdown trigger button for busy state feedback.
+  // All check/reveal/hint actions share this button since they live in its dropdown.
+  _check_trigger: function() {
+    return $('#solve-controls .xw-dropdown').first().find('button.check-completion').first();
   },
 
   // Shared handler for check_cell/check_word/check_puzzle JSON responses.
@@ -236,13 +255,16 @@ window.solve_app = {
       } else {
         var index = cw.selected.data('index');
         var letter = cw.selected.get_letter();
+        var $trigger = solve_app._check_trigger();
+        $trigger.addClass('xw-btn--busy').prop('disabled', true);
         $.ajax({
           dataType: 'json',
           type: 'POST',
           url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
           data: { letters: [letter], indices: [index] },
           success: solve_app.apply_mismatches,
-          error: function(xhr) { console.warn('check_cell failed:', xhr.status); }
+          error: function(xhr) { console.warn('check_cell failed:', xhr.status); },
+          complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
         });
         solve_app.save_solution();
       }
@@ -265,13 +287,16 @@ window.solve_app = {
       if (letters.length === 0) {
         cw.flash('The selected word is empty.', 'info');
       } else {
+        var $trigger = solve_app._check_trigger();
+        $trigger.addClass('xw-btn--busy').prop('disabled', true);
         $.ajax({
           dataType: 'json',
           type: 'POST',
           url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
           data: { letters: letters, indices: indices },
           success: solve_app.apply_mismatches,
-          error: function(xhr) { console.warn('check_word failed:', xhr.status); }
+          error: function(xhr) { console.warn('check_word failed:', xhr.status); },
+          complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
         });
         solve_app.save_solution();
       }
@@ -281,13 +306,16 @@ window.solve_app = {
   check_puzzle: function(e) {
     e.preventDefault();
     solve_app.save_solution();
+    var $trigger = solve_app._check_trigger();
+    $trigger.addClass('xw-btn--busy').prop('disabled', true);
     $.ajax({
       dataType: 'json',
       type: 'POST',
       url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
       data: { letters: cw.get_puzzle_letters() },
       success: solve_app.apply_mismatches,
-      error: function(xhr) { console.warn('check_puzzle failed:', xhr.status); }
+      error: function(xhr) { console.warn('check_puzzle failed:', xhr.status); },
+      complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
     });
   },
 
@@ -299,6 +327,8 @@ window.solve_app = {
     if (!solve_app.anonymous) {
       data['solution_id'] = solve_app.solution_id;
     }
+    var $trigger = solve_app._check_trigger();
+    $trigger.addClass('xw-btn--busy').prop('disabled', true);
     $.ajax({
       dataType: 'json',
       type: 'POST',
@@ -318,7 +348,8 @@ window.solve_app = {
           cw.flash('Your solution contains incorrect letters.', 'warning');
         }
       },
-      error: function(xhr) { console.warn('check_completion failed:', xhr.status); }
+      error: function(xhr) { console.warn('check_completion failed:', xhr.status); },
+      complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
     });
   },
 
@@ -440,6 +471,9 @@ window.solve_app = {
     var data = { indices: [index] };
     if (solve_app.solution_id) data.solution_id = solve_app.solution_id;
 
+    var $trigger = solve_app._check_trigger();
+    $trigger.addClass('xw-btn--busy').prop('disabled', true);
+
     $.ajax({
       dataType: 'json',
       type: 'POST',
@@ -451,7 +485,8 @@ window.solve_app = {
       error: function(xhr) {
         cw.flash('Reveal failed.', 'error');
         console.warn('reveal_cell failed:', xhr.status);
-      }
+      },
+      complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
     });
   },
 
@@ -488,6 +523,9 @@ window.solve_app = {
     var data = { indices: [index] };
     if (solve_app.solution_id) data.solution_id = solve_app.solution_id;
 
+    var $trigger = solve_app._check_trigger();
+    $trigger.addClass('xw-btn--busy').prop('disabled', true);
+
     $.ajax({
       dataType: 'json',
       type: 'POST',
@@ -499,7 +537,8 @@ window.solve_app = {
       error: function(xhr) {
         cw.flash('Hint failed.', 'error');
         console.warn('hint_word failed:', xhr.status);
-      }
+      },
+      complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
     });
   },
 

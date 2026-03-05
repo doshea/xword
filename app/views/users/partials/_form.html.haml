@@ -11,4 +11,4 @@
   .xw-field
     = f.label :password_confirmation, 'Confirm password', class: 'xw-label'
     = f.password_field :password_confirmation, autocomplete: 'new-password', class: 'xw-input'
-  = f.submit "Sign up", :class => 'xw-btn xw-btn--success'
+  = f.submit "Sign up", class: 'xw-btn xw-btn--success', data: { disable_with: 'Creating account\u2026' }

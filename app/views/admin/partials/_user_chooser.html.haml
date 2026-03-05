@@ -23,7 +23,7 @@
             %td= user.is_admin
             %td= user.created_at.strftime("%b %d, %Y")
             %td= user.updated_at.strftime("%b %d, %Y")
-            %td= button_to('Clone', admin_clone_user_path(id: user.id), class: 'xw-btn xw-btn--danger xw-btn--sm')
+            %td= button_to('Clone', admin_clone_user_path(id: user.id), class: 'xw-btn xw-btn--danger xw-btn--sm', data: { disable_with: 'Cloning\u2026' })
       - else
         %tr
           %td.center{colspan: 9} No Results

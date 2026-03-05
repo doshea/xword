@@ -14,4 +14,4 @@
       = label_tag :address, 'Mail To:'
       = email_field_tag :address, 'dylan@crossword-cafe.org'
     .xw-col-12.xw-lg-6
-      = submit_tag 'Send Test Emails', class: 'xw-btn xw-btn--success'
+      = submit_tag 'Send Test Emails', class: 'xw-btn xw-btn--success', data: { disable_with: 'Sending\u2026' }
