@@ -29,8 +29,8 @@
       &:hover {
         background-color: var(--color-surface-alt);
 
-        .xw-icon--arrow-left {
-          transform: scaleX(-1) translateX(-4px);
+        .xw-icon--chevron-right {
+          transform: translateX(4px);
         }
       }
     }
@@ -64,7 +64,7 @@
 }
 
 // Arrow icon animates on hover
-.xw-icon--arrow-left {
+.xw-icon--chevron-right {
   transition: transform var(--duration-fast) var(--ease-out);
 }
 
@@ -100,18 +100,18 @@
   }
 }
 
-// Delete column: don't navigate on click (JS excludes .trash-td)
-.trash-td {
+// Delete column: don't navigate on click (JS excludes .xw-solutions-table__delete)
+.xw-solutions-table__delete {
   cursor: default;
 }
 
-a.not-blue {
+.xw-solutions-table__delete-link {
   color: inherit;
 }
 
 // --- Left column metadata ---
 
-.metadata {
+.xw-solutions-meta {
   padding-top: var(--space-2);
 
   h2 {
@@ -124,12 +124,12 @@ a.not-blue {
     color: var(--color-text-secondary);
     margin-bottom: var(--space-1);
   }
-}
 
-hr {
-  border: none;
-  border-top: 1px solid var(--color-border);
-  margin: var(--space-4) 0;
+  hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: var(--space-4) 0;
+  }
 }
 
 // --- Tablet: compact table ---

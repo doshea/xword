@@ -1,6 +1,6 @@
 function solution_choice_ready() {
   // Click anywhere on a solution row (except delete) to navigate to that solution
-  $("tbody").on("click", "tr td:not(.trash-td)", function(e) {
+  $("tbody").on("click", "tr td:not(.xw-solutions-table__delete)", function(e) {
     e.preventDefault();
     var $row = $(this).parent();
     var link = $row.data("link");
