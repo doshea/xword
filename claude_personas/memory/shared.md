@@ -10,7 +10,7 @@
 
 | Item | Commit | Notes |
 |------|--------|-------|
-| Search Page (#2) | (uncommitted) | Blank query guard, `.limit(50)`, N+1 fix (removed puzzle count from word cards), spec cleanup |
+| Login / Signup (#4) | (uncommitted) | Turbo Stream ID fix, a11y labels, signup redirect, logged-in guards, title fixes, dead CSS, spec cleanup |
 
 ## Builder In Progress
 
@@ -23,7 +23,7 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 | # | Item | Scope | Plan |
 |---|------|-------|------|
 | 3 | Changelog | New feature (service + page + specs) | `plans/changelog-page.md` |
-| 4 | Login / Signup | 1 must-fix, 3 should-fix, 4 suggestions | `plans/login-signup-review.md` |
+| ~~4~~ | ~~Login / Signup~~ | ~~1 must-fix, 3 should-fix, 4 suggestions~~ | ~~Done~~ |
 | 5 | Forgot/Reset Password | 1 must-fix, 4 should-fix | `plans/forgot-reset-password-review.md` |
 | 6 | NYT Page / Calendar | 2 should-fix, 1 suggestion, 3 nitpick | `plans/nyt-calendar-review.md` |
 | 7 | Account Settings | 3 should-fix, 2 suggestions (bundle with #5) | `plans/account-settings-review.md` |
@@ -31,6 +31,7 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 | 9 | Admin Panel | 2 should-fix, 3 suggestions (low priority) | `plans/admin-panel-review.md` |
 | 10 | Team Solving UX | 4 should-fix, 2 suggestions | `plans/team-solving-review.md` |
 | 11 | Test Suite Health | 1 must-fix, 1 should-fix, 2 suggestions | `plans/test-suite-health.md` |
+| 12 | Backend Logic Audit | 4 should-fix, 4 suggestions | `plans/backend-logic-audit.md` |
 
 ## Planner Work Queue
 
@@ -40,7 +41,7 @@ Full queue with context: `claude_personas/plans/planner-meta-plan.md`
 |------|--------|-----------|
 | 1 | ✅ Done | — |
 | 2 | ✅ Done | — |
-| 3 | 4/5 | ~~Admin~~, ~~user-made~~, ~~team solving~~, ~~test suite~~, backend audit |
+| 3 | ✅ Done | — |
 
 ## Low-Priority Carry-Forward
 
@@ -64,3 +65,4 @@ v554–v557: Visual review, loading feedback, edit save bugs, account settings, 
 v560–v567: Edit frontend, pixel-perfect, void toggle fix, autosave icons, info pages, stats rebuild
 v569: Solution choice, create dashboard, profile, changelog
 v570: Word/clue detail, notifications polish, new puzzle form
+v571: Search page fixes (blank guard, limits, N+1)

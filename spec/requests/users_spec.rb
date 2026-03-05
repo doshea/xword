@@ -107,6 +107,22 @@ RSpec.describe 'Users', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # GET /users/new (signup page)
+  # -------------------------------------------------------------------------
+  describe 'GET /users/new' do
+    it 'renders the signup page' do
+      get '/users/new'
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'redirects to root when already logged in' do
+      log_in_as(user)
+      get '/users/new'
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # POST /users (create / signup)
   # -------------------------------------------------------------------------
   describe 'POST /users (signup)' do
@@ -117,9 +133,26 @@ RSpec.describe 'Users', type: :request do
       expect(response).to redirect_to(root_path)
     end
 
+    it 'redirects to the specified path after signup' do
+      expect {
+        post '/users', params: { user: { username: 'newuser2', email: 'new2@example.com', password: 'secret123', password_confirmation: 'secret123' }, redirect: '/faq' }
+      }.to change(User, :count).by(1)
+      expect(response).to redirect_to('/faq')
+    end
+
+    it 'blocks open redirects on signup' do
+      post '/users', params: { user: { username: 'newuser3', email: 'new3@example.com', password: 'secret123', password_confirmation: 'secret123' }, redirect: 'https://evil.com' }
+      expect(response).to redirect_to(root_path)
+    end
+
     it 'redirects back with errors for invalid data' do
       post '/users', params: { user: { username: '', email: '', password: 'x', password_confirmation: 'y' } }
       expect(response).to redirect_to(new_user_path)
+    end
+
+    it 'preserves redirect param on validation failure' do
+      post '/users', params: { user: { username: '', email: '', password: 'x', password_confirmation: 'y' }, redirect: '/crosswords/5' }
+      expect(response).to redirect_to(new_user_path(redirect: '/crosswords/5'))
     end
   end
 

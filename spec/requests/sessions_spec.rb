@@ -10,6 +10,12 @@ RSpec.describe 'Sessions', type: :request do
       get '/login'
       expect(response).to have_http_status(:ok)
     end
+
+    it 'redirects to root when already logged in' do
+      log_in_as(user)
+      get '/login'
+      expect(response).to redirect_to(root_path)
+    end
   end
 
   # -------------------------------------------------------------------------

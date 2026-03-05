@@ -37,6 +37,7 @@ class UsersController < ApplicationController
 
   #GET /users/new or new_user_path
   def new
+    return redirect_to(root_path) if @current_user.present?
     @user = User.new
   end
 
@@ -45,12 +46,12 @@ class UsersController < ApplicationController
     @user = User.new(create_user_params)
     if @user.save
       cookies.signed[:auth_token] = @user.auth_token
-      redirect_to root_path
+      redirect_to safe_redirect_path(params[:redirect])
     else
       error_messages = @user.errors.full_messages.uniq
       error_count = error_messages.length
       form_error = "There #{error_count > 1 ? 'were' : 'was' } #{pluralize(error_count, 'error')} signing up:"
-      redirect_to new_user_path, flash: {form_errors: error_messages, form_error: form_error}
+      redirect_to new_user_path(redirect: params[:redirect]), flash: {form_errors: error_messages, form_error: form_error}
     end
   end
 

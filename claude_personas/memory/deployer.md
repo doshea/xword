@@ -2,6 +2,19 @@
 
 ## Deploy History
 
+### v571 — 2026-03-05
+**Commit:** `4f5503d`
+**Changes:** Search page fixes:
+- Blank query early return (prevents 3 wasted DB queries)
+- `.limit(50)` on all 3 search queries (was unbounded)
+- N+1 fix: removed `word.crosswords.size` from word result cards
+- Nil-safe `&.any?` guards in view for blank query path
+- Controller specs migrated from should→expect()
+- 4 new live_search request specs
+**Migration:** None
+**Rollback:** `git revert 4f5503d`
+**Post-deploy:** Clean. Release phase exit 0 (no-op migration). Puma up ~4s. All pages 200. No errors.
+
 ### v570 — 2026-03-05
 **Commits:** `674e579`, `179edb7`, `39a8da0`, `1c5a234`
 **Changes:** 3-feature deploy — word/clue detail pages, notifications polish, new puzzle form:
@@ -299,7 +312,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v570
+- Current release: v571
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

@@ -28,7 +28,7 @@
 | 13 | User-Made Puzzles Page | ✅ Reviewed | `user-made-page-review.md` |
 | 14 | Team Solving UX | ✅ Reviewed | `team-solving-review.md` |
 | 15 | Test Suite Health | ✅ Reviewed | `test-suite-health.md` |
-| 16 | Backend Logic Audit | ⬜ Unreviewed | — |
+| 16 | Backend Logic Audit | ✅ Reviewed | `backend-logic-audit.md` |
 | — | Changelog (new feature) | 📋 Awaiting Builder | `changelog-page.md` |
 
 Previously deployed (no plan needed): home, solve, edit, welcome, nav, footer,
@@ -63,9 +63,8 @@ notification dropdown, error pages, loading feedback, stats, info pages, edit au
 ### ~~15. Test Suite Health~~ — ✅ Reviewed
 1 must-fix (flaky live_search — `let_it_be` + pg_search), 1 should-fix (147 `should` → `is_expected.to`), 2 suggestions (controller spec consolidation, feature spec gaps)
 
-### 16. Backend Logic Audit
-**Files:** All controllers + models
-**Check:** Auth gaps, mass assignment, N+1 on home/nytimes/user_made, unused Publishable scopes
+### ~~16. Backend Logic Audit~~ — ✅ Reviewed
+4 should-fix (inline admin guards, SolutionPartnering validations, 2 missing dependent:), 4 suggestions (8 dead scopes, Friendship self-guard, Word presence, Phrase/Word dependent:), 2 nitpick (wasted include, string exceptions)
 
 ---
 

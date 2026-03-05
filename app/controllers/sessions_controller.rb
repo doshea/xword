@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
 
   # GET /login or login_path
   def new
+    return redirect_to(root_path) if @current_user.present?
     @user = User.new
   end
 

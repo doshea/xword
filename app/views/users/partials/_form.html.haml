@@ -1,4 +1,5 @@
 = form_for @user do |f|
+  = hidden_field_tag :redirect, params[:redirect]
   .xw-field
     = f.label :username, class: 'xw-label'
     = f.text_field :username, autocomplete: 'username', class: 'xw-input'

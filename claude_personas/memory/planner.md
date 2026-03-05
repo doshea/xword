@@ -21,13 +21,16 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 
 - **Tier 1:** ✅ Done. All deployed (v570).
 - **Tier 2:** ✅ Done. All 5 reviewed, queued for Builder.
-- **Tier 3:** 4/5. Admin + user-made + team solving + test suite reviewed. Remaining: backend audit.
+- **Tier 3:** ✅ Done. All 5 reviewed (admin, user-made, team solving, test suite, backend audit).
 
 ### Turbo Stream `replace` pattern bug (2026-03-04)
 - `password_errors.turbo_stream.erb` and `wrong_password.turbo_stream.erb` use `turbo_stream.replace "password-errors"` but the replacement content lacks the `id="password-errors"` wrapper. First submission works; subsequent ones silently fail (no target). Affects both reset_password and account change-password. Both login/signup and forgot/reset reviews flagged this independently.
 
-## Open Questions
+### Backend audit — data integrity gaps (2026-03-04)
+- SolutionPartnering has zero validations and no compound unique DB index — flagged in both team-solving and backend reviews
+- Crossword#favorite_puzzles and User#friendship_ones/twos missing `dependent:` — orphan risk on deletion
+- 8 unused scopes identified across Publishable, Solution, Cell — safe to delete
 
-- 4 unused Publishable scopes (`standard`, `nonstandard`, `solo`, `teamed`) — prune when convenient
+## Open Questions
 - ~~FriendRequest model spec uses `should` syntax~~ — captured in test-suite-health.md (147 total `should` occurrences across 20 files)
 - No unfriend mechanism exists anywhere in the app — flagged as separate feature ticket
