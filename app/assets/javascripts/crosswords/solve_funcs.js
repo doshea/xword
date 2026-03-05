@@ -12,6 +12,7 @@ window.solve_app = {
   last_save: null,
   unsaved_changes: false,
   save_counter: null,
+  save_fail_count: 0,
 
   // --- Solve timer ---
 
@@ -137,8 +138,15 @@ window.solve_app = {
       success: function(data) {
         if (solve_app.save_counter == data.save_counter) {
           try {
+            solve_app.save_fail_count = 0;
             solve_app.log_save();
             solve_app.update_clock();
+            // Green pulse on manual save only (e is the click event, undefined for auto-saves)
+            if (e) {
+              var $saveBtn = $('#solve-save');
+              $saveBtn.addClass('xw-btn--saved');
+              $saveBtn.one('animationend', function() { $saveBtn.removeClass('xw-btn--saved'); });
+            }
           } catch (err) {
             // Still clear the unsaved flag so auto-save doesn't loop forever
             solve_app.unsaved_changes = false;
@@ -149,6 +157,10 @@ window.solve_app = {
       error: function(xhr) {
         $('#save-status').text('Save failed');
         $('#save-clock').empty();
+        solve_app.save_fail_count++;
+        if (solve_app.save_fail_count >= 3) {
+          cw.flash('Unable to save \u2014 check your connection.', 'error', 0);
+        }
         console.warn('save_solution failed:', xhr.status, xhr.statusText);
       },
       complete: function() {
@@ -263,7 +275,10 @@ window.solve_app = {
           url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
           data: { letters: [letter], indices: [index] },
           success: solve_app.apply_mismatches,
-          error: function(xhr) { console.warn('check_cell failed:', xhr.status); },
+          error: function(xhr) {
+            cw.flash('Check failed \u2014 please try again.', 'error');
+            console.warn('check_cell failed:', xhr.status);
+          },
           complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
         });
         solve_app.save_solution();
@@ -295,7 +310,10 @@ window.solve_app = {
           url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
           data: { letters: letters, indices: indices },
           success: solve_app.apply_mismatches,
-          error: function(xhr) { console.warn('check_word failed:', xhr.status); },
+          error: function(xhr) {
+            cw.flash('Check failed \u2014 please try again.', 'error');
+            console.warn('check_word failed:', xhr.status);
+          },
           complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
         });
         solve_app.save_solution();
@@ -314,7 +332,10 @@ window.solve_app = {
       url: "/crosswords/" + solve_app.crossword_id + "/check_cell",
       data: { letters: cw.get_puzzle_letters() },
       success: solve_app.apply_mismatches,
-      error: function(xhr) { console.warn('check_puzzle failed:', xhr.status); },
+      error: function(xhr) {
+        cw.flash('Check failed \u2014 please try again.', 'error');
+        console.warn('check_puzzle failed:', xhr.status);
+      },
       complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
     });
   },
@@ -348,7 +369,10 @@ window.solve_app = {
           cw.flash('Your solution contains incorrect letters.', 'warning');
         }
       },
-      error: function(xhr) { console.warn('check_completion failed:', xhr.status); },
+      error: function(xhr) {
+        cw.flash('Check failed \u2014 please try again.', 'error');
+        console.warn('check_completion failed:', xhr.status);
+      },
       complete: function() { $trigger.removeClass('xw-btn--busy').prop('disabled', false); }
     });
   },

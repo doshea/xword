@@ -26,8 +26,8 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 
 | Item | Status | Notes |
 |------|--------|-------|
-| P3-A: Solve Confidence | ✅ Ready for Builder | Plan: `claude_personas/plans/solve-confidence.md` |
-| P3-C: Design Token Completion | ✅ Ready for Builder | Plan: `claude_personas/plans/design-token-completion.md` |
+| P3-A: Solve Confidence | ✅ Built (uncommitted) | All 3 deliverables done: flash errors, save fail banner, save pulse |
+| P3-C: Design Token Completion | ✅ Built (uncommitted) | 6 tokens added, ~22 replacements across 6 files |
 | P3-E: Loading State Spinners | Queued | Mechanical — may skip review |
 | P3-H: Solve Page Navigation | Queued | After P3-A |
 

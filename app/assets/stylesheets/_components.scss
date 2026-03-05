@@ -42,7 +42,7 @@
 
   // Default: accent (forest green)
   background-color: var(--color-accent);
-  color: #fff;
+  color: var(--color-text-on-accent);
   border-color: var(--color-accent);
 
   &:hover, &:focus-visible {
@@ -97,7 +97,7 @@
   &.xw-btn--danger {
     background-color: var(--color-danger);
     border-color: var(--color-danger);
-    color: #fff;
+    color: var(--color-text-on-accent);
     &:hover, &:focus-visible {
       background-color: var(--color-danger-text);
       border-color: var(--color-danger-text);
@@ -107,7 +107,7 @@
   &.xw-btn--success {
     background-color: var(--color-success);
     border-color: var(--color-success);
-    color: #fff;
+    color: var(--color-text-on-accent);
     &:hover, &:focus-visible {
       background-color: var(--color-success-text);
       border-color: var(--color-success-text);
@@ -117,7 +117,7 @@
   &.xw-btn--warning {
     background-color: var(--color-warning);
     border-color: var(--color-warning);
-    color: #fff;
+    color: var(--color-text-on-accent);
     &:hover, &:focus-visible {
       background-color: var(--color-warning-text);
       border-color: var(--color-warning-text);
@@ -357,7 +357,7 @@
   color: var(--color-text);
 
   &::backdrop {
-    background-color: rgba(28, 26, 23, 0.6);
+    background-color: var(--color-overlay-backdrop);
     backdrop-filter: blur(2px);
   }
 
@@ -705,7 +705,7 @@
     &.current span {
       background-color: var(--color-accent);
       border-color: var(--color-accent);
-      color: #fff;
+      color: var(--color-text-on-accent);
     }
     &.disabled span { opacity: 0.4; cursor: not-allowed; }
     &.prev a, &.next a { font-weight: var(--weight-medium); }
@@ -791,7 +791,7 @@
 }
 
 .xw-footer__dot {
-  color: rgba(255, 255, 255, 0.20);
+  color: var(--color-overlay-border);
   font-size: var(--text-sm);
   user-select: none;
 }
@@ -1143,7 +1143,7 @@
 
     &:hover {
       background: var(--color-accent);
-      color: white;
+      color: var(--color-text-on-accent);
     }
   }
 }

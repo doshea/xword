@@ -134,6 +134,22 @@ $row-width:         62.5em;  // legacy crossword layout width (from _dimensions.
   --color-scrollbar-thumb: rgba(28, 26, 23, 0.35); // warm-tinted, matches shadow palette
 
   // ---------------------------------------------------------------------------
+  // COLOR — Overlays (semi-transparent layers on dark/light surfaces)
+  // ---------------------------------------------------------------------------
+
+  --color-overlay-hover:    rgba(255, 255, 255, 0.12); // hover highlight on dark surfaces
+  --color-overlay-subtle:   rgba(255, 255, 255, 0.06); // faint differentiation on dark surfaces
+  --color-overlay-border:   rgba(255, 255, 255, 0.20); // borders/dividers on dark surfaces
+  --color-overlay-backdrop: rgba(28, 26, 23, 0.6);     // modal/dialog backdrop
+  --color-tint-hover:       rgba(28, 26, 23, 0.06);    // hover tint on light surfaces
+
+  // Pure white for text on colored backgrounds (accent, danger, success, warning).
+  // --color-text-inverse (#f5f0e8) is warm off-white — ideal on dark surfaces,
+  // but buttons at --text-sm/--weight-medium (13px/500) need 4.5:1 contrast ratio
+  // for WCAG AA. #f5f0e8 on accent green (#3a7d5c) = 3.7:1 — insufficient.
+  --color-text-on-accent: #fff;
+
+  // ---------------------------------------------------------------------------
   // TYPOGRAPHY
   //
   // Playfair Display — editorial serif for headings. Think newspaper masthead.
