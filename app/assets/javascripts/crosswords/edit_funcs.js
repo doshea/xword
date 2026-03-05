@@ -249,7 +249,7 @@ window.edit_app = {
 
     if (recursive) {
       var next_cell = cw.select_across ? this.cell_to_right() : this.cell_below();
-      next_cell.highlight();
+      if (next_cell) next_cell.highlight();
     }
     cw.number_cells();
     edit_app.number_clues();
