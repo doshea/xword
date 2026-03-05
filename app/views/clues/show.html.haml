@@ -1,6 +1,12 @@
+- title truncate(@clue.content, length: 50)
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
     %h1= @clue.content
+    - if @clue.word
+      %p.xw-prose__subtitle
+        Clue for
+        = link_to @clue.word.content, @clue.word
+        %span (#{@clue.word.content.length} letters)
     %section
       %h2 Puzzles
       %p Featured #{pluralize(@count, 'time')} in #{pluralize(@crosswords.length, 'puzzle')}:

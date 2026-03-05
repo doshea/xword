@@ -891,6 +891,15 @@
     color: var(--color-text-muted);
   }
 
+  .xw-prose__subtitle {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    letter-spacing: var(--tracking-wide);
+    margin-top: calc(-1 * var(--space-3));
+    margin-bottom: var(--space-4);
+  }
+
   .xw-btn {
     margin-top: var(--space-6);
   }
@@ -903,6 +912,22 @@
 
     &.center { justify-content: center; }
   }
+}
+
+
+// ---------------------------------------------------------------------------
+// DIFFICULTY INDICATOR — .xw-difficulty
+// ---------------------------------------------------------------------------
+// Dot-based difficulty visualization (●○○○○ through ●●●●●).
+// Used on word detail pages next to clue links.
+
+.xw-difficulty {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-accent-muted);
+  letter-spacing: 1px;
+  margin-right: var(--space-2);
+  vertical-align: baseline;
 }
 
 

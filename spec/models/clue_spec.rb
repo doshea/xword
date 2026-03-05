@@ -12,13 +12,13 @@
 
 describe Clue do
   context 'associations' do
-    it {should belong_to(:user).optional}
-    it {should belong_to(:word).optional}
-    it {should belong_to(:phrase).optional}
-    it {should have_many :across_cells}
-    it {should have_many :down_cells}
-    it {should have_many(:across_crosswords).through(:across_cells).source(:crossword)}
-    it {should have_many(:down_crosswords).through(:down_cells).source(:crossword)}
+    it { is_expected.to belong_to(:user).optional }
+    it { is_expected.to belong_to(:word).optional }
+    it { is_expected.to belong_to(:phrase).optional }
+    it { is_expected.to have_many(:across_cells) }
+    it { is_expected.to have_many(:down_cells) }
+    it { is_expected.to have_many(:across_crosswords).through(:across_cells).source(:crossword) }
+    it { is_expected.to have_many(:down_crosswords).through(:down_cells).source(:crossword) }
   end
 
   describe '#strip_tags (before_save callback)' do

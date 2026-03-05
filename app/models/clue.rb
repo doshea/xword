@@ -27,6 +27,7 @@ class Clue < ApplicationRecord
   def crosswords_by_title
     Crossword.where(id: across_crosswords.select(:id))
              .or(Crossword.where(id: down_crosswords.select(:id)))
+             .includes(:user)
              .order(:title)
   end
 

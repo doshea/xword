@@ -5,12 +5,12 @@ describe WordsController do
   describe 'GET #show' do
     before { get :show, params: { id: word.id } }
 
-    it { should respond_with(200) }
+    it { expect(response).to have_http_status(:ok) }
     it 'assigns @word' do
       expect(assigns(:word)).to eq word
     end
-    it 'assigns @clues as an array' do
-      expect(assigns(:clues)).to be_an Array
+    it 'assigns @clues as a relation' do
+      expect(assigns(:clues)).to respond_to(:to_a)
     end
   end
 
@@ -23,7 +23,7 @@ describe WordsController do
         post :match, params: { pattern: '?????' }
       end
 
-      it { should respond_with(200) }
+      it { expect(response).to have_http_status(:ok) }
       it 'assigns @results' do
         expect(assigns(:results)).to eq %w[HELLO WORLD]
       end
@@ -35,7 +35,7 @@ describe WordsController do
         post :match, params: { pattern: '?????' }
       end
 
-      it { should respond_with(200) }
+      it { expect(response).to have_http_status(:ok) }
       it 'assigns empty results' do
         expect(assigns(:results)).to eq []
       end
@@ -46,7 +46,7 @@ describe WordsController do
         post :match, params: { pattern: '' }
       end
 
-      it { should respond_with(200) }
+      it { expect(response).to have_http_status(:ok) }
       it 'assigns empty results without calling word_match' do
         expect(assigns(:results)).to eq []
       end
@@ -57,7 +57,7 @@ describe WordsController do
         post :match, params: {}
       end
 
-      it { should respond_with(200) }
+      it { expect(response).to have_http_status(:ok) }
       it 'assigns empty results' do
         expect(assigns(:results)).to eq []
       end

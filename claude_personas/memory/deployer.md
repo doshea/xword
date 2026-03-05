@@ -2,6 +2,17 @@
 
 ## Deploy History
 
+### v569 — 2026-03-05
+**Commits:** `0a4e44e`, `150b44c`, `e141d1c`, `5abe26c`
+**Changes:** 4-feature deploy — solution choice, create dashboard, profile, changelog:
+- Solution choice: BEM class rename (.metadata→.xw-solutions-meta, .trash-td→.xw-solutions-table__delete), a11y (caption, sr-only headers, icon titles), thumbnail overflow fix, chevron-right icon, tablet columns
+- Create dashboard: `before_action :ensure_logged_in` (was showing "You're not logged in"), `row_top_title`, BEM section headings + count badges, empty state with icon, ordered queries (updated_at desc), updated spec
+- Profile: hide "In Progress" stat from other users (was leaking draft count), "Edit Profile" link on own profile, location display, avatar 140→120px (matches upload version), simplified `base_crossword` (loop→one-liner), turbo_stream friend accept/reject, 7 new request specs
+- Changelog: new `/changelog` page — `GitHubChangelogService` (HTTParty + 1hr cache), date-grouped timeline with category badges, SHA links, pagination, footer link, 5 request specs
+**Migration:** None
+**Rollback:** `git revert 5abe26c e141d1c 150b44c 0a4e44e`
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~3s. No errors.
+
 ### v567 — 2026-03-05
 **Commit:** `d846825`
 **Changes:** Stats page rebuild — 6-section community dashboard:
@@ -278,7 +289,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v567
+- Current release: v569
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

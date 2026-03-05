@@ -10,12 +10,12 @@
 
 describe Word do
   context 'associations' do
-    it {should have_many :clues}
-    it {should have_many(:phrases).through(:clues)}
-    it {should have_many :across_cells}
-    it {should have_many :down_cells}
-    it {should have_many(:across_crosswords).through(:across_cells).source(:crossword) }
-    it {should have_many(:down_crosswords).through(:down_cells).source(:crossword) }
+    it { is_expected.to have_many(:clues) }
+    it { is_expected.to have_many(:phrases).through(:clues) }
+    it { is_expected.to have_many(:across_cells) }
+    it { is_expected.to have_many(:down_cells) }
+    it { is_expected.to have_many(:across_crosswords).through(:across_cells).source(:crossword) }
+    it { is_expected.to have_many(:down_crosswords).through(:down_cells).source(:crossword) }
   end
 
   describe '.word_match' do

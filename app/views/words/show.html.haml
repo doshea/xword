@@ -1,3 +1,4 @@
+- title "#{@word.content} — Word"
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
     = render partial: 'words/partials/word'
@@ -6,9 +7,12 @@
       %p Featured #{pluralize(@count, 'time')} in #{pluralize(@crosswords.length, 'puzzle')}:
       - @crosswords.each do |crossword|
         = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
-    %section
-      %h2 Clues
-      %p There #{@clues.length == 1 ? 'is' : 'are'} #{pluralize(@clues.length, 'clue')} for this word:
-      %ul
-        - @clues.each do |clue|
-          %li= link_to clue.content, clue
+    - if @clues.any?
+      %section
+        %h2 Clues
+        %p There #{@clues.length == 1 ? 'is' : 'are'} #{pluralize(@clues.length, 'clue')} for this word:
+        %ul
+          - @clues.each do |clue|
+            %li
+              %span.xw-difficulty= '●' * clue.difficulty + '○' * (5 - clue.difficulty)
+              = link_to clue.content, clue

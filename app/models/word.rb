@@ -33,7 +33,7 @@ class Word < ApplicationRecord
   end
 
   def crosswords_by_title
-    crosswords.order(:title)
+    crosswords.includes(:user).order(:title)
   end
   self.per_page = 50
 

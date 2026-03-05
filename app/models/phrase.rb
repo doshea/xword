@@ -31,6 +31,6 @@ class Phrase < ApplicationRecord
   end
 
   def crosswords_by_title
-    crosswords.order(:title)
+    crosswords.includes(:user).order(:title)
   end
 end

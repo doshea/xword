@@ -5,7 +5,7 @@ class WordsController < ApplicationController
   def show
     @crosswords = @word.crosswords_by_title
     @count = @word.across_crosswords.size + @word.down_crosswords.size
-    @clues = @word.clues.sort_by(&:difficulty)
+    @clues = @word.clues.order(:difficulty)
   end
 
   #POST /words/match or match_words_path
