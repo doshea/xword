@@ -2,6 +2,17 @@
 
 ## Deploy History
 
+### v576 — 2026-03-05
+**Commits:** `01e8ea0`, `044678d`, `a3f5f1b`, `d8d48a4`
+**Changes:** A11y audit + specs + critical tab fix:
+- Form a11y: 7 aria-labels on inputs, 8 `<a>`→`<button>` conversions, home/NYT tab links→buttons, dead reply pencil deleted
+- Persona memory + 5 Phase 2 plan docs (no app code)
+- 72 new specs: NytPuzzleFetcher, NytGithubRecorder, GithubChangelogService, UnpublishedCrossword
+- **Critical fix**: tabs controller used `getAttribute('href')` which returns null on `<button>` — now uses `aria-controls` with `href` fallback. Tab lazy-load support added.
+**Migration:** None
+**Rollback:** `git revert d8d48a4 a3f5f1b 044678d 01e8ea0` (pure frontend/specs/docs, instant)
+**Post-deploy:** Release v576. Release phase exit 0 (no-op migration). Puma up ~3s, 2 workers booted. Build succeeded. No errors.
+
 ### v574 — 2026-03-05
 **Commit:** `ecaebe9`
 **Changes:** Bulk deploy — review items 5–12:
@@ -354,7 +365,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v574
+- Current release: v576
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

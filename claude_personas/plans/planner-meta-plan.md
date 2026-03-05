@@ -52,10 +52,10 @@ Surfaced by full-codebase audit after Phase 1 completion. Organized by risk.
 | P2-1 | Database Constraints Migration | Review | ✅ Reviewed | `db-constraints-migration.md` |
 | P2-2 | Form Accessibility Audit | Review | ✅ Reviewed | `form-accessibility-audit.md` |
 | P2-3 | Service Object Test Coverage | Review | ✅ Reviewed | `service-test-coverage.md` |
-| P2-4 | API Security & Rate Limiting | Review | ⬚ Unreviewed | — |
-| P2-5 | NYT Page Pagination | Review | ⬚ Unreviewed | — |
-| P2-6 | JS Event Listener Cleanup | Review | ⬚ Unreviewed | — |
-| P2-7 | Stats Page Performance | Review | ⬚ Unreviewed | — |
+| P2-4 | API Security & Rate Limiting | Review | ✅ Reviewed | `api-security-review.md` |
+| P2-5 | NYT Page Pagination | Review | ✅ Reviewed | `nyt-pagination.md` |
+| P2-6 | JS Event Listener Cleanup | Review | ✅ Reviewed | `js-event-listener-cleanup.md` |
+| P2-7 | Stats Page Performance | Review | ✅ Reviewed | `stats-page-performance.md` |
 
 ### Tier 1 — Data Integrity (prevents real data bugs)
 
@@ -86,12 +86,12 @@ Scope: ~10 view files, 0 migration
 - Edit page "Ideas" and "Pattern search" inputs have no labels
 - Review: planner catalogs every instance, writes specific fix per form
 
-**P2-6: JS Event Listener Cleanup**
-Scope: 3-4 JS files
-- `nav_controller.js` and `dropdown_controller.js` attach `document.addEventListener('click')` without cleanup in `disconnect()` — listeners accumulate on Turbo navigation
-- Edit page bottom-button handlers stack on repeated visits
-- Win modal inline JS (50-68 lines) should be extracted to Stimulus controller
-- Review: planner identifies all leak sites, determines which need Stimulus extraction vs disconnect cleanup
+**P2-6: JS Event Listener Cleanup** *(scope revised after audit — 3 of 4 original concerns were false alarms)*
+Scope: 1 JS file (crossword_funcs.js)
+- `document.onkeydown`/`onkeypress` global key suppression persists on all pages after first crossword visit — must-fix
+- ~~nav/dropdown controllers missing disconnect()~~ — false: both have proper cleanup
+- ~~Edit bottom-button handlers stack~~ — false: Turbo body replacement prevents stacking
+- ~~Win modal inline JS~~ — not a leak; defer Stimulus extraction to visual redesign
 
 ### Tier 3 — Test Coverage (confidence for future changes)
 

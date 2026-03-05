@@ -10,18 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_05_080039) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_05_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "cell_edits", force: :cascade do |t|
-    t.text "across_clue_content"
-    t.integer "cell_id"
-    t.datetime "created_at"
-    t.text "down_clue_content"
-    t.datetime "updated_at"
-    t.index ["cell_id"], name: "index_cell_edits_on_cell_id"
-  end
 
   create_table "cells", force: :cascade do |t|
     t.integer "across_clue_id"
@@ -96,6 +87,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_080039) do
     t.integer "sender_id"
     t.datetime "updated_at", null: false
     t.index ["recipient_id"], name: "index_friend_requests_on_recipient_id"
+    t.index ["sender_id", "recipient_id"], name: "index_friend_requests_on_sender_and_recipient", unique: true
     t.index ["sender_id"], name: "index_friend_requests_on_sender_id"
   end
 
@@ -103,6 +95,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_080039) do
     t.integer "friend_id"
     t.integer "user_id"
     t.index ["friend_id"], name: "index_friendships_on_friend_id"
+    t.index ["user_id", "friend_id"], name: "index_friendships_on_user_and_friend", unique: true
     t.index ["user_id"], name: "index_friendships_on_user_id"
   end
 
@@ -116,6 +109,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_080039) do
     t.datetime "read_at"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["user_id", "actor_id", "notification_type", "notifiable_type", "notifiable_id"], name: "index_notifications_on_dedup", unique: true
     t.index ["user_id", "actor_id", "notification_type"], name: "index_notifications_on_dedup_no_notifiable", unique: true, where: "(notifiable_type IS NULL)"
@@ -151,6 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_080039) do
     t.datetime "updated_at"
     t.integer "user_id"
     t.index ["crossword_id", "user_id"], name: "index_solutions_on_crossword_id_and_user_id"
+    t.index ["crossword_id", "user_id"], name: "index_solutions_on_crossword_user_personal_unique", unique: true, where: "(team = false)"
     t.index ["crossword_id"], name: "index_solutions_on_crossword_id"
     t.index ["key"], name: "index_solutions_on_key_unique", unique: true, where: "(key IS NOT NULL)"
     t.index ["user_id", "is_complete"], name: "index_solutions_on_user_id_and_is_complete"
@@ -196,11 +191,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_080039) do
     t.string "verification_token"
     t.boolean "verified", default: false
     t.index ["auth_token"], name: "index_users_on_auth_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "words", force: :cascade do |t|
     t.string "content", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["content"], name: "index_words_on_content", unique: true
   end
 end

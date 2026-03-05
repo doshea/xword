@@ -71,15 +71,6 @@ class Comment < ApplicationRecord
     ]
   }.freeze
 
-  def format_for_api
-    acceptable_keys = [:content, :flagged, :created_at, :updated_at]
-    hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
-    hash[:commenter] = user&.username
-    hash[:reply_count] = replies.count
-    hash[:replies] = replies.map{|r| r.format_for_api}
-    hash
-  end
-
   def self.random_wine_comment
     structure = WINE_VOCAB[:starts].sample + WINE_VOCAB[:lists].sample
     structure.gsub(/\*adv/){|a| WINE_VOCAB[:advs].sample}.gsub(/\*adj/){|a| WINE_VOCAB[:adjs].sample}.gsub(/\*noun/){|a| WINE_VOCAB[:nouns].sample}.gsub(/\*amt/){|a| WINE_VOCAB[:amts].sample}.humanize + '...'

@@ -137,17 +137,8 @@ Rails.application.routes.draw do
   end
 
   namespace :api, defaults: {format: :json} do
-    get '/nyt_source/:year/:month/:day' => :nyt_source
     get '/nyt/:year/:month/:day' => :nyt
-    namespace :users do
-      get '/' => :index
-      get :search
-      get :friends
-    end
-    namespace :crosswords do
-      get :search
-      get :simple
-    end
+    get '/friends' => :friends
   end
 
   # Serve websocket cable requests in-process

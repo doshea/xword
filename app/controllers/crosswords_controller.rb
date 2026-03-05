@@ -6,11 +6,15 @@ class CrosswordsController < ApplicationController
   #GET /crosswords/:id or crossword_path
   def show
     if @current_user
-      @solution = Solution.find_or_create_by(
-        crossword_id: @crossword.id,
-        user_id: @current_user.id,
-        team: false
-      )
+      @solution = begin
+        Solution.find_or_create_by(
+          crossword_id: @crossword.id,
+          user_id: @current_user.id,
+          team: false
+        )
+      rescue ActiveRecord::RecordNotUnique
+        Solution.find_by(crossword_id: @crossword.id, user_id: @current_user.id, team: false)
+      end
       @solution.fill_letters
       # Single EXISTS query instead of loading all favorites into memory twice in the view.
       @is_favorited = @current_user.favorites.exists?(@crossword.id)
@@ -70,7 +74,11 @@ class CrosswordsController < ApplicationController
       @comments = @crossword.comments.includes(:user, replies: :user)
       if @current_user
         @is_favorited = @current_user.favorites.exists?(@crossword.id)
-        SolutionPartnering.find_or_create_by(solution_id: @solution.id, user_id: @current_user.id) unless (@solution.user == @current_user)
+        begin
+          SolutionPartnering.find_or_create_by(solution_id: @solution.id, user_id: @current_user.id) unless (@solution.user == @current_user)
+        rescue ActiveRecord::RecordNotUnique
+          # Unique index caught duplicate — safe to ignore
+        end
       end
       render :show
     else
@@ -81,7 +89,11 @@ class CrosswordsController < ApplicationController
   #POST /crosswords/:id/favorite or favorite_crossword_path
   def favorite
     if @crossword && @current_user
-      fav = FavoritePuzzle.find_or_create_by(user_id: @current_user.id, crossword_id: @crossword.id)
+      fav = begin
+        FavoritePuzzle.find_or_create_by(user_id: @current_user.id, crossword_id: @crossword.id)
+      rescue ActiveRecord::RecordNotUnique
+        FavoritePuzzle.find_by(user_id: @current_user.id, crossword_id: @crossword.id)
+      end
       if fav.persisted?
         render :favorite_unfavorite
       else

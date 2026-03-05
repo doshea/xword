@@ -355,7 +355,11 @@ class Crossword < ApplicationRecord
     existing_phrases ||= {}
 
     words_hsh.each do |word, clues|
-      the_word = existing_words[word] ||= Word.find_or_create_by(content: word)
+      the_word = existing_words[word] ||= begin
+        Word.find_or_create_by(content: word)
+      rescue ActiveRecord::RecordNotUnique
+        Word.find_by!(content: word)
+      end
 
       clues.each do |clue|
         attrs = { word: the_word }
@@ -375,18 +379,6 @@ class Crossword < ApplicationRecord
   def self.random_dimension(max_reduc=0)
     (Crossword::MIN_DIMENSION..(Crossword::MAX_DIMENSION - max_reduc)).to_a.sample
   end
-
-  def format_for_api(include_comments=false)
-    acceptable_keys = [:title, :rows, :cols, :letters, :description, :circled, :created_at]
-    hash = attributes.symbolize_keys.delete_if{|k,v| !k.in? acceptable_keys}
-    hash[:creator] = user&.username
-    if include_comments.present? && !(include_comments.to_s.downcase.in?(%w[false f 0]))
-      hash[:comment_count] = comments.count
-      hash[:comments] = comments.map{|c| c.format_for_api}
-    end
-    hash
-  end
-
 
   private
 

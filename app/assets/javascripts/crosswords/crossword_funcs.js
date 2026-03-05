@@ -262,8 +262,6 @@ window.cw = {
 };
 
 cw.PAGE_NAV_KEYS = [cw.UP, cw.RIGHT, cw.DOWN, cw.LEFT, cw.SPACE];
-document.onkeydown = cw.suppressBackspaceAndNav;
-document.onkeypress = cw.suppressBackspaceAndNav;
 
 // Use turbo:load instead of $(document).ready() so click handlers are
 // re-bound after Turbo Drive replaces the page body on navigation.
@@ -271,9 +269,27 @@ document.onkeypress = cw.suppressBackspaceAndNav;
 // (solve.js is loaded in <head> so it executes once per page-type change).
 if (window._cwTurboLoadHandler) document.removeEventListener("turbo:load", window._cwTurboLoadHandler);
 window._cwTurboLoadHandler = function() {
-  if (!$(".cell").length) return; // not on a crossword page
+  if (!$(".cell").length) {
+    // Clean up key suppression when navigating away from crossword pages
+    if (window._cwKeydownHandler) {
+      document.removeEventListener('keydown', window._cwKeydownHandler);
+      document.removeEventListener('keypress', window._cwKeydownHandler);
+      window._cwKeydownHandler = null;
+    }
+    return;
+  }
   if (!cw.editing) cw.number_cells();
   $(document).off("keydown.cw").on("keydown.cw", cw.keypress);
+
+  // Bind key suppression inside turbo:load so it's scoped to crossword pages.
+  // Uses remove+re-add pattern to prevent stacking on repeated visits.
+  if (window._cwKeydownHandler) {
+    document.removeEventListener('keydown', window._cwKeydownHandler);
+    document.removeEventListener('keypress', window._cwKeydownHandler);
+  }
+  window._cwKeydownHandler = cw.suppressBackspaceAndNav;
+  document.addEventListener('keydown', window._cwKeydownHandler);
+  document.addEventListener('keypress', window._cwKeydownHandler);
   $(".cell").on("click", function(e) {
     e.stopPropagation();
     if ($('#unpublished_crossword_one_click_void').prop('checked')) {

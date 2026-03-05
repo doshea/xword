@@ -24,7 +24,7 @@
   - if @current_user
     .team-modal__invite{ data: { controller: 'invite',
                                   'invite-solution-id-value': @solution.id,
-                                  'invite-friends-url-value': api_users_friends_path } }
+                                  'invite-friends-url-value': api_friends_path } }
       %h3.team-modal__invite-heading
         = icon('user-plus', size: 18)
         Invite a Friend

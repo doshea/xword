@@ -8,9 +8,14 @@
 
 ## Pending Deploy
 
-**P2-2: Form Accessibility Audit** — Ready to commit. 17 a11y fixes: 7 aria-labels on inputs, 8 anchor→button conversions (+ CSS resets), 2 tab link→button conversions. Deleted dead reply edit pencil. Updated 1 spec. No migration. 14 files changed.
-
 **P2-5: NYT Page Lazy Tab Loading** — Ready to commit. Lazy-loads day-of-week tabs: only Monday tab renders on initial load, other 6 tabs fetch via `GET /nytimes/day/:wday` on click. Controller refactored to use `@wday_counts` (1 GROUP BY query) + `nytimes_puzzles_for_wday` helper. New `_nyt_day_content` partial. TabsController enhanced with generic `data-lazy-src` fetch (opt-in, no impact on other tab instances). 6 new request specs (19 total NYT specs). No migration. 5 files changed + 1 new partial.
+
+**P2-4: API Cleanup** — Planner reviewed ✅ 1 should-fix. Deleted `Api::UsersController`, `Api::CrosswordsController`, `nyt_source` route. Moved `friends` action to `ApiController`. Deleted `format_for_api` from Crossword + Comment models. Updated `_team.html.haml` route helper. Rewrote API specs (4 examples). No migration. 8 files changed.
+- **should-fix**: `ApiController#friends` `.select` doesn't include `:deleted_at` but `display_name` calls `deleted?` → `deleted_at.present?`. Will raise `MissingAttributeError` if a deleted user has a friendship. Fix: add `:deleted_at` to select list (pre-existing bug, easy fix during relocation).
+
+**P2-6: JS Event Listener Cleanup** — Planner reviewed ✅ Clean. Moved `document.onkeydown`/`onkeypress` from parse-time global assignment into `turbo:load` handler with cleanup on non-crossword pages. Fixes keyboard scrolling suppression site-wide after visiting solve/edit. 1 file changed. No migration, no spec changes.
+
+**P2-1: DB Constraints Migration** — Planner reviewed ✅ Clean. Migration with pre-flight dupe checks, ctid dedup, 6 unique indexes, cell_edits drop, partial solution index. RecordNotUnique rescues in CrosswordsController + Crossword model. All follow established patterns.
 
 ## Builder In Progress
 
@@ -22,26 +27,15 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 
 ~~**P2-1: Database Constraints Migration**~~ ✅ Built. Pending commit.
 
-**P2-2: Form Accessibility Audit** → `claude_personas/plans/form-accessibility-audit.md` — Picked up by Builder at 2026-03-05 14:30
-17 issues: 7 must-fix (unlabeled inputs), 8 should-fix (a→button), 2 suggestion (tab links).
-3 batches, ~1hr total. No migrations, no JS changes, no new specs needed.
-`<main>` landmark concern was false alarm — all pages inherit from application layout.
+~~**P2-2: Form Accessibility Audit**~~ ✅ Built. Pending commit.
 
 ~~**P2-5: NYT Page Lazy Tab Loading**~~ ✅ Built. Pending commit.
 
-**P2-4: API Cleanup — Keep Only NYT GitHub Proxy** → `claude_personas/plans/api-security-review.md`
-Delete `/api/users`, `/api/crosswords` namespaces AND `/api/nyt_source` route. Move `friends`
-action to `ApiController` (team invite modal uses it). Delete `format_for_api` from Crossword
-and Comment models. Keep only `GET /api/nyt/:year/:month/:day` + new `GET /api/friends`. ~25min.
+~~**P2-4: API Cleanup**~~ ✅ Built. Pending commit.
 
-~~**P2-3: Service Object Test Coverage**~~ ✅ Built. Ready to commit. 4 new spec files (72 examples): NytPuzzleFetcher (11), NytGithubRecorder (7), GithubChangelogService (35), UnpublishedCrossword (19). `letters_to_clue_numbers` verified working correctly — TODO comment is stale. No migration, no source changes.
+~~**P2-3: Service Object Test Coverage**~~ ✅ Built. Pending commit.
 
-**P2-6: JS Event Listener Cleanup** → `claude_personas/plans/js-event-listener-cleanup.md`
-1 must-fix: `document.onkeydown`/`onkeypress` in `crossword_funcs.js` persists globally after
-first crossword visit, suppressing arrow/space keyboard scrolling on all non-crossword pages.
-Fix: move into turbo:load handler with cleanup on page exit. 1 file, ~15min.
-Meta-plan's other 3 concerns (Stimulus disconnect, jQuery stacking, bottom-button handlers)
-are all false alarms — codebase JS hygiene is solid.
+~~**P2-6: JS Event Listener Cleanup**~~ ✅ Built. Pending commit.
 
 ## Planner Work Queue
 
@@ -78,3 +72,4 @@ v571: Search page fixes (blank guard, limits, N+1)
 v572: Login/signup polish (Turbo Stream fix, a11y, redirects, dead CSS/specs)
 v573: Changelog polish (CSS loading fix, prefix stripping, noise filtering, a11y)
 v574: Review items 5–12 (passwords, NYT, team solving, test health, backend audit + unique index migration)
+v576: Form a11y audit, 72 service/model specs, tab controller fix (aria-controls)

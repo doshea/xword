@@ -20,7 +20,7 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 **Source of truth:** `claude_personas/plans/planner-meta-plan.md`
 
 - **Phase 1:** ✅ Done. 16 reviews + changelog, all deployed (v548–v574).
-- **Phase 2:** 2/7 reviewed. DB constraints ✅ (plan ready), service specs ✅ (plan ready). 5 remaining: a11y, API security, NYT pagination, JS cleanup, stats perf.
+- **Phase 2:** ✅ All 7 reviewed. DB constraints ✅, service specs ✅, API security ✅, NYT pagination ✅, JS cleanup ✅, a11y ✅ (built), stats perf ✅ (no build needed).
 
 ### Turbo Stream `replace` pattern bug (2026-03-04)
 - `password_errors.turbo_stream.erb` and `wrong_password.turbo_stream.erb` use `turbo_stream.replace "password-errors"` but the replacement content lacks the `id="password-errors"` wrapper. First submission works; subsequent ones silently fail (no target). Affects both reset_password and account change-password. Both login/signup and forgot/reset reviews flagged this independently.
@@ -64,6 +64,43 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 - Migration includes ctid-based dedup for id:false tables (friendships, friend_requests)
 - Existing rescue patterns to follow: Phrase (retry-then-find), team key (retry), NotificationService (silent nil)
 
+### P2-4 API cleanup (2026-03-05, updated)
+- User decision: keep ONLY `GET /api/nyt/:year/:month/:day` (GitHub proxy) + relocate `friends`
+- Delete: `/api/users/*`, `/api/crosswords/*`, `/api/nyt_source/*`, both API sub-controllers
+- Delete: `Crossword#format_for_api`, `Comment#format_for_api` (orphaned by controller deletion)
+- Move: `Api::UsersController#friends` → `ApiController#friends` at `/api/friends`
+- Update: `_team.html.haml` route helper (`api_users_friends_path` → `api_friends_path`)
+- `NytPuzzleFetcher.from_xwordinfo` method stays (used by NytGithubRecorder internally) — only API route removed
+- CSP + rate limiting deferred (complex, separate tickets)
+
+### P2-5 NYT pagination review (2026-03-05)
+- Chose lazy tab loading over will_paginate or Turbo Frames
+- Calendar pluck is already lightweight — no change needed
+- Main cost is partial rendering (~705 `_crossword_tab` renders), not DB or memory
+- `EXTRACT(DOW FROM created_at)` is fine — only ~705 rows after user_id filter
+- TabsController gets generic `data-lazy-src` attr (opt-in, doesn't affect other tab instances)
+- Intra-tab pagination deferred — no single day exceeds ~100 puzzles until ~2030
+
+### P2-6 JS event listener cleanup (2026-03-05)
+- Full audit of all 15 Stimulus controllers + 13 non-Stimulus JS files + 5 HAML inline scripts
+- **3 of 4 meta-plan concerns were false alarms**: Stimulus controllers all have proper disconnect(), jQuery `.on()` doesn't stack (Turbo replaces body), bottom-button handlers same reasoning
+- **1 real bug**: `document.onkeydown`/`onkeypress` in crossword_funcs.js:265-266 — property assignment at parse time persists globally after first crossword visit, suppressing arrow/space scrolling on all pages
+- Fix: move into existing `_cwTurboLoadHandler` (which already has the `!$('.cell').length` guard), add cleanup when navigating away from crossword pages
+- Win modal inline JS (~100 lines) is architecturally impure but not a leak — defer extraction to Stimulus until modal gets a visual redesign
+- Corrected Phase 2 audit finding about "Stimulus controllers missing disconnect() cleanup" — this was wrong
+
+### P2-7 Stats page performance (2026-03-05)
+- 11 queries, zero caching, total exec <1ms at current scale (5 users, 15 crosswords, 14 solutions)
+- Missing indexes on `users.deleted_at`, `users.created_at`, `solutions(is_complete, hints_used)` — all seq scans, all trivial at current row counts
+- Redis cache configured in production but unused — highest ROI future change is `Rails.cache.fetch` with 30-min TTL when scale warrants it (~500+ solutions)
+- **Decision: no build task.** Monitor and act when scale warrants it. Review filed in `stats-page-performance.md`
+
+### Pre-commit review of P2-1, P2-4, P2-6 (2026-03-05)
+- Reviewed all 13 uncommitted files (128 ins, 243 del) across DB constraints, API cleanup, JS fix
+- **1 should-fix**: `ApiController#friends` `.select` omits `:deleted_at` but `display_name` calls `deleted?` → `deleted_at.present?` — raises `MissingAttributeError` for deleted users with friendships. Pre-existing bug from old `Api::UsersController`, easy to fix now.
+- **1 nitpick**: migration dedup comment says "most recently updated" but uses `id < id` (keeps highest id). Functionally fine.
+- Everything else clean: no stale route references, proper addEventListener/removeEventListener pattern, correct pre-flight checks in migration, all specs updated.
+- P2-2, P2-3, P2-5 already committed — not reviewed this pass.
+
 ## Open Questions
 - No unfriend mechanism exists anywhere in the app — flagged as separate feature ticket
-- Should `/api/users` endpoint be auth-gated, scoped to friends-only, or removed entirely? (Decision needed in P2-4 review)
