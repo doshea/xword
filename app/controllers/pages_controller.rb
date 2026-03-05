@@ -8,6 +8,7 @@ class PagesController < ApplicationController
 
   #GET / or root_path
   def home
+    return redirect_to(welcome_path) if @current_user.nil? && !session[:browsing]
     if @current_user
       per = Crossword.per_page
       @unstarted_count   = Crossword.new_to_user(@current_user).count
@@ -142,6 +143,12 @@ class PagesController < ApplicationController
   def welcome
     return redirect_to(root_path) if @current_user.present?
     @user = User.new
+  end
+
+  #GET /skip_welcome or skip_welcome_path
+  def skip_welcome
+    session[:browsing] = true
+    redirect_to root_path
   end
 
   #GET /stats or stats_path

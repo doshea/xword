@@ -58,8 +58,14 @@ RSpec.describe 'Pages', type: :request do
     end
 
     context 'when anonymous' do
-      it 'renders without errors and shows all crosswords' do
-        create(:crossword, :smaller)
+      it 'redirects to the welcome page' do
+        get '/'
+        expect(response).to redirect_to(welcome_path)
+      end
+
+      it 'renders the home page after skipping welcome' do
+        get '/skip_welcome'
+        expect(response).to redirect_to(root_path)
         get '/'
         expect(response).to have_http_status(:ok)
       end

@@ -1,18 +1,25 @@
 describe PagesController do
   context 'anonymous' do
     context 'GET #home' do
-      before { get :home }
+      it 'redirects to welcome' do
+        get :home
+        expect(response).to redirect_to(welcome_path)
+      end
 
-      it 'responds successfully' do
+      it 'renders when session[:browsing] is set' do
+        session[:browsing] = true
+        get :home
         expect(response).to have_http_status(:ok)
       end
     end
   end
 
   context 'logged_in' do
-    before { get :home }
+    let(:user) { create(:user) }
+    before { log_in(user) }
 
     it 'responds successfully' do
+      get :home
       expect(response).to have_http_status(:ok)
     end
   end

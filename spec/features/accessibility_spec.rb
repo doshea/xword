@@ -26,18 +26,17 @@ feature 'Accessibility' do
   # Anonymous user
   # -----------------------------------------------------------------------
   context 'anonymous user' do
-    context 'on the home page' do
+    context 'on the welcome page' do
       before { visit root_path }
 
-      include_examples 'accessible layout'
-
-      it 'uses h1 for the welcome heading (no topper title on this page)' do
-        expect(page).to have_selector('h1', text: 'Welcome to the Café!')
+      it 'wraps the page body in a <main> landmark' do
+        expect(page).to have_selector('main#body')
       end
 
-      it 'uses span.tab-label for tab labels, not heading elements inside links' do
-        expect(page).to have_selector('a > .tab-label')
-        expect(page).not_to have_selector('.tabs a h5')
+      it 'has a skip-to-content link that points to the main landmark' do
+        expect(page).to have_selector('a.skip-to-content[href="#body"]',
+                                      text: 'Skip to main content',
+                                      visible: :all)
       end
     end
 

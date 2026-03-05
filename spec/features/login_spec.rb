@@ -9,8 +9,8 @@ feature 'Login' do
       before :each do
         visit root_path
       end
-      scenario 'arrive on home page successfully' do
-        expect(page).to have_current_path(root_path)
+      scenario 'redirects to welcome page' do
+        expect(page).to have_current_path(welcome_path)
       end
     end
 

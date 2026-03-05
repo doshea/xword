@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   root to: 'pages#home'
   get '/welcome' => 'pages#welcome'
+  get '/skip_welcome' => 'pages#skip_welcome'
 
   resources :cells, only: [:update] do
     member do
