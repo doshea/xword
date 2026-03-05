@@ -167,7 +167,7 @@ window.solve_app = {
 
   update_clock: function() {
     if (solve_app.last_save && !solve_app.anonymous) {
-      $('#save-status').text('Saved ');
+      $('#save-status').text('Saved');
       $('#save-clock').text(cw.timeAgo(solve_app.last_save));
     }
   },

@@ -40,9 +40,9 @@ describe 'unpublished_crosswords/edit' do
   end
 
   # -----------------------------------------------------------------------
-  # Quicksave button
+  # Save button
   # -----------------------------------------------------------------------
-  it 'gives the quicksave button an aria-label' do
-    expect(rendered).to have_selector('#edit-save[aria-label="Quicksave"]', visible: :all)
+  it 'gives the save button an aria-label' do
+    expect(rendered).to have_selector('#edit-save[aria-label="Save"]', visible: :all)
   end
 end

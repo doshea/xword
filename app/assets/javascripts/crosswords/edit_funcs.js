@@ -176,7 +176,7 @@ window.edit_app = {
 
   update_clock: function() {
     if (edit_app.last_save) {
-      $('#save-status').text('Saved ');
+      $('#save-status').text('Saved');
       $('#save-clock').text(cw.timeAgo(edit_app.last_save));
     }
   }
