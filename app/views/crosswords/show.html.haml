@@ -55,7 +55,7 @@
         %button#solve-save.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
           = icon('save')
         = render partial: 'crosswords/partials/favorites_toggle', locals: { crossword: @crossword, current_user: @current_user }
-        %button#controls-button.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'Controls'}, aria: {label: 'Puzzle controls'}}
+        %button#controls-button.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'How to Solve'}, aria: {label: 'How to solve'}}
           = icon('settings')
         / Replaced: link_to with method: :delete → turbo_method: :delete (Turbo handles DELETE)
         = link_to(delete_solution_path(@solution), class: 'xw-btn xw-btn--sm xw-btn--ghost', data: { turbo_method: :delete, turbo_confirm: @current_user == @solution.user ? (@solution.team ? 'Are you SURE you want to delete this solution? You and the rest of your team will PERMANENTLY lose your work!' : 'Are you SURE you want to abandon your solution? You worked so hard on it!') : 'Are you SURE you want to leave this team solution?', 'xw-tooltip': 'Delete Solution' }, aria: { label: 'Delete solution' }) do

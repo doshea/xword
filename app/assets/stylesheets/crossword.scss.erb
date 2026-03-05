@@ -252,11 +252,6 @@ table#crossword {
     gap: var(--space-3);
   }
 
-  // Controls modal: single column on phones
-  #controls-modal .controls-modal__columns {
-    flex-direction: column;
-    gap: var(--space-4);
-  }
 }
 
 // --- XL screens: widen container + scale up cells ---
@@ -1116,54 +1111,93 @@ textarea:focus ~ .xw-comment__hint {
   z-index: 0;
 }
 
-// --- Controls modal ---
+// --- Clue Suggest button + popover (edit page) ---
 
-#controls-modal {
-  max-width: 28rem;
+.xw-suggest-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  vertical-align: middle;
+  position: relative;
 
-  .controls-modal__heading {
-    text-align: center;
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    margin-bottom: var(--space-6);
+  &:hover {
+    opacity: 1;
+    color: var(--color-accent);
   }
-  .controls-modal__columns {
+}
+
+.xw-suggest-popover {
+  position: absolute;
+  z-index: 10;
+  right: 0;
+  margin-top: var(--space-1);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  max-height: 200px;
+  overflow-y: auto;
+  min-width: 220px;
+  max-width: 340px;
+
+  &__loading {
+    padding: var(--space-4);
+    text-align: center;
+  }
+
+  &__empty {
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  &__row {
     display: flex;
-    justify-content: center;
-    gap: var(--space-8);
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text);
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: var(--color-overlay-hover); }
   }
-  .controls-modal__actions {
-    list-style: none;
-    padding: 0;
-    li {
-      font-family: var(--font-ui);
-      font-size: var(--text-sm);
-      padding: var(--space-1) 0;
-      color: var(--color-text-secondary);
-    }
+
+  &__text {
+    flex: 1;
+    min-width: 0;
   }
-  .controls-modal__keys {
-    list-style: none;
-    padding: 0;
-    text-align: right;
-    li { padding: var(--space-1) 0; }
-  }
-  kbd {
-    display: inline-block;
-    font-family: var(--font-mono);
+
+  &__count {
+    flex-shrink: 0;
     font-size: var(--text-xs);
-    padding: 0.15em 0.5em;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-sunken);
-    box-shadow: 0 1px 0 var(--color-border-strong);
-    min-width: 2em;
-    text-align: center;
+    color: var(--color-text-muted);
   }
-  .controls-modal__arrow-key {
-    min-width: 1.5em;
-    padding: 0.15em 0.3em;
-  }
+}
+
+// Clue items need relative positioning for the popover
+.clue { position: relative; }
+
+// --- Mini-manual modals (solve + edit) ---
+// Shared .xw-manual styles are in global.scss.erb.
+// Modal-specific overrides (e.g. max-width) go here.
+
+#controls-modal,
+#edit-help-modal {
+  max-width: 34rem;
 }
 
 // --- Win modal ---

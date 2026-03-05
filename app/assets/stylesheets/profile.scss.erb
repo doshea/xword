@@ -93,6 +93,30 @@
   margin-top: var(--space-2);
 }
 
+// Friend menu dropdown (wraps "Friends ▾" button + "Unfriend" dropdown)
+// Reuses .xw-dropdown-menu for the dropdown panel.
+.xw-friend-menu {
+  position: relative;
+  display: inline-block;
+
+  &__item {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text);
+
+    &:hover { background-color: var(--color-surface-alt); }
+
+    &--danger { color: var(--color-danger); }
+  }
+}
+
 .xw-profile-hero__stats {
   width: 100%;
   display: flex;

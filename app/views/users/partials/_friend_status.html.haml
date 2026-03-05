@@ -1,21 +1,28 @@
-- case status
-- when :friends
-  %span.xw-btn.xw-btn--success.xw-btn--sm
-    = icon('check')
-    Friends!
-- when :pending_sent
-  %span.xw-btn.xw-btn--ghost.xw-btn--sm{ disabled: true }
-    = icon('clock', size: 16)
-    Request Sent
-- when :pending_received
-  .xw-profile-hero__friend-actions
-    = button_to 'Accept', accept_friend_requests_path(sender_id: user.id),
+%div{id: "friend-status-#{user.id}"}
+  - case status
+  - when :friends
+    .xw-friend-menu{data: {controller: 'dropdown'}}
+      %button.xw-btn.xw-btn--success.xw-btn--sm{type: 'button', data: {action: 'click->dropdown#toggle'}}
+        = icon('check', size: 14)
+        Friends &#9662;
+      %ul.xw-dropdown-menu.xw-friend-menu__dropdown{data: {dropdown_target: 'menu'}}
+        %li
+          = button_to 'Unfriend', unfriend_friend_requests_path(friend_id: user.id),
+                      method: :delete, class: 'xw-friend-menu__item xw-friend-menu__item--danger',
+                      data: { turbo_confirm: "Remove #{user.display_name} as a friend?" }
+  - when :pending_sent
+    %span.xw-btn.xw-btn--ghost.xw-btn--sm{ disabled: true }
+      = icon('clock', size: 16)
+      Request Sent
+  - when :pending_received
+    .xw-profile-hero__friend-actions
+      = button_to 'Accept', accept_friend_requests_path(sender_id: user.id),
+                  method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm',
+                  data: { disable_with: "Accepting\u2026" }
+      = button_to 'Decline', reject_friend_requests_path(sender_id: user.id),
+                  method: :delete, class: 'xw-btn xw-btn--ghost xw-btn--sm',
+                  data: { disable_with: "Declining\u2026" }
+  - when :none
+    = button_to 'Add Friend', friend_requests_path(recipient_id: user.id),
                 method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm',
-                data: { disable_with: 'Accepting\u2026' }
-    = button_to 'Decline', reject_friend_requests_path(sender_id: user.id),
-                method: :delete, class: 'xw-btn xw-btn--ghost xw-btn--sm',
-                data: { disable_with: 'Declining\u2026' }
-- when :none
-  = button_to 'Add Friend', friend_requests_path(recipient_id: user.id),
-              method: :post, class: 'xw-btn xw-btn--primary xw-btn--sm',
-              data: { disable_with: 'Sending\u2026' }
+                data: { disable_with: "Sending\u2026" }

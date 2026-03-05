@@ -15,9 +15,8 @@
           = icon('settings', size: 14)
           Edit Profile
       - elsif @current_user
-        = turbo_frame_tag "friend-status-#{@user.id}" do
-          = render partial: 'users/partials/friend_status',
-                   locals: { user: @user, status: @friend_status }
+        = render partial: 'users/partials/friend_status',
+                 locals: { user: @user, status: @friend_status }
     .xw-profile-hero__stats
       .xw-profile-stat
         %span.xw-profile-stat__number= @solved_count

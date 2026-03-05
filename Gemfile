@@ -27,7 +27,7 @@ gem 'terser'                  # replaces uglifier
 gem 'carrierwave', '~> 3.1'
 gem 'fog-aws', '~> 3.0'
 gem 'rmagick'
-gem 'remotipart', '~> 1.4'
+# remotipart removed — Turbo handles multipart/form-data natively since 7.2+
 gem 'unf'
 
 #Slighty Fuzzy search. Probably needs to be replaced with Solr.

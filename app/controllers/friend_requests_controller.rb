@@ -48,6 +48,23 @@ class FriendRequestsController < ApplicationController
     end
   end
 
+  # DELETE /friend_requests/unfriend
+  def unfriend
+    friend = User.find_by(id: params[:friend_id])
+    return head :not_found unless friend
+
+    FriendshipService.unfriend(user: @current_user, friend: friend)
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(
+        "friend-status-#{friend.id}",
+        partial: 'users/partials/friend_status',
+        locals: { user: friend, status: :none }
+      )}
+      format.html { redirect_to user_path(friend) }
+    end
+  end
+
   # DELETE /friend_requests/reject
   def reject
     sender = User.find_by(id: params[:sender_id])

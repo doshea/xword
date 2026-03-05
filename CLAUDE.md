@@ -24,7 +24,7 @@ include team solving (ActionCable), NYT importing, user accounts, comments, and 
 ## Tech Stack Notes
 
 - **Sprockets 4.2** asset pipeline (not importmap or jsbundling); manifest at `app/assets/config/manifest.js`
-- **jQuery** still required by `solve_funcs.js`, `edit_funcs.js`, and `remotipart`
+- **jQuery** still required by `solve_funcs.js` and `edit_funcs.js`
 - **Turbo** (Drive + Streams) + **Stimulus** for modern interactions
 - All jQuery AJAX calls use `dataType: 'json'` — switched from `dataType: 'script'` because
   `globalEval` silently swallows runtime errors and triggers jQuery's error callback with 200.
@@ -168,8 +168,6 @@ allow(UserMailer).to receive_message_chain(:reset_password_email, :deliver_now)
 
 ## Technical Debt (Active)
 
-1. **`remotipart` 1.4.4** — multipart AJAX file uploads (profile pic); Rails 8 + Turbo
-   compatibility untested. jQuery dependency.
-2. **`published` column removed** from Crossword schema; `error_if_published` is a no-op;
+1. **`published` column removed** from Crossword schema; `error_if_published` is a no-op;
    all "published crossword" guards disabled until column is restored. `publish!` deleted
    (was dead code after `CrosswordPublisher` extraction).

@@ -27,6 +27,8 @@
         %span#save-clock.smaller
         %button#edit-save.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'Save'}, aria: {label: 'Save'}}
           = icon('save')
+        %button#edit-help-button.xw-btn.xw-btn--sm.xw-btn--ghost{type: 'button', data: {'xw-tooltip': 'How to Edit'}, aria: {label: 'How to edit'}}
+          = icon('info')
 
 %section.xw-container.xw-grid#solve-area{aria: {label: 'Edit puzzle grid'}}
   .xw-col-full
@@ -82,3 +84,122 @@
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH", aria: {label: 'Pattern search'}
         = submit_tag 'Search', class: 'hidden', data: { loading_target: 'button' }
       #word-match-results
+
+%dialog#edit-help-modal.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
+  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} &times;
+  .xw-manual
+    %h2.xw-manual__heading How to Edit
+
+    .xw-manual__section
+      %h3 Navigation
+      %table.xw-manual__table
+        %tr
+          %td Move between cells
+          %td Arrow keys or click a cell
+        %tr
+          %td Switch direction
+          %td
+            Press
+            %kbd Space
+        %tr
+          %td Jump to next word
+          %td
+            Press
+            %kbd Tab
+        %tr
+          %td Jump to next empty cell
+          %td
+            Press
+            %kbd Enter
+        %tr
+          %td Jump to a specific clue
+          %td Click the clue text
+        %tr
+          %td Deselect cell
+          %td
+            Press
+            %kbd Esc
+            or click outside the grid
+
+    .xw-manual__section
+      %h3 Filling the Grid
+      %table.xw-manual__table
+        %tr
+          %td Type a letter
+          %td Select a cell, then type &mdash; cursor auto-advances
+        %tr
+          %td Delete a letter
+          %td
+            %kbd Backspace
+            &mdash; if cell is empty, moves back and deletes
+        %tr
+          %td Toggle a void (black square)
+          %td Double-click a cell
+        %tr
+          %td Toggle void (fast mode)
+          %td Turn on "1-Click voids" in Advanced Controls, then single-click
+        %tr
+          %td Mirror voids
+          %td Turn on "Mirror voids" &mdash; toggling a void also toggles its rotational mirror
+        %tr
+          %td Add a circle
+          %td Turn on "Circle Mode" in Advanced Controls, then click cells to toggle circles
+
+    .xw-manual__section
+      %h3 Writing Clues
+      %table.xw-manual__table
+        %tr
+          %td Edit a clue
+          %td Click a clue in the Across or Down column to focus its text field
+        %tr
+          %td Clue numbers
+          %td Updated automatically when you add or remove voids
+        %tr
+          %td Saving clues
+          %td Clues save with the rest of the puzzle (not individually)
+
+    .xw-manual__section
+      %h3 Finding Words
+      %table.xw-manual__table
+        %tr
+          %td Pattern search
+          %td
+            Open "Pattern Search" at the bottom. Use
+            %kbd _
+            for unknown letters (e.g.,
+            %code P_ZZ_E
+            finds PUZZLE)
+        %tr
+          %td Notepad
+          %td Open "Notepad" to save potential words. Words are sorted by length.
+
+    .xw-manual__section
+      %h3 Saving & Publishing
+      %table.xw-manual__table
+        %tr
+          %td Manual save
+          %td Click the save icon in the toolbar
+        %tr
+          %td Auto-save
+          %td Your puzzle saves automatically every 15 seconds when you make changes
+        %tr
+          %td Title & description
+          %td These save immediately when you click away from the field
+        %tr
+          %td Publish
+          %td
+            Click "Publish Puzzle" when your grid is complete.
+            %strong Published puzzles cannot be edited.
+
+    .xw-manual__section
+      %h3 Advanced Controls
+      %table.xw-manual__table
+        %tr
+          %td Mirror voids
+          %td Void toggles are mirrored rotationally (standard crossword symmetry)
+        %tr
+          %td 1-Click voids
+          %td Single-click toggles voids instead of requiring double-click
+        %tr
+          %td Circle Mode
+          %td Click cells to add/remove circle markers (used for themed puzzles)

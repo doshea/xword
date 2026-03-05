@@ -29,6 +29,23 @@ window.edit_app = {
 
     $('#ideas').on('keypress', 'input[name=word]', edit_app.add_potential_word);
     $('.bottom-button').on('click', function(e) { e.preventDefault(); $(this).closest('.slide-up-container').toggleClass('open'); });
+    $('#edit-help-button').on('click', function(e) {
+      e.preventDefault();
+      document.getElementById('edit-help-modal').showModal();
+    });
+
+    // Clue suggestions: show/hide lightbulb, open popover
+    $('.clue').on('click', function() { edit_app._updateSuggestButtons(); });
+    $(document).on('click', '.xw-suggest-btn', function(e) {
+      e.stopPropagation();
+      edit_app._openSuggestPopover($(this));
+    });
+    // Close popover on click outside
+    $(document).on('click', function(e) {
+      if (!$(e.target).closest('.xw-suggest-popover, .xw-suggest-btn').length) {
+        $('.xw-suggest-popover').remove();
+      }
+    });
   },
 
   flip_switch: function(e) {
@@ -100,6 +117,7 @@ window.edit_app = {
     edit_app.save_counter = Math.random().toString();
     $('#save-status').text('Unsaved changes');
     $('#save-clock').empty();
+    edit_app._updateSuggestButtons();
   },
 
   number_clues: function() {
@@ -185,6 +203,103 @@ window.edit_app = {
       $('#save-status').text('Saved');
       $('#save-clock').text(cw.timeAgo(edit_app.last_save));
     }
+  },
+
+  // --- Clue Suggestions ---
+
+  _suggestionCache: {},
+
+  // Get the word string for a clue element. Returns null if word is incomplete.
+  _getWordForClue: function($clue) {
+    var index = $clue.data('index');
+    var $startCell = $(".cell[data-index=" + index + "]").first();
+    if (!$startCell.length || $startCell.hasClass('void')) return null;
+
+    var isAcross = $clue.hasClass('across-clue');
+    var cells = isAcross ? $startCell.get_across_word_cells() : $startCell.get_down_word_cells();
+    if (!cells || cells.length < 2) return null;
+
+    var word = '';
+    for (var i = 0; i < cells.length; i++) {
+      var letter = $(cells[i]).get_letter().trim();
+      if (!letter) return null; // incomplete word
+      word += letter;
+    }
+    return word.toUpperCase();
+  },
+
+  // Show/hide lightbulb buttons based on word completion for all visible clues
+  _updateSuggestButtons: function() {
+    $('.clue:not(.hidden)').each(function() {
+      var $clue = $(this);
+      var $btn = $clue.find('.xw-suggest-btn');
+      if (!$btn.length) return;
+
+      var word = edit_app._getWordForClue($clue);
+      if (word) {
+        $btn.removeClass('hidden');
+      } else {
+        $btn.addClass('hidden');
+      }
+    });
+  },
+
+  // Open suggestion popover next to the lightbulb button
+  _openSuggestPopover: function($btn) {
+    // Remove any existing popover
+    $('.xw-suggest-popover').remove();
+
+    var $clue = $btn.closest('.clue');
+    var word = edit_app._getWordForClue($clue);
+    if (!word) return;
+
+    // Create popover
+    var $popover = $('<div class="xw-suggest-popover"></div>');
+    $popover.html('<div class="xw-suggest-popover__loading"><span class="xw-spinner"></span></div>');
+    $btn.after($popover);
+
+    // Check cache
+    if (edit_app._suggestionCache[word]) {
+      edit_app._renderSuggestions($popover, $clue, word, edit_app._suggestionCache[word]);
+      return;
+    }
+
+    // Fetch from API
+    $.get('/api/clue_suggestions', { word: word }, function(data) {
+      edit_app._suggestionCache[word] = data.suggestions;
+      edit_app._renderSuggestions($popover, $clue, word, data.suggestions);
+    }).fail(function() {
+      $popover.html('<div class="xw-suggest-popover__empty">Error loading suggestions</div>');
+    });
+  },
+
+  // Render suggestion rows in popover
+  _renderSuggestions: function($popover, $clue, word, suggestions) {
+    if (!suggestions || suggestions.length === 0) {
+      $popover.html('<div class="xw-suggest-popover__empty">No suggestions for ' + word + '</div>');
+      return;
+    }
+
+    var html = '';
+    for (var i = 0; i < suggestions.length; i++) {
+      var s = suggestions[i];
+      var escaped = $('<span>').text(s.text).html();
+      html += '<button type="button" class="xw-suggest-popover__row" data-text="' + escaped.replace(/"/g, '&quot;') + '">';
+      html += '<span class="xw-suggest-popover__text">' + escaped + '</span>';
+      html += '<span class="xw-suggest-popover__count">(' + s.usage_count + ')</span>';
+      html += '</button>';
+    }
+    $popover.html(html);
+
+    // Handle suggestion selection
+    $popover.on('click', '.xw-suggest-popover__row', function(e) {
+      e.stopPropagation();
+      var text = $(this).data('text');
+      $clue.find('textarea').val(text).trigger('change');
+      edit_app.update_unsaved();
+      $popover.remove();
+      $clue.find('textarea').focus();
+    });
   }
 };
 

@@ -13,6 +13,32 @@ class ApiController < ApplicationController
     head :bad_gateway
   end
 
+  # GET /api/clue_suggestions?word=OREO — used by edit page suggest feature
+  def clue_suggestions
+    return head :unauthorized unless @current_user
+
+    word_string = params[:word].to_s.strip.upcase
+    return render json: { word: word_string, suggestions: [] } if word_string.blank?
+
+    word = Word.find_by(content: word_string)
+    return render json: { word: word_string, suggestions: [] } unless word
+
+    suggestions = Phrase.joins(:clues)
+                       .where(clues: { word_id: word.id })
+                       .where.not(clues: { content: Clue::DEFAULT_CONTENT })
+                       .select('phrases.id, phrases.content, COUNT(clues.id) AS usage_count, AVG(clues.difficulty) AS avg_difficulty')
+                       .group('phrases.id, phrases.content')
+                       .order('usage_count DESC')
+                       .limit(10)
+
+    render json: {
+      word: word_string,
+      suggestions: suggestions.map { |p|
+        { text: p.content, usage_count: p.usage_count.to_i, avg_difficulty: p.avg_difficulty.to_f.round(1) }
+      }
+    }
+  end
+
   # GET /api/friends — used by invite_controller.js (team invite modal)
   def friends
     return head :unauthorized unless @current_user

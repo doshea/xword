@@ -133,7 +133,7 @@ feature 'Accessibility' do
       end
 
       it 'gives the puzzle controls button an aria-label' do
-        expect(page).to have_selector('#controls-button[aria-label="Puzzle controls"]')
+        expect(page).to have_selector('#controls-button[aria-label="How to solve"]')
       end
 
       it 'gives the delete-solution link an aria-label' do

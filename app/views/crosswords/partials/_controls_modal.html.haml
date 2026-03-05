@@ -1,21 +1,129 @@
 %dialog#controls-modal.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
-  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
-  %h2.controls-modal__heading Controls
-  .controls-modal__columns
-    %ul.controls-modal__actions
-      %li Next word
-      %li Next empty
-      %li Change direction
-      %li Cell navigation
-    %ul.controls-modal__keys
-      %li
-        %kbd Tab
-      %li
-        %kbd Enter
-      %li
-        %kbd Space
-      %li
-        %kbd.controls-modal__arrow-key &uarr;
-        %kbd.controls-modal__arrow-key &darr;
-        %kbd.controls-modal__arrow-key &larr;
-        %kbd.controls-modal__arrow-key &rarr;
+  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} &times;
+  .xw-manual
+    %h2.xw-manual__heading How to Solve
+
+    .xw-manual__section
+      %h3 Navigation
+      %table.xw-manual__table
+        %tr
+          %td Move between cells
+          %td Arrow keys or click a cell
+        %tr
+          %td Switch direction
+          %td
+            Press
+            %kbd Space
+            or click the current cell again
+        %tr
+          %td Jump to next word
+          %td
+            Press
+            %kbd Tab
+        %tr
+          %td Jump to next empty cell
+          %td
+            Press
+            %kbd Enter
+        %tr
+          %td Jump to a specific clue
+          %td Click the clue text
+        %tr
+          %td Deselect cell
+          %td
+            Press
+            %kbd Esc
+            or click outside the grid
+
+    .xw-manual__section
+      %h3 Entering Letters
+      %table.xw-manual__table
+        %tr
+          %td Type a letter
+          %td Select a cell, then type &mdash; cursor auto-advances
+        %tr
+          %td Delete a letter
+          %td
+            %kbd Backspace
+            &mdash; if cell is empty, moves back and deletes
+        %tr
+          %td Filled word
+          %td Clue text gets crossed off when every cell has a letter
+
+    .xw-manual__section
+      %h3 Checking Your Work
+      %table.xw-manual__table
+        %tr
+          %td Check Cell
+          %td Verifies the selected cell &mdash; correct cells flash gold
+        %tr
+          %td Check Word
+          %td Verifies every cell in the selected word
+        %tr
+          %td Check Puzzle
+          %td Verifies every cell in the entire grid
+        %tr
+          %td Check Completion
+          %td Checks if the puzzle is 100% correct &mdash; triggers the win screen
+      %p.xw-manual__note All check actions are in the "Check" dropdown in the toolbar.
+
+    .xw-manual__section
+      %h3 Getting Help
+      %table.xw-manual__table
+        %tr
+          %td Reveal Letter
+          %td Shows the correct letter for the selected cell (marked with a black tab)
+        %tr
+          %td Hint Word
+          %td Reveals one random cell in the selected word (prefers empty cells)
+      %p.xw-manual__note Revealed cells are marked so you know which ones you didn't solve yourself.
+
+    .xw-manual__section
+      %h3 Saving
+      %table.xw-manual__table
+        %tr
+          %td Manual save
+          %td Click the save icon in the toolbar
+        %tr
+          %td Auto-save
+          %td Progress saves automatically every 5 seconds when you make changes
+        %tr
+          %td Save status
+          %td The timestamp below the toolbar shows when your last save happened
+      - unless @current_user
+        %p.xw-manual__note If you're not logged in, your progress won't be saved when you leave the page.
+
+    .xw-manual__section
+      %h3 Comments
+      %table.xw-manual__table
+        %tr
+          %td Post a comment
+          %td
+            Type in the comment box, press
+            %kbd Enter
+            (or tap Send on mobile)
+        %tr
+          %td Reply to a comment
+          %td Click "Reply" on any comment
+        %tr
+          %td Expand/collapse replies
+          %td Click the reply count button
+
+    - if @team
+      .xw-manual__section
+        %h3 Team Solving
+        %table.xw-manual__table
+          %tr
+            %td See who's online
+            %td Colored squares in the toolbar show active teammates
+          %tr
+            %td Real-time updates
+            %td Teammates' letters appear as they type (with a colored flash)
+          %tr
+            %td Highlight a clue
+            %td Click a clue &mdash; teammates see a dashed outline on those cells
+          %tr
+            %td Team chat
+            %td
+              Click the chat bar at the bottom to expand; type and press
+              %kbd Enter

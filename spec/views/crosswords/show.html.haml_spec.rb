@@ -85,7 +85,7 @@ describe 'crosswords/show' do
     end
 
     it 'gives the puzzle-controls button an aria-label' do
-      expect(rendered).to have_selector('#controls-button[aria-label="Puzzle controls"]', visible: :all)
+      expect(rendered).to have_selector('#controls-button[aria-label="How to solve"]', visible: :all)
     end
 
     it 'gives the delete-solution link an aria-label' do

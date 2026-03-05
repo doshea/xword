@@ -361,7 +361,6 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
-    remotipart (1.4.4)
     rmagick (5.5.0)
       observer (~> 0.1)
       pkg-config (~> 1.4)
@@ -483,7 +482,6 @@ DEPENDENCIES
   rails-controller-testing
   rainbow
   redis (~> 5.0)
-  remotipart (~> 1.4)
   rmagick
   rspec-rails (~> 8.0)
   sassc-rails

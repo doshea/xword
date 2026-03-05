@@ -85,7 +85,52 @@ RSpec.describe 'FriendRequests', type: :request do
 
       expect(response.media_type).to eq Mime[:turbo_stream].to_s
       expect(response.body).to include("friend-status-#{other_user.id}")
-      expect(response.body).to include('Friends!')
+      expect(response.body).to include('Friends')
+    end
+  end
+
+  describe 'DELETE /friend_requests/unfriend' do
+    before do
+      Friendship.create!(user_id: user.id, friend_id: other_user.id)
+    end
+
+    it 'redirects anonymous users' do
+      delete '/friend_requests/unfriend', params: { friend_id: other_user.id }
+      expect(response).to redirect_to(account_required_path(redirect: '/friend_requests/unfriend'))
+    end
+
+    it 'deletes the friendship' do
+      log_in_as(user)
+      expect {
+        delete '/friend_requests/unfriend', params: { friend_id: other_user.id }
+      }.to change(Friendship, :count).by(-1)
+    end
+
+    it 'returns 404 for nonexistent user' do
+      log_in_as(user)
+      delete '/friend_requests/unfriend', params: { friend_id: 999999 }
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'responds with turbo_stream replacing friend status to :none' do
+      log_in_as(user)
+      delete '/friend_requests/unfriend', params: { friend_id: other_user.id },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+
+      expect(response.media_type).to eq Mime[:turbo_stream].to_s
+      expect(response.body).to include("friend-status-#{other_user.id}")
+      expect(response.body).to include('Add Friend')
+    end
+
+    it 'preserves shared solutions' do
+      crossword = create(:crossword, user: user)
+      solution = Solution.create!(crossword: crossword, user: user, team: true)
+      SolutionPartnering.create!(solution: solution, user: other_user)
+
+      log_in_as(user)
+      delete '/friend_requests/unfriend', params: { friend_id: other_user.id }
+
+      expect(SolutionPartnering.where(solution: solution, user: other_user)).to exist
     end
   end
 

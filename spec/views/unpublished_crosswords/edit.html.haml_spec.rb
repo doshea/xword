@@ -45,4 +45,25 @@ describe 'unpublished_crosswords/edit' do
   it 'gives the save button an aria-label' do
     expect(rendered).to have_selector('#edit-save[aria-label="Save"]', visible: :all)
   end
+
+  # -----------------------------------------------------------------------
+  # Help button + mini-manual modal
+  # -----------------------------------------------------------------------
+  it 'renders a help button with aria-label in the toolbar' do
+    expect(rendered).to have_selector('#edit-help-button[aria-label="How to edit"]', visible: :all)
+  end
+
+  it 'renders the "How to Edit" dialog modal' do
+    expect(rendered).to have_selector('dialog#edit-help-modal.xw-modal', visible: :all)
+  end
+
+  it 'renders all mini-manual sections' do
+    %w[Navigation Saving].each do |section|
+      expect(rendered).to have_selector('h3', text: section, visible: :all)
+    end
+    expect(rendered).to have_selector('h3', text: 'Filling the Grid', visible: :all)
+    expect(rendered).to have_selector('h3', text: 'Writing Clues', visible: :all)
+    expect(rendered).to have_selector('h3', text: 'Finding Words', visible: :all)
+    expect(rendered).to have_selector('h3', text: 'Advanced Controls', visible: :all)
+  end
 end

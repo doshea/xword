@@ -38,6 +38,25 @@ RSpec.describe FriendshipService do
     end
   end
 
+  describe '.unfriend' do
+    it 'deletes the friendship (user→friend direction)' do
+      Friendship.create!(user_id: sender.id, friend_id: recipient.id)
+      expect { FriendshipService.unfriend(user: sender, friend: recipient) }
+        .to change(Friendship, :count).by(-1)
+    end
+
+    it 'deletes the friendship (friend→user direction)' do
+      Friendship.create!(user_id: recipient.id, friend_id: sender.id)
+      expect { FriendshipService.unfriend(user: sender, friend: recipient) }
+        .to change(Friendship, :count).by(-1)
+    end
+
+    it 'is a no-op when no friendship exists' do
+      expect { FriendshipService.unfriend(user: sender, friend: recipient) }
+        .not_to change(Friendship, :count)
+    end
+  end
+
   describe '.reject' do
     before do
       FriendRequest.create!(sender: sender, recipient: recipient)

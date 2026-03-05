@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     collection do
       post :accept
       delete :reject
+      delete :unfriend
     end
   end
 
@@ -139,6 +140,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: :json} do
     get '/nyt/:year/:month/:day' => :nyt
     get '/friends' => :friends
+    get '/clue_suggestions' => :clue_suggestions
   end
 
   # Serve websocket cable requests in-process

@@ -234,3 +234,95 @@ a.xw-loading > .xw-puzzle-card {
   border: 2px solid var(--color-surface);
   background-color: var(--color-scrollbar-thumb);
 }
+
+// ---------------------------------------------------------------------------
+// MINI-MANUAL — shared by solve "How to Solve" and edit "How to Edit" modals
+// ---------------------------------------------------------------------------
+
+// Keycap styling for <kbd> elements (keyboard shortcuts)
+kbd {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+  box-shadow: 0 1px 0 var(--color-border-strong);
+  min-width: 1.6em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.xw-manual {
+  max-height: 70vh;
+  overflow-y: auto;
+
+  &__heading {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    margin: 0 0 var(--space-6);
+  }
+
+  &__section {
+    margin-bottom: var(--space-6);
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      margin: 0 0 var(--space-2);
+      color: var(--color-text);
+    }
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td {
+      padding: var(--space-2) var(--space-3);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      vertical-align: top;
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    // Action column (left)
+    td:first-child {
+      font-weight: 500;
+      color: var(--color-text);
+      white-space: nowrap;
+      width: 40%;
+    }
+
+    // How/detail column (right)
+    td:last-child {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  &__note {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin: var(--space-2) 0 0;
+  }
+}
+
+// 639px = $bp-sm - 1 (global.scss.erb doesn't @import _design_tokens)
+@media (max-width: 639px) {
+  .xw-manual {
+    max-height: 80vh;
+
+    &__table td {
+      padding: var(--space-1) var(--space-2);
+      font-size: var(--text-xs);
+    }
+
+    &__table td:first-child {
+      white-space: normal;
+    }
+  }
+}

@@ -30,6 +30,14 @@ class FriendshipService
     mark_request_notification_read(user: recipient, actor: sender)
   end
 
+  # Remove a friendship between two users. Deletes in both directions.
+  # No notification sent — unfriending is a quiet action.
+  def self.unfriend(user:, friend:)
+    Friendship.where(user_id: user.id, friend_id: friend.id)
+              .or(Friendship.where(user_id: friend.id, friend_id: user.id))
+              .delete_all
+  end
+
   def self.mark_request_notification_read(user:, actor:)
     Notification.where(user_id: user.id, actor_id: actor.id,
                        notification_type: 'friend_request')

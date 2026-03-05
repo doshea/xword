@@ -8,3 +8,5 @@
       %li.clue{class: "#{direction}-clue #{'hidden' unless clue_number}", data: {index: i}}<
         %span.clue-num #{clue_number}.
         = text_area_tag nil, clue, rows: 1, autocomplete: 'off', aria: {label: "#{direction.titleize} clue #{clue_number}"}
+        %button.xw-suggest-btn.hidden{type: 'button', data: {'xw-tooltip': 'Suggest clues'}, aria: {label: 'Suggest clues'}}<
+          = icon('lightbulb', size: 14)
