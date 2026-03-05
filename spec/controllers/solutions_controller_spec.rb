@@ -4,14 +4,14 @@ describe SolutionsController do
   let(:solution)  { create(:solution, user: user, crossword: crossword) }
 
   context 'before_actions' do
-    it { should use_before_action(:ensure_owner_or_partner) }
+    it { is_expected.to use_before_action(:ensure_owner_or_partner) }
   end
 
   describe 'GET #show' do
     context 'non-team solution' do
       # show redirects to the associated crossword (not a team solution)
       before { get :show, params: { id: solution.id } }
-      it { should redirect_to(crossword) }
+      it { is_expected.to redirect_to(crossword) }
     end
 
     context 'when crossword has been deleted (nil crossword_id)' do
@@ -34,7 +34,7 @@ describe SolutionsController do
         patch :update, params: { id: solution.id, letters: 'ABCDE', save_counter: '0.12345' }, format: :json
       end
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
       it 'updates the solution letters' do
         expect(solution.reload.letters).to eq 'ABCDE'
       end
@@ -50,7 +50,7 @@ describe SolutionsController do
         patch :update, params: { id: solution.id, letters: 'ABCDE', save_counter: '0.12345' }, format: :js
       end
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
       it 'updates the solution letters' do
         expect(solution.reload.letters).to eq 'ABCDE'
       end

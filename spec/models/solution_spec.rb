@@ -19,10 +19,10 @@ describe Solution do
   let(:user)      { create(:user) }
 
   context 'associations' do
-    it {should belong_to(:user).optional}
-    it {should belong_to(:crossword).optional}
-    it {should have_many(:solution_partnerings).dependent(:destroy)}
-    it {should have_many(:teammates).through(:solution_partnerings).source(:user)}
+    it { is_expected.to belong_to(:user).optional}
+    it { is_expected.to belong_to(:crossword).optional}
+    it { is_expected.to have_many(:solution_partnerings).dependent(:destroy)}
+    it { is_expected.to have_many(:teammates).through(:solution_partnerings).source(:user)}
   end
 
   context 'validations' do

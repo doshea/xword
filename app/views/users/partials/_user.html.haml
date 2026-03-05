@@ -55,12 +55,12 @@
   %section.xw-profile-card
     %h2.xw-profile-card__heading Recent Comments
     - if @comments.any?
-      .xw-profile-card__body
+      %ul.xw-profile-comments
         - @comments.each do |c|
           - cw = c.base_crossword
-          .xw-profile-comment
-            %p.xw-profile-comment__text= c.content
-            %p.xw-profile-comment__meta
+          %li.xw-profile-comment
+            %span.xw-profile-comment__text= c.content
+            %span.xw-profile-comment__meta
               %time{datetime: c.created_at.iso8601}= c.created_ago
               - if cw
                 %span.xw-profile-comment__dot &middot;

@@ -15,8 +15,6 @@
 -# ── Section 1: Profile ──
 .xw-col-full
   = form_with model: user, html: { multipart: true } do |f|
-    = token_tag nil
-
     %section.xw-account-section
       %h2.xw-account-section__heading Profile Photo
       .xw-account-photo
@@ -37,17 +35,17 @@
       .xw-account-form-grid
         .xw-field
           = f.label :first_name, 'First Name', class: 'xw-label'
-          = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH, class: 'xw-input'
+          = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH, autocomplete: 'given-name', class: 'xw-input'
         .xw-field
           = f.label :last_name, 'Last Name', class: 'xw-label'
-          = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH, class: 'xw-input'
+          = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH, autocomplete: 'family-name', class: 'xw-input'
       .xw-account-form-grid
         .xw-field
           = f.label :email, 'Email', class: 'xw-label'
-          = f.email_field :email, maxlength: User::MAX_EMAIL_LENGTH, class: 'xw-input'
+          = f.email_field :email, maxlength: User::MAX_EMAIL_LENGTH, autocomplete: 'email', class: 'xw-input'
         .xw-field
           = f.label :username, 'Username', class: 'xw-label'
-          = f.text_field :username, maxlength: User::MAX_USERNAME_LENGTH, class: 'xw-input'
+          = f.text_field :username, maxlength: User::MAX_USERNAME_LENGTH, autocomplete: 'username', class: 'xw-input'
       .xw-field
         = f.label :location, 'Location', class: 'xw-label'
         = f.text_field :location, placeholder: 'Lost in thought', class: 'xw-input'
@@ -56,8 +54,7 @@
 
 -# ── Section 2: Notifications ──
 .xw-col-full
-  = form_with model: user, html: { multipart: false } do |f|
-    = token_tag nil
+  = form_with model: user do |f|
     %section.xw-account-section
       %h2.xw-account-section__heading In-App Notifications
       %p.xw-account-section__hint
@@ -85,17 +82,16 @@
     #password-errors.xw-alert.xw-alert--error.hidden
       %p
       %a.slide-close{href: "#"} &times;
-    #password-success.xw-alert.xw-alert--success.hidden Password updated!
     = form_with(url: change_password_users_path, method: :post) do |f|
       .xw-field
         %label.xw-label{for: 'old_password'} Current Password
-        = password_field_tag :old_password, nil, placeholder: 'Enter current password', required: true, class: 'xw-input', id: 'old_password'
+        = password_field_tag :old_password, nil, placeholder: 'Enter current password', required: true, autocomplete: 'current-password', class: 'xw-input', id: 'old_password'
       .xw-field
         %label.xw-label{for: 'new_password'} New Password
-        = password_field_tag :new_password, nil, placeholder: 'Choose a new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password'
+        = password_field_tag :new_password, nil, placeholder: 'Choose a new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, autocomplete: 'new-password', class: 'xw-input', id: 'new_password'
       .xw-field
         %label.xw-label{for: 'new_password_confirmation'} Confirm New Password
-        = password_field_tag :new_password_confirmation, nil, placeholder: 'Re-enter new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password_confirmation'
+        = password_field_tag :new_password_confirmation, nil, placeholder: 'Re-enter new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, autocomplete: 'new-password', class: 'xw-input', id: 'new_password_confirmation'
       .xw-account-section__actions
         = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing\u2026'}
 

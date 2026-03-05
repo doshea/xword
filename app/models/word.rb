@@ -20,7 +20,7 @@ class Word < ApplicationRecord
                     tsearch: {prefix: true}
                   }
 
-  has_many :clues, inverse_of: :word
+  has_many :clues, inverse_of: :word, dependent: :nullify
   has_many :phrases, -> { distinct }, through: :clues
   has_many :across_cells, through: :clues
   has_many :down_cells, through: :clues
@@ -37,7 +37,7 @@ class Word < ApplicationRecord
   end
   self.per_page = 50
 
-  validates_uniqueness_of :content
+  validates :content, presence: true, uniqueness: true
 
   def self.word_match(pattern)
     sanitized = ERB::Util.url_encode(pattern.to_s[0, 100])

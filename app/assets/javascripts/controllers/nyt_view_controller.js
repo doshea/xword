@@ -1,3 +1,4 @@
+(function() {
 // Toggle between "By Day" and "Calendar" views on the NYT page.
 // Two button targets, two panel targets. Mirrors tabs_controller pattern
 // but uses different class names to avoid conflicts with nested tabs.
@@ -7,7 +8,9 @@ class NytViewController extends Stimulus.Controller {
     var clickedBtn = event.currentTarget;
 
     this.btnTargets.forEach(function(btn) {
-      btn.classList.toggle('xw-view-btn--active', btn === clickedBtn);
+      var isActive = btn === clickedBtn;
+      btn.classList.toggle('xw-view-btn--active', isActive);
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
     });
 
     var panels = this.panelTargets;
@@ -19,3 +22,4 @@ class NytViewController extends Stimulus.Controller {
 }
 NytViewController.targets = ['btn', 'panel'];
 window.StimulusApp.register('nyt-view', NytViewController);
+})();

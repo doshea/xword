@@ -36,9 +36,9 @@ class User < ApplicationRecord
   has_many :team_solutions, through: :solution_partnerings, source: :solution
 
   # Bidirectional self-join: each friendship is stored once, queried from both sides.
-  has_many :friendship_ones, :class_name => 'Friendship', :foreign_key => :friend_id
+  has_many :friendship_ones, class_name: 'Friendship', foreign_key: :friend_id, dependent: :destroy
   has_many :friend_ones, class_name: 'User', through: :friendship_ones
-  has_many :friendship_twos, :class_name => 'Friendship', :foreign_key => :user_id
+  has_many :friendship_twos, class_name: 'Friendship', foreign_key: :user_id, dependent: :destroy
   has_many :friend_twos, class_name: 'User', through: :friendship_twos
 
   has_many :notifications, inverse_of: :user, dependent: :destroy

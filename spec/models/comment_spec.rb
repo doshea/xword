@@ -17,15 +17,15 @@ describe Comment do
   let_it_be(:crossword) { create(:crossword) }
 
   context 'associations' do
-    it {should belong_to(:user).optional}
-    it {should belong_to(:crossword).optional}
-    it {should belong_to(:base_comment).class_name('Comment').optional}
-    it {should have_many(:replies).class_name('Comment').with_foreign_key('base_comment_id').dependent(:destroy)}
+    it { is_expected.to belong_to(:user).optional}
+    it { is_expected.to belong_to(:crossword).optional}
+    it { is_expected.to belong_to(:base_comment).class_name('Comment').optional}
+    it { is_expected.to have_many(:replies).class_name('Comment').with_foreign_key('base_comment_id').dependent(:destroy)}
   end
 
   context 'validations' do
-    it { should validate_presence_of(:content) }
-    it { should validate_length_of(:content).is_at_most(10_000) }
+    it { is_expected.to validate_presence_of(:content) }
+    it { is_expected.to validate_length_of(:content).is_at_most(10_000) }
   end
 
   describe 'MAX_PER_CROSSWORD' do

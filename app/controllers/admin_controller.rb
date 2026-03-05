@@ -39,7 +39,6 @@ class AdminController < ApplicationController
   end
 
   def manual_nyt
-
   end
 
   def create_manual_nyt
@@ -61,7 +60,11 @@ class AdminController < ApplicationController
 
   #POST /admin/clone_user or admin_clone_user_path
   def clone_user
-    user = User.find params[:id]
+    user = User.find_by(id: params[:id])
+    unless user
+      redirect_to admin_cloning_tank_path, flash: { error: 'User not found.' }
+      return
+    end
     cookies.signed[:auth_token] = user.auth_token
     redirect_to root_path
   end

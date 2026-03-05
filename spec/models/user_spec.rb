@@ -22,26 +22,26 @@
 
 describe User do
   context 'setup' do
-    it { should have_secure_password }
+    it { is_expected.to have_secure_password }
   end
   context 'validations' do
     let!(:user) { create(:user)}
-    it {should validate_uniqueness_of(:email)}
-    it {should validate_uniqueness_of(:username)}
-    it {should validate_presence_of(:email)}
-    it {should validate_presence_of(:username)}
+    it { is_expected.to validate_uniqueness_of(:email)}
+    it { is_expected.to validate_uniqueness_of(:username)}
+    it { is_expected.to validate_presence_of(:email)}
+    it { is_expected.to validate_presence_of(:username)}
 
     context 'with valid attributes' do
       subject { user }
-      it {should be_an_instance_of User}
-      it {should be_valid}
-      it {should allow_value(subject.first_name).for(:first_name)}
-      it {should allow_value(subject.last_name).for(:last_name)}
-      it {should allow_value(subject.email).for(:email)}
-      it {should allow_value(subject.username).for(:username)}
-      it {should allow_value(subject.password).for(:password)}
-      it {should allow_value(subject.password_confirmation).for(:password_confirmation)}
-      it {should allow_value(subject.location).for(:location)}
+      it { is_expected.to be_an_instance_of User}
+      it { is_expected.to be_valid}
+      it { is_expected.to allow_value(subject.first_name).for(:first_name)}
+      it { is_expected.to allow_value(subject.last_name).for(:last_name)}
+      it { is_expected.to allow_value(subject.email).for(:email)}
+      it { is_expected.to allow_value(subject.username).for(:username)}
+      it { is_expected.to allow_value(subject.password).for(:password)}
+      it { is_expected.to allow_value(subject.password_confirmation).for(:password_confirmation)}
+      it { is_expected.to allow_value(subject.location).for(:location)}
     end
     context 'with invalid nil attributes' do
       it {should_not allow_value(nil).for(:email)}
@@ -64,14 +64,14 @@ describe User do
     end
   end
   context 'associations' do
-    it { should have_many :crosswords }
-    it { should have_many :comments }
-    it { should have_many :solutions }
-    it { should have_many :clues }
-    it { should have_many :favorite_puzzles }
-    it { should have_many(:favorites).through(:favorite_puzzles).source(:crossword) }
-    it { should have_many(:solution_partnerings).dependent(:destroy) }
-    it { should have_many(:team_solutions).through(:solution_partnerings).source(:solution) }
+    it { is_expected.to have_many :crosswords }
+    it { is_expected.to have_many :comments }
+    it { is_expected.to have_many :solutions }
+    it { is_expected.to have_many :clues }
+    it { is_expected.to have_many :favorite_puzzles }
+    it { is_expected.to have_many(:favorites).through(:favorite_puzzles).source(:crossword) }
+    it { is_expected.to have_many(:solution_partnerings).dependent(:destroy) }
+    it { is_expected.to have_many(:team_solutions).through(:solution_partnerings).source(:solution) }
   end
 
   describe '#rotate_auth_token!' do

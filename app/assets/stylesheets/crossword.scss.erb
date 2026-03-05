@@ -505,6 +505,16 @@ table#crossword {
       padding: 0.4em 0;
       background: none;
     }
+
+    &.chat--flash {
+      background-color: var(--color-accent-light);
+    }
+  }
+
+  .team-chat__anon-prompt {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    text-align: center;
   }
 }
 
@@ -576,6 +586,54 @@ table#crossword {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     font-style: italic;
+  }
+  .team-modal__invite {
+    margin-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+  .team-modal__invite-heading {
+    font-family: var(--font-ui);
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  .team-modal__friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-height: 12rem;
+    overflow-y: auto;
+    text-align: left;
+  }
+  .team-modal__friend-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    cursor: pointer;
+    font-family: var(--font-ui);
+    transition: var(--transition-colors);
+    &:hover { background: var(--color-surface-alt); }
+    &--invited {
+      opacity: 0.6;
+      cursor: default;
+    }
+  }
+  .team-modal__friend-name {
+    font-weight: var(--weight-semibold);
+  }
+  .team-modal__friend-username {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
   }
 }
 // --- Creator byline ---

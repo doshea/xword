@@ -9,27 +9,27 @@
       %p NYT puzzles haven't been imported yet. Check back soon!
   - else
     .nyt-view{data: {controller: 'nyt-view'}}
-      .xw-view-toggle
-        %button.xw-view-btn.xw-view-btn--active{data: {'nyt-view-target': 'btn', action: 'click->nyt-view#show'}}
+      .xw-view-toggle{role: 'tablist'}
+        %button.xw-view-btn.xw-view-btn--active{role: 'tab', 'aria-selected': 'true', 'aria-controls': 'nyt-by-day', data: {'nyt-view-target': 'btn', action: 'click->nyt-view#show'}}
           By Day
-        %button.xw-view-btn{data: {'nyt-view-target': 'btn', action: 'click->nyt-view#show'}}
+        %button.xw-view-btn{role: 'tab', 'aria-selected': 'false', 'aria-controls': 'nyt-calendar', data: {'nyt-view-target': 'btn', action: 'click->nyt-view#show'}}
           Calendar
 
       /- Panel 1: Day-of-week tabs
       - day_order = [[1, 'Mon'], [2, 'Tue'], [3, 'Wed'], [4, 'Thu'], [5, 'Fri'], [6, 'Sat'], [0, 'Sun']]
-      .nyt-view-panel.nyt-view-panel--active{data: {'nyt-view-target': 'panel'}}
+      .nyt-view-panel.nyt-view-panel--active{id: 'nyt-by-day', role: 'tabpanel', data: {'nyt-view-target': 'panel'}}
         .xw-tabs{data: {controller: 'tabs'}}
-          .xw-tabs__nav
+          .xw-tabs__nav{role: 'tablist'}
             - day_order.each_with_index do |(wday, label), i|
               - count = (@puzzles_by_wday[wday] || []).size
-              = link_to "#day-panel-#{wday}", class: "xw-tab #{'xw-tab--active' if i == 0}", data: {tabs_target: 'tab', action: 'click->tabs#show'} do
+              = link_to "#day-panel-#{wday}", role: 'tab', 'aria-selected': (i == 0).to_s, 'aria-controls': "day-panel-#{wday}", class: "xw-tab #{'xw-tab--active' if i == 0}", data: {tabs_target: 'tab', action: 'click->tabs#show'} do
                 %span.tab-label
                   %span #{label} (#{count})
 
           .xw-tab-panels
             - day_order.each_with_index do |(wday, label), i|
               - puzzles = @puzzles_by_wday[wday] || []
-              %div{id: "day-panel-#{wday}", class: "xw-tab-panel #{'xw-tab-panel--active' if i == 0}", data: {tabs_target: 'panel'}}
+              %div{id: "day-panel-#{wday}", role: 'tabpanel', class: "xw-tab-panel #{'xw-tab-panel--active' if i == 0}", data: {tabs_target: 'panel'}}
                 - if puzzles.empty?
                   .xw-empty-state
                     %p No #{label} puzzles imported.
@@ -42,5 +42,5 @@
                           = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
 
       /- Panel 2: Calendar
-      .nyt-view-panel{data: {'nyt-view-target': 'panel'}}
+      .nyt-view-panel{id: 'nyt-calendar', role: 'tabpanel', data: {'nyt-view-target': 'panel'}}
         .xw-calendar{data: {controller: 'calendar', 'calendar-puzzles-value': @puzzle_dates.to_json, 'calendar-min-value': @calendar_min, 'calendar-max-value': @calendar_max}}

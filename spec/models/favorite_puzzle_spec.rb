@@ -11,7 +11,7 @@
 
 describe FavoritePuzzle do
   context 'associations' do
-    it {should belong_to :crossword}
-    it {should belong_to :user}
+    it { is_expected.to belong_to :crossword}
+    it { is_expected.to belong_to :user}
   end
 end

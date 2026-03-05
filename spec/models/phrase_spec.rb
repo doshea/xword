@@ -10,19 +10,19 @@
 
 describe Phrase do
   describe 'associations' do
-    it { should have_many(:clues).inverse_of(:phrase) }
-    it { should have_many(:words).through(:clues) }
-    it { should have_many(:across_cells).through(:clues) }
-    it { should have_many(:down_cells).through(:clues) }
-    it { should have_many(:across_crosswords).through(:across_cells).source(:crossword) }
-    it { should have_many(:down_crosswords).through(:down_cells).source(:crossword) }
+    it { is_expected.to have_many(:clues).inverse_of(:phrase) }
+    it { is_expected.to have_many(:words).through(:clues) }
+    it { is_expected.to have_many(:across_cells).through(:clues) }
+    it { is_expected.to have_many(:down_cells).through(:clues) }
+    it { is_expected.to have_many(:across_crosswords).through(:across_cells).source(:crossword) }
+    it { is_expected.to have_many(:down_crosswords).through(:down_cells).source(:crossword) }
   end
 
   describe 'validations' do
     subject { Phrase.create!(content: 'test phrase') }
 
-    it { should validate_presence_of(:content) }
-    it { should validate_uniqueness_of(:content).case_insensitive }
+    it { is_expected.to validate_presence_of(:content) }
+    it { is_expected.to validate_uniqueness_of(:content).case_insensitive }
   end
 
   describe '.find_or_create_by_content' do

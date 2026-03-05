@@ -1051,6 +1051,7 @@
 
 .xw-calendar {
   max-width: 32rem;
+  margin: 0 auto;
 }
 
 .xw-calendar__years {
@@ -1109,7 +1110,7 @@
 .xw-calendar__grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  gap: 2px; // Sub-token: finer than --space-px (1px) for dense calendar grid
 }
 
 .xw-calendar__header {

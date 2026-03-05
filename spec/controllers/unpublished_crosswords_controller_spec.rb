@@ -3,9 +3,9 @@ describe UnpublishedCrosswordsController do
   let(:ucw)  { create(:unpublished_crossword, user: user) }
 
   describe 'before_actions' do
-    it { should use_before_action(:find_object) }
-    it { should use_before_action(:ensure_owner_or_admin) }
-    it { should use_before_action(:ensure_logged_in) }
+    it { is_expected.to use_before_action(:find_object) }
+    it { is_expected.to use_before_action(:ensure_owner_or_admin) }
+    it { is_expected.to use_before_action(:ensure_logged_in) }
   end
 
   # -----------------------------------------------------------------------
@@ -15,7 +15,7 @@ describe UnpublishedCrosswordsController do
     context 'as owner' do
       before { log_in(user); get :edit, params: { id: ucw.id } }
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
       it 'assigns @clue_numbers' do
         expect(assigns(:clue_numbers)).to be_a Hash
         expect(assigns(:clue_numbers).keys).to contain_exactly(:across, :down)
@@ -26,12 +26,12 @@ describe UnpublishedCrosswordsController do
       let(:other_user) { create(:user) }
       before { log_in(other_user); get :edit, params: { id: ucw.id } }
 
-      it { should respond_with(302) }
+      it { is_expected.to respond_with(302) }
     end
 
     context 'anonymous' do
       before { get :edit, params: { id: ucw.id } }
-      it { should respond_with(302) }
+      it { is_expected.to respond_with(302) }
     end
   end
 

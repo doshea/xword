@@ -5,7 +5,7 @@ RSpec.shared_examples 'admin CRUD controller' do |opts = {}|
   # Host spec must define: let(:record) { ... }
 
   context 'before_actions' do
-    it { should use_before_action(:ensure_admin) }
+    it { is_expected.to use_before_action(:ensure_admin) }
   end
 
   context 'when not logged in' do
@@ -20,18 +20,18 @@ RSpec.shared_examples 'admin CRUD controller' do |opts = {}|
 
     describe 'GET #index' do
       before { get :index }
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     describe 'GET #edit' do
       before { get :edit, params: { id: record.id } }
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     if opts[:update_params]
       describe 'PATCH #update' do
         before { patch :update, params: { id: record.id, **opts[:update_params] } }
-        it { should redirect_to(index_path) }
+        it { is_expected.to redirect_to(index_path) }
         it 'updates the record' do
           instance_exec(record.reload, &opts[:verify_update])
         end

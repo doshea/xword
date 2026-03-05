@@ -7,7 +7,7 @@ describe CluesController do
   describe 'GET #show' do
     before { get :show, params: { id: clue.id } }
 
-    it { should respond_with(200) }
+    it { is_expected.to respond_with(200) }
     it 'assigns @clue' do
       expect(assigns(:clue)).to eq clue
     end
@@ -28,7 +28,7 @@ describe CluesController do
       patch :update, params: { id: clue.id, clue: { content: 'Updated clue content' } }
     end
 
-    it { should respond_with(200) }
+    it { is_expected.to respond_with(200) }
     it 'updates the clue content' do
       expect(clue.reload.content).to eq 'Updated clue content'
     end

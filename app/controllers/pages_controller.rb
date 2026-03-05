@@ -225,18 +225,20 @@ class PagesController < ApplicationController
       return
     end
 
-    all_puzzles = @nytimes_user.crosswords.order(created_at: :desc).includes(:user).to_a
-    @total_count = all_puzzles.size
+    # Calendar data: lightweight pluck (no AR objects loaded)
+    date_and_ids = @nytimes_user.crosswords.order(created_at: :desc).pluck(:id, :created_at)
+    @total_count = date_and_ids.size
 
-    # Day-of-week tabs: group by wday (Ruby: 0=Sun, 1=Mon..6=Sat)
-    @puzzles_by_wday = all_puzzles.group_by { |c| c.created_at.wday }
-
-    # Calendar: date string => crossword path (JSON for Stimulus)
-    @puzzle_dates = all_puzzles.each_with_object({}) do |c, h|
-      h[c.created_at.to_date.iso8601] = crossword_path(c)
+    @puzzle_dates = date_and_ids.each_with_object({}) do |(id, created_at), h|
+      h[created_at.to_date.iso8601] = crossword_path(id)
     end
-    @calendar_min = all_puzzles.last&.created_at&.to_date&.iso8601
-    @calendar_max = all_puzzles.first&.created_at&.to_date&.iso8601
+    @calendar_min = date_and_ids.last&.dig(1)&.to_date&.iso8601
+    @calendar_max = date_and_ids.first&.dig(1)&.to_date&.iso8601
+
+    # Day-of-week tabs: full objects needed for partial rendering
+    # TODO: Add per-tab pagination when puzzle count exceeds ~1500
+    all_puzzles = @nytimes_user.crosswords.order(created_at: :desc).includes(:user).to_a
+    @puzzles_by_wday = all_puzzles.group_by { |c| c.created_at.wday }
   end
 
   #GET /user_made or user_made_path

@@ -284,5 +284,22 @@ RSpec.describe 'Pages', type: :request do
       get '/user_made'
       expect(response).to have_http_status(:ok)
     end
+
+    it 'sets the page title' do
+      get '/user_made'
+      expect(response.body).to include('User-Made Puzzles')
+    end
+
+    context 'with an nytimes user' do
+      let!(:nyt_user) { create(:user, username: 'nytimes') }
+      let!(:nyt_crossword) { create(:crossword, user: nyt_user) }
+      let!(:user_crossword) { create(:crossword) }
+
+      it 'excludes NYT puzzles' do
+        get '/user_made'
+        expect(response.body).to include(user_crossword.title)
+        expect(response.body).not_to include(nyt_crossword.title)
+      end
+    end
   end
 end

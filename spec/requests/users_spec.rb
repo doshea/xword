@@ -186,6 +186,72 @@ RSpec.describe 'Users', type: :request do
   end
 
   # -------------------------------------------------------------------------
+  # POST /users/resetter (reset password submission)
+  # -------------------------------------------------------------------------
+  describe 'POST /users/resetter' do
+    it 'redirects with success flash on valid reset' do
+      token = user.password_reset_token
+      post '/users/resetter', params: {
+        password_reset_token: token,
+        new_password: 'newpass1234',
+        new_password_confirmation: 'newpass1234'
+      }
+      expect(response).to redirect_to(account_users_path)
+      expect(flash[:success]).to include('Password updated')
+    end
+
+    it 'redirects to forgot page when token is invalid' do
+      post '/users/resetter', params: {
+        password_reset_token: 'bogus',
+        new_password: 'newpass1234',
+        new_password_confirmation: 'newpass1234'
+      }
+      expect(response).to redirect_to(forgot_password_users_path)
+    end
+
+    it 'returns turbo stream with error container on validation failure' do
+      token = user.password_reset_token
+      post '/users/resetter', params: {
+        password_reset_token: token,
+        new_password: 'short',
+        new_password_confirmation: 'mismatch'
+      }, headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="password-errors"')
+      expect(response.body).to include('xw-alert--error')
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # POST /users/change_password (turbo stream errors)
+  # -------------------------------------------------------------------------
+  describe 'POST /users/change_password' do
+    before { log_in_as(user) }
+
+    it 'returns turbo stream with error container for wrong old password' do
+      post '/users/change_password', params: {
+        old_password: 'wrongpassword',
+        new_password: 'newpass1234',
+        new_password_confirmation: 'newpass1234'
+      }, headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="password-errors"')
+      expect(response.body).to include('old password is incorrect')
+    end
+
+    it 'returns turbo stream with error container for validation failure' do
+      post '/users/change_password', params: {
+        old_password: RequestAuthHelpers::TEST_PASSWORD,
+        new_password: 'x',
+        new_password_confirmation: 'y'
+      }, headers: { 'Accept' => Mime[:turbo_stream].to_s }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="password-errors"')
+      expect(response.body).to include('xw-alert--error')
+    end
+  end
+
+  # -------------------------------------------------------------------------
   # Auth token rotation — password change invalidates old token
   # -------------------------------------------------------------------------
   describe 'auth token rotation on password change' do

@@ -21,28 +21,28 @@ describe Crossword do
   end
 
   describe 'associations' do
-    it {should belong_to(:user).optional}
-    it {should have_many(:comments).order(created_at: :desc).dependent(:destroy)}
-    it {should have_many(:solutions).dependent(:destroy)}
-    it {should have_many(:cells).order(:index).dependent(:destroy)}
-    it {should have_many(:across_clues).through(:cells)}
-    it {should have_many(:down_clues).through(:cells)}
-    it {should have_many(:across_words).through(:across_clues).source(:word)}
-    it {should have_many(:down_words).through(:down_clues).source(:word)}
-    it {should have_many :favorite_puzzles}
-    it {should have_many :favoriters}
-    it {should have_many(:solution_partnerings).through(:solutions)}
+    it { is_expected.to belong_to(:user).optional}
+    it { is_expected.to have_many(:comments).order(created_at: :desc).dependent(:destroy)}
+    it { is_expected.to have_many(:solutions).dependent(:destroy)}
+    it { is_expected.to have_many(:cells).order(:index).dependent(:destroy)}
+    it { is_expected.to have_many(:across_clues).through(:cells)}
+    it { is_expected.to have_many(:down_clues).through(:cells)}
+    it { is_expected.to have_many(:across_words).through(:across_clues).source(:word)}
+    it { is_expected.to have_many(:down_words).through(:down_clues).source(:word)}
+    it { is_expected.to have_many :favorite_puzzles}
+    it { is_expected.to have_many :favoriters}
+    it { is_expected.to have_many(:solution_partnerings).through(:solutions)}
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:rows)}
-    it { should validate_numericality_of(:rows).only_integer}
-    it { should validate_inclusion_of(:rows).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
-    it { should validate_presence_of(:cols)}
-    it { should validate_numericality_of(:cols).only_integer}
-    it { should validate_inclusion_of(:cols).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
-    it { should validate_presence_of(:title)}
-    it { should validate_length_of(:title).is_at_least(Crossword::MIN_TITLE_LENGTH).is_at_most(Crossword::MAX_TITLE_LENGTH) }
+    it { is_expected.to validate_presence_of(:rows)}
+    it { is_expected.to validate_numericality_of(:rows).only_integer}
+    it { is_expected.to validate_inclusion_of(:rows).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
+    it { is_expected.to validate_presence_of(:cols)}
+    it { is_expected.to validate_numericality_of(:cols).only_integer}
+    it { is_expected.to validate_inclusion_of(:cols).in_range(Crossword::MIN_DIMENSION..Crossword::MAX_DIMENSION)}
+    it { is_expected.to validate_presence_of(:title)}
+    it { is_expected.to validate_length_of(:title).is_at_least(Crossword::MIN_TITLE_LENGTH).is_at_most(Crossword::MAX_TITLE_LENGTH) }
   end
 
   describe 'INSTANCE METHODS' do

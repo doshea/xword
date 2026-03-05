@@ -14,4 +14,6 @@ class SolutionPartnering < ApplicationRecord
   belongs_to :user, inverse_of: :solution_partnerings
   belongs_to :solution, inverse_of: :solution_partnerings
   has_one :crossword, through: :solution, inverse_of: :solution_partnerings
+
+  validates :user_id, uniqueness: { scope: :solution_id }
 end

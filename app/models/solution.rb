@@ -27,7 +27,6 @@ class Solution < ApplicationRecord
   scope :complete, -> { where(is_complete: true)}
   scope :incomplete, -> { where(is_complete: false)}
   scope :order_recent, -> {order(updated_at: :desc)}
-  scope :abandoned, -> { where('updated_at <= ?', Time.current - 1.5.days) }
 
   before_create :assign_team_key, if: :team?
   before_save   :check_completion

@@ -41,7 +41,7 @@ class Crossword < ApplicationRecord
   has_many :across_words, through: :across_clues, source: :word
   has_many :down_words, through: :down_clues, source: :word
 
-  has_many :favorite_puzzles, inverse_of: :crossword
+  has_many :favorite_puzzles, inverse_of: :crossword, dependent: :destroy
   has_many :favoriters, through: :favorite_puzzles, source: :user
 
   has_many :solution_partnerings, through: :solutions, inverse_of: :crossword

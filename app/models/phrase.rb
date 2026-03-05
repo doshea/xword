@@ -9,7 +9,7 @@
 #
 
 class Phrase < ApplicationRecord
-  has_many :clues, inverse_of: :phrase
+  has_many :clues, inverse_of: :phrase, dependent: :nullify
   has_many :words, -> { distinct }, through: :clues
   has_many :across_cells, through: :clues
   has_many :down_cells, through: :clues

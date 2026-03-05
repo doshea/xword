@@ -1,7 +1,7 @@
 describe Friendship do
   context 'associations' do
-    it { should belong_to(:friend_one).class_name('User').with_foreign_key(:user_id) }
-    it { should belong_to(:friend_two).class_name('User').with_foreign_key(:friend_id) }
+    it { is_expected.to belong_to(:friend_one).class_name('User').with_foreign_key(:user_id) }
+    it { is_expected.to belong_to(:friend_two).class_name('User').with_foreign_key(:friend_id) }
   end
 
   context 'validations' do
@@ -18,6 +18,12 @@ describe Friendship do
     it 'allows the reverse direction' do
       reverse = Friendship.new(user_id: user_b.id, friend_id: user_a.id)
       expect(reverse).to be_valid
+    end
+
+    it 'rejects self-friendship' do
+      self_friendship = Friendship.new(user_id: user_a.id, friend_id: user_a.id)
+      expect(self_friendship).not_to be_valid
+      expect(self_friendship.errors[:friend_id]).to be_present
     end
   end
 end

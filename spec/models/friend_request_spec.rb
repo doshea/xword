@@ -3,8 +3,8 @@ describe FriendRequest do
   let(:user_b) { create(:user) }
 
   context 'associations' do
-    it { should belong_to(:sender).class_name('User') }
-    it { should belong_to(:recipient).class_name('User') }
+    it { is_expected.to belong_to(:sender).class_name('User') }
+    it { is_expected.to belong_to(:recipient).class_name('User') }
   end
 
   context 'validations' do

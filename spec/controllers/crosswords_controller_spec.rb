@@ -3,19 +3,19 @@ describe CrosswordsController do
   let(:crossword) { create(:crossword, :smaller) }
 
   describe 'before_actions' do
-    it { should use_before_action(:ensure_logged_in) }
+    it { is_expected.to use_before_action(:ensure_logged_in) }
   end
 
   describe 'GET #show' do
     context 'anonymous' do
       before { get :show, params: { id: crossword.id } }
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     context 'logged in' do
       before { log_in(user); get :show, params: { id: crossword.id } }
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
       it 'creates a solution for the user' do
         expect(Solution.find_by(user: user, crossword: crossword)).to be_present
       end
@@ -29,7 +29,7 @@ describe CrosswordsController do
         get :show, params: { id: crossword.id }
       end
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     context 'with comments from deleted users' do
@@ -41,7 +41,7 @@ describe CrosswordsController do
         get :show, params: { id: crossword.id }
       end
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
   end
 
@@ -87,7 +87,7 @@ describe CrosswordsController do
     context 'valid team key' do
       before { log_in(user); get :team, params: { id: crossword.id, key: solution.key } }
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
 
       it 'assigns @comments' do
         expect(assigns(:comments)).not_to be_nil
@@ -105,7 +105,7 @@ describe CrosswordsController do
     context 'anonymous visitor with valid key' do
       before { get :team, params: { id: crossword.id, key: solution.key } }
 
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
 
       it 'assigns @comments' do
         expect(assigns(:comments)).not_to be_nil

@@ -35,9 +35,11 @@ describe PagesController do
     end
 
     context 'with JSON format (current client)' do
-      let_it_be(:user)      { create(:user, username: 'puzzlemaker') }
-      let_it_be(:crossword) { create(:crossword) }
-      let_it_be(:word)      { Word.create!(content: 'PUZZLE') }
+      # Use let! (not let_it_be) — pg_search full-text queries can't reliably see
+      # let_it_be records due to transaction visibility + DatabaseCleaner interaction.
+      let!(:search_user) { create(:user, username: 'puzzlemaker') }
+      let!(:crossword)   { create(:crossword) }
+      let!(:word)        { Word.create!(content: 'PUZZLE') }
 
       it 'returns result_count and html when matches exist' do
         get :live_search, params: { query: 'puzzle' }, format: :json

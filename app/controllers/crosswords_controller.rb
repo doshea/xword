@@ -1,6 +1,7 @@
 class CrosswordsController < ApplicationController
   before_action :find_object, only: [:show, :team, :favorite, :unfavorite, :solution_choice, :check_cell, :check_completion, :admin_fake_win, :admin_reveal_puzzle, :reveal]
   before_action :ensure_logged_in, only: [:create_team, :favorite, :unfavorite]
+  before_action :ensure_admin, only: [:admin_fake_win, :admin_reveal_puzzle]
 
   #GET /crosswords/:id or crossword_path
   def show
@@ -172,8 +173,6 @@ class CrosswordsController < ApplicationController
 
   # POST /crosswords/:id/admin_fake_win — Admin-only: trigger win modal without completing puzzle
   def admin_fake_win
-    return head :forbidden unless @current_user&.is_admin
-
     @correctness = true
     if params[:solution_id].present?
       @solution = @current_user.solutions.find_by(id: params[:solution_id], crossword_id: @crossword.id)
@@ -194,8 +193,6 @@ class CrosswordsController < ApplicationController
 
   # POST /crosswords/:id/admin_reveal_puzzle — Admin-only: return correct letters
   def admin_reveal_puzzle
-    return head :forbidden unless @current_user&.is_admin
-
     render json: { letters: @crossword.letters }
   end
 

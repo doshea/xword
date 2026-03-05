@@ -22,13 +22,13 @@ describe Cell do
   let(:cell)      { crossword.cells.reject(&:is_void).first }
 
   context 'associations' do
-    it {should belong_to(:across_clue).class_name('Clue').with_foreign_key(:across_clue_id).optional}
-    it {should belong_to(:down_clue).class_name('Clue').with_foreign_key(:down_clue_id).optional}
-    it {should belong_to(:crossword).optional}
+    it { is_expected.to belong_to(:across_clue).class_name('Clue').with_foreign_key(:across_clue_id).optional}
+    it { is_expected.to belong_to(:down_clue).class_name('Clue').with_foreign_key(:down_clue_id).optional}
+    it { is_expected.to belong_to(:crossword).optional}
     context 'delegation' do
-      it {should delegate_method(:across_word).to(:across_clue)}
-      it {should delegate_method(:down_word).to(:down_clue)}
-      it {should delegate_method(:user).to(:crossword)}
+      it { is_expected.to delegate_method(:across_word).to(:across_clue)}
+      it { is_expected.to delegate_method(:down_word).to(:down_clue)}
+      it { is_expected.to delegate_method(:user).to(:crossword)}
     end
   end
 

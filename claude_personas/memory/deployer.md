@@ -2,6 +2,33 @@
 
 ## Deploy History
 
+### v573 — 2026-03-05
+**Commit:** `ba0e4f3`
+**Changes:** Changelog page polish:
+- CSS stylesheet fix (`content_for :head` — was never loading)
+- Strip redundant category prefix from messages ("Fix Fix..." → "Edit page...")
+- Filter internal commits (memory/merge/CLAUDE.md)
+- Better categorization of test commits
+- Mobile stacking order fix
+- `<button disabled>` for pagination boundaries
+**Migration:** None
+**Rollback:** `git revert ba0e4f3` (pure service/view/CSS/spec, instant)
+**Post-deploy:** Clean. Release phase exit 0 (no-op). Puma up ~3s. New `changelog` CSS fingerprint compiled. No errors.
+
+### v572 — 2026-03-05
+**Commit:** `c907bff`
+**Changes:** Login/Signup polish:
+- Turbo Stream `#password-errors` target ID preserved after first error (was destroyed on replacement)
+- A11y labels on reset password fields
+- Redirect param carried through signup flow
+- Logged-in users redirected away from `/login` and `/users/new`
+- Title/heading unified to "Log In", missing reset password `<title>` added
+- Dead `forgot_password.scss` deleted
+- Duplicate legacy controller specs removed (sessions, users) — request specs cover all scenarios
+**Migration:** None
+**Rollback:** `git revert c907bff`
+**Post-deploy:** Clean. Release phase exit 0 (no-op migration). Puma up ~3s. No errors.
+
 ### v571 — 2026-03-05
 **Commit:** `4f5503d`
 **Changes:** Search page fixes:
@@ -312,7 +339,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v571
+- Current release: v573
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

@@ -70,6 +70,7 @@ window.team_app = {
   },
 
   // POST → server → ActionCable: announces departure; teammates remove from roster
+  // Used for Turbo navigation where the page is still alive
   leave_team: function() {
     $.ajax({
       type: 'POST',
@@ -79,6 +80,15 @@ window.team_app = {
       },
       error: function(xhr) { console.warn('leave_team failed:', xhr.status); }
     });
+  },
+
+  // Beacon version for tab close / browser close — async XHR is killed during unload,
+  // but navigator.sendBeacon reliably delivers fire-and-forget POST requests.
+  leave_team_beacon: function() {
+    var data = new FormData();
+    data.append('solver_id', team_app.solver_id);
+    data.append('authenticity_token', document.querySelector('meta[name="csrf-token"]').content);
+    navigator.sendBeacon('/solutions/' + solve_app.solution_id + '/leave_team', data);
   },
 
   // POST → server → ActionCable: asks all participants to re-announce themselves
@@ -151,20 +161,19 @@ window.team_app = {
 
   // Teammate joined: add a colored square to the on-screen roster
   welcome_teammate: function(data) {
-    if ($(".teammate-box[solver_id=" + data.solver_id + "]").length === 0) {
+    if ($(".teammate-box[data-solver-id='" + data.solver_id + "']").length === 0) {
       var teammate = $('<div>');
-      teammate.addClass('teammate-box has-tip')
+      teammate.addClass('teammate-box')
         .css('background', 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')')
-        .attr('data-tooltip', true)
-        .attr('title', data.display_name)
-        .attr('solver_id', data.solver_id);
+        .attr('data-xw-tooltip', data.display_name)
+        .attr('data-solver-id', data.solver_id);
       $('#teammates').append(teammate);
     }
   },
 
   // Teammate left: fade out and remove their roster square
   farewell_teammate: function(data) {
-    $("#teammates .teammate-box[solver_id=" + data.solver_id + "]").fadeOut(1000, function() {
+    $("#teammates .teammate-box[data-solver-id='" + data.solver_id + "']").fadeOut(1000, function() {
       $(this).remove();
     });
   },
@@ -212,7 +221,7 @@ window.team_app = {
 
     // Amber flash, sound throttle, unread count for other people's messages
     if (!is_my_chat) {
-      new_chat.css({'background-color': '#fdf0e4'});
+      new_chat.addClass('chat--flash');
       if ($('#team-chat').hasClass('down')) {
         team_app.unread_count += 1;
         $('#unread-chat-count').text('(' + team_app.unread_count + ')');
@@ -222,7 +231,7 @@ window.team_app = {
         team_app.last_received = now;
         team_app.message_received_sound.play();
       }
-      window.setTimeout(function() { new_chat.css({'background-color': ''}); }, 400);
+      window.setTimeout(function() { new_chat.removeClass('chat--flash'); }, 400);
     }
     if ($chats.get(0)) {
       $chats.stop().animate({scrollTop: $chats.get(0).scrollHeight}, 'fast');
@@ -299,15 +308,23 @@ function team_funcs_ready() {
     }
   );
 
-  team_app.roll_call();
+  // Anonymous users can view the team page but shouldn't participate in roster or chat
+  if (!solve_app.anonymous) {
+    team_app.roll_call();
+    $('.clue').on('click', team_app.show_team_clue);
+  }
   $('#team-chat .row-topper').on('click', team_app.toggle_chat);
-  $('.clue').on('click', team_app.show_team_clue);
 
   // Notify teammates on departure. Two paths:
-  // 1. Browser unload (tab close, hard reload)
-  // 2. Turbo navigation (Turbo intercepts links without triggering unload)
-  $(window).off('unload', team_app.leave_team);
-  $(window).on('unload', team_app.leave_team);
+  // 1. Tab close / browser close: sendBeacon via pagehide (async XHR is killed during unload)
+  // 2. Turbo navigation: regular $.ajax (page is still alive during Turbo transitions)
+  if (team_app._pagehideHandler) {
+    window.removeEventListener('pagehide', team_app._pagehideHandler);
+  }
+  team_app._pagehideHandler = function(e) {
+    if (!e.persisted) team_app.leave_team_beacon();
+  };
+  window.addEventListener('pagehide', team_app._pagehideHandler);
   if (team_app._turboBeforeVisitHandler) {
     document.removeEventListener('turbo:before-visit', team_app._turboBeforeVisitHandler);
   }

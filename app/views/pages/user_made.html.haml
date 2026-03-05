@@ -1,4 +1,5 @@
-= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: 'User-Made Puzzles'} do
+- title 'User-Made Puzzles'
+= render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: "User-Made Puzzles#{" (#{@user_puzzles.size})" if @user_puzzles.any?}"} do
   - if @user_puzzles.any?
     %ul
       - @user_puzzles.each do |crossword|

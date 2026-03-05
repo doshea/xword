@@ -22,14 +22,14 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 |---|------|-------|------|
 | ~~3~~ | ~~Changelog UX Polish~~ | ~~2 must-fix, 2 should-fix, 2 suggestions~~ | ~~Done~~ |
 | ~~4~~ | ~~Login / Signup~~ | ~~1 must-fix, 3 should-fix, 4 suggestions~~ | ~~Done~~ |
-| 5 | Forgot/Reset Password | 1 must-fix, 4 should-fix | `plans/forgot-reset-password-review.md` |
-| 6 | NYT Page / Calendar | 2 should-fix, 1 suggestion, 3 nitpick | `plans/nyt-calendar-review.md` |
-| 7 | Account Settings | 3 should-fix, 2 suggestions (bundle with #5) | `plans/account-settings-review.md` |
-| 8 | User-Made Puzzles | 1 should-fix, 2 suggestions | `plans/user-made-page-review.md` |
-| 9 | Admin Panel | 2 should-fix, 3 suggestions (low priority) | `plans/admin-panel-review.md` |
-| 10 | Team Solving UX | 4 should-fix, 2 suggestions | `plans/team-solving-review.md` |
-| 11 | Test Suite Health | 1 must-fix, 1 should-fix, 2 suggestions | `plans/test-suite-health.md` |
-| 12 | Backend Logic Audit | 4 should-fix, 4 suggestions | `plans/backend-logic-audit.md` |
+| ~~5~~ | ~~Forgot/Reset Password~~ | ~~1 must-fix, 4 should-fix~~ | ~~Done~~ |
+| ~~6~~ | ~~NYT Page / Calendar~~ | ~~2 should-fix, 1 suggestion, 3 nitpick~~ | ~~Done~~ |
+| ~~7~~ | ~~Account Settings~~ | ~~3 should-fix, 2 suggestions (bundled with #5)~~ | ~~Done~~ |
+| ~~8~~ | ~~User-Made Puzzles~~ | ~~1 should-fix, 2 suggestions~~ | ~~Done~~ |
+| ~~9~~ | ~~Admin Panel~~ | ~~2 should-fix, 3 suggestions~~ | ~~Done (all findings pre-implemented)~~ |
+| ~~10~~ | ~~Team Solving UX~~ | ~~4 should-fix, 2 suggestions~~ | ~~Done (most pre-implemented; added SolutionPartnering unique index)~~ |
+| ~~11~~ | ~~Test Suite Health~~ | ~~1 must-fix, 1 should-fix, 2 suggestions~~ | ~~Done (flaky fix + 107 should→expect)~~ |
+| ~~12~~ | ~~Backend Logic Audit~~ | ~~4 should-fix, 4 suggestions~~ | ~~Done~~ |
 
 ## Planner Work Queue
 
@@ -65,3 +65,4 @@ v569: Solution choice, create dashboard, profile, changelog
 v570: Word/clue detail, notifications polish, new puzzle form
 v571: Search page fixes (blank guard, limits, N+1)
 v572: Login/signup polish (Turbo Stream fix, a11y, redirects, dead CSS/specs)
+v573: Changelog polish (CSS loading fix, prefix stripping, noise filtering, a11y)

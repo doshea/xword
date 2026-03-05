@@ -2,7 +2,7 @@ describe AdminController do
   let(:admin) { create(:admin) }
 
   context 'before_actions' do
-    it { should use_before_action(:ensure_admin) }
+    it { is_expected.to use_before_action(:ensure_admin) }
   end
 
   context 'when not logged in' do
@@ -17,12 +17,12 @@ describe AdminController do
 
     describe 'GET #email' do
       before { get :email }
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     describe 'GET #cloning_tank' do
       before { get :cloning_tank }
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     # -----------------------------------------------------------------------
@@ -36,7 +36,7 @@ describe AdminController do
 
         before { post :user_search, params: { query: 'searchable' } }
 
-        it { should respond_with(200) }
+        it { is_expected.to respond_with(200) }
         it 'assigns @users' do
           expect(assigns(:users)).to include(target_user)
         end
@@ -45,7 +45,7 @@ describe AdminController do
       context 'with no results' do
         before { post :user_search, params: { query: 'zzzznotfound' } }
 
-        it { should respond_with(200) }
+        it { is_expected.to respond_with(200) }
         it 'assigns empty users' do
           expect(assigns(:users)).to be_empty
         end
@@ -60,7 +60,7 @@ describe AdminController do
 
       before { post :clone_user, params: { id: target_user.id } }
 
-      it { should redirect_to(root_path) }
+      it { is_expected.to redirect_to(root_path) }
       it 'sets the auth_token cookie' do
         expect(cookies.signed[:auth_token]).to eq target_user.auth_token
       end
@@ -71,7 +71,7 @@ describe AdminController do
     # -----------------------------------------------------------------------
     describe 'GET #manual_nyt' do
       before { get :manual_nyt }
-      it { should respond_with(200) }
+      it { is_expected.to respond_with(200) }
     end
 
     # -----------------------------------------------------------------------
@@ -81,7 +81,7 @@ describe AdminController do
       context 'with invalid JSON' do
         before { post :create_manual_nyt, params: { nyt_text: 'not valid json {{' } }
 
-        it { should redirect_to(admin_manual_nyt_path) }
+        it { is_expected.to redirect_to(admin_manual_nyt_path) }
         it 'sets an error flash' do
           expect(flash[:error]).to match(/invalid/i)
         end

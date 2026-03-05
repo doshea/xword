@@ -289,18 +289,18 @@ RSpec.describe 'Crosswords', type: :request do
     context 'when non-admin' do
       before { log_in_as(user) }
 
-      it 'returns forbidden' do
+      it 'redirects to unauthorized' do
         post admin_fake_win_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to(unauthorized_path)
       end
     end
 
     context 'when not logged in' do
-      it 'returns forbidden' do
+      it 'redirects to unauthorized' do
         post admin_fake_win_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to(unauthorized_path)
       end
     end
   end
@@ -326,18 +326,18 @@ RSpec.describe 'Crosswords', type: :request do
     context 'when non-admin' do
       before { log_in_as(user) }
 
-      it 'returns forbidden' do
+      it 'redirects to unauthorized' do
         post admin_reveal_puzzle_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to(unauthorized_path)
       end
     end
 
     context 'when not logged in' do
-      it 'returns forbidden' do
+      it 'redirects to unauthorized' do
         post admin_reveal_puzzle_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to(unauthorized_path)
       end
     end
   end
