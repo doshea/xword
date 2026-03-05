@@ -9,11 +9,12 @@
 ## Pending Deploy
 
 - **Word/Clue Detail Pages** — N+1 fix, page titles, SQL ordering, word length, difficulty indicators, spec syntax. 966 specs green.
+- **Notifications Full Page** — click-to-mark-read, mark-all-read Turbo Stream fix, bell ARIA, deleted actor guard, punctuation, mobile dropdown unread bg, empty state icon. 8 new specs. No migration. 974 specs green.
+- **New Puzzle Form** — validation re-render (was redirect), disable_with on submit, void toggle removed from preview (read-only), spin.min.js deleted + CSS .xw-spinner overlay, error display in form, aria-hidden on preview, JS to content_for :head. 5 new request specs. No migration. 979 specs green.
 
 ## Builder In Progress
 
-**Notifications Full Page** — Builder at 2026-03-04 20:00
-→ `claude_personas/plans/notifications-full-page-review.md`
+(none)
 
 ## Planner → Builder Queue
 
@@ -21,9 +22,12 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 
 | # | Item | Scope | Plan |
 |---|------|-------|------|
-| 1 | New Puzzle Form | 1 must-fix, 3 should-fix | `plans/new-puzzle-form-review.md` |
 | 2 | Search Page | 3 should-fix (N+1, limits, blank query) | `plans/search-page-review.md` |
 | 3 | Changelog | New feature (service + page + specs) | `plans/changelog-page.md` |
+| 4 | Login / Signup | 1 must-fix, 3 should-fix, 4 suggestions | `plans/login-signup-review.md` |
+| 5 | Forgot/Reset Password | 1 must-fix, 4 should-fix | `plans/forgot-reset-password-review.md` |
+| 6 | NYT Page / Calendar | 2 should-fix, 1 suggestion, 3 nitpick | `plans/nyt-calendar-review.md` |
+| 7 | Account Settings | 3 should-fix, 2 suggestions (bundle with #5) | `plans/account-settings-review.md` |
 
 ## Planner Work Queue
 
@@ -32,7 +36,7 @@ Full queue with context: `claude_personas/plans/planner-meta-plan.md`
 | Tier | Status | Remaining |
 |------|--------|-----------|
 | 1 | ✅ Done | — |
-| 2 | 1/5 | NYT/calendar, login/signup, password reset, account settings |
+| 2 | ✅ Done | — |
 | 3 | 0/5 | Admin, user-made, team solving, test suite, backend audit |
 
 ## Low-Priority Carry-Forward
