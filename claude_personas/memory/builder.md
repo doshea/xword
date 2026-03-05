@@ -29,6 +29,8 @@
 - **HAML unicode escapes**: `'\u2026'` (single quotes) is LITERAL. Must use `"\u2026"` (double quotes) for Ruby to interpret the escape.
 - `.xw-puzzle-grid .xw-tabs__nav` CSS is NOT dead — class used in 4 views. (Renamed from `.puzzle-tabs` in BEM sprint.)
 - jQuery `.position()` returns coords relative to nearest positioned ancestor — grep for `.position()` and `.offset()` when changing CSS `position` properties.
+- **Edit page tool panels**: `.slide-up-container` uses `position: fixed; bottom: 0; top: 100%` (closed) / `top: 55%` (open). The `.bottom-button` at `top: -1.5em` peeks above viewport bottom as a clickable tab handle. Don't push `top` past `100%` or the buttons become invisible/unreachable.
+- **Edit page `corresponding_clue()`**: Edit clues use `data-index`, solve clues use `data-cell-num`. After `number_cells()` sets `data-cell` on cells, the function would use the wrong lookup path. Fixed with `if (cw.editing) return` early-return using the `data-index` path.
 - Admin tools: `@current_user&.is_admin` guard → `head :forbidden`. Wrapped in `- if is_admin?` in HAML.
 - Reveal Puzzle JS uses direct `.text()` not `set_letter()` to avoid N team broadcasts.
 - **Stats page**: Chart.js v4 vendored locally (`chart.umd.min.js`, loaded via `javascript_include_tag` in `content_for :head`), only on stats page. Stimulus `stats` controller renders charts. `pointRadius: 0` with `pointHitRadius: 8` for 1000+ data points.
@@ -54,6 +56,7 @@
 - `Clue#strip_tags`: ASCII-8BIT strings get double-encoded by Loofah. Encoding guard added.
 
 ## Recently Completed
+- **Edit Page Frontend Review (13 items)**: JS crash after void toggle (scroll_to_selected guard + cw.editing early-return in corresponding_clue), tool panels reduced from 90% to 45vh (top: 55% desktop, 60% phone), dead settings modal + spin_title + jquery-ui + #tools CSS all removed, phone switch labels shrunk on mobile, number_clues NaN guarded. Vendor jquery-ui-1.10.4.draggable.min.js deleted. 5 modal specs removed. No migration.
 - **Home Page Pixel-Perfect Review (10 items)**: Mostly already fixed by prior work. New: `.tab-label` inline-flex for icon+text tabs, `.xw-home__heading` token-based margins replacing inline style, `.xw-hr--flush` border reset, min-height on sparse tab panels. CSS-only, no migration.
 - **Account Settings Rebuild (10 phases)**: Single scrollable page replaces 4-tab layout. 3 sections: Profile (email/username editing), Notifications (5 JSONB checkboxes, opt-out model), Account (password change + delete). Anonymize pattern for account deletion — PII stripped, record kept, all FKs valid. 10 views audited for `deleted?` guards. 92 specs green. Migration: 2 columns on users.
 - **Edit page save bugs (CRITICAL)**: Fixed 2 data-destroying bugs. Bug 1: `update_letters` mapped empty cells (`" "`) to `nil` (void marker) — now correctly maps to `""`. Bug 2: `save_puzzle()` missing `e.preventDefault()` caused Turbo to intercept `<a href="#">` click and reload page. Also: save button right-aligned, 4 regression specs added, 2 controller specs updated, data repair diagnostic rake task added.

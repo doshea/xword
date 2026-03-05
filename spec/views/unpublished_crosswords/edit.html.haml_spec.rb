@@ -40,25 +40,6 @@ describe 'unpublished_crosswords/edit' do
   end
 
   # -----------------------------------------------------------------------
-  # Settings modal ARIA
-  # -----------------------------------------------------------------------
-  it 'renders the settings modal as a native <dialog> element' do
-    expect(rendered).to have_selector('dialog#edit-settings', visible: :all)
-  end
-
-  it 'links the modal to its heading via aria-labelledby' do
-    expect(rendered).to have_selector('dialog#edit-settings[aria-labelledby="settings-heading"]', visible: :all)
-  end
-
-  it 'renders the settings modal heading as h2 with the matching id' do
-    expect(rendered).to have_selector('h2#settings-heading', text: 'Edit Settings', visible: :all)
-  end
-
-  it 'does not render bare unlabeled checkboxes in the settings modal' do
-    expect(rendered).not_to have_selector('#edit-settings input[type="checkbox"]:not([id])', visible: :all)
-  end
-
-  # -----------------------------------------------------------------------
   # Quicksave button
   # -----------------------------------------------------------------------
   it 'gives the quicksave button an aria-label' do

@@ -42,6 +42,7 @@ window.cw = {
   // Scrolls the clue list so the selected clue is vertically centered in the panel.
   scroll_to_selected: function() {
     var $sel_clue = $(".selected-clue");
+    if ($sel_clue.length === 0) return; // no matching clue (e.g. edit page after void toggle)
     var $clues = $sel_clue.closest("ol");
     var top = $clues.scrollTop() + $sel_clue.position().top - $clues.height() / 2 + $sel_clue.height() / 2;
     $clues.stop().animate({ scrollTop: top }, 100);

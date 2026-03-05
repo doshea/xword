@@ -2,21 +2,6 @@
 
 // --- Tool panel buttons ---
 
-.side-button {
-  background: var(--color-nav-bg);
-  color: var(--color-nav-text);
-  font-size: 1.5em;
-  box-shadow: var(--shadow-lg);
-
-  &#settings-button {
-    position: fixed;
-    right: 0;
-    top: 40%;
-    border-top-left-radius: 0.4em;
-    border-bottom-left-radius: 0.4em;
-    padding: 0.3em 0.3em 0.2em 0.4em;
-  }
-}
 
 .bottom-button {
   background: var(--color-nav-bg);
@@ -42,6 +27,11 @@
 }
 
 // --- Slide-up tool panels ---
+// Panels anchor to bottom of viewport and slide up via `top` transition.
+// Closed: top: 100% keeps panel below viewport, but .bottom-button tabs
+// (at top: -1.5em) peek above the bottom edge as clickable handles.
+// Open: top: 55% gives ~45vh of panel space — enough for search results
+// while keeping the puzzle grid visible above.
 
 .slide-up-container {
   z-index: 70001;
@@ -49,7 +39,6 @@
   transition: top 0.4s;
   top: 100%;
   bottom: 0;
-  height: 90%;
 
   &#idea-container {
     left: 0;
@@ -59,8 +48,8 @@
     right: 0;
     width: 18.5em;
   }
-  &.open{
-    top: 95px;
+  &.open {
+    top: 55%;
   }
 }
 
@@ -244,8 +233,8 @@
   position: absolute;
   background: var(--color-nav-bg);
   color: var(--color-nav-text);
-  max-height: 80%;
-  min-height: 20em;
+  height: 100%;
+  overflow-y: auto;
   width: 18.5em;
   padding: 1em;
   border-left: 1px solid var(--color-nav-border);
@@ -287,8 +276,8 @@
   text-transform: uppercase;
   background: var(--color-nav-bg);
   color: var(--color-nav-text);
-  max-height: 80%;
-  min-height: 20em;
+  height: 100%;
+  overflow-y: auto;
   width: 18.5em;
   padding: 1em;
   border-right: 1px solid var(--color-nav-border);
@@ -329,14 +318,6 @@
 // Potential word row — replaces inline style="margin: 0 auto"
 .potential-word__row {
   margin: 0 auto;
-}
-
-// Settings modal placeholder
-.settings-modal__placeholder {
-  font-family: var(--font-ui);
-  color: var(--color-text-muted);
-  text-align: center;
-  padding: var(--space-4) 0;
 }
 
 // --- Toggle switches ---
@@ -406,29 +387,6 @@ $switch-off-color: var(--color-border);
   }
 }
 
-// --- Miscellaneous ---
-
-#tools {
-  position: fixed;
-  height: 300px;
-  width: 96%;
-  margin: 0 2%;
-  bottom: 0;
-  z-index: 10000;
-  background: rgba(30,30,30, 0.3);
-  border-top-left-radius: 0.5em;
-  border-top-right-radius: 0.5em;
-  overflow: hidden;
-  font-size: smaller;
-}
-
-.ui-draggable {
-  cursor: grab;
-  &.ui-draggable-dragging {
-    cursor: grabbing;
-  }
-}
-
 @media (max-height: 700px){
   #ideas ul, #word-match-results {
     max-height: 15em;
@@ -443,7 +401,7 @@ $switch-off-color: var(--color-border);
   #pattern-search, #ideas, #ideas ul { width: 100%; }
 }
 
-// --- Phone: full-width tool panels ---
+// --- Phone: full-width tool panels + tighter switches ---
 @media (max-width: #{$bp-sm - 1}) {
   .slide-up-container {
     &#pattern-container,
@@ -452,6 +410,10 @@ $switch-off-color: var(--color-border);
       right: 0;
       width: 100%;
     }
+    // Phone: open to 60% so puzzle stays partially visible above
+    &.open {
+      top: 60%;
+    }
   }
   #pattern-search,
   #ideas {
@@ -459,5 +421,13 @@ $switch-off-color: var(--color-border);
   }
   #ideas ul {
     width: 100%;
+  }
+
+  // Prevent switch labels from being clipped on narrow screens
+  .xw-edit-switches {
+    gap: 0.5em 1em;
+  }
+  .switch-form label {
+    font-size: var(--text-sm);
   }
 }

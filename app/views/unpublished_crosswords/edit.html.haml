@@ -3,7 +3,6 @@
   = stylesheet_link_tag :crossword
   = stylesheet_link_tag :edit
   = javascript_include_tag 'edit', 'data-turbo-track': 'reload'
-  = javascript_include_tag 'jquery-ui-1.10.4.draggable.min'
 :javascript
   edit_app.circles = #{@unpublished_crossword.circles.to_json};
 :css
@@ -84,14 +83,3 @@
         = text_field_tag :pattern, nil, id: nil, autocomplete: 'off', placeholder: "e.g. P_TT_RN or SE?RCH"
         = submit_tag 'Search', class: 'hidden', data: { loading_target: 'button' }
       #word-match-results
-
-= link_to('#edit-settings', class: 'side-button', id: 'settings-button', data: { turbo: false }) do
-  = icon('settings')
-
-
-%dialog#edit-settings.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}, aria: {labelledby: 'settings-heading'}}
-  %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} ×
-  %h2#settings-heading
-    = icon('settings')
-    Edit Settings
-  %p.settings-modal__placeholder Settings coming soon.

@@ -2,6 +2,20 @@
 
 ## Deploy History
 
+### v557 — 2026-03-05
+**Commit:** `908c4f5`
+**Changes:** 3-item deploy — edit save bugs (critical), account settings rebuild, home page polish:
+- Edit: update_letters void/empty/letter fix, save_puzzle preventDefault, save button alignment
+- Account: single-page layout, email/username editing, notification prefs (5 JSONB toggles), account deletion (anonymize!)
+- Home: puzzle card flexbox, H1 tokens, HR removed, tab icons, byline italic, card hover lift
+- 10 views with deleted? guards, login blocked for deleted accounts
+- 34 new specs (948 total), diagnostic void corruption rake task
+**Migration:** `20260305013832_add_account_settings_columns_to_users` — `notification_preferences` JSONB + `deleted_at` datetime (0.38s)
+**Rollback:** `git revert 908c4f5` (migration columns harmless if code reverted)
+**Post-deploy:** Clean. Migration in release phase (0.38s). Puma up ~4s. No errors.
+- `repair:diagnose_void_corruption` — 1 flagged (UCW #17 "Untitled tester", 85.9% voids — test puzzle)
+- `repair:void_cells` — 0 fixes needed (already clean from prior run)
+
 ### v555 — 2026-03-05
 **Commit:** `4ac4d7b`
 **Changes:** Loading feedback system — 4 layers across 17 app files (JS + CSS + HAML):
@@ -202,7 +216,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v555
+- Current release: v557
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

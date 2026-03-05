@@ -30,22 +30,6 @@ feature 'Edit crossword', js: true do
   end
 
   # -----------------------------------------------------------------------
-  # Settings modal
-  # -----------------------------------------------------------------------
-  scenario 'clicking the gear icon opens the settings modal' do
-    find('#settings-button').click
-    expect(page).to have_css('dialog#edit-settings[open]')
-    expect(page).to have_text('Edit Settings')
-  end
-
-  scenario 'closing the settings modal via the close button' do
-    find('#settings-button').click
-    expect(page).to have_css('dialog#edit-settings[open]')
-    find('.xw-modal__close').click
-    expect(page).not_to have_css('dialog#edit-settings[open]')
-  end
-
-  # -----------------------------------------------------------------------
   # Ideas / Notepad panel
   # -----------------------------------------------------------------------
   scenario 'clicking the lightbulb icon toggles the notepad panel' do
@@ -122,9 +106,9 @@ feature 'Edit crossword', js: true do
     visit edit_unpublished_crossword_path(ucw)
     expect(page).to have_css('table#crossword')
 
-    # Verify edit JS initialized — settings button should open modal
-    find('#settings-button').click
-    expect(page).to have_css('dialog#edit-settings[open]')
+    # Verify edit JS initialized — notepad button should toggle the panel
+    find('#ideas-button').click
+    expect(page).to have_css('#idea-container.open')
   end
 
   # -----------------------------------------------------------------------

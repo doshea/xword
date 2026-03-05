@@ -7,7 +7,6 @@ window.edit_app = {
   save_timer: null,
   last_save: null,
   SAVE_INTERVAL: 15000,
-  title_spinner: null,
   save_counter: null,
 
   ready: function() {
@@ -29,7 +28,6 @@ window.edit_app = {
     $(':not(.cell, .cell *, .clue, .clue *)').on('click', function() { cw.unhighlight_all(); });
 
     $('#ideas').on('keypress', 'input[name=word]', edit_app.add_potential_word);
-    $('#settings-button').on('click', function(e) { e.preventDefault(); document.getElementById('edit-settings').showModal(); });
     $('.bottom-button').on('click', function(e) { e.preventDefault(); $(this).closest('.slide-up-container').toggleClass('open'); });
   },
 
@@ -102,30 +100,6 @@ window.edit_app = {
     edit_app.save_counter = Math.random().toString();
     $('#save-status').text('Unsaved changes');
     $('#save-clock').empty();
-  },
-
-  spin_title: function() {
-    $('.spinner').remove();
-    var opts = {
-      lines: 10,
-      length: 7,
-      width: 4,
-      radius: 6,
-      corners: 1,
-      rotate: 0,
-      direction: 1,
-      color: '#000',
-      speed: 1,
-      trail: 60,
-      shadow: false,
-      hwaccel: false,
-      className: 'spinner',
-      zIndex: 2e9,
-      top: 'auto',
-      left: 'auto'
-    };
-    var target = document.getElementById('title-status');
-    edit_app.title_spinner = new Spinner(opts).spin(target);
   },
 
   number_clues: function() {

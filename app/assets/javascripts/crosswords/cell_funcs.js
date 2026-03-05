@@ -258,10 +258,15 @@
   };
 
   $.fn.corresponding_across_clue = function() {
+    // Edit page clues use data-index, not data-cell-num. After number_cells()
+    // sets data-cell on cells, the data('cell') path would look for data-cell-num
+    // which doesn't exist on edit clues → empty jQuery set → .position() crash.
+    if (cw.editing) return $(".across-clue[data-index=" + this.data('index') + "]");
     return (this.data('cell') ? $(".across-clue[data-cell-num=" + this.data('cell') + "]") : $(".across-clue[data-index=" + this.data('index') + "]"));
   };
 
   $.fn.corresponding_down_clue = function() {
+    if (cw.editing) return $(".down-clue[data-index=" + this.data('index') + "]");
     return (this.data('cell') ? $(".down-clue[data-cell-num=" + this.data('cell') + "]") : $(".down-clue[data-index=" + this.data('index') + "]"));
   };
 
