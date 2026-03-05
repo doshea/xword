@@ -52,6 +52,43 @@ RSpec.describe 'Users', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('Add Friend')
     end
+
+    it 'hides "In Progress" stat from other users' do
+      viewer = create(:user, :with_test_password)
+      log_in_as(viewer)
+
+      get "/users/#{user.id}"
+      expect(response.body).not_to include('In Progress')
+    end
+
+    it 'shows "In Progress" stat on own profile' do
+      log_in_as(user)
+
+      get "/users/#{user.id}"
+      expect(response.body).to include('In Progress')
+    end
+
+    it 'shows "Edit Profile" link on own profile' do
+      log_in_as(user)
+
+      get "/users/#{user.id}"
+      expect(response.body).to include('Edit Profile')
+    end
+
+    it 'does not show "Edit Profile" link on another user profile' do
+      viewer = create(:user, :with_test_password)
+      log_in_as(viewer)
+
+      get "/users/#{user.id}"
+      expect(response.body).not_to include('Edit Profile')
+    end
+
+    it 'displays location when present' do
+      user.update!(location: 'Portland, OR')
+
+      get "/users/#{user.id}"
+      expect(response.body).to include('Portland, OR')
+    end
   end
 
   # -------------------------------------------------------------------------

@@ -8,7 +8,13 @@
       %p.xw-profile-hero__joined
         Member since
         %time{datetime: @user.created_at.iso8601}= @user.created_at.strftime("%B %Y")
-      - if @current_user && (@current_user != @user)
+      - if @user.location.present?
+        %p.xw-profile-hero__location= @user.location
+      - if @own_profile
+        = link_to account_users_path, class: 'xw-btn xw-btn--ghost xw-btn--sm xw-profile-hero__edit' do
+          = icon('settings', size: 14)
+          Edit Profile
+      - elsif @current_user
         = turbo_frame_tag "friend-status-#{@user.id}" do
           = render partial: 'users/partials/friend_status',
                    locals: { user: @user, status: @friend_status }
@@ -19,9 +25,10 @@
       .xw-profile-stat
         %span.xw-profile-stat__number= @crossword_count
         %span.xw-profile-stat__label Created
-      .xw-profile-stat
-        %span.xw-profile-stat__number= @in_progress_count
-        %span.xw-profile-stat__label In Progress
+      - if @own_profile
+        .xw-profile-stat
+          %span.xw-profile-stat__number= @in_progress_count
+          %span.xw-profile-stat__label In Progress
       .xw-profile-stat
         %span.xw-profile-stat__number= @clues_count
         %span.xw-profile-stat__label Clues Written

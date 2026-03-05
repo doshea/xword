@@ -85,19 +85,12 @@ class Comment < ApplicationRecord
     structure.gsub(/\*adv/){|a| WINE_VOCAB[:advs].sample}.gsub(/\*adj/){|a| WINE_VOCAB[:adjs].sample}.gsub(/\*noun/){|a| WINE_VOCAB[:nouns].sample}.gsub(/\*amt/){|a| WINE_VOCAB[:amts].sample}.humanize + '...'
   end
 
-  # Walks up the reply chain to find the root comment's crossword.
-  # Replies don't store crossword_id directly; only top-level comments do.
+  # Returns the crossword this comment belongs to. Replies don't store
+  # crossword_id directly — only top-level comments do. Since nesting is
+  # capped at 2 levels (enforced by CommentsController#reply), we only
+  # need to check one level up.
   def base_crossword
-    temp_cw = crossword
-    temp_comment = self
-    seen = Set.new([id])
-    while temp_cw.nil?
-      temp_comment = temp_comment.base_comment
-      break if temp_comment.nil? || seen.include?(temp_comment.id)
-      seen.add(temp_comment.id)
-      temp_cw = temp_comment.crossword
-    end
-    temp_cw
+    crossword || base_comment&.crossword
   end
 
   def created_ago

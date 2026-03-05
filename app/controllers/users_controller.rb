@@ -14,10 +14,13 @@ class UsersController < ApplicationController
     @crosswords = @user.crosswords.order(created_at: :desc).paginate(page: params[:puzzles_page], per_page: 10)
     @crossword_count = @user.crosswords.count
     @solved_count = @user.solutions.complete.count
-    @in_progress_count = @user.unpublished_crosswords.count
     @clues_count = @user.clues.count
+    @own_profile = (@current_user == @user)
+    @in_progress_count = @user.unpublished_crosswords.count if @own_profile
+    # Comments are max 2 levels deep (CommentsController#reply enforces this),
+    # so we only need to preload one level of base_comment.
     @comments   = @user.comments.order_recent
-                       .includes(:crossword, base_comment: [:crossword, { base_comment: :crossword }])
+                       .includes(:crossword, base_comment: :crossword)
                        .paginate(page: params[:comments_page], per_page: 10)
     if @current_user && @current_user != @user
       if @current_user.friends_with?(@user)

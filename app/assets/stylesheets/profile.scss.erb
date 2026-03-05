@@ -45,9 +45,10 @@
 .xw-profile-hero__avatar {
   flex-shrink: 0;
 
+  // Matches AccountPicUploader `search` version (120×120px) to avoid upscaling blur
   img {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     border-radius: var(--radius-full);
     border: 3px solid var(--color-border-strong);
     box-shadow: var(--shadow-lg);
@@ -78,7 +79,18 @@
   font-family: var(--font-ui);
   font-size: var(--text-sm);
   color: var(--color-text-muted);
-  margin: 0 0 var(--space-3) 0;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.xw-profile-hero__location {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.xw-profile-hero__edit {
+  margin-top: var(--space-2);
 }
 
 .xw-profile-hero__stats {
@@ -283,11 +295,6 @@
     align-items: center;
     text-align: center;
     padding: var(--space-6) var(--space-4);
-  }
-
-  .xw-profile-hero__avatar img {
-    width: 120px;
-    height: 120px;
   }
 
   .xw-profile-hero__name {

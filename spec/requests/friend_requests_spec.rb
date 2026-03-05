@@ -75,6 +75,18 @@ RSpec.describe 'FriendRequests', type: :request do
       post '/friend_requests/accept', params: { sender_id: 999999 }
       expect(response).to have_http_status(:not_found)
     end
+
+    it 'responds with turbo_stream replacing friend status' do
+      log_in_as(user)
+      FriendRequest.create!(sender: other_user, recipient: user)
+
+      post '/friend_requests/accept', params: { sender_id: other_user.id },
+           headers: { 'Accept' => Mime[:turbo_stream].to_s }
+
+      expect(response.media_type).to eq Mime[:turbo_stream].to_s
+      expect(response.body).to include("friend-status-#{other_user.id}")
+      expect(response.body).to include('Friends!')
+    end
   end
 
   describe 'DELETE /friend_requests/reject' do
@@ -89,6 +101,18 @@ RSpec.describe 'FriendRequests', type: :request do
       expect(Notification.where(user_id: user.id, actor_id: other_user.id,
                                 notification_type: 'friend_request').first.read_at).not_to be_nil
       expect(response).to redirect_to(notifications_path)
+    end
+
+    it 'responds with turbo_stream replacing friend status' do
+      log_in_as(user)
+      FriendRequest.create!(sender: other_user, recipient: user)
+
+      delete '/friend_requests/reject', params: { sender_id: other_user.id },
+             headers: { 'Accept' => Mime[:turbo_stream].to_s }
+
+      expect(response.media_type).to eq Mime[:turbo_stream].to_s
+      expect(response.body).to include("friend-status-#{other_user.id}")
+      expect(response.body).to include('Add Friend')
     end
   end
 end

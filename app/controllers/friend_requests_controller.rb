@@ -39,6 +39,11 @@ class FriendRequestsController < ApplicationController
     end
 
     respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(
+        "friend-status-#{sender.id}",
+        partial: 'users/partials/friend_status',
+        locals: { user: sender, status: :friends }
+      )}
       format.html { redirect_to(safe_redirect_path(params[:redirect_to]) || notifications_path) }
     end
   end
@@ -51,6 +56,11 @@ class FriendRequestsController < ApplicationController
     FriendshipService.reject(sender: sender, recipient: @current_user)
 
     respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(
+        "friend-status-#{sender.id}",
+        partial: 'users/partials/friend_status',
+        locals: { user: sender, status: :none }
+      )}
       format.html { redirect_to notifications_path }
     end
   end

@@ -16,6 +16,8 @@ Items built but not yet deployed to production.
 
 - **Create Dashboard polish** — auth guard, `row_top_title`, BEM section headings, empty state,
   ordered queries, new request spec (5 cases). No migration.
+- **Profile page polish** — hide draft count from others, turbo_stream accept/reject, Edit Profile
+  link, simplified includes + base_crossword, avatar 120px, location display. 7 new specs. No migration.
 
 ## Active / In Progress
 
@@ -40,11 +42,25 @@ Items built but not yet deployed to production.
 review it, write a plan file, and post a `Planner → Builder` summary here.
 
 **Tier 1 (high value, user-facing):** ~~Create dashboard~~, ~~new puzzle form~~, ~~solution choice
-page~~, ~~profile logic audit~~, ~~notifications full page~~, word/clue detail pages
+page~~, ~~profile logic audit~~, ~~notifications full page~~, ~~word/clue detail pages~~
 
 ### ~~Planner → Builder: Create Dashboard polish (10 findings)~~ ✅ BUILT
 **Plan:** `claude_personas/plans/create-dashboard-review.md`
 Built by Builder at 2026-03-04. All 10 findings addressed. 947 specs green.
+
+### Planner → Builder: Word/Clue Detail Pages polish (11 items)
+**Plan:** `claude_personas/plans/word-clue-detail-review.md`
+**Summary:** 5 should-fix, 3 suggestions, 3 nitpicks. Bare-bones reference pages, grade C.
+**Key changes:**
+1. **should-fix:** N+1 on `crossword.user` — add `.includes(:user)` to both controllers
+2. **should-fix:** Ruby `sort_by` → SQL `.order(:difficulty)` for clue sorting
+3. **should-fix:** Clue page missing associated word display (most important context)
+4. **should-fix:** Word page missing word length (essential crossword reference data)
+5. **should-fix:** Clue page missing difficulty display
+6. Suggestions: inline `_word` partial, difficulty indicators in clue list, compact card layout
+7. Nitpicks: `should` → `expect()` in spec, missing request specs, empty clue section guard
+**Files:** `words_controller.rb`, `clues_controller.rb`, `words/show.html.haml`,
+`clues/show.html.haml`, delete `words/partials/_word.html.haml`
 
 **Tier 2 (functional):** Search N+1 audit, NYT calendar widget, login/signup, password
 reset pages, account settings verification
