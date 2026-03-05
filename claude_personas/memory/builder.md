@@ -3,6 +3,9 @@
 ## Workflow Rules
 - **Always commit before declaring done.** Implement → test → commit → update memory.
 - **Run `bundle exec rspec` after non-trivial changes.** "Should work" ≠ "does work."
+- **Picking up a plan:** Add `Picked up by Builder at YYYY-MM-DD HH:MM` to the item on
+  `shared.md`. If it already has a pickup timestamp within the last 15 minutes, **stop** —
+  another Builder is working on it. After 15 min with no commit, the pickup expires.
 
 ## Patterns & Conventions
 
@@ -23,6 +26,10 @@
 - jQuery `.position()` returns coords relative to nearest positioned ancestor — grep for `.position()` and `.offset()` when changing CSS `position` properties.
 - Admin tools: `@current_user&.is_admin` guard → `head :forbidden`. Wrapped in `- if is_admin?` in HAML.
 - Reveal Puzzle JS uses direct `.text()` not `set_letter()` to avoid N team broadcasts.
+- **Stats page**: Chart.js v4 loaded via CDN (`javascript_include_tag` in `content_for :head`), only on stats page. Stimulus `stats` controller renders charts. `pointRadius: 0` with `pointHitRadius: 8` for 1000+ data points. CDN guard: `typeof Chart === 'undefined'` fallback to `window.load` event.
+
+## Known Flakes
+- JS feature specs (login_spec, home_tabs_spec, admin_spec, edit_spec) can fail in full suite runs due to order-dependent Capybara/DB state leakage. Pass when run in isolation.
 
 ## Gotchas Encountered
 - **Concurrent agents** can revert shared files. Always re-read before editing if another agent is active.

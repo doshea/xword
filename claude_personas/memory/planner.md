@@ -315,6 +315,26 @@
 
 **Confidence:** High — verified `0.blank?` → false and `0 == "0"` → false in Rails runner.
 
+### 2026-03-04: Playwright MCP Server — headless screenshot capability
+
+**Problem:** No way to visually verify design work. All CSS/HAML reasoning is code-only.
+
+**Solution:** Official `@playwright/mcp` server (Microsoft) added as MCP tool. Headless Chromium — no visible windows, no focus stealing, no interference with user's work.
+
+**Setup:** `claude mcp add --transport stdio playwright -- npx -y @playwright/mcp@latest --headless`
+
+**Key tools gained:** `browser_navigate`, `browser_take_screenshot`, `browser_click`, `browser_type`, `browser_fill_form`, `browser_resize`, `browser_snapshot` (accessibility tree), `browser_console_messages`.
+
+**Design workflow change:** Screenshot current state → analyze → propose → Builder implements → screenshot again → verify. Eliminates blind CSS reasoning.
+
+**Auth approach:** Persistent browser profile (cookies survive sessions). Log in once, browse auth'd pages freely.
+
+**Gotchas:**
+- `--headless` flag is REQUIRED (default is headed/visible)
+- `-y` on npx prevents hang on first-run install prompt
+- First run downloads Chromium (~150MB) — pre-install with `npx playwright install chromium`
+- Dev server must be running for localhost screenshots
+
 ## Open Questions
 
 - ~~Default scope removal plan needed (future session)~~ **DONE** — plan written, fixes 3 bugs.
@@ -419,3 +439,76 @@
 - (should-fix) Stimulus values API uncertain — fallback pattern provided
 
 **Full plan (revised):** `claude_personas/memory/plan.md`
+
+### 2026-03-04: NYT Calendar audit — smart init + year navigation
+
+**Trigger:** User reported calendar opens on month/year with no puzzles. "We probably shouldn't
+be starting users on a year/month where there are no puzzles from NYT."
+
+**Audit findings:**
+1. `calendar_controller.js` uses Stimulus values API (`static get values()`). Bundled Stimulus
+   3.x DOES support values. However, no dataset fallback exists. If values return empty strings,
+   calendar falls back to `new Date()` (March 2026) with empty puzzle data — completely broken UX.
+2. `invite_controller.js` also uses values API but is NOT yet deployed to production — so there's
+   no production validation that the values API pattern works with this Sprockets build.
+3. Navigation is month-by-month only. Puzzles span ~60 months (2013–2017). Tedious.
+4. No orientation cues (no puzzle count, no year-level nav).
+
+**Design decisions:**
+- Dataset fallback: read `this.element.dataset.calendarPuzzlesValue` etc. as safety net. Zero
+  cost if values API works. Eliminates the blank-calendar failure mode.
+- Year buttons (not dropdown): matches existing design patterns (day tabs, view toggle buttons).
+  5 buttons for 5 years — clean, no overflow on any screen.
+- Smart prev/next (skip empty months): builds month index at connect time from puzzle keys.
+  O(n) once, O(1) per nav. 60-iteration safety cap prevents infinite loop.
+- Puzzle count in header: simple text append, no new server data needed.
+- Smart init: validate starting month has puzzles; walk backward if not.
+
+**No server-side changes needed.** All fixes in `calendar_controller.js` + `_components.scss`.
+Specs added for server-rendered data attributes (min/max/paths).
+
+**Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Solve Timer + Next Puzzle on Win — builder-ready plan
+
+**Scope:** Two additive features. 6 files, 0 migrations, 0 new files.
+
+**Timer design:**
+- `solution.created_at` passed to JS as epoch ms via inline script
+- Client-side `setInterval(1s)` with `render_timer()` function
+- Freezes on win (clearInterval in check_completion success callback)
+- Already-complete puzzles show frozen final time from `solved_at - created_at`
+- Anonymous users: no timer (no solution). Turbo nav: clearInterval in `ready()`
+- Format: `MM:SS` → `H:MM:SS` → `Dd H:MM:SS`. Monospace, muted.
+
+**Next puzzle design:**
+- `Crossword.new_to_user(@current_user).order("RANDOM()").first` in check_completion
+- Anonymous fallback: `Crossword.where.not(id: @crossword.id).order("RANDOM()").first`
+- Rendered as link + title in win modal bottom (`.win-modal__next`)
+- Same logic added to `admin_fake_win` for consistency
+
+**CLAUDE.md staleness identified:** All 6 runtime risks are fixed. All 4 architecture
+principles are complete. CellEdit model deleted. Test count ~893 not ~693. Handoff to
+Builder to update.
+
+**Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Backlog sprint — 3 items scoped and planned
+
+**Items assessed:**
+
+1. **Puzzle Card BEM Rename** — fully scoped. 7 files, 8 class renames. 1 CSS file, 1 partial,
+   4 layout callers, 1 test file. Zero JS references. Mechanical rename, zero risk. ~45 min.
+
+2. **Stats Page Modernization** — fully scoped. Chart.js v0/v1 (2013, vendored 38-line minified
+   file) → Chart.js v4 via CDN. Key insight: stats is the ONLY Chart.js consumer in the entire
+   app, so CDN is better than vendoring 200KB into every page. Inline `:javascript` HAML blocks
+   → Stimulus `stats` controller. Canvas DPI blurriness fixed by Chart.js v4 `responsive: true`.
+   3 files modified + 1 deleted. ~2 hours.
+
+3. **Test Suite Performance** — assessed as **already complete**. `test-prof` installed (Gemfile
+   line 70), `let_it_be` required in spec_helper, 19 files already converted. Remaining specs
+   (crossword_spec 105 examples, solution_spec 21, solutions_spec 45) all mutate data and
+   cannot use `let_it_be`. Estimated remaining gain: 1-3% (~1-2 seconds). Closed.
+
+**Full plan:** `claude_personas/memory/plan.md`

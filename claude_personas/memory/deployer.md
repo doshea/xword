@@ -2,6 +2,51 @@
 
 ## Deploy History
 
+### v548 — 2026-03-04
+**Commits:** `e721c27`, `1c657c6`, `9487159`
+**Changes:**
+- NYT calendar: smart init, year nav buttons, skip-empty-months, puzzle count in header
+- BEM rename: `.result-crossword` → `.xw-puzzle-card`, `.puzzle-tabs` → `.xw-puzzle-grid` (7 view files)
+- Stats page: Chart.js v0 → v4 CDN, Stimulus `stats` controller, vendored `chart.min.js` deleted
+**Migration:** None
+**Rollback:** `git revert 9487159 1c657c6 e721c27`
+**Post-deploy:** Clean. Release phase exit 0 (no-op migration). Puma restarted ~3s, state → up. Pages returning 200. WebSocket connected. No errors.
+
+### v546 — 2026-03-04
+**Commit:** `ea7a63c`
+**Changes:** NYT page day-of-week tabs + calendar view. Stimulus `nyt-view` controller toggles between tabs/calendar. `nyt-calendar` controller renders monthly grid from JSON data attribute. 7 day-of-week tabs with puzzle counts. New CSS in `_nyt.scss`. 6 new request specs.
+**Migration:** None
+**Rollback:** `git revert ea7a63c`
+**Post-deploy:** Deployed externally. Verified origin + heroku at same commit. Tests: 891 examples, 0 failures.
+
+### v545 — 2026-03-04
+**Commit:** `8bedb41`
+**Changes:** Show team solution collaborators on solution choice page. Avatars + usernames displayed for each team solution. Helper method for collaborator display.
+**Migration:** None
+**Rollback:** `git revert 8bedb41`
+**Post-deploy:** Deployed externally.
+
+### v544 — 2026-03-04
+**Commit:** `43e1621`
+**Changes:** Move Switch Solution button to controls row, reuse existing team solutions query. Cleaner placement, no extra DB queries.
+**Migration:** None
+**Rollback:** `git revert 43e1621`
+**Post-deploy:** Deployed externally.
+
+### v543 — 2026-03-04
+**Commit:** `f8194f5`
+**Changes:** Fix 500 on solve page caused by missing `repeat.svg` icon. Added icon safety specs to prevent future missing-asset crashes.
+**Migration:** None
+**Rollback:** `git revert f8194f5`
+**Post-deploy:** Deployed externally. Fixes production 500.
+
+### v542 — 2026-03-04
+**Commit:** `414f0a9`
+**Changes:** Reveal hints v2 — persistent black tabs on revealed cells, "Hint Word" option, `revealed_indices` JSON column on solutions.
+**Migration:** `20260304211850_add_revealed_indices_to_solutions` — `add_column :solutions, :revealed_indices, :text, default: '[]', null: false` (0.33s)
+**Rollback:** `git revert 414f0a9` (column harmless if code reverted)
+**Post-deploy:** Clean. Migration in release phase. No errors.
+
 ### v541 — 2026-03-04
 **Commit:** `c2ff36e`
 **Changes:** Edit page void/empty cell swap fix: integer 0 vs string "0" normalization, JS hardening, regression test, repair rake task.
@@ -98,7 +143,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v540
+- Current release: v548
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic
