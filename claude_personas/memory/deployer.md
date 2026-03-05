@@ -2,6 +2,21 @@
 
 ## Deploy History
 
+### v574 — 2026-03-05
+**Commit:** `ecaebe9`
+**Changes:** Bulk deploy — review items 5–12:
+- Forgot/Reset Password (#5): required/maxlength, autocomplete, layout, dead div, 5 specs
+- NYT Page (#6): calendar .pluck, ARIA tab roles, centering, IIFE
+- Account Settings (#7): verified pre-implemented
+- User-Made Puzzles (#8): title, count, 2 specs
+- Admin Panel (#9): find_by guard, dead mail field, wine_comment rename
+- Team Solving (#10): sendBeacon, Foundation tooltip replaced, invite CSS, anon guards, chat token
+- Test Suite Health (#11): flaky fix, 107 should→is_expected.to
+- Backend Logic Audit (#12): ensure_admin, dependent: :destroy/:nullify, self-friend guard, Word content validation, 8 unused scopes deleted
+**Migration:** `20260305080039_add_unique_index_to_solution_partnerings` — remove 2 single-column indexes, add composite unique + user_id index (0.72s on 39 rows)
+**Rollback:** `git revert ecaebe9` + `heroku run rake db:migrate:down VERSION=20260305080039`
+**Post-deploy:** Migration ran in release phase (0.72s). Puma up ~4s. First requests slow (cold AR cache, 3-5s) then normalized (1.3s). H27 client interrupts on first burst (impatient browser during cold boot — cosmetic). New asset fingerprints picked up. No app errors.
+
 ### v573 — 2026-03-05
 **Commit:** `ba0e4f3`
 **Changes:** Changelog page polish:
@@ -339,7 +354,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v573
+- Current release: v574
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic
