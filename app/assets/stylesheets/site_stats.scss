@@ -1,20 +1,241 @@
-.xw-stats {
-  canvas {
-    width: 100%;
-    max-width: 800px;
-    margin: var(--space-4) auto 0;
-    display: block;
-  }
+@import 'design_tokens';
 
+.xw-stats {
+  // --- Section headings ---
   h2 {
     font-family: var(--font-display);
     font-size: var(--text-xl);
     font-weight: var(--weight-semibold);
     text-align: center;
     margin-top: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
 
-    &:first-child {
-      margin-top: 0;
+  h3 {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text-secondary);
+    text-align: center;
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+  }
+
+  canvas {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  hr {
+    margin: var(--space-8) 0;
+  }
+
+  // --- Section 1: Hero cards ---
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-4);
+  }
+
+  &__card {
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-4);
+    text-align: center;
+  }
+
+  &__card-number {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+  }
+
+  &__card-label {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-1);
+  }
+
+  // --- Section 3: Bar chart ---
+  &__bars {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  &__bar-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  &__bar-label {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-secondary);
+    min-width: 3.5em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__bar-track {
+    flex: 1;
+    height: 1.5em;
+    background: var(--color-surface-sunken);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    background: var(--color-accent);
+    border-radius: var(--radius-sm);
+    min-width: 4px; // always show a sliver even for count of 1
+    transition: width var(--duration-slow) var(--ease-out);
+  }
+
+  &__bar-value {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+    min-width: 2em;
+    text-align: left;
+  }
+
+  // --- Section 4: Metric blocks ---
+  &__metrics {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  &__metric {
+    text-align: center;
+    min-width: 8em;
+  }
+
+  &__metric-number {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+  }
+
+  &__metric-label {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-1);
+  }
+
+  // --- Sections 5 & 6: Leaderboard ---
+  &__leaderboard {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 600px;
+    counter-reset: rank;
+  }
+
+  &__leaderboard-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    counter-increment: rank;
+
+    &::before {
+      content: counter(rank) ".";
+      font-family: var(--font-ui);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-muted);
+      min-width: 2em;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__leaderboard-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__leaderboard-link {
+    font-family: var(--font-body);
+    font-weight: var(--weight-semibold);
+    color: var(--color-accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__leaderboard-meta {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-left: var(--space-2);
+  }
+
+  &__leaderboard-badge {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    background: var(--color-surface-alt);
+    padding: 0.1em 0.4em;
+    border-radius: var(--radius-sm);
+    margin-left: var(--space-1);
+    white-space: nowrap;
+  }
+
+  &__leaderboard-stat {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    margin-left: var(--space-4);
+  }
+}
+
+// --- Responsive: phone ---
+@media (max-width: #{$bp-sm - 1}) {
+  .xw-stats {
+    &__cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &__card-number {
+      font-size: var(--text-3xl);
+    }
+
+    &__metrics {
+      gap: var(--space-4);
+    }
+
+    &__metric-number {
+      font-size: var(--text-2xl);
+    }
+
+    &__leaderboard-meta {
+      display: block;
+      margin-left: 0;
+      margin-top: var(--space-1);
     }
   }
 }

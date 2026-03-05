@@ -134,14 +134,67 @@ class PagesController < ApplicationController
 
   #GET /stats or stats_path
   def stats
+    # --- Section 1: At a Glance (hero cards) ---
+    @puzzles_count  = Crossword.count
+    @completed_count = Solution.where(is_complete: true).count
+    @members_count  = User.where(deleted_at: nil).count
+    @clues_count    = Clue.count
+
+    # --- Section 2: Growth Over Time (line charts) ---
     date_counts = User.group("DATE(created_at)").order("DATE(created_at)").count
-    return redirect_to(root_path, flash: { info: "No data yet." }) if date_counts.empty?
+    if date_counts.any?
+      @days_operational = (date_counts.keys.first..Date.today)
+      @signup_counts = @days_operational.map { |day| date_counts[day] || 0 }
+      running = 0
+      @running_signup_counts = @signup_counts.map { |c| running += c }
+    end
 
-    @days_operational = (date_counts.keys.first..Date.today)
-    @signup_counts = @days_operational.map { |day| date_counts[day] || 0 }
+    puzzle_date_counts = Crossword.group("DATE(created_at)").order("DATE(created_at)").count
+    if puzzle_date_counts.any? && @days_operational
+      running = 0
+      @running_puzzle_counts = @days_operational.map { |day| running += (puzzle_date_counts[day] || 0) }
+    end
 
-    running = 0
-    @running_signup_counts = @signup_counts.map { |c| running += c }
+    # --- Section 3: Puzzle Variety (grid size distribution) ---
+    if @puzzles_count >= 5
+      @grid_sizes = Crossword.group(:rows, :cols).order("count_all DESC").count
+    end
+
+    # --- Section 4: Solving Activity ---
+    total_solutions = Solution.count
+    if total_solutions >= 5
+      @completion_rate = (@completed_count.to_f / total_solutions * 100).round(0)
+      @avg_solvers     = (total_solutions.to_f / @puzzles_count).round(1) if @puzzles_count > 0
+      if @completed_count > 0
+        hintfree = Solution.where(is_complete: true, hints_used: 0).count
+        @hintfree_rate = (hintfree.to_f / @completed_count * 100).round(0)
+      end
+      @show_solving = true
+    end
+
+    # --- Section 5: Popular Puzzles (top 5) ---
+    puzzles_with_solutions = Crossword.joins(:solutions).distinct.count
+    if puzzles_with_solutions >= 3
+      @popular_puzzles = Crossword
+        .select("crosswords.*, COUNT(solutions.id) AS solver_count")
+        .joins(:solutions)
+        .group("crosswords.id")
+        .order("solver_count DESC")
+        .includes(:user)
+        .limit(5)
+    end
+
+    # --- Section 6: Top Constructors (top 5) ---
+    distinct_creators = Crossword.distinct.count(:user_id)
+    if distinct_creators >= 3
+      @top_creators = User
+        .select("users.*, COUNT(crosswords.id) AS puzzle_count")
+        .joins(:crosswords)
+        .where(deleted_at: nil)
+        .group("users.id")
+        .order("puzzle_count DESC")
+        .limit(5)
+    end
   end
 
   #GET /nytimes or nytimes_path

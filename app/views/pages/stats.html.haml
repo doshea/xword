@@ -4,16 +4,102 @@
   = javascript_include_tag 'chart.umd.min'
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'Site Stats'} do
   .xw-stats{data: {controller: 'stats'}}
-    %h2 Total Users by Date
-    %canvas{data: {'stats-target': 'canvas',
-                    labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
-                    values: @running_signup_counts.to_json,
-                    'chart-label': 'Total Users'}}
 
-    %hr.xw-hr--accent
+    -# --- Section 1: At a Glance ---
+    .xw-stats__cards
+      .xw-stats__card
+        .xw-stats__card-number= number_with_delimiter(@puzzles_count)
+        .xw-stats__card-label Puzzles Published
+      .xw-stats__card
+        .xw-stats__card-number= number_with_delimiter(@completed_count)
+        .xw-stats__card-label Solves Completed
+      .xw-stats__card
+        .xw-stats__card-number= number_with_delimiter(@members_count)
+        .xw-stats__card-label Community Members
+      .xw-stats__card
+        .xw-stats__card-number= number_with_delimiter(@clues_count)
+        .xw-stats__card-label Clues Written
 
-    %h2 Daily User Signups
-    %canvas{data: {'stats-target': 'canvas',
-                    labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
-                    values: @signup_counts.to_json,
-                    'chart-label': 'Signups'}}
+    -# --- Section 2: Growth Over Time ---
+    - if @days_operational
+      %hr
+      %h2 Growth
+      %h3 Total Users
+      %canvas{data: {'stats-target': 'canvas',
+                      labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
+                      values: @running_signup_counts.to_json,
+                      'chart-label': 'Total Users'}}
+      %h3 Daily Signups
+      %canvas{data: {'stats-target': 'canvas',
+                      labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
+                      values: @signup_counts.to_json,
+                      'chart-label': 'Signups'}}
+      - if @running_puzzle_counts
+        %h3 Puzzles Published
+        %canvas{data: {'stats-target': 'canvas',
+                        labels: @days_operational.map { |d| ([1,15].include?(d.day) || d == @days_operational.first || d == @days_operational.last) ? d.to_s : '' }.to_json,
+                        values: @running_puzzle_counts.to_json,
+                        'chart-label': 'Puzzles'}}
+
+    -# --- Section 3: Puzzle Variety ---
+    - if @grid_sizes&.any?
+      %hr
+      %h2 Puzzle Variety
+      - max_count = @grid_sizes.values.max
+      .xw-stats__bars
+        - @grid_sizes.each do |(rows, cols), count|
+          .xw-stats__bar-row
+            .xw-stats__bar-label #{rows}&times;#{cols}
+            .xw-stats__bar-track
+              .xw-stats__bar-fill{style: "width: #{(count.to_f / max_count * 100).round(1)}%"}
+            .xw-stats__bar-value= count
+
+    -# --- Section 4: Solving Activity ---
+    - if @show_solving
+      %hr
+      %h2 Solving
+      .xw-stats__metrics
+        .xw-stats__metric
+          .xw-stats__metric-number #{@completion_rate}%
+          .xw-stats__metric-label Completion Rate
+        - if @avg_solvers
+          .xw-stats__metric
+            .xw-stats__metric-number= @avg_solvers
+            .xw-stats__metric-label Avg Solvers per Puzzle
+        - if @hintfree_rate
+          .xw-stats__metric
+            .xw-stats__metric-number #{@hintfree_rate}%
+            .xw-stats__metric-label Hint-Free Completions
+
+    -# --- Section 5: Popular Puzzles ---
+    - if @popular_puzzles&.any?
+      %hr
+      %h2 Most Popular Puzzles
+      %ol.xw-stats__leaderboard
+        - @popular_puzzles.each do |puzzle|
+          %li.xw-stats__leaderboard-row
+            .xw-stats__leaderboard-info
+              = link_to puzzle.title, crossword_path(puzzle), class: 'xw-stats__leaderboard-link'
+              %span.xw-stats__leaderboard-meta
+                by #{puzzle.user&.username}
+                %span.xw-stats__leaderboard-badge #{puzzle.rows}&times;#{puzzle.cols}
+            .xw-stats__leaderboard-stat
+              = puzzle.solver_count
+              solvers
+
+    -# --- Section 6: Top Constructors ---
+    - if @top_creators&.any?
+      %hr
+      %h2 Top Constructors
+      %ol.xw-stats__leaderboard
+        - @top_creators.each do |creator|
+          %li.xw-stats__leaderboard-row
+            .xw-stats__leaderboard-info
+              = link_to creator.username, user_path(creator), class: 'xw-stats__leaderboard-link'
+            .xw-stats__leaderboard-stat
+              = creator.puzzle_count
+              puzzles
+
+    -# --- CTA ---
+    %hr
+    = link_to 'Browse Puzzles', root_path, class: 'xw-btn'
