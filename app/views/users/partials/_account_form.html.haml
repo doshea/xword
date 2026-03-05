@@ -59,8 +59,11 @@
   = form_with model: user, html: { multipart: false } do |f|
     = token_tag nil
     %section.xw-account-section
-      %h2.xw-account-section__heading Notification Preferences
-      %p.xw-account-section__hint Uncheck any notifications you don't want to receive.
+      %h2.xw-account-section__heading In-App Notifications
+      %p.xw-account-section__hint
+        These control the notifications you see on this site (the bell icon in the nav bar).
+        They do not affect emails. To stop receiving emails, use the unsubscribe link at the
+        bottom of any email.
       .xw-account-notification-list
         - notification_labels = { 'friend_request' => 'Friend requests',
             'friend_accepted' => 'Friend request accepted',
