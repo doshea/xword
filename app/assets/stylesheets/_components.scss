@@ -355,6 +355,7 @@
   width: 90vw;
   background-color: var(--color-surface);
   color: var(--color-text);
+  position: relative;
 
   &::backdrop {
     background-color: var(--color-overlay-backdrop);
@@ -374,6 +375,9 @@
   }
 
   .xw-modal__close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
     background: none;
     border: none;
     cursor: pointer;
