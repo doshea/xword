@@ -2,9 +2,9 @@
 
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
-    %h1.center
-      = icon('triangle-alert')
-      Account Required
+    .xw-error-icon
+      = icon('triangle-alert', size: 48)
+    %h1.center Account Required
     %p.center You need an account to access that page. Log in if you have one, or sign up — it's free.
     .xw-btn-group.center
       = link_to 'Log in', login_path(redirect: @redirect), class: 'xw-btn'

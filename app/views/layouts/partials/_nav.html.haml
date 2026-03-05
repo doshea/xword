@@ -44,6 +44,7 @@
                                     data: { action: 'dropdown#toggle',
                                             xw_tooltip: 'Browse' } }
             = icon('clipboard-list')
+            %span.xw-nav__label Browse
           .xw-nav__dropdown{ data: { dropdown_target: 'menu' } }
             = link_to nytimes_path, class: 'xw-nav__dropdown-item' do
               = image_tag 'nyt_white.png', class: 'xw-nav__dropdown-icon', alt: ''
@@ -60,6 +61,7 @@
           = link_to create_dashboard_path, class: 'xw-nav__icon-btn',
                     data: { xw_tooltip: 'Create' } do
             = icon('lightbulb')
+            %span.xw-nav__label Create
 
         / Notifications dropdown — #nav-mail preserved (CSS unread pulse animation)
         - if is_logged_in?
@@ -69,6 +71,7 @@
                                        data: { action: 'notification-dropdown#toggle',
                                                xw_tooltip: 'Notifications' } }
               = icon('bell')
+              %span.xw-nav__label Notifications
               #notification-badge
                 - if @unread_notification_count > 0
                   %span.xw-badge= @unread_notification_count > 99 ? '99+' : @unread_notification_count

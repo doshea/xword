@@ -792,7 +792,7 @@
     margin-bottom: var(--space-4);
   }
 
-  a {
+  a:not(.xw-btn) {
     color: var(--color-accent);
     text-decoration: underline;
     text-underline-offset: 2px;
@@ -830,6 +830,8 @@
     flex-wrap: wrap;
     gap: var(--space-3);
     margin-top: var(--space-6);
+
+    &.center { justify-content: center; }
   }
 }
 
@@ -1073,6 +1075,42 @@
   border-bottom: 1px solid var(--color-border);
   margin: var(--space-4) 0 var(--space-2);
   padding-bottom: var(--space-1);
+}
+
+
+// ---------------------------------------------------------------------------
+// EMPTY STATE — centered message for pages/panels with no content
+// ---------------------------------------------------------------------------
+// Usage:
+//   .xw-empty-state
+//     %p  Some explanatory text
+//     = link_to 'Action', path, class: 'xw-btn xw-btn--sm'
+
+.xw-empty-state {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+
+.xw-empty-state__icon {
+  display: block;
+  margin: 0 auto var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.xw-empty-state__heading {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.xw-empty-state__actions {
+  margin-top: var(--space-4);
 }
 
 

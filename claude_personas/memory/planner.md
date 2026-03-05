@@ -157,32 +157,41 @@
 
 **Full plan:** `claude_personas/memory/plan.md`
 
-### 2026-03-04: Comprehensive Site Design Review
+### 2026-03-04: Comprehensive Site Design Review (code-based, superseded by screenshot review)
 
-**Scope:** Full audit of all view templates, stylesheets, and design token usage.
+**Superseded.** See screenshot-based review below for authoritative findings.
 
-**Overall grade: B+.** Primary pages (solve, edit, profile, nav, search) are well-polished. Secondary pages use tokens correctly but lack visual character.
+### 2026-03-04: Full Screenshot-Based Design Review
 
-**Findings by severity:**
+**Scope:** Playwright walkthrough of all 22 pages (logged-out + logged-in). Screenshots saved as `/screenshots/01-*.png` through `22-*.png`.
 
-**Must-fix (1):**
-- `_notifications.scss` line 17: `var(--font-heading)` doesn't exist in tokens → `var(--font-display)`. Same bug propagated to plan.md notification dropdown design (line 321).
+**Overall grade: B.** Downgraded from B+ after visual verification. Primary pages (solve, profile, search, about) are well-polished. But several pages have bugs (invisible button text, broken unicode), empty states feel unfinished, and there's a visible quality gap between the best and worst pages.
 
-**Should-fix (3):**
-1. Info pages (about/FAQ/contact) visually barren. `.xw-prose` styles are technically correct but flat. Designed h2 accent bars + editorial dinkus (`✦  ✦  ✦`) section breaks + tighter heading tracking.
-2. Edit page switch colors hardcoded as SCSS variables when identical tokens exist.
-3. `_crossword_tab.html.haml` uses legacy class names (`.result-crossword`, `.minipic`, `.metadata`, `.title`, `.byline`, `.dimensions`, `.nyt-watermark`). Should be `xw-puzzle-card` BEM — but this is a 2-hour refactor touching 20+ template references. **Deferred** to a dedicated session.
+**Must-fix (3):**
+1. **Hamburger menu labels invisible** (SS 11, 13) — Browse/Create/Notifications show icons only. Text is in DOM but visually hidden. Likely `.xw-nav__label` CSS too aggressive on mobile.
+2. **CTA button text invisible** (SS 05, 20, 21, 22) — "Browse Puzzles", "Back to puzzles" render as solid green blocks. Text color may be inherited wrong or link lacks `.xw-btn` class.
+3. **Search placeholder `\u2026` literal** (SS 09) — Unicode escape not rendered. Template issue.
 
-**Suggestions (3):**
-1. `.xw-thumbnail` has cold black shadow (`rgba(0,0,0,0.1)`) — should use `var(--shadow-sm)`.
-2. Error/unauthorized/account_required pages are functional but could have more personality (illustrations, warmer messaging). Low priority.
-3. Stats page uses Chart.js v1 API with hardcoded rgba colors and inline JS. Roughest page on the site. Modernization would take 3-4 hours — very low priority.
+**Should-fix (6):**
+4. Forgot Password Send button uses danger-red (SS 10) — should be accent green
+5. Empty-state pages barren (SS 01, 02, 03, 07, 12) — content-to-wood ratio ~20/80
+6. Contact page weakest on site (SS 07) — 2 lines, no editorial treatment
+7. Account settings vertical tabs (SS 15) — inconsistent with horizontal tabs elsewhere
+8. New Puzzle preview misaligned (SS 18) — tiny grid in huge empty container
+9. Unauthorized/Account Required lack Error page's polish (SS 21, 22 vs 20)
 
-**Design token adoption:** ~88% of visual properties use CSS custom properties. Remaining holdouts are mostly in legacy puzzle-tab styles and edit.scss switches.
+**Suggestions (5):**
+10. Page title banner needs more vertical padding
+11. Footer detached on short-content pages — consider sticky footer
+12. Profile stats numbers in italic display font look decorative
+13. Solve page toolbar cramped on mobile
+14. Admin table unstyled (low priority)
 
-**Key insight:** The "paper on wood" aesthetic works well for primary pages but the info pages feel like they're missing the editorial layer. Adding Playfair Display tracking, accent bars on headings, and typographic section breaks (instead of plain `<hr>`) would bring them into line with the overall feel without touching any HTML.
+**What's working well:** Profile page, About page, Error page illustration, Solve page, Login page, nav bar, design token system.
 
-**Builder handoff:** Written to shared.md with 4 prioritized changes. All CSS-only, no DOM/test changes.
+**Key insight:** About page (with accent bars, `✦` dividers, editorial typography) is the gold standard. Contact, Unauthorized, and Account Required should match its treatment. The error page crossword illustration is delightful — more pages should have this level of personality.
+
+**Builder handoff:** Written to shared.md. 3 must-fix items are likely quick CSS/template fixes. Should-fix items 5-6 and 8-9 are design work requiring more thought.
 
 ### 2026-03-04: Admin test tools dropdown on solve page
 
@@ -510,5 +519,33 @@ Builder to update.
    line 70), `let_it_be` required in spec_helper, 19 files already converted. Remaining specs
    (crossword_spec 105 examples, solution_spec 21, solutions_spec 45) all mutate data and
    cannot use `let_it_be`. Estimated remaining gain: 1-3% (~1-2 seconds). Closed.
+
+**Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-04: Loading Feedback System — comprehensive audit + plan
+
+**Trigger:** User reported puzzle card clicks and button presses feel unresponsive, especially
+on production with Heroku latency. Barely-visible Turbo progress bar is insufficient.
+
+**Audit scope:** All 96 HAML views, 14 Stimulus controllers, all jQuery AJAX in solve_funcs.js,
+edit_funcs.js, global.js, new.js, solution_choice.js. Cataloged every server interaction and
+its current feedback state.
+
+**Key findings:**
+1. `.xw-spinner` CSS class exists (global.scss.erb:157) but is **never used** anywhere
+2. `loading_controller.js` Stimulus controller exists but is only wired to 3 of ~20 forms
+3. `data-disable-with` used inconsistently — 11 places have it, 16 don't
+4. Solve page AJAX buttons (check, reveal, hint, save) have **zero** loading feedback
+5. Puzzle card clicks (the most common interaction) have only the progress bar
+6. `turbo:click` event is available for intercepting navigation clicks globally
+
+**Design decisions:**
+- 4 implementation layers, ordered by impact-to-effort ratio
+- Layer 1 (global nav dimming via `turbo:click`) covers ~80% of cases with ~1 hour of work
+- Layer 2 (form `disable_with`) is mechanical application of existing pattern to 16 buttons
+- Layer 3 (solve toolbar `.xw-btn--busy`) is highest UX value but most code
+- Explicitly excluded: auto-save, live search, favorites, delete confirmations, client-side actions
+- Used best practices per interaction type: nav → dim+spinner, form → disable+text, toolbar → busy state, destructive → confirm is enough, toggle → optimistic UI
+- `prefers-reduced-motion` respected throughout
 
 **Full plan:** `claude_personas/memory/plan.md`

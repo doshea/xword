@@ -2,11 +2,11 @@
 
 = render layout: 'layouts/partials/topper_stopper' do
   .xw-prose
-    %h1
-      = icon('shield')
-      Not Authorized
-    %p Sorry, you don't have access to that page. If you think this is a mistake, try logging in again.
-    .xw-btn-group
+    .xw-error-icon
+      = icon('shield', size: 48)
+    %h1.center Not Authorized
+    %p.center Sorry, you don't have access to that page. If you think this is a mistake, try logging in again.
+    .xw-btn-group.center
       = link_to 'Back to puzzles', root_path, class: 'xw-btn'
       - unless @current_user
         = link_to 'Log in', login_path, class: 'xw-btn xw-btn--secondary'

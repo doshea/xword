@@ -1,4 +1,9 @@
 - if @current_user
   = render partial: 'pages/home/crossword_list', locals: { collection: @in_progress, count: @in_progress_count, list_id: 'in-progress-list', scope: 'in_progress', empty_message: "You're not working on any puzzles right now! Why not #{link_to 'start a new one?', '#panel1'}" }
 - else
-  %p Make an account or log in and you'll be able to track which crosswords you're working on!
+  .xw-empty-state
+    = icon('pencil', size: 36, class: 'xw-empty-state__icon')
+    %p.xw-empty-state__heading Track your progress
+    %p Log in or create an account to see which puzzles you're working on.
+    .xw-empty-state__actions
+      = link_to 'Log in', login_path, class: 'xw-btn xw-btn--sm'

@@ -78,6 +78,9 @@
 
 .xw-newcw-layout__preview {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 // -----------------------------------------------------------------------------

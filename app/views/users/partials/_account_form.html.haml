@@ -14,7 +14,7 @@
 
 -# Tab interface
 .xw-col-full
-  .xw-account-tabs.xw-tabs.xw-tabs--vertical{data: {controller: 'tabs'}}
+  .xw-account-tabs.xw-tabs{data: {controller: 'tabs'}}
     .xw-tabs__nav
       = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
         Personal

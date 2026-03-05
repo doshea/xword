@@ -6,4 +6,6 @@
   - if count > collection.size
     = render partial: 'pages/home/load_more_button', locals: {scope: scope, page: 2, remaining: count - collection.size}
 - else
-  %p= empty_message
+  .xw-empty-state
+    = icon('clipboard-list', size: 36, class: 'xw-empty-state__icon')
+    %p!= empty_message

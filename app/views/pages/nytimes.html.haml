@@ -3,7 +3,10 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: "#{image_tag 'nyt_white.png', width: 20} New York Times Crosswords".html_safe} do
 
   - if @total_count == 0
-    %p.xw-empty-state No NYT puzzles have been imported yet.
+    .xw-empty-state
+      = icon('clipboard-list', size: 36, class: 'xw-empty-state__icon')
+      %p.xw-empty-state__heading No NYT puzzles yet
+      %p NYT puzzles haven't been imported yet. Check back soon!
   - else
     .nyt-view{data: {controller: 'nyt-view'}}
       .xw-view-toggle
@@ -28,7 +31,8 @@
               - puzzles = @puzzles_by_wday[wday] || []
               %div{id: "day-panel-#{wday}", class: "xw-tab-panel #{'xw-tab-panel--active' if i == 0}", data: {tabs_target: 'panel'}}
                 - if puzzles.empty?
-                  %p.xw-empty-state No #{label} puzzles imported.
+                  .xw-empty-state
+                    %p No #{label} puzzles imported.
                 - else
                   - puzzles.group_by { |c| c.created_at.year }.each do |year, year_puzzles|
                     %h3.xw-year-header= year

@@ -2,6 +2,31 @@
 
 ## Deploy History
 
+### v553 — 2026-03-05
+**Commit:** TBD
+**Changes:** Visual design review — 12 items across 17 files (CSS + HAML only):
+- Empty states: new `.xw-empty-state` component (home ×3, NYT ×2, user-made)
+- Sticky footer: flexbox body + `flex: 1 0 auto` on `#body`
+- Nav hamburger labels: `.xw-nav__label` spans (hidden desktop, visible mobile)
+- Error/auth pages: centered icon + layout (unauthorized, account_required)
+- Contact page: editorial section headers
+- CTA button fix: `.xw-prose a:not(.xw-btn)` prevents green-on-green
+- Forgot Password: red button → accent green, copy fix
+- Account settings: vertical tabs → horizontal
+- New Puzzle preview: centered with flex
+- Profile stats: `font-ui` + `color-text`
+- Banner padding, search placeholder quote fix
+**Migration:** None
+**Rollback:** `git revert <commit>` (pure frontend, instant)
+**Post-deploy:** TBD
+
+### v552 — 2026-03-05
+**Commit:** `ee2ce36`
+**Changes:** Deployer persona test-run guardrails, memory file updates (docs only, no app code)
+**Migration:** None
+**Rollback:** `git revert ee2ce36` (trivial, no app impact)
+**Post-deploy:** Clean. Release phase exit 0. Puma up ~3s. No errors.
+
 ### v550 — 2026-03-04
 **Commits:** `c710d75`, `6d2bce7`
 **Changes:**
@@ -166,7 +191,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v550
+- Current release: v552
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic

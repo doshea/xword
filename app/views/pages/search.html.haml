@@ -38,7 +38,7 @@
       = form_tag search_path, method: :get, class: 'xw-search-hero__form', data: { controller: 'loading', action: 'submit->loading#submit' } do
         = label_tag :query, 'Search', class: 'sr-only'
         .xw-search-hero__input-wrap
-          = search_field_tag :query, @query, id: 'search2', class: 'xw-search-hero__input', placeholder: 'A puzzle title, username, clue or word\u2026', autofocus: @query.blank?
+          = search_field_tag :query, @query, id: 'search2', class: 'xw-search-hero__input', placeholder: "A puzzle title, username, clue or word\u2026", autofocus: @query.blank?
           = submit_tag 'Search', class: 'xw-btn xw-btn--success xw-search-hero__submit', data: { loading_target: 'button' }
 
   -# Crossword results — vertical card grid matching profile

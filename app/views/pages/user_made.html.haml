@@ -1,5 +1,13 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: 'User-Made Puzzles'} do
-  %ul
-    - @user_puzzles.each do |crossword|
-      %li
-        = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
+  - if @user_puzzles.any?
+    %ul
+      - @user_puzzles.each do |crossword|
+        %li
+          = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
+  - else
+    .xw-empty-state
+      = icon('lightbulb', size: 36, class: 'xw-empty-state__icon')
+      %p.xw-empty-state__heading No user-made puzzles yet
+      %p Be the first! Create a crossword and share it with the community.
+      .xw-empty-state__actions
+        = link_to 'Create a puzzle', create_dashboard_path, class: 'xw-btn xw-btn--sm'

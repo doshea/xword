@@ -22,6 +22,11 @@
 - Crossword factory pinned to 5×5. `:smaller` trait is a no-op alias.
 
 ### CSS/JS
+- **`.xw-prose a` specificity bug**: `.xw-prose a` (0,1,1) overrides `.xw-btn` (0,1,0) color. Fixed with `.xw-prose a:not(.xw-btn)`. Check for similar specificity traps when nesting link components inside prose containers.
+- **HAML `!=` for HTML strings**: `_crossword_list.html.haml` uses `%p!= empty_message` because the message can contain `link_to` HTML. Regular `=` escapes it.
+- **`.xw-nav__label`**: Hidden on desktop (`display: none`), shown on mobile (`display: inline` inside mobile media query). Use for icon buttons that need text in hamburger menu.
+- **Sticky footer**: `body { display: flex; flex-direction: column; }` + `#body { flex: 1 0 auto; }`. Footer auto-sticks to bottom on short pages.
+- **HAML unicode escapes**: `'\u2026'` (single quotes) is LITERAL. Must use `"\u2026"` (double quotes) for Ruby to interpret the escape.
 - `.xw-puzzle-grid .xw-tabs__nav` CSS is NOT dead — class used in 4 views. (Renamed from `.puzzle-tabs` in BEM sprint.)
 - jQuery `.position()` returns coords relative to nearest positioned ancestor — grep for `.position()` and `.offset()` when changing CSS `position` properties.
 - Admin tools: `@current_user&.is_admin` guard → `head :forbidden`. Wrapped in `- if is_admin?` in HAML.
@@ -40,6 +45,7 @@
 - `Clue#strip_tags`: ASCII-8BIT strings get double-encoded by Loofah. Encoding guard added.
 
 ## Recently Completed
+- **Visual design review (12 fixes)**: Hamburger labels, CTA button text, search placeholder, forgot-password color, empty states, contact page, account tabs, puzzle preview, auth error pages, banner padding, sticky footer, profile stats font.
 - **Profile N+1 fix**: 3 precomputed counts in `UsersController#show` → ivars in `_user.html.haml`
 - **FriendshipService**: Extracted from `FriendRequestsController`. `.accept` and `.reject` class methods. 8 specs.
 - **Error page modernization**: `error.html.haml`, `unauthorized.html.haml`, `account_required.html.haml` — added icons, titles, improved copy.

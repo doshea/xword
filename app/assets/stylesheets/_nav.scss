@@ -166,6 +166,12 @@
   i { font-size: 1.15rem; }
 }
 
+// Text labels inside icon buttons — hidden on desktop (icons + tooltips suffice),
+// visible in mobile hamburger menu where tooltips are unreachable.
+.xw-nav__label {
+  display: none;
+}
+
 // Unread notification pulse (used by notifications_channel.js adding .unread class)
 #nav-mail.unread { animation: xw-unread-pulse 2s infinite; }
 
@@ -524,6 +530,7 @@
   }
 
   .xw-nav__icon-btn { justify-content: flex-start; }
+  .xw-nav__label { display: inline; }
 
   .xw-nav__search { width: 100%; }
   .xw-nav__search-input {

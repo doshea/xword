@@ -1,4 +1,9 @@
 - if @current_user
-  = render partial: 'pages/home/crossword_list', locals: { collection: @solved, count: @solved_count, list_id: 'solved-list', scope: 'solved', empty_message: "You haven't finished any puzzles yet -- go check out the New tab and try one!" }
+  = render partial: 'pages/home/crossword_list', locals: { collection: @solved, count: @solved_count, list_id: 'solved-list', scope: 'solved', empty_message: "You haven't finished any puzzles yet — go check out the New tab and try one!" }
 - else
-  %p Make an account or log in and you'll be able to track which crosswords you've finished!
+  .xw-empty-state
+    = icon('trophy', size: 36, class: 'xw-empty-state__icon')
+    %p.xw-empty-state__heading Your solved puzzles
+    %p Log in or create an account to keep track of your completed puzzles.
+    .xw-empty-state__actions
+      = link_to 'Log in', login_path, class: 'xw-btn xw-btn--sm'
