@@ -21,25 +21,23 @@
         .xw-tabs{data: {controller: 'tabs'}}
           .xw-tabs__nav{role: 'tablist'}
             - day_order.each_with_index do |(wday, label), i|
-              - count = (@puzzles_by_wday[wday] || []).size
-              %button{type: 'button', role: 'tab', 'aria-selected': (i == 0).to_s, 'aria-controls': "day-panel-#{wday}", class: "xw-tab #{'xw-tab--active' if i == 0}", data: {tabs_target: 'tab', action: 'click->tabs#show'}}
+              - is_default = (wday == @default_wday)
+              - count = @wday_counts[wday] || 0
+              %button{type: 'button', role: 'tab', 'aria-selected': (is_default).to_s, 'aria-controls': "day-panel-#{wday}", class: "xw-tab #{'xw-tab--active' if is_default}", data: {tabs_target: 'tab', action: 'click->tabs#show'}}
                 %span.tab-label
                   %span #{label} (#{count})
 
           .xw-tab-panels
             - day_order.each_with_index do |(wday, label), i|
-              - puzzles = @puzzles_by_wday[wday] || []
-              %div{id: "day-panel-#{wday}", role: 'tabpanel', class: "xw-tab-panel #{'xw-tab-panel--active' if i == 0}", data: {tabs_target: 'panel'}}
-                - if puzzles.empty?
-                  .xw-empty-state
-                    %p No #{label} puzzles imported.
+              - is_default = (wday == @default_wday)
+              - panel_data = {tabs_target: 'panel'}
+              - panel_data['lazy-src'] = nytimes_day_path(wday: wday) unless is_default
+              %div{id: "day-panel-#{wday}", role: 'tabpanel', class: "xw-tab-panel #{'xw-tab-panel--active' if is_default}", data: panel_data}
+                - if is_default
+                  = render partial: 'pages/nyt_day_content', locals: {puzzles: @default_puzzles}
                 - else
-                  - puzzles.group_by { |c| c.created_at.year }.each do |year, year_puzzles|
-                    %h3.xw-year-header= year
-                    %ul
-                      - year_puzzles.each do |crossword|
-                        %li
-                          = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
+                  .xw-loading-placeholder
+                    %p Loading\u2026
 
       /- Panel 2: Calendar
       .nyt-view-panel{id: 'nyt-calendar', role: 'tabpanel', data: {'nyt-view-target': 'panel'}}

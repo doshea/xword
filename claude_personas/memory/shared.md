@@ -10,6 +10,8 @@
 
 **P2-2: Form Accessibility Audit** — Ready to commit. 17 a11y fixes: 7 aria-labels on inputs, 8 anchor→button conversions (+ CSS resets), 2 tab link→button conversions. Deleted dead reply edit pencil. Updated 1 spec. No migration. 14 files changed.
 
+**P2-5: NYT Page Lazy Tab Loading** — Ready to commit. Lazy-loads day-of-week tabs: only Monday tab renders on initial load, other 6 tabs fetch via `GET /nytimes/day/:wday` on click. Controller refactored to use `@wday_counts` (1 GROUP BY query) + `nytimes_puzzles_for_wday` helper. New `_nyt_day_content` partial. TabsController enhanced with generic `data-lazy-src` fetch (opt-in, no impact on other tab instances). 6 new request specs (19 total NYT specs). No migration. 5 files changed + 1 new partial.
+
 ## Builder In Progress
 
 (none)
@@ -25,7 +27,21 @@ Pick in order. **Read the plan file for full details** — don't rely on summari
 3 batches, ~1hr total. No migrations, no JS changes, no new specs needed.
 `<main>` landmark concern was false alarm — all pages inherit from application layout.
 
+~~**P2-5: NYT Page Lazy Tab Loading**~~ ✅ Built. Pending commit.
+
+**P2-4: API Cleanup — Keep Only NYT GitHub Proxy** → `claude_personas/plans/api-security-review.md`
+Delete `/api/users`, `/api/crosswords` namespaces AND `/api/nyt_source` route. Move `friends`
+action to `ApiController` (team invite modal uses it). Delete `format_for_api` from Crossword
+and Comment models. Keep only `GET /api/nyt/:year/:month/:day` + new `GET /api/friends`. ~25min.
+
 ~~**P2-3: Service Object Test Coverage**~~ ✅ Built. Ready to commit. 4 new spec files (72 examples): NytPuzzleFetcher (11), NytGithubRecorder (7), GithubChangelogService (35), UnpublishedCrossword (19). `letters_to_clue_numbers` verified working correctly — TODO comment is stale. No migration, no source changes.
+
+**P2-6: JS Event Listener Cleanup** → `claude_personas/plans/js-event-listener-cleanup.md`
+1 must-fix: `document.onkeydown`/`onkeypress` in `crossword_funcs.js` persists globally after
+first crossword visit, suppressing arrow/space keyboard scrolling on all non-crossword pages.
+Fix: move into turbo:load handler with cleanup on page exit. 1 file, ~15min.
+Meta-plan's other 3 concerns (Stimulus disconnect, jQuery stacking, bottom-button handlers)
+are all false alarms — codebase JS hygiene is solid.
 
 ## Planner Work Queue
 
@@ -34,7 +50,7 @@ Full queue: `claude_personas/plans/planner-meta-plan.md`
 | Phase | Status | Items |
 |-------|--------|-------|
 | 1 | ✅ Done | 16 reviews + changelog, deployed v548–v574 |
-| 2 | 🔄 In progress | 2/7 reviewed: DB constraints ✅, service specs ✅ — a11y, API security, NYT pagination, JS cleanup, stats perf remaining |
+| 2 | ✅ Done | 7/7 reviewed: DB constraints ✅, service specs ✅, API security ✅, NYT pagination ✅, JS cleanup ✅, a11y ✅ (built), stats perf ✅ (no build needed) |
 
 ## Low-Priority Carry-Forward
 

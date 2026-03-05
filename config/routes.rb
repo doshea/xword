@@ -109,6 +109,7 @@ Rails.application.routes.draw do
   get '/changelog' => 'pages#changelog'
   get '/random' => 'pages#random_puzzle', as: 'random_puzzle'
   get '/nytimes' => 'pages#nytimes'
+  get '/nytimes/day/:wday' => 'pages#nytimes_day', as: 'nytimes_day'
   get '/user_made' => 'pages#user_made'
   post '/home/load_more' => 'pages#load_more', as: 'home_load_more'
   namespace :admin do

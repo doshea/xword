@@ -259,10 +259,30 @@ RSpec.describe 'Pages', type: :request do
         expect(response.body).to include('Tue (0)')
       end
 
-      it 'groups puzzles by year within each tab' do
+      it 'groups puzzles by year in the default tab' do
         get '/nytimes'
         expect(response.body).to include('xw-year-header')
         expect(response.body).to include('2024')
+      end
+
+      it 'only renders puzzle cards for the default tab (Monday)' do
+        get '/nytimes'
+        body = response.body
+        # Monday panel has real content (puzzle card)
+        expect(body).to include('xw-puzzle-card')
+        # Non-default panels have lazy-src instead of rendered content
+        expect(body).to include('data-lazy-src="/nytimes/day/6"')
+        expect(body).to include('data-lazy-src="/nytimes/day/0"')
+      end
+
+      it 'does not include data-lazy-src on the default tab panel' do
+        get '/nytimes'
+        expect(response.body).not_to include('data-lazy-src="/nytimes/day/1"')
+      end
+
+      it 'includes loading placeholder in deferred panels' do
+        get '/nytimes'
+        expect(response.body).to include('xw-loading-placeholder')
       end
 
       it 'sets calendar min/max to oldest/newest puzzle dates' do
@@ -275,6 +295,56 @@ RSpec.describe 'Pages', type: :request do
       it 'includes crossword paths in puzzle dates JSON' do
         get '/nytimes'
         expect(response.body).to match(/calendar-puzzles-value.*crosswords\/\d+/)
+      end
+    end
+  end
+
+  describe 'GET /nytimes/day/:wday' do
+    context 'without nytimes user' do
+      it 'returns 400' do
+        get '/nytimes/day/1'
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    context 'with nytimes user and puzzles' do
+      let!(:nytimes_user) { create(:user, username: 'nytimes') }
+
+      before do
+        # Monday puzzle (wday=1, DOW=1)
+        create(:crossword, :smaller, user: nytimes_user, created_at: Date.new(2024, 1, 15))
+        # Saturday puzzle (wday=6, DOW=6)
+        create(:crossword, :smaller, user: nytimes_user, created_at: Date.new(2024, 1, 20))
+      end
+
+      it 'returns puzzle cards for Monday' do
+        get '/nytimes/day/1'
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('xw-puzzle-card')
+        expect(response.body).to include('xw-year-header')
+      end
+
+      it 'returns puzzle cards for Saturday' do
+        get '/nytimes/day/6'
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('xw-puzzle-card')
+      end
+
+      it 'returns empty state for a day with no puzzles' do
+        get '/nytimes/day/2'
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('xw-empty-state')
+        expect(response.body).to include('No puzzles imported')
+      end
+
+      it 'returns 400 for invalid wday' do
+        get '/nytimes/day/8'
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns 400 for negative wday' do
+        get '/nytimes/day/-1'
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end

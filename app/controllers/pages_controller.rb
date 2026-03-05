@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   layout 'logged_out_home', only: [:welcome]
-  before_action :find_nytimes_user, only: [:nytimes, :user_made]
+  before_action :find_nytimes_user, only: [:nytimes, :nytimes_day, :user_made]
 
   #GET /errors or error_path
   def error
@@ -219,7 +219,7 @@ class PagesController < ApplicationController
   #GET /nytimes or nytimes_path
   def nytimes
     unless @nytimes_user
-      @puzzles_by_wday = {}
+      @wday_counts = {}
       @puzzle_dates = {}
       @total_count = 0
       return
@@ -235,10 +235,23 @@ class PagesController < ApplicationController
     @calendar_min = date_and_ids.last&.dig(1)&.to_date&.iso8601
     @calendar_max = date_and_ids.first&.dig(1)&.to_date&.iso8601
 
-    # Day-of-week tabs: full objects needed for partial rendering
-    # TODO: Add per-tab pagination when puzzle count exceeds ~1500
-    all_puzzles = @nytimes_user.crosswords.order(created_at: :desc).includes(:user).to_a
-    @puzzles_by_wday = all_puzzles.group_by { |c| c.created_at.wday }
+    # Tab counts (1 lightweight query — no AR objects loaded)
+    @wday_counts = @nytimes_user.crosswords
+      .group("EXTRACT(DOW FROM created_at)::integer")
+      .count
+
+    # Only render the default tab (Monday = wday 1); other tabs lazy-load on click
+    @default_wday = 1
+    @default_puzzles = nytimes_puzzles_for_wday(@default_wday)
+  end
+
+  #GET /nytimes/day/:wday or nytimes_day_path
+  def nytimes_day
+    wday = params[:wday].to_i
+    return head(:bad_request) unless (0..6).include?(wday) && @nytimes_user
+
+    @puzzles = nytimes_puzzles_for_wday(wday)
+    render partial: 'pages/nyt_day_content', locals: { puzzles: @puzzles }, layout: false
   end
 
   #GET /user_made or user_made_path
@@ -250,5 +263,12 @@ class PagesController < ApplicationController
 
   def find_nytimes_user
     @nytimes_user = User.find_by_username('nytimes')
+  end
+
+  def nytimes_puzzles_for_wday(wday)
+    @nytimes_user.crosswords
+      .where("EXTRACT(DOW FROM created_at)::integer = ?", wday)
+      .order(created_at: :desc)
+      .includes(:user)
   end
 end

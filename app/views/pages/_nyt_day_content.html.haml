@@ -1,0 +1,10 @@
+- if puzzles.empty?
+  .xw-empty-state
+    %p No puzzles imported for this day.
+- else
+  - puzzles.group_by { |c| c.created_at.year }.each do |year, year_puzzles|
+    %h3.xw-year-header= year
+    %ul
+      - year_puzzles.each do |crossword|
+        %li
+          = render partial: 'crosswords/partials/crossword_tab', locals: {cw: crossword}
