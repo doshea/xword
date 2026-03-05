@@ -8,12 +8,11 @@
 
 ## Pending Deploy
 
-**Carry-Forward Bug Fixes** — 5 low-priority polish fixes. No migration. 5 files changed + 1 GIF deleted.
-- Void toggle: `number_clues()` now creates missing span, clears stale numbers
-- Pattern Search tab: `text-decoration: none` on `.bottom-button`
-- Tool panel/footer overlap: `margin-bottom: 2.5em` on `#advanced`
-- GIF spinner → CSS `.xw-spinner` (deleted `spinner_small.gif`, updated JS + CSS + HAML)
-- Solve toolbar mobile: `gap: var(--space-3)` at `< 640px`
+**Deploy 1 — Quick wins (P3-D partial + P3-B + P3-G + P3-F)** — awaiting commit
+- P3-D: Removed stale TODO in home.html.haml. **Planner correction**: `include TimeHelper` is NOT dead (module in `lib/custom_funcs.rb`, used in win modal), `letters_to_clue_numbers` is NOT dead (called by `UnpublishedCrosswordsController#edit`, has 3 specs).
+- P3-B + P3-G: Added 2 composite indexes via concurrent migration (`cells(crossword_id, row, col)`, `crosswords(user_id, created_at DESC)`)
+- P3-F: Replaced `ORDER BY RANDOM()` with `offset(rand(count))` in 3 locations (pages_controller, crosswords_controller, user.rb)
+- 1039 examples, 0 failures
 
 ## Builder In Progress
 
@@ -23,13 +22,14 @@
 
 Pick in order. **Read the plan file for full details** — don't rely on summaries here.
 
-All Phase 2 items built and committed:
-- ~~P2-1~~ ✅ `516c906` — DB constraints, RecordNotUnique rescues
-- ~~P2-2~~ ✅ `01e8ea0` — Form accessibility audit
-- ~~P2-3~~ ✅ `a3f5f1b` — Service object test coverage (72 examples)
-- ~~P2-4~~ ✅ `516c906` — API cleanup (deleted 2 controllers, moved friends)
-- ~~P2-5~~ ✅ `3508192` — NYT lazy tab loading
-- ~~P2-6~~ ✅ `516c906` — JS keyboard listener fix
+### Awaiting Planner Review (Deploy 2–4)
+
+| Item | Status | Notes |
+|------|--------|-------|
+| P3-A: Solve Confidence | ✅ Ready for Builder | Plan: `claude_personas/plans/solve-confidence.md` |
+| P3-C: Design Token Completion | ✅ Ready for Builder | Plan: `claude_personas/plans/design-token-completion.md` |
+| P3-E: Loading State Spinners | Queued | Mechanical — may skip review |
+| P3-H: Solve Page Navigation | Queued | After P3-A |
 
 ## Planner Work Queue
 
@@ -38,16 +38,20 @@ Full queue: `claude_personas/plans/planner-meta-plan.md`
 | Phase | Status | Items |
 |-------|--------|-------|
 | 1 | ✅ Done | 16 reviews + changelog, deployed v548–v574 |
-| 2 | ✅ Done | 7/7 reviewed, 6/6 built & committed. Stats perf = no build needed. |
+| 2 | ✅ Done | 7 reviewed, 6 built, deployed v576–v578. Stats perf = no build needed. |
+| 3 | 🔄 Active | 8 items (rewritten): solve confidence, 2 indexes, tokens, dead code, spinners, random fix, nav polish |
 
 ## Low-Priority Carry-Forward
 
-(cleared — all 5 items built, pending deploy)
+(cleared — all items deployed through v578)
 
 ## Backlog
 
 - **Clue Suggestions from Phrase DB** — infrastructure ready, not planned
 - **Unfriend mechanism** — no unfriend feature exists anywhere
+- **Admin Form Styling** — 6 admin views, single-user audience, zero user impact
+- **Inline Form Validation** — CSS classes exist but unused; feature not fix; defer until drop-off observed
+- **Review Checklist Template** — create when team grows
 
 ## Deploy Log
 
@@ -64,3 +68,4 @@ v573: Changelog polish (CSS loading fix, prefix stripping, noise filtering, a11y
 v574: Review items 5–12 (passwords, NYT, team solving, test health, backend audit + unique index migration)
 v576: Form a11y audit, 72 service/model specs, tab controller fix (aria-controls)
 v577: NYT lazy tabs, DB constraints migration (7 indexes), API security (deleted PII leak), JS keyboard fix
+v578: 5 polish fixes (clue numbers, tab underline, footer overlap, GIF→CSS spinner, mobile toolbar)

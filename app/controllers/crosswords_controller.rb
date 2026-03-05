@@ -160,13 +160,13 @@ class CrosswordsController < ApplicationController
     end
     # Find a next puzzle to suggest on win
     if @correctness
-      @next_puzzle = if @current_user
-                       # Subquery avoids PG DISTINCT + ORDER BY RANDOM() conflict
-                       Crossword.where(id: Crossword.new_to_user(@current_user))
-                                .order("RANDOM()").first
-                     else
-                       Crossword.where.not(id: @crossword.id).order("RANDOM()").first
-                     end
+      scope = if @current_user
+                Crossword.where(id: Crossword.new_to_user(@current_user))
+              else
+                Crossword.where.not(id: @crossword.id)
+              end
+      count = scope.count
+      @next_puzzle = count > 0 ? scope.offset(rand(count)).limit(1).first : nil
     end
     respond_to do |f|
       f.json do

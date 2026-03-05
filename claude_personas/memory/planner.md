@@ -20,7 +20,8 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 **Source of truth:** `claude_personas/plans/planner-meta-plan.md`
 
 - **Phase 1:** ✅ Done. 16 reviews + changelog, all deployed (v548–v574).
-- **Phase 2:** ✅ All 7 reviewed. DB constraints ✅, service specs ✅, API security ✅, NYT pagination ✅, JS cleanup ✅, a11y ✅ (built), stats perf ✅ (no build needed).
+- **Phase 2:** ✅ Done. 7 reviewed, 6 built, deployed v576–v578. Stats perf = no build needed.
+- **Phase 3:** 🔄 Active. 8 items (rewritten from scratch). Solve confidence + perf indexes + visual polish. Deploy 1 ready for Builder (P3-D, P3-B, P3-G, P3-F). See meta-plan for full details.
 
 ### Turbo Stream `replace` pattern bug (2026-03-04)
 - `password_errors.turbo_stream.erb` and `wrong_password.turbo_stream.erb` use `turbo_stream.replace "password-errors"` but the replacement content lacks the `id="password-errors"` wrapper. First submission works; subsequent ones silently fail (no target). Affects both reset_password and account change-password. Both login/signup and forgot/reset reviews flagged this independently.
@@ -101,6 +102,47 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 - **1 nitpick**: migration dedup comment says "most recently updated" but uses `id < id` (keeps highest id). Functionally fine.
 - Everything else clean: no stale route references, proper addEventListener/removeEventListener pattern, correct pre-flight checks in migration, all specs updated.
 - P2-2, P2-3, P2-5 already committed — not reviewed this pass.
+
+### Phase 3 audit findings summary (2026-03-05)
+- Codebase is in excellent shape after P1+P2. No structural issues. Remaining work is polish.
+- Dead code: `include TimeHelper` (module missing), `letters_to_clue_numbers` (47-line dead method), stale TODO
+- Token gaps: 8 instances of hardcoded `#fff` — need `--color-text-on-dark` token
+- Admin forms unstyled: 6 edit views use bare Rails helpers, no BEM wrappers
+- Solve page: no back/home button, save status too muted, comment needs mobile send button
+- Save/autosave: working but invisible — users can't tell when saves happen
+- Loading states: 3 places show text-only "Loading..." without spinner (home load-more, NYT tabs, search)
+- Form validation: `.xw-input--error` CSS exists but no form uses inline field-level errors
+- UX flows generally smooth: anonymous→signup, puzzle creation, account lifecycle all working
+- Items deliberately excluded from P3: onboarding (feature not polish), team invitation UI (needs product decision), 500 error page (Rails handles it), RGBA tokenization (overengineering)
+
+### Phase 3 rewrite rationale (2026-03-05)
+- Merged old P3-4 (solve UX) + P3-5 (save feedback) into P3-A (solve confidence) — same core problem: "did my work save?"
+- Added P3-B (cell composite index) and P3-G (crossword user+date index) — missing from old plan, highest perf ROI
+- Added P3-F (random puzzle offset) — `ORDER BY RANDOM()` is a scaling cliff, 5 min fix
+- Expanded P3-C (design tokens) from "8 hardcoded #fff" to "12+ hardcoded colors" after full audit
+- Deferred P3-3 (admin forms), P3-7 (inline validation), P3-8 (review checklist) to backlog — low ROI
+- Key finding: `.xw-btn--saved` CSS animation defined in crossword.scss.erb:1269 but NEVER APPLIED — free win
+- Key finding: 6 AJAX error callbacks in solve_funcs.js use `console.warn()` only — users get zero feedback on network failures
+- Key finding: `ApplicationController#load_unread_notification_count` uses `.count` on `notifications.unread` — NOT an N+1; `(user_id, read_at, created_at)` index covers it efficiently. Previous audit overblew this.
+- Key finding: `ApplicationController#find_object` (line 44) still uses bare `.find()` with rescue — only remaining instance in codebase. Functional but inconsistent. Not worth a separate item; note for Builder if touching that file.
+
+### P3-A Solve Confidence review (2026-03-05)
+- 9 AJAX calls in solve_funcs.js: 4 check calls have console-only errors (should-fix), save has status-text-only (suggestion), reveal/hint/admin already use cw.flash (good)
+- Edit page does NOT need work — all 3 edit AJAX calls already have user-visible error feedback
+- `.xw-btn--saved` CSS (crossword.scss.erb:1269) confirmed pre-built but never wired — free win
+- Auto-save retries every 5s via `unsaved_changes` flag — correct behavior, but no escalation after repeated failures
+- Chose single error message "Check failed — please try again." for all 4 check calls — users don't distinguish check scope at network layer
+- 3-failure threshold for persistent banner balances alarm vs. spam (60s+ of downtime before alarming)
+- `animationend` listener chosen over `setTimeout` for save pulse — respects reduced-motion and CSS timing changes
+- Optional: edit page `#edit-save` could also get the pulse animation — left as Builder bonus
+
+### P3-C Design token completion review (2026-03-05)
+- Full audit found 25 hardcoded colors across 5 SCSS files; 19 get tokenized, 6 intentionally skipped
+- `--color-text-inverse` (#f5f0e8) already exists — reuse for all `#fff`/`white` text on colored backgrounds
+- 5 new tokens: `--color-overlay-hover` (0.12), `--color-overlay-subtle` (0.06), `--color-overlay-border` (0.20), `--color-overlay-backdrop` (dark 0.6), `--color-tint-hover` (dark 0.06)
+- Skipped: mask-image `black` (CSS mask keyword), nav box-shadow (unique shadow), 3 mobile-only notification text opacity values (one-off overrides), footer border (between two overlay tokens)
+- **WCAG concern**: `--color-text-inverse` (#f5f0e8) on `--color-danger` (#b84040) = 3.3:1 — passes only for large text. Buttons use `--text-sm` (13px) + `--weight-medium` (500). Builder must verify contrast or use pure `#fff` as `--color-text-on-accent` fallback.
+- Opacity normalization: 3 instances of 0.10 → 0.12, 2 instances of 0.02-0.03 → 0.06. All sub-perceptual.
 
 ## Open Questions
 - No unfriend mechanism exists anywhere in the app — flagged as separate feature ticket

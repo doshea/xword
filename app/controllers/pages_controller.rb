@@ -127,11 +127,9 @@ class PagesController < ApplicationController
 
   #GET /random or random_puzzle_path
   def random_puzzle
-    crossword = if @current_user
-                  Crossword.unowned(@current_user).order("RANDOM()").first
-                else
-                  Crossword.order("RANDOM()").first
-                end
+    scope = @current_user ? Crossword.unowned(@current_user) : Crossword.all
+    count = scope.count
+    crossword = count > 0 ? scope.offset(rand(count)).limit(1).first : nil
     if crossword
       redirect_to crossword
     else

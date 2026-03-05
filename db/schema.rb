@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_05_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_05_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_120000) do
     t.string "letter", limit: 255
     t.integer "row", null: false
     t.index ["across_clue_id"], name: "index_cells_on_across_clue_id"
+    t.index ["crossword_id", "row", "col"], name: "index_cells_on_crossword_row_col"
     t.index ["crossword_id"], name: "index_cells_on_crossword_id"
     t.index ["down_clue_id"], name: "index_cells_on_down_clue_id"
   end
@@ -68,6 +69,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_05_120000) do
     t.datetime "updated_at"
     t.integer "user_id"
     t.index ["created_at"], name: "index_crosswords_on_created_at"
+    t.index ["user_id", "created_at"], name: "index_crosswords_on_user_id_and_created_at", order: { created_at: :desc }
     t.index ["user_id"], name: "index_crosswords_on_user_id"
   end
 

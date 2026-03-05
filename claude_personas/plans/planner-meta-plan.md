@@ -11,115 +11,165 @@
 
 ## Phase 1 — Complete ✅
 
-All 16 visual/UX reviews + backend audit completed and deployed (v548–v574).
-145 files changed, 6427 insertions, 1614 deletions. 967 examples, 0 failures, 90.28% coverage.
+16 visual/UX reviews + backend audit. Deployed v548–v574.
 
 <details>
-<summary>Phase 1 status table (archived)</summary>
+<summary>Phase 1 items (archived)</summary>
 
 | # | Item | Plan |
 |---|------|------|
-| 1 | Create Dashboard | `create-dashboard-review.md` |
-| 2 | New Puzzle Form | `new-puzzle-form-review.md` |
-| 3 | Solution Choice Page | `solution-choice-review.md` |
-| 4 | Profile Page | `profile-page-review.md` |
-| 5 | Notifications Full Page | `notifications-full-page-review.md` |
-| 6 | Word/Clue Detail Pages | `word-clue-detail-review.md` |
-| 7 | Search Page | `search-page-review.md` |
-| 8 | NYT Page / Calendar | `nyt-calendar-review.md` |
-| 9 | Login / Signup | `login-signup-review.md` |
-| 10 | Forgot / Reset Password | `forgot-reset-password-review.md` |
-| 11 | Account Settings | `account-settings-review.md` |
-| 12 | Admin Panel | `admin-panel-review.md` |
-| 13 | User-Made Puzzles Page | `user-made-page-review.md` |
-| 14 | Team Solving UX | `team-solving-review.md` |
-| 15 | Test Suite Health | `test-suite-health.md` |
-| 16 | Backend Logic Audit | `backend-logic-audit.md` |
+| 1–8 | Create Dashboard, New Puzzle Form, Solution Choice, Profile, Notifications, Word/Clue Detail, Search, NYT Calendar | Various |
+| 9–12 | Login/Signup, Forgot Password, Account Settings, Admin Panel | Various |
+| 13–16 | User-Made Puzzles, Team Solving, Test Suite Health, Backend Logic Audit | Various |
 | — | Changelog (new feature) | `changelog-page.md` |
+
+</details>
+
+## Phase 2 — Complete ✅
+
+7 items: DB constraints, a11y, service specs, API security, NYT pagination, JS cleanup, stats perf. Deployed v576–v578.
+
+<details>
+<summary>Phase 2 items (archived)</summary>
+
+| # | Item | Plan |
+|---|------|------|
+| P2-1 | Database Constraints Migration | `db-constraints-migration.md` |
+| P2-2 | Form Accessibility Audit | `form-accessibility-audit.md` |
+| P2-3 | Service Object Test Coverage | `service-test-coverage.md` |
+| P2-4 | API Security & Rate Limiting | `api-security-review.md` |
+| P2-5 | NYT Page Pagination | `nyt-pagination.md` |
+| P2-6 | JS Event Listener Cleanup | `js-event-listener-cleanup.md` |
+| P2-7 | Stats Page Performance | `stats-page-performance.md` (no build needed) |
 
 </details>
 
 ---
 
-## Phase 2 — Data Integrity, Accessibility, Test Gaps
+## Phase 3 — Solve Confidence & Performance Polish
 
-Surfaced by full-codebase audit after Phase 1 completion. Organized by risk.
+Codebase is in excellent shape after P1+P2. Phase 3 targets the two remaining gaps:
+users can't tell if their work saved (UX confidence), and two missing composite indexes
+will become bottlenecks at scale (performance). Items ordered by ROI, not category.
+
+**Principles:**
+- Mechanical items go straight to Builder (no review cycle).
+- Related problems merged into single items (not split across reviews).
+- Admin-only and speculative features deferred to backlog.
 
 ### Status
 
-| # | Item | Type | Status | Plan |
-|---|------|------|--------|------|
-| P2-1 | Database Constraints Migration | Review | ✅ Reviewed | `db-constraints-migration.md` |
-| P2-2 | Form Accessibility Audit | Review | ✅ Reviewed | `form-accessibility-audit.md` |
-| P2-3 | Service Object Test Coverage | Review | ✅ Reviewed | `service-test-coverage.md` |
-| P2-4 | API Security & Rate Limiting | Review | ✅ Reviewed | `api-security-review.md` |
-| P2-5 | NYT Page Pagination | Review | ✅ Reviewed | `nyt-pagination.md` |
-| P2-6 | JS Event Listener Cleanup | Review | ✅ Reviewed | `js-event-listener-cleanup.md` |
-| P2-7 | Stats Page Performance | Review | ✅ Reviewed | `stats-page-performance.md` |
+| # | Item | Type | Status | Plan | Deploy |
+|---|------|------|--------|------|--------|
+| P3-A | Solve Confidence (save feedback + error visibility) | Review | ✅ Reviewed | `solve-confidence.md` | — |
+| P3-B | Cell Navigation Composite Index | Direct | ⬚ Unreviewed | — | — |
+| P3-C | Design Token Completion | Review | ✅ Reviewed | `design-token-completion.md` | — |
+| P3-D | Dead Code Cleanup | Direct | ⬚ Unreviewed | — | — |
+| P3-E | Loading State Spinners | Direct | ⬚ Unreviewed | — | — |
+| P3-F | Random Puzzle Offset Fix | Direct | ⬚ Unreviewed | — | — |
+| P3-G | Crossword User+Date Composite Index | Direct | ⬚ Unreviewed | — | — |
+| P3-H | Solve Page Navigation (back button + mobile send) | Review | ⬚ Unreviewed | — | — |
 
-### Tier 1 — Data Integrity (prevents real data bugs)
+### Deploy Sequence
 
-**P2-1: Database Constraints Migration**
-Scope: 1 migration, model validation updates
-- Add UNIQUE index on `users(email)` and `users(username)` — currently app-only, race condition risk
-- Add UNIQUE composite on `friendships(user_id, friend_id)` — no PK, no unique constraint
-- Add UNIQUE composite on `friend_requests(sender_id, recipient_id)` — same problem
-- Add index on `notifications(actor_id)` — only FK column without an index
-- Drop dead `cell_edits` table — model deleted in Phase 1, table still in schema
-- Rescue `RecordNotUnique` in `FavoritePuzzle` and `SolutionPartnering` `find_or_create_by` calls
-- Review: planner audits which constraints need `NOT NULL` vs staying nullable, checks for data that would violate new constraints before migration
-
-**P2-4: API Security & Rate Limiting**
-Scope: controller changes, possibly Rack::Attack gem
-- `/api/users/index` returns all users (names, usernames, timestamps) with zero auth — enumeration risk
-- No rate limiting on `/search` or `/live_search` — DoS vector
-- CSP entirely commented out — no XSS protection headers
-- Review: planner decides auth-gate vs remove vs scope-down for API, evaluates Rack::Attack vs custom throttle
-
-### Tier 2 — Accessibility (user-facing quality)
-
-**P2-2: Form Accessibility Audit**
-Scope: ~10 view files, 0 migration
-- 6+ forms missing `<label>` or `aria-label`: comment textareas (show page, win modal, reply), team chat input, clue edit fields, pattern search input
-- Secondary pages (contact, faq) missing `<main>` landmark roles
-- Reply buttons use `<a>` instead of `<button>` — semantic issue
-- Edit page "Ideas" and "Pattern search" inputs have no labels
-- Review: planner catalogs every instance, writes specific fix per form
-
-**P2-6: JS Event Listener Cleanup** *(scope revised after audit — 3 of 4 original concerns were false alarms)*
-Scope: 1 JS file (crossword_funcs.js)
-- `document.onkeydown`/`onkeypress` global key suppression persists on all pages after first crossword visit — must-fix
-- ~~nav/dropdown controllers missing disconnect()~~ — false: both have proper cleanup
-- ~~Edit bottom-button handlers stack~~ — false: Turbo body replacement prevents stacking
-- ~~Win modal inline JS~~ — not a leak; defer Stimulus extraction to visual redesign
-
-### Tier 3 — Test Coverage (confidence for future changes)
-
-**P2-3: Service Object Test Coverage**
-Scope: 3 new spec files, ~200-300 lines
-- `GithubChangelogService` (117 lines) — public changelog page, commit filtering, category detection, pagination parsing. All untested.
-- `NytPuzzleFetcher` (43 lines) — date parsing fallback, UTF-8 encoding fix, timeout scenarios. Used in active import flow.
-- `NytGithubRecorder` (45 lines) — GitHub API recording. Non-critical path but zero coverage.
-- Also: `UnpublishedCrossword` model has 100 lines of business logic with no dedicated spec
-- Review: planner reads each service, catalogs test cases, flags what needs stubbing
-
-### Tier 4 — Performance (scalability)
-
-**P2-5: NYT Page Pagination**
-Scope: controller + view changes, possibly JS
-- 705+ puzzles loaded in single query with `.to_a` — grows every day
-- Code has `TODO: Add per-tab pagination when puzzle count exceeds ~1500`
-- Calendar view uses `.pluck(:id, :created_at)` (lighter), but day tabs load full AR objects
-- Review: planner decides server-side pagination vs infinite scroll vs hybrid, scopes to both calendar and day-tab views
-
-**P2-7: Stats Page Performance**
-Scope: controller + possibly caching layer
-- Multiple `COUNT(*)` queries on every page load (Crossword.count, Solution.where(...).count, User.where(deleted_at: nil).count)
-- No index on `users.deleted_at` (used in active member count)
-- No caching — every visitor recalculates identical aggregations
-- Review: planner decides between fragment caching, counter_cache columns, or background job that writes stats to Redis/cache
+**Deploy 1** — Quick wins (P3-D + P3-B + P3-G + P3-F): one migration, one commit.
+**Deploy 2** — P3-A (solve confidence): headline item, full review cycle.
+**Deploy 3** — P3-C + P3-E: visual consistency pass.
+**Deploy 4** — P3-H: navigation polish.
 
 ---
+
+### P3-A: Solve Confidence ★★★★★
+Scope: `solve_funcs.js` (6 AJAX error handlers + save logic), `crossword.scss.erb`, ~45 min
+Merged from old P3-4 (save feedback) + P3-5 (autosave feedback). Core user anxiety: *"Did my work save?"*
+
+Three deliverables:
+1. **AJAX error callbacks → `cw.flash()`**: 6 call sites (`check_cell`, `check_word`, `check_completion`, `reveal_cell`, `hint_word`, `save_solution`) currently `console.warn()` only. Replace with `cw.flash('Check failed. Please try again.', 'error')`. Users currently get zero feedback when network drops mid-check.
+2. **Consecutive save failure banner**: Track failure count in `solve_app`. After 3 consecutive auto-save failures, show persistent red `cw.flash()` warning: "Unable to save — check your connection." Reset counter on success. Prevents silent data loss on flaky networks.
+3. **Manual save success animation**: `.xw-btn--saved` CSS animation is **already defined** in `crossword.scss.erb:1269` but **never applied**. After successful manual save, add class to `#solve-save`, remove after animation completes. 5 min fix, immediate user reassurance.
+
+Planner reviews: exact error message copy, animation timing, whether edit page save feedback also needs work.
+
+### P3-B: Cell Navigation Composite Index ★★★★★
+Scope: 1 migration file, ~10 min. **No review needed — direct builder task.**
+
+Add composite index `(crossword_id, row, col)` on `cells` table. Every arrow-key press in the solve grid calls `find_by_row_and_col_and_crossword_id`. Currently PostgreSQL intersects three single-column indexes. Composite index = single B-tree lookup. This is the most-executed query in the app.
+
+```ruby
+add_index :cells, [:crossword_id, :row, :col], name: "index_cells_on_crossword_row_col"
+```
+
+### P3-C: Design Token Completion ★★★★
+Scope: `_design_tokens.scss`, `_components.scss`, `_nav.scss`, ~30 min
+
+Expanded from old P3-2. Audit found **12+ hardcoded colors**, not 8:
+- 6× `#fff` / `color: white` in `_components.scss` (buttons, pagination, calendar hover)
+- 3× `#fff` / `rgba(255,255,255,...)` in `_nav.scss` (badge, search input, dropdown hover)
+- 3× `rgba(28,26,23,...)` and `#000` (modal backdrop, shadow, mask-image)
+
+Action:
+1. Create new tokens: `--color-text-inverse` (white-on-dark text), `--color-overlay-light: rgba(255,255,255,0.12)`, `--color-overlay-dark: rgba(28,26,23,0.6)`
+2. Replace all 12+ instances with appropriate token
+3. Planner verifies each: is it truly white-on-dark, or contextual surface color?
+
+Why it matters: if the palette ever changes (dark mode, seasonal theme), every color responds automatically.
+
+### P3-D: Dead Code Cleanup ★★★★
+Scope: 3 files, ~5 min. **No review needed — direct builder task.**
+
+- Remove `include TimeHelper` from `ApplicationHelper` — module doesn't exist
+- Delete `UnpublishedCrossword#letters_to_clue_numbers` (47 lines) — `#TODO make this work`, never called
+- Remove stale TODO comment in `pages/home.html.haml` about search.css
+
+### P3-E: Loading State Spinners ★★★
+Scope: 3 views, ~10 min. **No review needed — direct builder task.**
+
+`xw-spinner` CSS class exists and works. Add it to the 3 places that show text-only "Loading...":
+1. Home page "Load next X puzzles" button — add `<span class="xw-spinner"></span>` alongside text
+2. NYT lazy tab placeholder — add spinner to "Loading…" text
+3. Search form submit button — add spinner when loading controller activates
+
+Mechanical: insert spinner markup, no new CSS needed.
+
+### P3-F: Random Puzzle Offset Fix ★★★
+Scope: `pages_controller.rb:131`, ~5 min. **No review needed — direct builder task.**
+
+`Crossword.order("RANDOM()").first` does a full table sort. Replace with offset-based random:
+```ruby
+scope = Crossword.new_to_user(@current_user)
+count = scope.count
+@next_puzzle = count > 0 ? scope.offset(rand(count)).limit(1).first : nil
+```
+Prevents a scaling cliff when crossword count grows. Two queries (COUNT + OFFSET) vs. full sort.
+
+### P3-G: Crossword User+Date Composite Index ★★★
+Scope: 1 migration file, ~10 min. **No review needed — direct builder task.**
+
+Home page runs 6 queries that filter by user and sort by `created_at`. Add composite index:
+```ruby
+add_index :crosswords, [:user_id, :created_at], order: { created_at: :desc },
+          name: "index_crosswords_on_user_id_and_created_at"
+```
+Bundle into same migration as P3-B.
+
+### P3-H: Solve Page Navigation ★★★
+Scope: `show.html.haml` + `crossword.scss.erb`, ~20 min
+
+Two items from old P3-4 that need minor design decisions:
+1. **Back/home button**: Add `←` icon-button to puzzle toolbar linking home (or `history.back()`). On mobile, users feel trapped in the solve view with no visible exit.
+2. **Mobile comment send button**: Add visible "Send" button below comment textarea. On mobile, pressing Enter in a textarea creates a newline — users don't know Shift+Enter (or Enter, depending on handler) submits. Button should use existing `.xw-btn--accent` style, hidden on desktop where Enter works.
+
+Planner reviews: button placement in toolbar, send button visibility breakpoint.
+
+---
+
+## Deferred to Backlog
+
+Moved from Phase 3 — not high enough ROI for this phase:
+
+- **Admin Form Styling** (was P3-3) — 6 admin views used by ~1 person. Zero user impact. Revisit if admin usage grows.
+- **Inline Form Validation** (was P3-7) — CSS classes exist but no form uses them. Current server-side validation + flash errors works. This is a feature (better UX), not a fix. Revisit if user drop-off is observed on signup/login.
+- **Review Checklist** (was P3-8) — Good idea but the planner/builder workflow already serves this function at current team size. Create when a second builder is onboarded.
 
 ## Backlog (needs feature work or user decision)
 
@@ -127,11 +177,10 @@ Scope: controller + possibly caching layer
 - `remotipart` replacement — needs Turbo file upload strategy
 - Published column restoration — schema change needed
 - Unfriend mechanism — no unfriend feature exists
+- Admin Form Styling — low priority, single-user audience
+- Inline Form Validation — feature, not fix; defer until user drop-off observed
+- Review Checklist Template — create when team grows
 
 ## Low-Priority Carry-Forward
 
-- Void toggle: new clue numbers render as plain text not `<span class="clue-num">`
-- "Pattern Search" tab underlined (link style leak)
-- Tool panel tabs overlap footer at scroll bottom
-- Title-status spinner GIF vs CSS `.xw-spinner`
-- Solve toolbar icons cramped on mobile
+(cleared — all Phase 1/2 items deployed through v578)

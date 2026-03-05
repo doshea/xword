@@ -196,6 +196,8 @@ class User < ApplicationRecord
   end
 
   def self.rand_unowned_puzzle(user = nil)
-    user.present? ? Crossword.unowned(user).order("RANDOM()").first : Crossword.order("RANDOM()").first
+    scope = user.present? ? Crossword.unowned(user) : Crossword.all
+    count = scope.count
+    count > 0 ? scope.offset(rand(count)).limit(1).first : nil
   end
 end

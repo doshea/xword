@@ -2,6 +2,30 @@
 
 ## Deploy History
 
+### v578 — 2026-03-05
+**Commits:** `b0b3b62`, `09c9a9f`
+**Changes:** Low-priority polish + gitignore housekeeping:
+- `.gitignore`: `*.png` (preserving app asset images)
+- Void toggle: `number_clues()` creates missing span, clears stale numbers
+- Pattern Search tab: `text-decoration: none` on `.bottom-button`
+- Tool panel/footer overlap: `margin-bottom: 2.5em` on `#advanced`
+- GIF spinner → CSS `.xw-spinner` (deleted `spinner_small.gif`)
+- Solve toolbar mobile: `gap: var(--space-3)` at `< 640px`
+**Migration:** None
+**Rollback:** `git revert 09c9a9f b0b3b62` (pure CSS/JS/HAML/.gitignore, instant)
+**Post-deploy:** Release v578. Release phase exit 0 (no-op migration). Puma up ~3s. First request 200 (5.2s cold AR cache). Build succeeded. No errors.
+
+### v577 — 2026-03-05
+**Commits:** `3508192`, `516c906`
+**Changes:** NYT lazy tabs + Phase 2 cleanup (API security, DB constraints, JS keyboard):
+- NYT page: lazy-load day-of-week tabs (only Monday renders initially, others fetched on click). New `/nytimes/day/:wday` route + `_nyt_day_content` partial. 6 new request specs.
+- P2-1 DB constraints: `cell_edits` table dropped, ctid dedup on friendships/friend_requests/solutions, 6 unique indexes (users.email, users.username, friendships, friend_requests, words.content, solutions partial). `RecordNotUnique` rescues added.
+- P2-4 API security: `Api::UsersController` + `Api::CrosswordsController` deleted (unauthenticated PII leak). `/api/nyt_source` route removed. `friends` moved to `ApiController`. `format_for_api` deleted from Crossword + Comment. `deleted_at` added to select list (MissingAttributeError fix).
+- P2-6 JS keyboard: `onkeydown`/`onkeypress` moved into `turbo:load` handler with cleanup. Fixes arrow/space scrolling suppression site-wide.
+**Migration:** `20260305120000_add_database_constraints` — pre-flight dupe checks, drop cell_edits, ctid dedup, 7 indexes (1.58s total)
+**Rollback:** `heroku run rake db:migrate:down VERSION=20260305120000` + `git revert 516c906 3508192`
+**Post-deploy:** Migration completed in release phase (1.58s). No duplicate data found. Puma up ~3s, 2 workers. State changed to up. No errors.
+
 ### v576 — 2026-03-05
 **Commits:** `01e8ea0`, `044678d`, `a3f5f1b`, `d8d48a4`
 **Changes:** A11y audit + specs + critical tab fix:
@@ -365,7 +389,7 @@
 ## Infrastructure Notes
 
 - Heroku app: `crosswordcafe`
-- Current release: v576
+- Current release: v578
 - Stack: Heroku-24, Ruby 3.4.8, Puma 7.2.0 (cluster: 2 workers, 3 threads)
 - Redis: redis-silhouetted-63589 (5 active connections, 1.0 hit rate)
 - Node.js warning on build (default v24.13.0 for ExecJS/Sprockets) — cosmetic
