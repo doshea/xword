@@ -13,7 +13,8 @@ class TabsController extends Stimulus.Controller {
 
   show(event) {
     event.preventDefault();
-    const panelId = event.currentTarget.getAttribute('href').slice(1);
+    const el = event.currentTarget;
+    const panelId = el.getAttribute('aria-controls') || (el.getAttribute('href') || '').slice(1);
     const activeTab = event.currentTarget;
 
     this.tabTargets.forEach(tab => {
@@ -24,6 +25,22 @@ class TabsController extends Stimulus.Controller {
     this.panelTargets.forEach(panel => {
       panel.classList.toggle('xw-tab-panel--active', panel.id === panelId);
     });
+
+    // Lazy-load tab content if panel has data-lazy-src and hasn't been fetched yet
+    var activePanel = this.panelTargets.find(function(p) { return p.id === panelId; });
+    if (activePanel && activePanel.dataset.lazySrc && !activePanel.dataset.loaded) {
+      fetch(activePanel.dataset.lazySrc, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function(r) { return r.text(); })
+        .then(function(html) {
+          activePanel.innerHTML = html;
+          activePanel.dataset.loaded = 'true';
+        })
+        .catch(function() {
+          activePanel.innerHTML = '<p class="xw-empty-state">Failed to load. Please refresh.</p>';
+        });
+    }
   }
 }
 TabsController.targets = ['tab', 'panel'];
