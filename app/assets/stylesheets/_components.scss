@@ -565,6 +565,8 @@
   list-style: none;
   margin: var(--space-1) 0 0;
   padding: var(--space-1) 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
 
   &.is-open { display: block; }
 
@@ -937,6 +939,14 @@
 }
 
 // (Standalone puzzle card rules removed — consolidated into nested .xw-puzzle-card block above)
+
+.xw-load-more__count {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
 
 
 // ---------------------------------------------------------------------------

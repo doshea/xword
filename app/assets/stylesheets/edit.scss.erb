@@ -34,7 +34,7 @@
 // while keeping the puzzle grid visible above.
 
 .slide-up-container {
-  z-index: 70001;
+  z-index: var(--z-panel);
   position: fixed;
   transition: top 0.4s;
   top: 100%;
@@ -382,8 +382,24 @@ $switch-off-color: var(--color-border);
     height: 1em;
     position: static;
   }
+  // Visually hidden but still focusable — enables keyboard Tab + Space/Enter toggling.
+  // display:none would remove the checkbox from tab order entirely.
   input[type=checkbox] {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  // Visual feedback when checkbox receives keyboard focus.
+  // .switch is before checkbox in DOM, so use :has() to target the ancestor label.
+  label:has(input[type=checkbox]:focus-visible) .switch {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 }
 

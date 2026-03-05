@@ -46,7 +46,7 @@ class Crossword < ApplicationRecord
 
   has_many :solution_partnerings, through: :solutions, inverse_of: :crossword
 
-  self.per_page = 36
+  self.per_page = 30
 
   # Spaces = unfilled cells, underscores = voids. Count only letter-bearing cells.
   def nonvoid_letter_count

@@ -12,7 +12,7 @@
 }
 
 #credit-area {
-  margin-top: 2.5em;
+  margin-top: var(--space-10);
   margin-bottom: 0;
   padding-bottom: var(--space-2);
   border-top-left-radius: var(--radius-lg);
@@ -27,6 +27,7 @@
   }
   h1 {
     font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
     margin: 0;
     #creator-credit {
       font-family: var(--font-body);
@@ -40,7 +41,7 @@
     position: static;
     display: flex;
     align-items: center;
-    gap: 0.5em;
+    gap: var(--space-2);
     flex-wrap: wrap;
 
     .smaller {
@@ -54,6 +55,7 @@
   border-bottom-left-radius: var(--radius-lg);
   border-bottom-right-radius: var(--radius-lg);
   padding-bottom: var(--space-4);
+  margin-bottom: var(--space-6); // breathing room between paper bottom and footer
 }
 
 table#crossword {
@@ -97,12 +99,14 @@ table#crossword {
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1001;
+      font-family: var(--font-mono);
+      z-index: 2;
     }
     .cell-num {
       position: absolute;
       top: 0;
       left: 1px;
+      font-family: var(--font-mono);
       font-size: 0.4em;
       line-height: 1em;
     }
@@ -113,7 +117,7 @@ table#crossword {
       height: 0;
       top: 0;
       right: 1px;
-      z-index: 1000;
+      z-index: 1;
       border-style: solid;
       border-width: 0 0.35em 0.35em 0;
     }
@@ -143,13 +147,13 @@ table#crossword {
 
 // Cell check flash — brief "server scanned" effect.
 // Applied with JS stagger for L→R, T→B cascade.
-// z-index 1100: above .flag (1000) and .letter (1001) so flash
+// z-index 3: above .flag (1) and .letter (2) so flash
 // genuinely covers the cell, then fades to reveal the error state.
 .cell-flash::before {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: 1100;
+  z-index: 3;
   background: var(--color-cell-flash);
   pointer-events: none;
   animation: cell-check-flash var(--duration-slow) var(--ease-out) forwards;
@@ -163,7 +167,7 @@ table#crossword {
 .xw-puzzle-layout {
   display: flex;
   align-items: flex-start;
-  gap: 0.5em;
+  gap: var(--space-2);
   flex-wrap: wrap;
 
   .clue-column {
@@ -272,7 +276,7 @@ table#crossword {
   background: transparent;
   border: none;
   border-left: none;
-  margin-left: 0.75em;
+  margin-left: var(--space-3);
   margin-right: 0;
   h3 {
     text-align: center;
@@ -295,9 +299,9 @@ table#crossword {
     background: var(--color-surface-alt);
     box-shadow: var(--shadow-inner);
     border-radius: var(--radius-sm);
-    font-size: smaller;
+    font-size: var(--text-sm);
     padding: var(--space-1) var(--space-2);
-    height: 31em;
+    // Height set via inline <style> in HAML (calculated per-puzzle based on row count).
 
     .clue {
       border: 1px solid transparent;
@@ -595,8 +599,10 @@ table#crossword {
     flex: 1;
     min-width: 0;
   }
-  // YouTube-style 2-line truncation with gradient fade.
-  // JS detects overflow: adds --fits (hides fade/button) or toggles --expanded on click.
+  // YouTube-style 2-line truncation with mask fade.
+  // Uses mask-image instead of a gradient pseudo-element so the fade works
+  // over the paper texture background (no flat solid-color rectangle).
+  // JS detects overflow: adds --fits (removes mask) or toggles --expanded on click.
   &__desc {
     font-family: var(--font-body);
     color: var(--color-text);
@@ -604,21 +610,13 @@ table#crossword {
     margin: 0 0 var(--space-1); // zero top margin to align with avatar
     max-height: 3em; // 2 lines at 1.5 line-height
     overflow: hidden;
-    position: relative;
+    -webkit-mask-image: linear-gradient(black 50%, transparent);
+    mask-image: linear-gradient(black 50%, transparent);
 
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1.5em;
-      background: linear-gradient(to bottom, transparent, var(--color-surface));
-      pointer-events: none;
-    }
-    &--fits::after,
-    &--expanded::after {
-      display: none;
+    &--fits,
+    &--expanded {
+      -webkit-mask-image: none;
+      mask-image: none;
     }
     &--expanded {
       max-height: none;
@@ -1030,9 +1028,11 @@ textarea:focus ~ .xw-comment__hint {
   }
 }
 
+// Team-colored cell outline — scoped within .cell { position: relative; }
+// z-index below .flag (1) so it doesn't cover error indicators.
 .team-outline {
   position: absolute;
-  z-index: 999;
+  z-index: 0;
 }
 
 // --- Controls modal ---
