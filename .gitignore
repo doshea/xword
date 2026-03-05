@@ -35,5 +35,7 @@ Thumbs.db
 
 # Screenshots
 /screenshots/
+*.png
+!app/assets/images/**/*.png
 
 /public/assets
