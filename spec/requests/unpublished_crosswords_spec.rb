@@ -25,6 +25,61 @@ RSpec.describe 'UnpublishedCrosswords', type: :request do
   end
 
   # -----------------------------------------------------------------------
+  # POST /unpublished_crosswords (create)
+  # -----------------------------------------------------------------------
+  describe 'POST /unpublished_crosswords' do
+    context 'when logged in' do
+      before { log_in_as(owner) }
+
+      it 'creates a puzzle and redirects to edit on success' do
+        expect {
+          post '/unpublished_crosswords',
+               params: { unpublished_crossword: { title: 'My Puzzle', rows: 5, cols: 5 } }
+        }.to change(UnpublishedCrossword, :count).by(1)
+
+        ucw = UnpublishedCrossword.last
+        expect(response).to redirect_to(edit_unpublished_crossword_path(ucw))
+      end
+
+      it 're-renders form with errors when title is too short' do
+        expect {
+          post '/unpublished_crosswords',
+               params: { unpublished_crossword: { title: 'AB', rows: 5, cols: 5 } }
+        }.not_to change(UnpublishedCrossword, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('too short')
+      end
+
+      it 're-renders form with errors when title is blank' do
+        post '/unpublished_crosswords',
+             params: { unpublished_crossword: { title: '', rows: 5, cols: 5 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("can&#39;t be blank")
+      end
+
+      it 're-renders form with errors when dimensions are out of range' do
+        post '/unpublished_crosswords',
+             params: { unpublished_crossword: { title: 'Valid Title', rows: 50, cols: 5 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('not included in the list')
+      end
+    end
+
+    context 'when anonymous' do
+      it 'redirects to account_required' do
+        post '/unpublished_crosswords',
+             params: { unpublished_crossword: { title: 'Test', rows: 5, cols: 5 } }
+
+        expect(response).to have_http_status(:redirect)
+        expect(response.location).to start_with("http://www.example.com#{account_required_path}")
+      end
+    end
+  end
+
+  # -----------------------------------------------------------------------
   # PATCH /unpublished_crosswords/:id/update_letters
   # -----------------------------------------------------------------------
   describe 'PATCH /unpublished_crosswords/:id/update_letters' do

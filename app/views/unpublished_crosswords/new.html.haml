@@ -1,7 +1,6 @@
 = content_for :head do
   = stylesheet_link_tag 'new_crossword'
-= javascript_include_tag 'spin.min'
-= javascript_include_tag 'crosswords/new', 'data-turbo-track': 'reload'
+  = javascript_include_tag 'crosswords/new', 'data-turbo-track': 'reload'
 
 = render layout: 'layouts/partials/topper_stopper', locals: {row_top_title: 'New Crossword', row_class: 'spin-target', custom_columns: true} do
   .xw-col-full
@@ -11,7 +10,7 @@
           = render partial: 'unpublished_crosswords/partials/new_form'
         .xw-newcw-layout__preview
           %h2.xw-newcw-card__heading Preview
-          #preview-crossword
+          #preview-crossword{ aria: { hidden: 'true' } }
             - Crossword::MAX_DIMENSION.times do |row|
               .preview-row
                 - Crossword::MAX_DIMENSION.times do |col|

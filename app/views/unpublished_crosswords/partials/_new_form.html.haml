@@ -1,4 +1,9 @@
 = form_for @ucw, html: { class: 'xw-newcw-form' } do |f|
+  - if @ucw.errors.any?
+    .xw-alert.xw-alert--error
+      %ul
+        - @ucw.errors.full_messages.each do |msg|
+          %li= msg
   .xw-newcw-form__row
     .xw-field.xw-newcw-form__title
       = f.label :title, class: 'xw-label'
@@ -12,4 +17,5 @@
   .xw-field
     = f.label :description, class: 'xw-label'
     = f.text_area :description, class: 'xw-textarea', rows: 3
-  = f.submit 'Create Crossword', class: 'xw-btn xw-btn--success xw-newcw-form__submit'
+  = f.submit 'Create Crossword', class: 'xw-btn xw-btn--success xw-newcw-form__submit',
+              data: { disable_with: "Creating\u2026" }

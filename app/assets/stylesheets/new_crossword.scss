@@ -18,26 +18,33 @@
 }
 
 // -----------------------------------------------------------------------------
-// Spinner overlay — scoped to direct children of .spin-target
-// The JS dynamically creates h2/h6 via .prependTo / .appendTo
+// Creating-puzzle overlay — replaces legacy spin.min.js vendor library
+// Centered spinner + text injected by new.js on form submit
 // -----------------------------------------------------------------------------
 
 .spin-target {
   position: relative;
+}
 
-  > h2 {
-    width: 100%;
-    text-align: center;
-    position: absolute;
-    top: 1em;
-  }
+.xw-newcw-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
 
-  > h6 {
-    width: 100%;
-    text-align: center;
-    position: absolute;
-    bottom: 2em;
-  }
+.xw-newcw-overlay__spinner {
+  font-size: 2.5rem;
+}
+
+.xw-newcw-overlay__text {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin: 0;
 }
 
 // -----------------------------------------------------------------------------
@@ -134,20 +141,6 @@
     width: 12px;
     height: 12px;
     border: 1px solid var(--color-border-strong);
-    cursor: pointer;
-    transition: background-color var(--duration-fast) var(--ease-in-out);
-
-    &.void {
-      background: var(--color-cell-void);
-    }
-
-    &:hover {
-      background: var(--color-surface-sunken);
-    }
-
-    &.void:hover {
-      background: var(--color-cell-void);
-    }
   }
 }
 

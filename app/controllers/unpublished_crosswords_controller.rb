@@ -12,7 +12,7 @@ class UnpublishedCrosswordsController < ApplicationController
     if @ucw.save
       redirect_to edit_unpublished_crossword_path(@ucw)
     else
-      redirect_to new_unpublished_crossword_path, flash: {error: 'There was a problem creating your crossword.'}
+      render :new, status: :unprocessable_entity
     end
   end
 
