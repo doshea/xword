@@ -133,7 +133,8 @@ window.edit_app = {
       var clue_num = $(this).children('.clue-num');
       var cell_index = $(this).data('index');
       var cell_num = parseInt($(".cell[data-index=" + cell_index + "]").first().attr('data-cell'));
-      clue_num.text(cell_num + ".");
+      // Hidden clues (void cells) have no data-cell → parseInt returns NaN
+      if (!isNaN(cell_num)) clue_num.text(cell_num + ".");
     });
   },
 

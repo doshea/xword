@@ -166,4 +166,117 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
+  # -------------------------------------------------------------------------
+  # PATCH /users/:id — email and username update
+  # -------------------------------------------------------------------------
+  describe 'PATCH /users/:id (email and username update)' do
+    before { log_in_as(user) }
+
+    it 'updates email successfully' do
+      patch "/users/#{user.id}", params: { user: { email: 'newemail@example.com' } }
+      expect(user.reload.email).to eq('newemail@example.com')
+    end
+
+    it 'updates username successfully' do
+      patch "/users/#{user.id}", params: { user: { username: 'newname1234' } }
+      expect(user.reload.username).to eq('newname1234')
+    end
+
+    it 'shows error for duplicate email' do
+      other = create(:user)
+      patch "/users/#{user.id}", params: { user: { email: other.email } }
+      expect(response).to redirect_to(account_users_path)
+      follow_redirect!
+      expect(response.body).to include('already been taken')
+    end
+
+    it 'shows error for duplicate username' do
+      other = create(:user)
+      patch "/users/#{user.id}", params: { user: { username: other.username } }
+      expect(response).to redirect_to(account_users_path)
+      follow_redirect!
+      expect(response.body).to include('already been taken')
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # PATCH /users/:id — notification preferences
+  # -------------------------------------------------------------------------
+  describe 'PATCH /users/:id (notification preferences)' do
+    before { log_in_as(user) }
+
+    it 'saves notification preferences' do
+      patch "/users/#{user.id}", params: {
+        user: { notification_preferences: { 'friend_request' => '0', 'comment_reply' => '1' } }
+      }
+      user.reload
+      expect(user.notification_muted?('friend_request')).to be true
+      expect(user.notification_muted?('comment_reply')).to be false
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # DELETE /users/delete_account
+  # -------------------------------------------------------------------------
+  describe 'DELETE /users/delete_account' do
+    it 'anonymizes the user and redirects to root' do
+      log_in_as(user)
+      delete '/users/delete_account'
+      expect(response).to redirect_to(root_path)
+
+      user.reload
+      expect(user.deleted?).to be true
+      expect(user.display_name).to eq('[Deleted Account]')
+      expect(user.first_name).to be_nil
+      expect(user.password_digest).to be_nil
+    end
+
+    it 'cleans up friendships' do
+      log_in_as(user)
+      friend = create(:user)
+      Friendship.create!(user_id: user.id, friend_id: friend.id)
+
+      expect {
+        delete '/users/delete_account'
+      }.to change(Friendship, :count).by(-1)
+    end
+
+    it 'preserves crosswords created by the user' do
+      log_in_as(user)
+      crossword = create(:crossword, user: user)
+
+      delete '/users/delete_account'
+
+      expect(crossword.reload).to be_present
+      expect(crossword.user_id).to eq(user.id)
+    end
+
+    it 'redirects unauthenticated users' do
+      delete '/users/delete_account'
+      expect(response).to redirect_to(account_required_path(redirect: '/users/delete_account'))
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # GET /users/:id — deleted user profile redirect
+  # -------------------------------------------------------------------------
+  describe 'GET /users/:id (deleted user)' do
+    it 'redirects to root when user is deleted' do
+      user.update_columns(deleted_at: Time.current)
+      get "/users/#{user.id}"
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
+  # -------------------------------------------------------------------------
+  # POST /login — deleted user cannot log in
+  # -------------------------------------------------------------------------
+  describe 'POST /login (deleted user)' do
+    it 'rejects login for deleted user' do
+      user.update_columns(deleted_at: Time.current)
+      post '/login', params: { username: user.username, password: RequestAuthHelpers::TEST_PASSWORD }
+      expect(response).to redirect_to(login_path)
+    end
+  end
+
 end

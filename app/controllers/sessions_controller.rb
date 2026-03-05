@@ -22,6 +22,11 @@ class SessionsController < ApplicationController
       false
     end
 
+    if authenticated && user.deleted?
+      redirect_to login_path, flash: { error: "This account has been deleted." }
+      return
+    end
+
     if authenticated
       # Store the auth_token in a signed cookie so it's HMAC-verified on every
       # read. A plain cookie can be forged by the client; signed cannot.

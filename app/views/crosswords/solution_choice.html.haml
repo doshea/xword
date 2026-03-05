@@ -8,7 +8,7 @@
       = image_tag(@crossword.preview.url, class: 'xw-thumbnail')
     .metadata
       %h2= @crossword.title
-      %p= @crossword.user&.display_name || '[deleted]'
+      %p= @crossword.user&.display_name || '[Deleted Account]'
       %p
         #{@crossword.rows} x #{@crossword.cols}
         %br

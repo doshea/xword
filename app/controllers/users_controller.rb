@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :ensure_logged_in, only: [:account, :update, :change_password]
+  before_action :ensure_logged_in, only: [:account, :update, :change_password, :delete_account]
 
   #GET /users/:id or user_path
   def show
@@ -7,6 +7,9 @@ class UsersController < ApplicationController
     unless @user
       return redirect_to error_path(prev: request.original_url),
                          flash: { error: "Could not find User \##{params[:id]}" }
+    end
+    if @user.deleted?
+      return redirect_to root_path, flash: { error: 'This account no longer exists.' }
     end
     @crosswords = @user.crosswords.order(created_at: :desc).paginate(page: params[:puzzles_page], per_page: 10)
     @crossword_count = @user.crosswords.count
@@ -63,7 +66,7 @@ class UsersController < ApplicationController
         format.html { render :account }
       end
     else
-      redirect_to account_users_path, flash: { error: 'There was a problem updating your profile.' }
+      redirect_to account_users_path, flash: { error: @user.errors.full_messages.to_sentence }
     end
   end
 
@@ -143,12 +146,23 @@ class UsersController < ApplicationController
     end
   end
 
+  # DELETE /users/delete_account
+  def delete_account
+    @current_user.anonymize!
+    cookies.delete(:auth_token)
+    redirect_to root_path, flash: { success: 'Your account has been deleted.' }
+  end
+
   private
   def create_user_params
     params.require(:user).permit(:username, :email, :password, :password_confirmation)
   end
   def update_user_params
-    params.require(:user).permit(:first_name, :last_name, :location, :image, :remote_image_url)
+    params.require(:user).permit(
+      :first_name, :last_name, :location, :image, :remote_image_url,
+      :email, :username,
+      notification_preferences: User::NOTIFICATION_TYPES
+    )
   end
 
 end

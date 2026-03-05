@@ -2,12 +2,12 @@
 - unpublished = (defined?(unpublished) && unpublished == true)
 = link_to (unpublished ? edit_unpublished_crossword_path(cw) : crossword_path(cw)) do
   .xw-puzzle-card
-    .xw-grid
-      .xw-col-12.xw-lg-4.xw-puzzle-card__thumb
+    .xw-puzzle-card__inner
+      .xw-puzzle-card__thumb
         = image_tag cw.try(:preview_url) || asset_path('example_puzzle.jpg'), class: "xw-thumbnail cols-#{cw.cols} rows-#{cw.rows}#{' unpublished' if unpublished}"
-      .xw-col-12.xw-lg-8.xw-puzzle-card__meta
+      .xw-puzzle-card__meta
         %p.xw-puzzle-card__title= cw.title
-        - unless unpublished or cw.user.nil? or (cw.user.username == 'nytimes')
+        - unless unpublished or cw.user.nil? or cw.user.deleted? or (cw.user.username == 'nytimes')
           %p.xw-puzzle-card__byline= "by #{cw.user.display_name}"
         %p.xw-puzzle-card__dims= "#{cw.rows} x #{cw.cols}"
       - if (cw.user&.username == 'nytimes')

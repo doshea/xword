@@ -112,6 +112,7 @@ class User < ApplicationRecord
     save!
   end
   def display_name
+    return '[Deleted Account]' if deleted?
     if self.first_name.present?
       self.last_name.present? ? "#{self.first_name} #{self.last_name}" : self.first_name
     else
@@ -119,6 +120,7 @@ class User < ApplicationRecord
     end
   end
   def display_first_name
+    return '[Deleted Account]' if deleted?
     self.first_name.present? ? self.first_name : self.username
   end
   def full_name
@@ -136,6 +138,60 @@ class User < ApplicationRecord
               .or(Friendship.where(user_id: user.id, friend_id: id))
               .exists?
   end
+  # -- Notification preferences (opt-out: empty hash = all enabled) -----------
+
+  NOTIFICATION_TYPES = %w[friend_request friend_accepted puzzle_invite comment_on_puzzle comment_reply].freeze
+
+  def deleted?
+    deleted_at.present?
+  end
+
+  # A type is muted only if explicitly set to false. Missing key = enabled.
+  def notification_muted?(type)
+    notification_preferences[type.to_s] == false
+  end
+
+  # Coerce form checkbox strings ("0"/"1") to booleans for JSONB storage.
+  def notification_preferences=(value)
+    return super({}) if value.blank?
+    return super(value) unless value.is_a?(Hash)
+
+    coerced = value.each_with_object({}) do |(k, v), hash|
+      next unless NOTIFICATION_TYPES.include?(k.to_s)
+      hash[k.to_s] = ActiveModel::Type::Boolean.new.cast(v)
+    end
+    super(coerced)
+  end
+
+  # -- Account anonymization -------------------------------------------------
+
+  # Strips PII but keeps the record so all FKs remain valid.
+  # Uses update_columns to bypass validations (email format, password, etc).
+  def anonymize!
+    # Delete personal data (not community content)
+    Friendship.where(user_id: id).or(Friendship.where(friend_id: id)).delete_all
+    notifications.delete_all
+    sent_friend_requests.delete_all
+    received_friend_requests.delete_all
+    favorite_puzzles.destroy_all
+    solution_partnerings.destroy_all
+
+    remove_image! if image.present?  # CarrierWave: deletes uploaded file
+
+    update_columns(
+      first_name: nil,
+      last_name: nil,
+      email: "deleted_#{id}@deleted.invalid",
+      username: "deleted_#{id}",
+      location: nil,
+      image: nil,
+      password_digest: nil,
+      auth_token: nil,
+      deleted_at: Time.current,
+      notification_preferences: {}
+    )
+  end
+
   def self.rand_unowned_puzzle(user = nil)
     user.present? ? Crossword.unowned(user).order("RANDOM()").first : Crossword.order("RANDOM()").first
   end

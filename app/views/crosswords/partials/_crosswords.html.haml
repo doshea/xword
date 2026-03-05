@@ -15,7 +15,7 @@
       = content_tag(:tr, id: dom_id(crossword)) do
         %td= link_to crossword.id, crossword
         %td= link_to crossword.title, crossword
-        %td= crossword.user ? link_to(crossword.user.username, crossword.user) : '[deleted]'
+        %td= (crossword.user && !crossword.user.deleted?) ? link_to(crossword.user.username, crossword.user) : '[Deleted Account]'
         %td.xw-admin-cell--compact= crossword.description
         %td= crossword.rows
         %td= crossword.cols
@@ -26,5 +26,5 @@
         %td.xw-admin-actions
           = link_to edit_admin_crossword_path(crossword) , class: 'xw-admin-action' do
             = icon('pencil')
-          = link_to admin_crossword_path(crossword), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user&.username || '[deleted]'}?" } do
+          = link_to admin_crossword_path(crossword), class: 'xw-admin-action xw-admin-action--danger', data: { turbo_method: :delete, turbo_confirm: "Are you SURE you want to delete '#{crossword.title}' by #{crossword.user&.display_name || '[Deleted Account]'}?" } do
             = icon('trash-2')

@@ -44,7 +44,7 @@
   .xw-col-full
     %h1
       = @crossword.title
-      %span#creator-credit= "by #{ @crossword.user.present? ? @crossword.user.display_name : '[deleted]' }"
+      %span#creator-credit= "by #{@crossword.user&.display_name || '[Deleted Account]'}"
     #puzzle-controls.no-select
       - if @current_user
         %span#save-status.smaller No changes yet
@@ -119,17 +119,24 @@
               %a#admin-flash-cascade{:href => "#"} Flash Cascade
   .xw-col-12.xw-lg-8
     .xw-byline
-      - if @crossword.user
+      - if @crossword.user && !@crossword.user.deleted?
         = link_to @crossword.user, class: 'xw-byline__avatar' do
           = image_tag(@crossword.user.image.creator_pic.url)
+      - elsif @crossword.user
+        .xw-byline__avatar
+          = image_tag(@crossword.user.image.creator_pic.url, alt: 'Deleted Account')
       .xw-byline__content
         - if @crossword.description.present?
           %p.xw-byline__desc= @crossword.description
           %button.xw-byline__more{type: 'button'} more
-        - if @crossword.user
+        - if @crossword.user && !@crossword.user.deleted?
           %p.xw-byline__name
             &mdash;
             = link_to @crossword.user.display_name, @crossword.user
+        - elsif @crossword.user
+          %p.xw-byline__name
+            &mdash;
+            = @crossword.user.display_name
   .xw-col-12.xw-lg-4.xw-stats-col
     = render partial: 'crosswords/partials/puzzle_stats'
   .xw-col-12.xw-lg-8

@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       post :send_password_reset
       post :change_password
       post :resetter
+      delete :delete_account
     end
   end
 

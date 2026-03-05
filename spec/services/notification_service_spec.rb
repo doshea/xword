@@ -70,6 +70,28 @@ RSpec.describe NotificationService do
       expect(notification.notifiable).to be_nil
     end
 
+    context 'notification preferences' do
+      # Use a fresh user to avoid polluting let_it_be(:user) shared state
+      let(:muted_user) { create(:user, notification_preferences: { 'friend_request' => false }) }
+
+      it 'returns nil when user has muted the notification type' do
+        result = NotificationService.notify(
+          user: muted_user, actor: actor, type: 'friend_request'
+        )
+
+        expect(result).to be_nil
+        expect(Notification.where(user: muted_user, notification_type: 'friend_request').count).to eq(0)
+      end
+
+      it 'creates notification for non-muted types when other types are muted' do
+        notification = NotificationService.notify(
+          user: muted_user, actor: actor, type: 'comment_reply'
+        )
+
+        expect(notification).to be_persisted
+      end
+    end
+
     it 'does not raise when broadcast fails' do
       allow(ActionCable.server).to receive(:broadcast).and_raise(StandardError, 'Redis down')
 

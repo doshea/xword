@@ -5,6 +5,7 @@ class NotificationService
   # Broadcasts to ActionCable after creation.
   def self.notify(user:, actor:, type:, notifiable: nil, metadata: {})
     return nil if user == actor
+    return nil if user.notification_muted?(type)
 
     notification = Notification.create!(
       user: user,

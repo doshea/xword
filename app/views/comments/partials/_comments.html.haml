@@ -16,7 +16,7 @@
           - if comment.flagged
             = icon('flag', class: 'xw-icon--danger')
         %td
-          = comment.user ? link_to(comment.user.username, comment.user) : '[deleted]'
+          = (comment.user && !comment.user.deleted?) ? link_to(comment.user.username, comment.user) : '[Deleted Account]'
         %td
           = comment.crossword.present? ? link_to(comment.crossword.title, comment.crossword) : link_to(comment.base_comment.crossword.title, comment.base_comment.crossword)
         %td.xw-admin-actions

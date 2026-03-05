@@ -1,14 +1,16 @@
 = content_tag(:article, id: dom_id(comment), class: 'xw-comment') do
   .xw-comment__avatar
-    - if comment.user
+    - if comment.user && !comment.user.deleted?
       = link_to (image_tag comment.user.image.comment_size.url), comment.user
+    - elsif comment.user
+      = image_tag comment.user.image.comment_size.url, alt: 'Deleted Account'
   .xw-comment__body
     %p.xw-comment__content
       %span.xw-comment__author
-        - if comment.user
+        - if comment.user && !comment.user.deleted?
           = link_to comment.user.display_name, comment.user
         - else
-          %span [deleted]
+          %span= comment.user&.display_name || '[Deleted Account]'
       = comment.content
     .xw-comment__actions
       - if @current_user

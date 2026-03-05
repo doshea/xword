@@ -18,7 +18,7 @@
           = content_tag(:tr, id: dom_id(solution)) do
             %td= solution.id
             %td= solution.crossword ? link_to(solution.crossword.title, solution.crossword) : 'NONE'
-            %td= solution.user ? link_to(solution.user.username, solution.user) : '[deleted]'
+            %td= (solution.user && !solution.user.deleted?) ? link_to(solution.user.username, solution.user) : '[Deleted Account]'
             %td.xw-admin-cell--compact= solution.letters
             %td.xw-admin-cell--icon
               - if solution.is_complete

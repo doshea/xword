@@ -22,10 +22,10 @@
       %ul
         %li
           User:
-          - if @solution.user
+          - if @solution.user && !@solution.user.deleted?
             = link_to @solution.user.username, @solution.user
           - else
-            [deleted]
+            [Deleted Account]
         %li
           Crossword:
           - if @solution.crossword

@@ -12,84 +12,95 @@
           %span.xw-account-header__dot &middot;
           = user.location
 
--# Tab interface
+-# ── Section 1: Profile ──
 .xw-col-full
-  .xw-account-tabs.xw-tabs{data: {controller: 'tabs'}}
-    .xw-tabs__nav
-      = link_to '#panel1', class: 'xw-tab xw-tab--active', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
-        Personal
-      = link_to '#panel2', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
-        Puzzles
-      = link_to '#panel3', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
-        Emails
-      = link_to '#panel4', class: 'xw-tab', data: {tabs_target: 'tab', action: 'click->tabs#show'} do
-        Password
+  = form_with model: user, html: { multipart: true } do |f|
+    = token_tag nil
 
-    .xw-tab-panels
-      -# ── Personal ──
-      #panel1.xw-tab-panel.xw-tab-panel--active{data: {tabs_target: 'panel'}}
-        = form_with model: user, html: { multipart: true } do |f|
-          = token_tag nil
+    %section.xw-account-section
+      %h2.xw-account-section__heading Profile Photo
+      .xw-account-photo
+        .xw-account-photo__preview
+          = image_tag user.image.url, id: 'profile-pic', alt: user.display_name
+        .xw-account-photo__controls
+          .xw-field
+            %label.xw-label{for: 'user_image'} Upload from your computer
+            = f.file_field :image, class: 'xw-input xw-input--file', id: 'user_image'
+          .xw-account-photo__divider
+            %span or
+          .xw-field
+            %label.xw-label{for: 'user_remote_image_url'} Paste an image URL
+            = url_field_tag "user[remote_image_url]", nil, placeholder: "https://example.com/photo.jpg", class: 'xw-input', id: 'user_remote_image_url'
 
-          %section.xw-account-section
-            %h2.xw-account-section__heading Profile Photo
-            .xw-account-photo
-              .xw-account-photo__preview
-                = image_tag user.image.url, id: 'profile-pic', alt: user.display_name
-              .xw-account-photo__controls
-                .xw-field
-                  %label.xw-label{for: 'user_image'} Upload from your computer
-                  = f.file_field :image, class: 'xw-input xw-input--file', id: 'user_image'
-                .xw-account-photo__divider
-                  %span or
-                .xw-field
-                  %label.xw-label{for: 'user_remote_image_url'} Paste an image URL
-                  = url_field_tag "user[remote_image_url]", nil, placeholder: "https://example.com/photo.jpg", class: 'xw-input', id: 'user_remote_image_url'
+    %section.xw-account-section
+      %h2.xw-account-section__heading Personal Info
+      .xw-account-form-grid
+        .xw-field
+          = f.label :first_name, 'First Name', class: 'xw-label'
+          = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH, class: 'xw-input'
+        .xw-field
+          = f.label :last_name, 'Last Name', class: 'xw-label'
+          = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH, class: 'xw-input'
+      .xw-account-form-grid
+        .xw-field
+          = f.label :email, 'Email', class: 'xw-label'
+          = f.email_field :email, maxlength: User::MAX_EMAIL_LENGTH, class: 'xw-input'
+        .xw-field
+          = f.label :username, 'Username', class: 'xw-label'
+          = f.text_field :username, maxlength: User::MAX_USERNAME_LENGTH, class: 'xw-input'
+      .xw-field
+        = f.label :location, 'Location', class: 'xw-label'
+        = f.text_field :location, placeholder: 'Lost in thought', class: 'xw-input'
+      .xw-account-section__actions
+        = f.submit 'Update Profile', class: 'xw-btn', data: { disable_with: 'Updating\u2026' }
 
-          %section.xw-account-section
-            %h2.xw-account-section__heading Personal Info
-            .xw-account-form-grid
-              .xw-field
-                = f.label :first_name, 'First Name', class: 'xw-label'
-                = f.text_field :first_name, placeholder: 'Will', maxlength: User::MAX_FIRST_NAME_LENGTH, class: 'xw-input'
-              .xw-field
-                = f.label :last_name, 'Last Name', class: 'xw-label'
-                = f.text_field :last_name, placeholder: 'Shortz', maxlength: User::MAX_LAST_NAME_LENGTH, class: 'xw-input'
-            .xw-field
-              = f.label :location, 'Location', class: 'xw-label'
-              = f.text_field :location, placeholder: 'Lost in thought', class: 'xw-input'
-            .xw-account-section__actions
-              = f.submit 'Update Account', class: 'xw-btn', data: { disable_with: 'Updating\u2026' }
+-# ── Section 2: Notifications ──
+.xw-col-full
+  = form_with model: user, html: { multipart: false } do |f|
+    = token_tag nil
+    %section.xw-account-section
+      %h2.xw-account-section__heading Notification Preferences
+      %p.xw-account-section__hint Uncheck any notifications you don't want to receive.
+      .xw-account-notification-list
+        - notification_labels = { 'friend_request' => 'Friend requests',
+            'friend_accepted' => 'Friend request accepted',
+            'puzzle_invite' => 'Puzzle invitations',
+            'comment_on_puzzle' => 'Comments on your puzzles',
+            'comment_reply' => 'Replies to your comments' }
+        - notification_labels.each do |type, label|
+          .xw-account-notification-item
+            = hidden_field_tag "user[notification_preferences][#{type}]", '0', id: nil
+            = check_box_tag "user[notification_preferences][#{type}]", '1', !user.notification_muted?(type), id: "notif_#{type}", class: 'xw-checkbox'
+            = label_tag "notif_#{type}", label, class: 'xw-checkbox-label'
+      .xw-account-section__actions
+        = f.submit 'Save Preferences', class: 'xw-btn', data: { disable_with: 'Saving\u2026' }
 
-      -# ── Puzzles ──
-      #panel2.xw-tab-panel{data: {tabs_target: 'panel'}}
-        %section.xw-account-section
-          %h2.xw-account-section__heading Puzzle Settings
-          %p.xw-account-section__empty Coming soon!
+-# ── Section 3: Account ──
+.xw-col-full
+  %section.xw-account-section
+    %h2.xw-account-section__heading Change Password
+    #password-errors.xw-alert.xw-alert--error.hidden
+      %p
+      %a.slide-close{href: "#"} &times;
+    #password-success.xw-alert.xw-alert--success.hidden Password updated!
+    = form_with(url: change_password_users_path, method: :post) do |f|
+      .xw-field
+        %label.xw-label{for: 'old_password'} Current Password
+        = password_field_tag :old_password, nil, placeholder: 'Enter current password', required: true, class: 'xw-input', id: 'old_password'
+      .xw-field
+        %label.xw-label{for: 'new_password'} New Password
+        = password_field_tag :new_password, nil, placeholder: 'Choose a new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password'
+      .xw-field
+        %label.xw-label{for: 'new_password_confirmation'} Confirm New Password
+        = password_field_tag :new_password_confirmation, nil, placeholder: 'Re-enter new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password_confirmation'
+      .xw-account-section__actions
+        = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing\u2026'}
 
-      -# ── Emails ──
-      #panel3.xw-tab-panel{data: {tabs_target: 'panel'}}
-        %section.xw-account-section
-          %h2.xw-account-section__heading Email Settings
-          %p.xw-account-section__empty Coming soon!
-
-      -# ── Password ──
-      #panel4.xw-tab-panel{data: {tabs_target: 'panel'}}
-        %section.xw-account-section
-          %h2.xw-account-section__heading Change Password
-          #password-errors.xw-alert.xw-alert--error.hidden
-            %p
-            %a.slide-close{href: "#"} &times;
-          #password-success.xw-alert.xw-alert--success.hidden Password updated!
-          = form_with(url: change_password_users_path, method: :post) do |f|
-            .xw-field
-              %label.xw-label{for: 'old_password'} Current Password
-              = password_field_tag :old_password, nil, placeholder: 'Enter current password', required: true, class: 'xw-input', id: 'old_password'
-            .xw-field
-              %label.xw-label{for: 'new_password'} New Password
-              = password_field_tag :new_password, nil, placeholder: 'Choose a new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password'
-            .xw-field
-              %label.xw-label{for: 'new_password_confirmation'} Confirm New Password
-              = password_field_tag :new_password_confirmation, nil, placeholder: 'Re-enter new password', required: true, maxlength: User::MAX_PASSWORD_LENGTH, class: 'xw-input', id: 'new_password_confirmation'
-            .xw-account-section__actions
-              = submit_tag 'Change Password', class: 'xw-btn', data: {disable_with: 'Changing...'}
+.xw-col-full
+  %section.xw-account-section.xw-account-section--danger
+    %h2.xw-account-section__heading Delete Account
+    %p.xw-account-section__hint
+      This will permanently anonymize your account. Your puzzles and comments will remain
+      but show as "[Deleted Account]". Your solve history and friendships will be removed.
+      This cannot be undone.
+    = link_to 'Delete My Account', delete_account_users_path, class: 'xw-btn xw-btn--danger', data: { turbo_method: :delete, turbo_confirm: 'Are you SURE you want to delete your account? Your puzzles and comments will remain but be anonymized. This cannot be undone.' }

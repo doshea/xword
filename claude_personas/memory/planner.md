@@ -310,19 +310,33 @@
 
 **Risk:** Very low. Pure visual change. No behavior, no JS, no data.
 
-### 2026-03-04: Edit page void/empty swap — root cause analysis
+### 2026-03-04: Edit page void/empty swap — root cause analysis (SUPERSEDED — see entry below)
 
-**Symptom:** User reports random voids, "0" appearing in cells, clues not saving, auto-save broken.
+**Original symptom:** Integer `0` vs string `"0"` mismatch. Fix applied: `l.to_s == "0"`. However, the fix left the `strip.empty?` clause which creates a SECOND corruption bug — see next entry.
 
-**Root cause:** `update_letters` line 29 type mismatch. JS sends integer `0` for voids via JSON, controller checks `l == "0"` (string). Ruby's `0 == "0"` is `false`. Also, empty cells arrive as `" "` (space), which `blank?` maps to nil (void marker).
+### 2026-03-04: Edit Page Save Bugs — deep dive investigation
 
-**Result:** On every save+reload: void cells → "0" letter; empty cells → voids. Clue numbering shifts because void positions change.
+**Trigger:** User reported "save icon is in a weird spot and it doesn't even work."
 
-**Test gap:** Controller spec sends string `"0"` (bypasses HTTP encoding), so the bug was never caught. Need a test that sends integer `0`.
+**Investigation method:** Code trace + Playwright live reproduction. Created 5×5 puzzle, typed A and B, clicked save button. Observed: URL changed to `...edit#`, page DOM entirely replaced by Turbo, 23 empty cells became black voids, clues collapsed from 10 to 3.
 
-**Fix:** `l.to_s == "0" || l.to_s.strip.empty? ? nil : l.to_s` + JS hardening (`"0"` string instead of `0` integer) + data repair script.
+**Bug 1 — Empty cells corrupted to voids on every save (CRITICAL)**
 
-**Confidence:** High — verified `0.blank?` → false and `0 == "0"` → false in Rails runner.
+Root cause: `update_letters` (`unpublished_crosswords_controller.rb:29`) maps `" "` → nil. JS `get_letter()` (`cell_funcs.js:233`) returns `" "` for unfilled cells. Controller's `l.to_s.strip.empty?` evaluates true → nil. But nil = void, `""` = non-void empty cell (per `populate_arrays` at `unpublished_crossword.rb:95`).
+
+Affects BOTH manual saves AND auto-save (fires every 15s). Every save cycle corrupts more cells.
+
+Fix: Change the mapping so `strip.empty?` produces `""` (not nil). Exact code in shared.md handoff.
+
+**Bug 2 — Missing `e.preventDefault()` in save_puzzle (MUST-FIX)**
+
+`save_puzzle(e)` at `edit_funcs.js:140` never calls `e.preventDefault()`. Save button is `<a href="#">`. Without it, Turbo Drive intercepts the `#` hash navigation, re-fetches the page, and replaces the entire DOM — destroying all client state.
+
+Solve page's `save_solution` at `solve_funcs.js:118` correctly has `if (e) e.preventDefault();`. Same pattern needed. The `if (e)` guard matters: auto-save calls `save_puzzle()` with no event argument (line 17).
+
+**Layout issue:** Save button left-aligns on narrow screens due to flex-wrap. Fix: `margin-left: auto` on `#puzzle-controls`.
+
+**Handoff:** Written to shared.md as "Edit Page Save Bugs — CRITICAL" section with exact code fixes, test spec, and data repair guidance.
 
 ### 2026-03-04: Playwright MCP Server — headless screenshot capability
 
@@ -568,6 +582,38 @@ Builder to update.
 
 **Full plan:** `claude_personas/memory/plan.md`
 
+### 2026-03-05: Edit Page Full Frontend Review (Playwright + code)
+
+**Scope:** Live browser testing at 1440px (desktop), 768px (tablet), 375px (phone). Tested cell selection, typing, void toggle, clue editing, Notepad/Pattern Search panels, settings modal, toggle switches. Code review of edit.scss.erb, crossword.scss.erb, edit_funcs.js, crossword_funcs.js, cell_funcs.js, edit HAML templates.
+
+**Overall grade: C+.** Core editing works on desktop but there's a production JS crash, broken tool panels, and poor mobile experience.
+
+**Must-fix (3):**
+
+1. **`scroll_to_selected` JS crash after void toggle** — `number_cells()` sets `data-cell` on cells → `corresponding_clue()` uses `data-cell-num` lookup → edit page clues only have `data-index` → empty jQuery set → `.position()` returns undefined → TypeError on every subsequent cell/clue click. Fix: guard in `scroll_to_selected` (`if ($sel_clue.length === 0) return;`) AND make `corresponding_clue()` use `data-index` path when `cw.editing`.
+
+2. **Tool panels cover content on all viewports** — `.slide-up-container` is `position: fixed; height: 90%`. Opens to `top: 95px`, covering the entire puzzle grid with a dark overlay. Desktop Notepad covers left half; Pattern Search covers right half. Phone: even worse. Panels should be redesigned as side drawers (desktop) or partial bottom sheets (mobile).
+
+3. **Row height jump on letter typed** — row visibly grows when first letter appears. Previously diagnosed. May still be present.
+
+**Should-fix (5):**
+
+4. Dead "Edit Settings" modal — gear button opens "Settings coming soon." placeholder. Either remove or repurpose (move toggle switches into it).
+5. Phone: tool panel buttons overlap content permanently (fixed bottom positioning when closed).
+6. Phone: "Mirror voids" switch label clipped at section boundary.
+7. `number_clues()` produces "NaN." for non-word-start clues (hidden but sloppy DOM).
+8. Event handler leaks on Turbo navigation — `.on()` in `ready()` without `.off()` causes duplicate handlers.
+
+**Suggestions (5):**
+
+9. `spin_title()` dead code (references nonexistent Spinner library). Delete.
+10. Table lacks ARIA grid semantics.
+11. Switch checkbox `display: none` — invisible to assistive tech. Use `sr-only` pattern.
+12. `jquery-ui-1.10.4.draggable.min` loaded but never used. Dead dependency.
+13. Inline `:css` block for clue height is fragile.
+
+**What's working well:** Cell selection/word highlighting, void toggle with mirror, clue textareas with `field-sizing: content`, title/description AJAX saves with status feedback, auto-save deduplication counter, Publish confirmation, section `aria-label` attributes.
+
 ### 2026-03-04: Loading Feedback System — comprehensive audit + plan
 
 **Trigger:** User reported puzzle card clicks and button presses feel unresponsive, especially
@@ -595,3 +641,33 @@ its current feedback state.
 - `prefers-reduced-motion` respected throughout
 
 **Full plan:** `claude_personas/memory/plan.md`
+
+### 2026-03-05: Account Settings Rebuild — planned + built
+
+**Scope:** Replace 4-tab account settings (2 placeholder "Coming soon!" tabs) with single
+scrollable page. 3 sections: Profile, Notifications, Account.
+
+**Key design decisions:**
+1. **Single page, no tabs** — kills the Puzzles/Emails placeholders, consolidates into 3 real sections
+2. **Anonymize, don't delete** — user record stays with PII stripped, all FKs remain valid.
+   `update_columns` bypasses validations to set placeholder email/username. Solutions, crosswords,
+   and comments all survive intact for community.
+3. **JSONB notification preferences** — opt-out model: empty hash = all enabled, `false` = muted.
+   Setter coerces form checkbox strings to booleans. `NotificationService.notify` checks before creating.
+4. **Email/username now editable** — added to `update_user_params`, uniqueness errors shown via
+   `full_messages.to_sentence` (replaced generic error message).
+
+**What was built:**
+- Migration: `notification_preferences` (JSONB) + `deleted_at` (datetime) on users
+- User model: `anonymize!`, `deleted?`, `notification_muted?`, `notification_preferences=` setter,
+  `display_name`/`display_first_name` overrides for deleted state
+- NotificationService: 1-line preference check
+- UsersController: `delete_account` action, expanded `update_user_params`, profile guard for deleted users
+- SessionsController: deleted user login block (defense in depth)
+- Routes: `delete :delete_account`
+- View rebuild: 3-section scrollable page (profile+photo, notification checkboxes, password+delete)
+- CSS: removed tab styles, added checkbox styling + danger zone section
+- ~8 view files updated for deleted user display (no linking to deleted profiles, `[Deleted Account]` text)
+- 22 new tests across model, service, and request specs — all passing (207 related examples, 0 failures)
+
+**Full plan:** `~/.claude/plans/silly-percolating-squirrel.md`

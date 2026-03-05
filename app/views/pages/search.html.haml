@@ -59,7 +59,7 @@
               - if cw.user&.username == 'nytimes'
                 %span.xw-search-puzzle__badge NYT
               %span.xw-search-puzzle__title= cw.title
-              - unless cw.user.nil? || cw.user.username == 'nytimes'
+              - unless cw.user.nil? || cw.user.deleted? || cw.user.username == 'nytimes'
                 %span.xw-search-puzzle__byline= "by #{cw.user.display_name}"
 
   -# User results

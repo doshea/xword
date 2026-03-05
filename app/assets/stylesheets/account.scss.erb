@@ -90,31 +90,7 @@
 }
 
 // -----------------------------------------------------------------------------
-// Tab container — give the tab interface a card-like presence
-// -----------------------------------------------------------------------------
-
-.xw-account-tabs {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-6);
-}
-
-// Override default vertical tab nav border to sit within the card
-.xw-account-tabs.xw-tabs--vertical .xw-tabs__nav {
-  border-right-color: var(--color-border);
-}
-
-// Mobile: tighter padding inside card
-@media (max-width: #{$bp-md - 1}) {
-  .xw-account-tabs {
-    padding: var(--space-4) var(--space-3);
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Section Cards — grouped form areas within tab panels
+// Section Cards — grouped form areas
 // -----------------------------------------------------------------------------
 
 .xw-account-section {
@@ -288,4 +264,81 @@
 
   &:hover,
   &:focus { opacity: 0.5; }
+}
+
+// -----------------------------------------------------------------------------
+// Notification Preferences — checkbox list
+// -----------------------------------------------------------------------------
+
+.xw-account-section__hint {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-4);
+}
+
+.xw-account-notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.xw-account-notification-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.xw-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition-colors);
+  position: relative;
+
+  &:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: solid var(--color-surface);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-accent-light);
+  }
+}
+
+.xw-checkbox-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+// -----------------------------------------------------------------------------
+// Danger Zone — destructive actions (delete account)
+// -----------------------------------------------------------------------------
+
+.xw-account-section--danger {
+  border-left: 3px solid var(--color-danger);
+
+  .xw-account-section__heading {
+    color: var(--color-danger-text);
+  }
 }
