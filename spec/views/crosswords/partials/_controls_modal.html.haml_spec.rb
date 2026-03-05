@@ -12,8 +12,8 @@ describe 'crosswords/partials/_controls_modal' do
     expect(rendered).to have_selector('button[aria-label="Close"]', visible: :all)
   end
 
-  it 'does not render team section when @team is nil' do
-    expect(rendered).not_to have_selector('h3', text: 'Team Solving', visible: :all)
+  it 'does not render team row when @team is nil' do
+    expect(rendered).not_to have_selector('td', text: 'Team', visible: :all)
   end
 
   context 'when team solve is active' do
@@ -22,8 +22,8 @@ describe 'crosswords/partials/_controls_modal' do
       render partial: 'crosswords/partials/controls_modal'
     end
 
-    it 'renders the Team Solving section' do
-      expect(rendered).to have_selector('h3', text: 'Team Solving', visible: :all)
+    it 'renders the Team row' do
+      expect(rendered).to have_selector('td', text: 'Team', visible: :all)
     end
   end
 end

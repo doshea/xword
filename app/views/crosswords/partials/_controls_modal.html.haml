@@ -1,59 +1,34 @@
 %dialog#controls-modal.xw-modal{data: {controller: 'modal', action: 'click->modal#clickOutside'}}
   %button.xw-modal__close{data: {action: 'click->modal#close'}, aria: {label: 'Close'}} &times;
   .xw-manual
-    %h2.xw-manual__heading How to Solve
-
-    .xw-manual__section
-      %h3 Navigation
-      .xw-manual__keys
-        .xw-manual__arrow-keys
-          .xw-manual__arrow-row
-            %kbd.xw-manual__key &uarr;
-          .xw-manual__arrow-row
-            %kbd.xw-manual__key &larr;
-            %kbd.xw-manual__key &darr;
-            %kbd.xw-manual__key &rarr;
-        .xw-manual__key-hints
-          %kbd Tab
-          next word
-          %br
-          %kbd Space
-          switch direction
-
-    .xw-manual__section
-      %h3 Rebus Cells
-      %p.xw-manual__text Some puzzles have cells with multiple letters. Type a hyphen (&ndash;) and it will be accepted as correct.
-
-    .xw-manual__section
-      %h3 Checking Your Work
-      %table.xw-manual__table
+    %table.xw-manual__table
+      %tr
+        %td
+          Navigate
+        %td
+          .xw-manual__keys
+            .xw-manual__arrow-keys
+              .xw-manual__arrow-row
+                %kbd.xw-manual__key &uarr;
+              .xw-manual__arrow-row
+                %kbd.xw-manual__key &larr;
+                %kbd.xw-manual__key &darr;
+                %kbd.xw-manual__key &rarr;
+            .xw-manual__key-hints
+              %kbd Tab
+              next word
+              %br
+              %kbd Space
+              switch direction
+      %tr
+        %td Rebus
+        %td Type a hyphen (&ndash;) for multi-letter cells
+      %tr
+        %td Saving
+        %td Auto-saves every 5s; toolbar icon for manual save
+      - if @team
         %tr
-          %td Check Cell / Word / Puzzle
-          %td Verifies your answers &mdash; correct cells flash gold
-        %tr
-          %td Check Completion
-          %td Checks if the puzzle is 100% correct
-      %p.xw-manual__note Use the "Check" dropdown in the toolbar.
-
-    .xw-manual__section
-      %h3 Saving
-      %p.xw-manual__text Progress auto-saves every 5 seconds. You can also save manually with the toolbar icon.
-      - unless @current_user
-        %p.xw-manual__note If you're not logged in, your progress won't be saved when you leave the page.
-
-    - if @team
-      .xw-manual__section
-        %h3 Team Solving
-        %table.xw-manual__table
-          %tr
-            %td See who's online
-            %td Colored squares in the toolbar show active teammates
-          %tr
-            %td Real-time updates
-            %td Teammates' letters appear as they type
-          %tr
-            %td Highlight a clue
-            %td Click a clue &mdash; teammates see a dashed outline on those cells
-          %tr
-            %td Team chat
-            %td Click the chat bar at the bottom to expand
+          %td Team
+          %td Colored squares = teammates; click a clue to highlight it for your team
+    - unless @current_user
+      %p.xw-manual__note Your progress won't be saved unless you sign up or log in.
