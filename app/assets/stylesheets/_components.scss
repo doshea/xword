@@ -397,6 +397,11 @@
   margin-bottom: 0;
 }
 
+.xw-hr--accent {
+  border: none;
+  border-top: 2px solid var(--color-accent);
+}
+
 
 // ---------------------------------------------------------------------------
 // TABS — .xw-tabs / .xw-tab-panels
