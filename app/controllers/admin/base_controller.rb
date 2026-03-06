@@ -8,7 +8,7 @@ class Admin::BaseController < ApplicationController
     if found_object.update(resource_params)
       redirect_to url_for(action: :index), flash: { success: "#{resource_name} updated." }
     else
-      redirect_to url_for(action: :edit, id: found_object.id), flash: { error: "Error updating #{resource_name.downcase}." }
+      render :edit, status: :unprocessable_entity
     end
   end
 

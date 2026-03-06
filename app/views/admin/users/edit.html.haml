@@ -1,26 +1,34 @@
 - title "Admin | Edit #{@user.username}", true
 = render layout: 'layouts/partials/admin_page', locals: {page_title: "Edit #{@user.username}", back_path: admin_users_path} do
+  = render 'shared/form_errors', object: @user
   .xw-admin-form
     = form_with model: @user, url: url_for(controller: 'admin/users', method: :update), html: { class: 'xw-grid' } do |f|
       .xw-col-12.xw-lg-3
-        = f.label :username
-        = f.text_field :username
-        = f.label :first_name
-        = f.text_field :first_name
+        .xw-field
+          = f.label :username, class: 'xw-label'
+          = f.text_field :username, class: 'xw-input'
+        .xw-field
+          = f.label :first_name, class: 'xw-label'
+          = f.text_field :first_name, class: 'xw-input'
       .xw-col-12.xw-lg-3
-        = f.label :email
-        = f.email_field :email
-        = f.label :last_name
-        = f.text_field :last_name
+        .xw-field
+          = f.label :email, class: 'xw-label'
+          = f.email_field :email, class: 'xw-input'
+        .xw-field
+          = f.label :last_name, class: 'xw-label'
+          = f.text_field :last_name, class: 'xw-input'
       .xw-col-12.xw-lg-4
-        = f.label :image
-        = image_tag @user.image.creator_pic.url
-        = f.text_field :image
+        .xw-field
+          = f.label :image, class: 'xw-label'
+          = image_tag @user.image.creator_pic.url
+          = f.text_field :image, class: 'xw-input'
       .xw-col-12.xw-lg-2{class: ('xw-admin-highlight' if @user.is_admin)}
-        = f.label :is_admin, 'Admin'
-        = f.check_box :is_admin
+        .xw-field.xw-field--inline
+          = f.check_box :is_admin, class: 'xw-checkbox'
+          = f.label :is_admin, 'Admin', class: 'xw-checkbox-label'
       .xw-col-full
-        = f.label :location
-        = f.text_field :location
+        .xw-field
+          = f.label :location, class: 'xw-label'
+          = f.text_field :location, class: 'xw-input'
       .xw-col-full
         = f.submit class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}

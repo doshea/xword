@@ -6,23 +6,14 @@
 2. If timestamped within 15 min, skip it — another Builder has it
 3. After building: move to "Pending Deploy" with commit hash
 
-## Pending Deploy
-
-(none)
-
 ## Builder In Progress
 
 (none)
 
 ## Pending Deploy
 
-### Rebus Cell Support — Infrastructure
-**Picked up by Builder at 2025-03-05 23:16**
-**Status**: ✅ All 12 tasks complete. 1081 examples, 0 failures.
-**Summary**: Added `rebus_map` JSONB to crosswords+solutions, wired through entire stack.
-**Files changed**: 1 migration, 2 models, 2 services, 2 controllers, 4 JS files, 2 SCSS files, 2 views, 5 spec files, 2 factories, 1 CSRF spec fix
-**Migration**: `add_rebus_map_to_crosswords_and_solutions` — adds JSONB column (default {}, not null) to both tables. Zero-downtime safe (additive only).
-**Note**: Also fixed pre-existing CSRF spec flake (eager-evaluated `let!` for solution to avoid unique constraint violation).
+- **Admin Form Styling + Inline Validation**: BEM classes on all 6 admin edit forms, checkbox component promoted to shared, form errors rendered on validation failure, Stimulus form_validation_controller for public forms (signup/login/forgot/reset password), error animation CSS. 18 new specs. No migration.
+- **SF1 + SF2 should-fixes**: SF1 (rebus HAML class placement) — already correct, no change needed. SF2 (NYT logo float) — added `position: relative` to `.xw-puzzle-card`. No migration.
 
 ## Planner → Builder Queue
 
@@ -45,8 +36,6 @@ Full queue: `claude_personas/plans/planner-meta-plan.md`
 
 ## Backlog
 
-- **Admin Form Styling** — 6 admin views, single-user audience, zero user impact
-- **Inline Form Validation** — CSS classes exist but unused; feature not fix; defer until drop-off observed
 - **Review Checklist Template** — create when team grows
 
 ## Deploy Log
@@ -69,4 +58,4 @@ v579: Composite indexes (cells, crosswords), random puzzle offset fix, stale TOD
 v580: Loading spinners (home/NYT/LoadingController), solve home button, mobile comment Send button
 v581: Phase 4 — mini-manuals, clue suggestions, unfriend, remotipart removal
 v582: Solve mini-manual polish (7→4 sections, arrow key diagram), persona terminal text color fix
-v581: Phase 4 — mini-manuals, clue suggestions, unfriend, remotipart removal
+v586: Rebus cell support infrastructure (rebus_map JSONB on crosswords+solutions, full-stack wiring)

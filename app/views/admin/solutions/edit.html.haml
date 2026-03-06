@@ -1,20 +1,25 @@
 - title 'Admin | Edit Solution', true
 = render layout: 'layouts/partials/admin_page', locals: {page_title: 'Edit Solution', back_path: admin_solutions_path} do
+  = render 'shared/form_errors', object: @solution
   .xw-admin-form
     = form_with model: @solution, url: url_for(controller: 'admin/solutions', method: :update), html: { class: 'xw-grid' } do |f|
       .xw-col-12.xw-lg-8
-        = f.label :letters
-        = f.text_area :letters, maxlength: @solution.crossword ? @solution.crossword.rows * @solution.crossword.cols : 0, class: 'xw-textarea--uppercase'
+        .xw-field
+          = f.label :letters, class: 'xw-label'
+          = f.text_area :letters, maxlength: @solution.crossword ? @solution.crossword.rows * @solution.crossword.cols : 0, class: 'xw-textarea xw-textarea--uppercase'
       .xw-col-12.xw-lg-2
-        = f.label :is_complete
-        = f.check_box :is_complete
+        .xw-field.xw-field--inline
+          = f.check_box :is_complete, class: 'xw-checkbox'
+          = f.label :is_complete, class: 'xw-checkbox-label'
       .xw-col-12.xw-lg-2
-        = f.label :team
-        = f.check_box :team
+        .xw-field.xw-field--inline
+          = f.check_box :team, class: 'xw-checkbox'
+          = f.label :team, class: 'xw-checkbox-label'
       - if @solution.team
         .xw-col-full
-          = f.label :key
-          = f.text_field :key
+          .xw-field
+            = f.label :key, class: 'xw-label'
+            = f.text_field :key, class: 'xw-input'
       .xw-col-full
         = f.submit class: 'xw-btn xw-btn--success', data: {disable_with: 'Updating...'}
     .xw-admin-info

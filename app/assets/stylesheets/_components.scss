@@ -224,6 +224,7 @@
   display: block;
   text-decoration: none;
   color: var(--color-text);
+  position: relative; // containing block for .xw-puzzle-card__nyt absolute positioning
 
   .xw-puzzle-card__inner {
     display: flex;
@@ -657,6 +658,69 @@
   font-family: var(--font-ui);
   font-size: var(--text-xs);
   color: var(--color-danger-text);
+  margin-top: var(--space-1);
+  animation: xw-field-error-in var(--duration-base) var(--ease-out);
+}
+
+@keyframes xw-field-error-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Inline field layout (checkbox + label side by side)
+.xw-field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+
+// ---------------------------------------------------------------------------
+// CHECKBOXES — .xw-checkbox
+// ---------------------------------------------------------------------------
+// Custom checkbox replacing native appearance with accent-green checkmark.
+// Pairs with .xw-checkbox-label for clickable text.
+
+.xw-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition-colors);
+  position: relative;
+
+  &:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: solid var(--color-surface);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-accent-light);
+  }
+}
+
+.xw-checkbox-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  cursor: pointer;
 }
 
 
