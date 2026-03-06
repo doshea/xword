@@ -6,11 +6,12 @@
         - for c in 1..@crossword.cols
           - letter = @crossword.letters[i]
           - unless letter == '_'
-            %td.cell{:'data-row' => r, :'data-col' => c, :'data-index' => i, class: ('flagged revealed' if @revealed_set&.include?(i))}
+            - sol_content = @solution ? (@solution.rebus_map&.dig(i.to_s) || @solution.letters[i]) : nil
+            - rebus_class = ("rebus-#{[sol_content.to_s.length, 4].min}" if sol_content.to_s.length > 1)
+            %td.cell{:'data-row' => r, :'data-col' => c, :'data-index' => i, class: [('flagged revealed' if @revealed_set&.include?(i)), rebus_class].compact.join(' ')}
               .flag
               - if @solution
-                - sol_content = @solution.rebus_map&.dig(i.to_s) || @solution.letters[i]
-                .letter{class: ("rebus-#{[sol_content.to_s.length, 4].min}" if sol_content.to_s.length > 1)}= sol_content
+                .letter= sol_content
               - else
                 .letter
               - cell = @cells[i]
