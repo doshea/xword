@@ -343,20 +343,22 @@
     return (this.is_word_end() || this.is_empty_cell()) ? this : this.next_cell().next_empty_cell_in_word();
   };
 
+  // Finds the next empty cell in the current word, wrapping from end to start.
+  // Returns this cell if the entire word is filled.
   $.fn.next_empty_cell = function() {
-    if (this.is_last_letter_of_puzzle()) {
-      if (this.is_empty_cell()) {
-        return this;
-      } else {
-        cw.highlight_next_word();
-        if ($(".selected").get_number() !== 1) {
-          return $(".selected").is_empty_cell() ? $(".selected") : $(".selected").next_empty_cell();
-        }
-      }
-    } else {
-      var next = this.next_cell();
-      return next.is_empty_cell() ? next : next.next_empty_cell();
+    var cells = this.get_word_cells();
+    var selfEl = this[0];
+    var idx = -1;
+    for (var i = 0; i < cells.length; i++) {
+      if (cells[i][0] === selfEl) { idx = i; break; }
     }
+    // Search forward from the cell after this one, then wrap around
+    for (var j = 1; j < cells.length; j++) {
+      var check = cells[(idx + j) % cells.length];
+      if (check.is_empty_cell()) return check;
+    }
+    // Word is full — stay on current cell
+    return this;
   };
 
 })(jQuery);
