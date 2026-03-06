@@ -117,19 +117,32 @@ RSpec.describe 'Pages', type: :request do
   end
 
   describe 'GET /about' do
-    before { get '/about' }
+    context 'as admin' do
+      let(:admin) { create(:user, :with_test_password, is_admin: true) }
+      before do
+        log_in_as(admin)
+        get '/about'
+      end
 
-    it 'renders the about page' do
-      expect(response).to have_http_status(:ok)
+      it 'renders the about page' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'uses <s> for stylistic strikethrough, not <del>' do
+        expect(response.body).to include('<s>')
+        expect(response.body).not_to include('<del>')
+      end
+
+      it 'separates The Resurrection with a divider' do
+        expect(response.body).to match(%r{<hr\s*/?>.*The Resurrection}m)
+      end
     end
 
-    it 'uses <s> for stylistic strikethrough, not <del>' do
-      expect(response.body).to include('<s>')
-      expect(response.body).not_to include('<del>')
-    end
-
-    it 'separates The Resurrection with a divider' do
-      expect(response.body).to match(%r{<hr\s*/?>.*The Resurrection}m)
+    context 'as non-admin' do
+      it 'redirects to root' do
+        get '/about'
+        expect(response).to redirect_to(root_path)
+      end
     end
   end
 

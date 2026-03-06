@@ -2,7 +2,8 @@
   .xw-container
     .xw-footer__row
       %nav.xw-footer__links{aria: {label: 'Site information'}}
-        = link_to 'About', about_path
+        - if is_admin?
+          = link_to 'About', about_path
         = link_to 'FAQ', faq_path
         = link_to 'Contact', contact_path
         = link_to 'Stats', stats_path

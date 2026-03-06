@@ -63,6 +63,7 @@ class PagesController < ApplicationController
 
   #GET /about or about_path
   def about
+    redirect_to root_path unless @current_user&.is_admin
   end
 
   #GET /contact or contact_path
