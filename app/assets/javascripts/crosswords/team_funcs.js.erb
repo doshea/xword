@@ -149,9 +149,12 @@ window.team_app = {
       team_app.last_clack = now;
       team_app.cell_clack_sound.play();
     }
-    $cell.children('.flag').stop()
-      .css('background', 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')')
-      .animate({opacity: 1}, 300).delay(300).animate({opacity: 0}, 200);
+    // Flash the teammate's color over the cell using CSS animation
+    var color = 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')';
+    $cell.removeClass('team-flash');
+    $cell[0].offsetWidth; // force reflow to restart animation
+    $cell.css('--team-color', color).addClass('team-flash');
+    setTimeout(function() { $cell.removeClass('team-flash'); }, 550);
     if (data.letter === '') {
       $cell.delete_letter(false);
     } else {

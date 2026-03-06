@@ -177,6 +177,24 @@ table#crossword.rebus-active .cell.selected {
   100% { opacity: 0; }
 }
 
+// Team solve flash — brief color pulse when a teammate edits a cell.
+// Uses the same ::after overlay approach as cell-check-flash but with
+// a dynamic --team-color set via inline style from JS.
+.team-flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--team-color);
+  pointer-events: none;
+  animation: team-cell-flash 500ms var(--ease-out) forwards;
+}
+
+@keyframes team-cell-flash {
+  0%   { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
 .xw-puzzle-layout {
   display: flex;
   align-items: flex-start;
@@ -1027,6 +1045,7 @@ textarea:focus ~ .xw-comment__hint {
   .xw-animate-in,
   .xw-animate-out { animation: none; }
   .cell-flash::before { animation: none; display: none; }
+  .team-flash::after  { animation: none; display: none; }
 }
 
 // --- Puzzle Stats sidebar ---

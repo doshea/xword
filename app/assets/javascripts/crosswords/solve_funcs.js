@@ -116,7 +116,7 @@ window.solve_app = {
     $('#admin-flash-cascade').on('click', solve_app.flash_cascade);
     $('#reveal-letter').on('click', solve_app.reveal_cell);
     $('#hint-word').on('click', solve_app.hint_word);
-    $('input, textarea').on('click', function() { cw.unhighlight_all(); });
+    $(':not(.cell, .cell *, .clue, .clue *)').on('click', function() { cw.unhighlight_all(); });
     solve_app.check_all_finished();
     return true;
   },

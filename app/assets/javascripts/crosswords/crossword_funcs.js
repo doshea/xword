@@ -320,9 +320,8 @@ window.cw = {
   suppressBackspaceAndNav: function(evt) {
     evt = evt || window.event;
     var target = evt.target || evt.srcElement;
-    if (evt.keyCode === cw.BACKSPACE && !/input|textarea/i.test(target.nodeName)) {
+    if (evt.keyCode === cw.BACKSPACE && !/input|textarea/i.test(target.nodeName) && cw.selected) {
       evt.preventDefault();
-      if (!cw.selected) return;
       if (cw.rebus_mode) {
         // In rebus mode: remove last character, or delete entirely if only 1 char
         var content = cw.selected.get_letter().trim();
@@ -343,7 +342,7 @@ window.cw = {
       }
       return;
     }
-    if (cw.PAGE_NAV_KEYS.includes(evt.keyCode) && !/input|textarea/i.test(target.nodeName)) {
+    if (cw.PAGE_NAV_KEYS.includes(evt.keyCode) && !/input|textarea/i.test(target.nodeName) && cw.selected) {
       evt.preventDefault();
       return;
     }
