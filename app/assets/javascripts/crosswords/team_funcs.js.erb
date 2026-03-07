@@ -150,7 +150,7 @@ window.team_app = {
     el.offsetWidth; // force reflow to restart animation
     el.style.setProperty('--team-color', color);
     $cell.addClass('team-flash');
-    setTimeout(function() { $cell.removeClass('team-flash'); }, 550);
+    setTimeout(function() { $cell.removeClass('team-flash'); }, 1650);
     if (data.letter === '') {
       $cell.delete_letter(false);
     } else {
