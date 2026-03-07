@@ -214,13 +214,13 @@ RSpec.describe 'Solutions', type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it 'requires authentication' do
-      # Fresh request without logging in
+    it 'allows anonymous users (team link is the auth)' do
       reset!
       patch "/solutions/#{team_solution.id}/team_update", params: {
-        row: '1', col: '1', letter: 'A', solver_id: 'x'
+        row: '1', col: '1', letter: 'A', solver_id: 'x',
+        red: '0', green: '0', blue: '0'
       }
-      expect(response.location).to start_with("http://www.example.com#{account_required_path}")
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -415,48 +415,50 @@ RSpec.describe 'Solutions', type: :request do
       allow(ActionCable.server).to receive(:broadcast)
     end
 
-    context 'as a non-member (not owner or partner)' do
+    context 'as a non-member (anyone with the team link)' do
       before { log_in_as(outsider) }
 
-      it 'rejects team_update with 403' do
+      it 'allows team_update (link is the auth)' do
         patch "/solutions/#{team_solution.id}/team_update",
               params: { row: '0', col: '0', letter: 'A', solver_id: 'x', red: '0', green: '0', blue: '0' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'rejects join_team with 403' do
+      it 'allows join_team' do
         post "/solutions/#{team_solution.id}/join_team",
              params: { display_name: 'Test', solver_id: 'x', red: '0', green: '0', blue: '0' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'rejects leave_team with 403' do
+      it 'allows leave_team' do
         post "/solutions/#{team_solution.id}/leave_team",
              params: { solver_id: 'x' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'rejects roll_call with 403' do
+      it 'allows roll_call' do
         post "/solutions/#{team_solution.id}/roll_call"
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'rejects send_team_chat with 403' do
+      it 'allows send_team_chat' do
         post "/solutions/#{team_solution.id}/send_team_chat",
-             params: { display_name: 'Test', avatar: '/default.jpg', chat: 'hello' }
-        expect(response).to have_http_status(:forbidden)
+             params: { display_name: 'Test', avatar: '/default.jpg', chat: 'hello' },
+             headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'rejects show_team_clue with 403' do
+      it 'allows show_team_clue' do
         post "/solutions/#{team_solution.id}/show_team_clue",
              params: { cell_num: '1', across: 'true', solver_id: 'x', red: '0', green: '0', blue: '0' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'does not broadcast when rejected' do
-        patch "/solutions/#{team_solution.id}/team_update",
+      it 'rejects non-team solutions with 403' do
+        solo_solution = create(:solution, user: owner, crossword: crossword, letters: blank_letters)
+        patch "/solutions/#{solo_solution.id}/team_update",
               params: { row: '0', col: '0', letter: 'A', solver_id: 'x', red: '0', green: '0', blue: '0' }
-        expect(ActionCable.server).not_to have_received(:broadcast)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 

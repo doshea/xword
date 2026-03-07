@@ -86,9 +86,12 @@ describe SolutionsController do
     end
 
     context 'when not logged in' do
-      it 'redirects to login' do
-        patch :team_update, params: { id: team_solution.id, row: '0', col: '1', letter: 'A', solver_id: 'abc' }
-        expect(response.location).to start_with("http://test.host#{account_required_path}")
+      it 'allows access (team link is the auth)' do
+        patch :team_update, params: {
+          id: team_solution.id, row: '0', col: '1', letter: 'A',
+          solver_id: 'abc', red: '100', green: '200', blue: '50'
+        }
+        expect(response).to have_http_status(:ok)
       end
     end
   end

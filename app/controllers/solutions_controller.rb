@@ -3,7 +3,7 @@ class SolutionsController < ApplicationController
   prepend_before_action :guard_null_solution_id, only: [:update]
   before_action :find_object, only: [:show, :update, :get_incorrect, :destroy,
     :team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
-  before_action :ensure_logged_in, only: [:destroy, :team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
+  before_action :ensure_logged_in, only: [:destroy]
   before_action :ensure_solution_access, only: [:update, :get_incorrect]
   before_action :ensure_team_member, only: [:team_update, :join_team, :leave_team, :roll_call, :send_team_chat, :show_team_clue]
   before_action :ensure_owner_or_partner, only: [:destroy]
@@ -159,7 +159,7 @@ class SolutionsController < ApplicationController
   end
 
   def ensure_team_member
-    head(:forbidden) unless @solution.accessible_by?(@current_user)
+    head(:forbidden) unless @solution&.team
   end
 
   def ensure_owner_or_partner
