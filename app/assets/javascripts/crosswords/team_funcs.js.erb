@@ -150,10 +150,13 @@ window.team_app = {
       team_app.cell_clack_sound.play();
     }
     // Flash the teammate's color over the cell using CSS animation
+    // jQuery 2.x cannot set CSS custom properties — use native setProperty.
     var color = 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')';
+    var el = $cell[0];
     $cell.removeClass('team-flash');
-    $cell[0].offsetWidth; // force reflow to restart animation
-    $cell.css('--team-color', color).addClass('team-flash');
+    el.offsetWidth; // force reflow to restart animation
+    el.style.setProperty('--team-color', color);
+    $cell.addClass('team-flash');
     setTimeout(function() { $cell.removeClass('team-flash'); }, 550);
     if (data.letter === '') {
       $cell.delete_letter(false);
