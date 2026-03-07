@@ -5,9 +5,7 @@ window.team_app = {
   solver_red:            Math.floor(Math.random() * 256),  // random RGB color identifies this solver
   solver_green:          Math.floor(Math.random() * 256),
   solver_blue:           Math.floor(Math.random() * 256),
-  cell_clack_sound:      new Audio('<%= audio_path("chuck.mp3") %>'),
-  last_clack:            null,
-  message_received_sound: new Audio('<%= audio_path("submarine.m4a") %>'),
+  message_received_sound: Object.assign(new Audio('<%= audio_path("submarine.m4a") %>'), { volume: 0.35 }),
   last_received:         null,
   unread_count:          0,
   last_chat_sender:      null,
@@ -144,11 +142,6 @@ window.team_app = {
     team_app.cellTimestamps[key] = timestamp;
 
     var $cell = $(".cell[data-row=" + data.row + "][data-col=" + data.col + "]");
-    var now   = Date.now();
-    if (!(team_app.last_clack && (now - team_app.last_clack < 4000))) {
-      team_app.last_clack = now;
-      team_app.cell_clack_sound.play();
-    }
     // Flash the teammate's color over the cell using CSS animation
     // jQuery 2.x cannot set CSS custom properties — use native setProperty.
     var color = 'rgb(' + data.red + ', ' + data.green + ', ' + data.blue + ')';
