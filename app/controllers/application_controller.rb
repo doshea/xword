@@ -21,10 +21,21 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_logged_in
-    redirect_to(account_required_path(redirect: request.fullpath)) if @current_user.nil?
+    return if @current_user
+    if non_html_request?
+      head :unauthorized
+    else
+      redirect_to(account_required_path(redirect: request.fullpath))
+    end
   end
+
   def ensure_admin
-    redirect_to(unauthorized_path) if (@current_user.nil? || !@current_user.is_admin)
+    return if @current_user&.is_admin
+    if non_html_request?
+      head(@current_user ? :forbidden : :unauthorized)
+    else
+      redirect_to(unauthorized_path)
+    end
   end
 
   def flash_stream(message, type = 'info')
@@ -61,8 +72,16 @@ class ApplicationController < ActionController::Base
   def ensure_owner_or_admin
     obj = found_object
     unless @current_user && obj && (@current_user.is_admin || @current_user == obj.user)
-      redirect_back(fallback_location: root_path, flash: {warning: "You do not own that #{associated_class_string.underscore.humanize}."})
+      if non_html_request?
+        head :forbidden
+      else
+        redirect_back(fallback_location: root_path, flash: {warning: "You do not own that #{associated_class_string.underscore.humanize}."})
+      end
     end
+  end
+
+  def non_html_request?
+    request.xhr? || request.format.json? || request.format.turbo_stream?
   end
 
 end

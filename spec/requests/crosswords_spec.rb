@@ -289,18 +289,18 @@ RSpec.describe 'Crosswords', type: :request do
     context 'when non-admin' do
       before { log_in_as(user) }
 
-      it 'redirects to unauthorized' do
+      it 'returns 403 for JSON requests' do
         post admin_fake_win_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to redirect_to(unauthorized_path)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
     context 'when not logged in' do
-      it 'redirects to unauthorized' do
+      it 'returns 401 for JSON requests' do
         post admin_fake_win_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to redirect_to(unauthorized_path)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -326,18 +326,18 @@ RSpec.describe 'Crosswords', type: :request do
     context 'when non-admin' do
       before { log_in_as(user) }
 
-      it 'redirects to unauthorized' do
+      it 'returns 403 for JSON requests' do
         post admin_reveal_puzzle_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to redirect_to(unauthorized_path)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
     context 'when not logged in' do
-      it 'redirects to unauthorized' do
+      it 'returns 401 for JSON requests' do
         post admin_reveal_puzzle_crossword_path(crossword),
              headers: { 'Accept' => 'application/json' }
-        expect(response).to redirect_to(unauthorized_path)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
