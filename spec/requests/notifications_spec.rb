@@ -2,6 +2,34 @@ RSpec.describe 'Notifications', type: :request do
   let_it_be(:user) { create(:user, :with_test_password) }
   let_it_be(:actor) { create(:user) }
 
+  describe 'notification bell visibility' do
+    it 'hides the bell for users with no notification history' do
+      log_in_as(user)
+      get root_path
+      expect(response.body).to include('id="nav-mail"')
+      # HAML renders boolean attrs before id: hidden id="nav-mail"
+      expect(response.body).to match(/hidden[^>]*id="nav-mail"/)
+    end
+
+    it 'shows the bell when user has unread notifications' do
+      create(:notification, user: user, actor: actor, notification_type: 'friend_request')
+      log_in_as(user)
+      get root_path
+      expect(response.body).to include('id="nav-mail"')
+      expect(response.body).not_to match(/hidden[^>]*id="nav-mail"/)
+      # Green pulse (unread class) is reserved for live ActionCable events only
+      expect(response.body).not_to match(/id="nav-mail"[^>]*class="[^"]*unread/)
+    end
+
+    it 'shows the bell when user has only read notifications' do
+      create(:notification, :read, user: user, actor: actor, notification_type: 'friend_request')
+      log_in_as(user)
+      get root_path
+      expect(response.body).to include('id="nav-mail"')
+      expect(response.body).not_to match(/hidden[^>]*id="nav-mail"/)
+    end
+  end
+
   describe 'GET /notifications' do
     it 'redirects anonymous users to account_required' do
       get '/notifications'

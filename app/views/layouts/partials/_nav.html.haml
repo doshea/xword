@@ -64,8 +64,9 @@
             %span.xw-nav__label Create
 
         / Notifications dropdown — #nav-mail preserved (CSS unread pulse animation)
+        / Green pulse (unread class) reserved for live ActionCable events only — not applied server-side.
         - if is_logged_in?
-          .xw-nav__item#nav-mail{ class: (@unread_notification_count > 0 ? 'unread' : nil),
+          .xw-nav__item#nav-mail{ hidden: (!@has_notifications || nil),
                                    data: { controller: 'notification-dropdown' } }
             %button.xw-nav__icon-btn{ type: 'button',
                                        aria: { expanded: 'false', haspopup: 'true',

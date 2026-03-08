@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
 
   def load_unread_notification_count
     @unread_notification_count = @current_user&.notifications&.unread&.count || 0
+    @has_notifications = @unread_notification_count > 0 || (@current_user&.notifications&.exists? || false)
   end
 
   def ensure_logged_in

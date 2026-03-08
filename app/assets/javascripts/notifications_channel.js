@@ -21,6 +21,7 @@
   function updateBadge(count) {
     var badge = navMail.querySelector('.xw-badge');
     if (count > 0) {
+      navMail.removeAttribute('hidden');  // reveal bell on first-ever live notification
       navMail.classList.add('unread');
       var container = document.getElementById('notification-badge');
       if (!badge) {
