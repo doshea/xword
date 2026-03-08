@@ -133,6 +133,10 @@
   position: relative;
   display: flex;
   align-items: center;
+
+  // Restore hidden behavior — `display: flex` above overrides the UA default
+  // `[hidden] { display: none }`. Needed for #nav-mail (hidden until first notification).
+  &[hidden] { display: none; }
 }
 
 
