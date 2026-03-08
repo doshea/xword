@@ -1,0 +1,27 @@
+.xw-welcome
+  %p.xw-welcome__subtitle Grab a seat — here's what you can do.
+
+  .xw-welcome__cards
+    = link_to nytimes_path, class: 'xw-welcome__card' do
+      .xw-welcome__card-icon
+        = icon('clipboard-list', size: 28)
+      %h3.xw-welcome__card-title Browse Puzzles
+      %p.xw-welcome__card-desc NYT crosswords and more
+
+    = link_to random_puzzle_path, class: 'xw-welcome__card' do
+      .xw-welcome__card-icon
+        = icon('shuffle', size: 28)
+      %h3.xw-welcome__card-title Try a Random Puzzle
+      %p.xw-welcome__card-desc Jump right in
+
+    = link_to new_unpublished_crossword_path, class: 'xw-welcome__card' do
+      .xw-welcome__card-icon
+        = icon('pencil', size: 28)
+      %h3.xw-welcome__card-title Create Your Own
+      %p.xw-welcome__card-desc Build a crossword from scratch
+
+    = link_to search_path, class: 'xw-welcome__card' do
+      .xw-welcome__card-icon
+        = icon('search', size: 28)
+      %h3.xw-welcome__card-title Search
+      %p.xw-welcome__card-desc Find puzzles, words, or people

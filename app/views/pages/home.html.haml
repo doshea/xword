@@ -8,25 +8,28 @@
       Welcome back, #{@current_user.display_first_name}!
     - else
       Welcome to the Café!
-  .xw-tabs{data: {controller: 'tabs'}}
-    .xw-tabs__nav{role: 'tablist'}
-      %button.xw-tab.xw-tab--active{type: 'button', role: 'tab', 'aria-selected': 'true', 'aria-controls': 'panel1', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
-        %span.tab-label
-          = icon('clipboard')
-          %span #{'New' if @current_user} Puzzles (#{@unstarted_count})
-      - if @current_user
-        %button.xw-tab{type: 'button', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel2', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
+  - if @show_welcome_hub
+    = render partial: 'pages/home/welcome_hub'
+  - else
+    .xw-tabs{data: {controller: 'tabs'}}
+      .xw-tabs__nav{role: 'tablist'}
+        %button.xw-tab.xw-tab--active{type: 'button', role: 'tab', 'aria-selected': 'true', 'aria-controls': 'panel1', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
           %span.tab-label
-            = icon('clipboard-pen')
-            %span In Progress (#{@in_progress_count})
-        %button.xw-tab{type: 'button', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel3', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
-          %span.tab-label
-            = icon('clipboard-list')
-            %span Solved Puzzles (#{@solved_count})
-    .xw-tab-panels
-      #panel1.xw-tab-panel.xw-tab-panel--active{role: 'tabpanel', data: {tabs_target: 'panel'}}
-        = render partial: 'pages/home/unstarted'
-      #panel2.xw-tab-panel{role: 'tabpanel', data: {tabs_target: 'panel'}}
-        = render partial: 'pages/home/in_progress'
-      #panel3.xw-tab-panel{role: 'tabpanel', data: {tabs_target: 'panel'}}
-        = render partial: 'pages/home/solved_puzzles'
+            = icon('clipboard')
+            %span #{'New' if @current_user} Puzzles (#{@unstarted_count})
+        - if @current_user
+          %button.xw-tab{type: 'button', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel2', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
+            %span.tab-label
+              = icon('clipboard-pen')
+              %span In Progress (#{@in_progress_count})
+          %button.xw-tab{type: 'button', role: 'tab', 'aria-selected': 'false', 'aria-controls': 'panel3', data: {tabs_target: 'tab', action: 'click->tabs#show'}}
+            %span.tab-label
+              = icon('clipboard-list')
+              %span Solved Puzzles (#{@solved_count})
+      .xw-tab-panels
+        #panel1.xw-tab-panel.xw-tab-panel--active{role: 'tabpanel', data: {tabs_target: 'panel'}}
+          = render partial: 'pages/home/unstarted'
+        #panel2.xw-tab-panel{role: 'tabpanel', data: {tabs_target: 'panel'}}
+          = render partial: 'pages/home/in_progress'
+        #panel3.xw-tab-panel{role: 'tabpanel', data: {tabs_target: 'panel'}}
+          = render partial: 'pages/home/solved_puzzles'

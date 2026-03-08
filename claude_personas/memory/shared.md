@@ -12,12 +12,12 @@
 
 ## Pending Deploy
 
-- **Admin Form Styling + Inline Validation**: BEM classes on all 6 admin edit forms, checkbox component promoted to shared, form errors rendered on validation failure, Stimulus form_validation_controller for public forms (signup/login/forgot/reset password), error animation CSS. 18 new specs. No migration.
-- **SF1 + SF2 should-fixes**: SF1 (rebus HAML class placement) — already correct, no change needed. SF2 (NYT logo float) — added `position: relative` to `.xw-puzzle-card`. No migration.
+(empty — all clear)
 
 ## Planner → Builder Queue
 
-(none)
+- **Empty State Delight** — Home page welcome hub + create dashboard polish. Plan: `plan.md`. 5 files, no migration, no JS. Low risk, all additive.
+
 
 ## Planner Work Queue
 
@@ -59,3 +59,5 @@ v580: Loading spinners (home/NYT/LoadingController), solve home button, mobile c
 v581: Phase 4 — mini-manuals, clue suggestions, unfriend, remotipart removal
 v582: Solve mini-manual polish (7→4 sections, arrow key diagram), persona terminal text color fix
 v586: Rebus cell support infrastructure (rebus_map JSONB on crosswords+solutions, full-stack wiring)
+v586–v596: Rebus class fix, admin form styling, team solve fixes, auth hardening, cell flash tuning
+v597: Notification bell refinements (hidden for zero-history, pulse reserved for ActionCable)

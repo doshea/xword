@@ -12,14 +12,15 @@
           %li
             = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
     - else
-      .xw-empty-state
-        = icon('clipboard-pen', size: 36, class: 'xw-empty-state__icon')
-        %p.xw-empty-state__heading No puzzles in progress
-        %p Start creating! Your unpublished puzzles will appear here.
-    .xw-create__new-btn
-      = link_to new_unpublished_crossword_path, class: 'xw-btn xw-btn--success' do
-        = icon('pencil')
-        New Puzzle
+      .xw-empty-state.xw-empty-state--create
+        = icon('pencil', size: 40, class: 'xw-empty-state__icon')
+        %p.xw-empty-state__heading Create your first crossword
+        %p Build a puzzle, add clues, and share it with the community.
+        .xw-empty-state__actions
+          = link_to new_unpublished_crossword_path, class: 'xw-btn xw-btn--success xw-btn--lg' do
+            = icon('plus')
+            New Puzzle
+        %p.xw-empty-state__hint You'll start with a blank grid and fill in words and clues.
 
   -# --- Published puzzles ---
   - if @published.any?

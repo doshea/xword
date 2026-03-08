@@ -22,7 +22,7 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 - **Phase 1:** ✅ Done. 16 reviews + changelog, all deployed (v548–v574).
 - **Phase 2:** ✅ Done. 7 reviewed, 6 built, deployed v576–v578. Stats perf = no build needed.
 - **Phase 3:** ✅ Done. All 8 items built and deployed (v579, v580).
-- **Phase 4:** 📋 Specced. 5 items: solve mini-manual, edit mini-manual, clue suggestions, unfriend, remotipart removal. All product specs written. Queued for Builder.
+- **Phase 4:** ✅ Done. 5 items deployed (v581, polished v582): mini-manuals, clue suggestions, unfriend, remotipart removal.
 
 ### P3-E Loading State Spinners review (2026-03-05)
 - Upgraded from "Direct" to "Review" — 3 non-obvious findings:
@@ -118,7 +118,7 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 
 ### Phase 3 audit findings summary (2026-03-05)
 - Codebase is in excellent shape after P1+P2. No structural issues. Remaining work is polish.
-- Dead code: `include TimeHelper` (module missing), `letters_to_clue_numbers` (47-line dead method), stale TODO
+- Dead code: stale TODO in home.html.haml. **Correction**: `include TimeHelper` and `letters_to_clue_numbers` were NOT dead (Builder verified — module in `lib/custom_funcs.rb`, method called by edit controller with 3 specs)
 - Token gaps: 8 instances of hardcoded `#fff` — need `--color-text-on-dark` token
 - Admin forms unstyled: 6 edit views use bare Rails helpers, no BEM wrappers
 - Solve page: no back/home button, save status too muted, comment needs mobile send button
@@ -175,6 +175,38 @@ Review status tracking lives in the meta-plan (`claude_personas/plans/planner-me
 - **Remotipart**: Optimistic strategy — just remove the gem. Turbo handles multipart natively. Only 1 form affected (profile pic upload). Active Storage fallback if Turbo doesn't work. CarrierWave stack stays either way.
 - Cataloged ~50 interactions across solve/edit/team pages to populate manual content. Full catalog in explore agent output.
 
+### Rebus Cell Support — Infrastructure review (2026-03-05)
+- **Architecture**: Sparse overlay (`rebus_map` JSONB on crosswords+solutions) is the right design
+- **Pre-build review**: 2 must-fixes, 3 should-fixes, 2 suggestions — all corrected by Builder
+- **Post-build review**: 1 new should-fix (HAML puts rebus class on `.letter` not `.cell`), 1 nitpick (IIFE style inconsistency). All pre-build corrections verified applied.
+- Full pre-build review: `claude_personas/plans/rebus-infrastructure-review.md`
+- Full post-build review: `claude_personas/plans/rebus-infrastructure-build-review.md`
+- **Status**: Built and deployed as v586. SF1 fix queued for Builder.
+
+### NYT logo containing-block bug (2026-03-05)
+- `.xw-puzzle-card__nyt` is `position: absolute` but `.xw-puzzle-card` (extends `.xw-card`) has no `position: relative`
+- At rest: logo positions relative to viewport → floats in page corner
+- On hover: `transform: translateY(-1px)` on `.xw-card:hover` creates containing block → logo snaps into hovered card → flicker
+- Fix: add `position: relative` to `.xw-puzzle-card` in `_components.scss:222`
+- Affects all pages rendering `_crossword_tab` with NYT puzzles (home, NYT, user-made, etc.)
+- Related: `.xw-card` has `overflow: hidden` which only clips absolutely positioned children when it's also the containing block — fix resolves this too
+
+### Notification bell refinements (2026-03-07)
+- Two changes: (1) hide bell for users with zero notification history, (2) reserve green pulse for live ActionCable events only
+- `hidden` attribute approach chosen over DOM construction in JS — dramatically simpler, no SVG duplication
+- `@has_notifications` added to `ApplicationController#load_unread_notification_count` with short-circuit (skips `exists?` when unread count > 0)
+- Server-side `unread` class removed from HAML — pulse now ActionCable-only
+- 3 files, no migration, no new dependencies
+- Plan: `claude_personas/plans/notification-bell-refinements.md`
+
+### Empty State Delight — Home + Create Dashboard (2026-03-07)
+- **Home page**: When all 3 tabs are (0), replace tab system with "Welcome Hub" — 4 action cards (Browse, Random, Create, Search) in a 2×2 grid
+- **Create dashboard**: Expand empty state with more padding, warmer copy, hint text. `--create` modifier on `.xw-empty-state`
+- **Conditional**: `@show_welcome_hub` flag in controller; normal tabs appear as soon as any tab has content
+- **Hardcoded "700+" text risk**: Recommend either `Crossword.count` or dropping the number. User should decide.
+- **CSS**: All tokens, no hardcoded values. Welcome cards use `--color-surface-alt` bg, `--color-accent` icons, hover lift
+- Plan: `plan.md`
+
 ## Open Questions
 - Published column restoration — schema change needed, guards currently disabled. Not specced.
-- Turbo Stream `replace` pattern bug (password errors) — documented but not queued. 2-line fix per file.
+- ~~Turbo Stream `replace` pattern bug (password errors)~~ — Fixed in v572 (login/signup review). Both `.turbo_stream.erb` files now wrap content in `<div id="password-errors">`.

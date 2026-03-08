@@ -1266,6 +1266,74 @@
   margin-top: var(--space-4);
 }
 
+.xw-empty-state--create {
+  padding: var(--space-12) var(--space-4);
+}
+
+.xw-empty-state__hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-3);
+}
+
+
+// ---------------------------------------------------------------------------
+// WELCOME HUB — action cards for new users with zero puzzle activity
+// ---------------------------------------------------------------------------
+
+.xw-welcome__subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.xw-welcome__cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.xw-welcome__card {
+  display: block;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.xw-welcome__card-icon {
+  color: var(--color-accent);
+  margin-bottom: var(--space-2);
+}
+
+.xw-welcome__card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.xw-welcome__card-desc {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
 
 // ---------------------------------------------------------------------------
 // LEGACY OVERRIDES (moved from foundation_overrides.scss)

@@ -43,7 +43,7 @@ RSpec.describe 'Create Dashboard', type: :request do
       it 'renders the empty state' do
         get '/create/dashboard'
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include('No puzzles in progress')
+        expect(response.body).to include('Create your first crossword')
         expect(response.body).to include('New Puzzle')
       end
 

@@ -65,17 +65,16 @@ will become bottlenecks at scale (performance). Items ordered by ROI, not catego
 | P3-B | Cell Navigation Composite Index | Direct | ✅ Done | — | Deploy 1 (924e958) |
 | P3-C | Design Token Completion | Review | ✅ Done | `design-token-completion.md` | Deploy 2 (a1c069e) |
 | P3-D | Dead Code Cleanup | Direct | ✅ Done (partial) | — | Deploy 1 (924e958) |
-| P3-E | Loading State Spinners | Review | ✅ Reviewed | `loading-state-spinners.md` | — |
+| P3-E | Loading State Spinners | Review | ✅ Done | `loading-state-spinners.md` | Deploy 3 (ccd7556) |
 | P3-F | Random Puzzle Offset Fix | Direct | ✅ Done | — | Deploy 1 (924e958) |
 | P3-G | Crossword User+Date Composite Index | Direct | ✅ Done | — | Deploy 1 (924e958) |
-| P3-H | Solve Page Navigation (back button + mobile send) | Review | ✅ Reviewed (corrections added) | `solve-page-navigation.md` | — |
+| P3-H | Solve Page Navigation (back button + mobile send) | Review | ✅ Done | `solve-page-navigation.md` | Deploy 3 (ccd7556) |
 
 ### Deploy Sequence
 
 **Deploy 1** ✅ — Quick wins (P3-D + P3-B + P3-G + P3-F): `924e958`
 **Deploy 2** ✅ — P3-A + P3-C (solve confidence + design tokens): `a1c069e`
-**Deploy 3** — P3-E: loading spinners. Plan: `loading-state-spinners.md`. Includes LoadingController fix for `<button>` elements.
-**Deploy 4** — P3-H: navigation polish. Plan: `solve-page-navigation.md`. Needs `send.svg` icon (not in repo).
+**Deploy 3** ✅ — P3-E + P3-H (loading spinners + navigation polish): `ccd7556`
 
 ---
 
@@ -180,18 +179,17 @@ Phase 4 adds real functionality.
 
 | # | Item | Type | Status | Plan | Deploy |
 |---|------|------|--------|------|--------|
-| P4-A | Solve Page Mini-Manual | Feature | 📋 Specced | `solve-mini-manual.md` | Deploy 5 |
-| P4-B | Edit Page Mini-Manual | Feature | 📋 Specced | `edit-mini-manual.md` | Deploy 5 |
-| P4-C | Clue Suggestions from Phrase DB | Feature | 📋 Specced | `clue-suggestions.md` | Deploy 6 |
-| P4-D | Unfriend | Feature | 📋 Specced | `unfriend.md` | Deploy 7 |
-| P4-E | Remotipart Removal | Tech Debt | 📋 Specced | `remotipart-replacement.md` | Deploy 8 |
+| P4-A | Solve Page Mini-Manual | Feature | ✅ Done | `solve-mini-manual.md` | Deploy 4 (db957a1) |
+| P4-B | Edit Page Mini-Manual | Feature | ✅ Done | `edit-mini-manual.md` | Deploy 4 (db957a1) |
+| P4-C | Clue Suggestions from Phrase DB | Feature | ✅ Done | `clue-suggestions.md` | Deploy 4 (db957a1) |
+| P4-D | Unfriend | Feature | ✅ Done | `unfriend.md` | Deploy 4 (db957a1) |
+| P4-E | Remotipart Removal | Tech Debt | ✅ Done | `remotipart-replacement.md` | Deploy 4 (db957a1) |
 
 ### Deploy Sequence
 
-**Deploy 5** — P4-A + P4-B: Mini-manuals (solve + edit). Shared CSS, no backend.
-**Deploy 6** — P4-C: Clue suggestions. New API endpoint + JS popover.
-**Deploy 7** — P4-D: Unfriend. Service + controller + Turbo Stream UI.
-**Deploy 8** — P4-E: Remotipart removal. Gem delete, test, done (optimistic).
+**Deploy 4** ✅ — All Phase 4 items (P4-A through P4-E): `db957a1`
+
+Note: Builder batched all 5 items into a single deploy. Solve mini-manual further polished in v582 (0b7f596).
 
 ### P4-A: Solve Page Mini-Manual ★★★★★
 Scope: `show.html.haml` (replace `#controls-modal` content), `crossword.scss.erb`, ~30 min.
@@ -246,6 +244,7 @@ Moved from Phase 3 — not high enough ROI:
 - Admin Form Styling — low priority, single-user audience
 - Inline Form Validation — feature, not fix; defer until user drop-off observed
 - Review Checklist Template — create when team grows
+- Turbo Stream `replace` pattern bug (password errors) — 2-line fix, documented in planner memory but never queued
 
 ## Low-Priority Carry-Forward
 

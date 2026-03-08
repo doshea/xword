@@ -14,6 +14,7 @@ class PagesController < ApplicationController
       @unstarted_count   = Crossword.new_to_user(@current_user).count
       @in_progress_count = Crossword.all_in_progress(@current_user).count
       @solved_count      = Crossword.all_solved(@current_user).count
+      @show_welcome_hub  = @unstarted_count == 0 && @in_progress_count == 0 && @solved_count == 0
       @unstarted   = Crossword.new_to_user(@current_user).order(created_at: :desc).includes(:user).limit(per)
       @in_progress = Crossword.all_in_progress(@current_user).order(created_at: :desc).includes(:user).limit(per)
       @solved      = Crossword.all_solved(@current_user).order(created_at: :desc).includes(:user).limit(per)
