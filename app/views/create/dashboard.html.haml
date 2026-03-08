@@ -2,25 +2,26 @@
 = render layout: 'layouts/partials/topper_stopper', locals: {columns_class: 'xw-puzzle-grid', row_top_title: 'Your Puzzles'} do
 
   -# --- Unpublished puzzles ---
-  %section
-    %h2.xw-create__section-heading
-      Unpublished
-      %span.xw-create__count= @unpublished.count
-    - if @unpublished.any?
+  - if @unpublished.any?
+    %section
+      %h2.xw-create__section-heading
+        Unpublished
+        %span.xw-create__count= @unpublished.count
       %ul
         - @unpublished.each do |cw|
           %li
             = render partial: 'crosswords/partials/crossword_tab', locals: {cw: cw, unpublished: true}
-    - else
+  - elsif @published.empty?
+    -# No puzzles at all — show welcome CTA without the "Unpublished (0)" heading
+    %section
       .xw-empty-state.xw-empty-state--create
         = icon('pencil', size: 40, class: 'xw-empty-state__icon')
         %p.xw-empty-state__heading Create your first crossword
-        %p Build a puzzle, add clues, and share it with the community.
+        %p Build a puzzle, add clues, and share it with others!
         .xw-empty-state__actions
           = link_to new_unpublished_crossword_path, class: 'xw-btn xw-btn--success xw-btn--lg' do
             = icon('plus')
             New Puzzle
-        %p.xw-empty-state__hint You'll start with a blank grid and fill in words and clues.
 
   -# --- Published puzzles ---
   - if @published.any?
